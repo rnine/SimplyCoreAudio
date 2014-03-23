@@ -1067,8 +1067,6 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
         NSMutableArray *rv;
         NSArray *possibleRates;
 
-        rv = [NSMutableArray array];
-
         AudioObjectPropertyAddress address = {
             kAudioDevicePropertyAvailableNominalSampleRates,
             kAudioObjectPropertyScopeWildcard,
@@ -1086,26 +1084,27 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
         if (!hasProperty)
         {
-            return rv;
+            return @[];
         }
 
         theStatus = AudioObjectGetPropertyDataSize(_myDevice, &address, 0, 0, &theSize);
 
         if (kAudioHardwareNoError != theStatus)
         {
-            return rv;
+            return @[];
         }
 
         // Sometimes an audio device will not support any sample rate.
         // For instance, this would be the case when an Aggregate Device
         // does not have any sub audio devices associated to it.
         // In this case, we will simply return an empty array
+
         if (theSize == 0)
         {
             return @[];
         }
 
-        rangeArray = (AudioValueRange *)malloc(theSize);
+        rangeArray = malloc(theSize);
         numItems = theSize / sizeof(AudioValueRange);
         theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, 0, &theSize, rangeArray);
 
@@ -1116,12 +1115,16 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
             return @[];
         }
 
+        // Initialize mutable array
+        rv = [NSMutableArray array];
+
+        // Populate mutable array
         for (x = 0; x < numItems; x++)
         {
             if (rangeArray[x].mMinimum < rangeArray[x].mMaximum)
             {
                 // We got a range.
-                //
+
                 // This is the case in some cheap audio devices such as:
                 // - CS50/CS60-USB Headset
                 //
@@ -1146,7 +1149,7 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
             }
             else
             {
-                // not a range — this should be the most common case
+                // We did not get a range (this should be the most common case)
 
                 [rv addObject:@(rangeArray[x].mMinimum)];
             }
