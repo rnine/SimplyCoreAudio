@@ -45,7 +45,7 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
 #pragma mark - Class Methods
 
-+ (NSSet *)allDevices
++ (NSSet *)allDeviceIDs
 {
     NSMutableSet *theSet;
     UInt32 theSize;
@@ -53,7 +53,6 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     NSUInteger numDevices;
     NSUInteger x;
     AudioObjectID *deviceList;
-    AMCoreAudioDevice *tmpDevice;
 
     AudioObjectPropertyAddress address = {
         kAudioHardwarePropertyDevices,
@@ -71,7 +70,7 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     numDevices = theSize / sizeof(AudioObjectID);
     deviceList = (AudioObjectID *)malloc(theSize);
 
-    if (deviceList == NULL)
+    if (!deviceList)
     {
         return nil;
     }
@@ -89,11 +88,28 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
     for (x = 0; x < numDevices; x++)
     {
-        tmpDevice = [[self.class alloc] initWithDeviceID:deviceList[x]];
-        [theSet addObject:tmpDevice];
+        [theSet addObject:@(deviceList[x])];
     }
 
     free(deviceList);
+
+    return [theSet copy];
+}
+
++ (NSSet *)allDevices
+{
+    NSMutableSet *theSet;
+    NSSet *deviceIDs;
+    AMCoreAudioDevice *tmpDevice;
+
+    deviceIDs = [self.class allDeviceIDs];
+    theSet = [[NSMutableSet alloc] initWithCapacity:deviceIDs.count];
+
+    for (id deviceID in deviceIDs)
+    {
+        tmpDevice = [[self.class alloc] initWithDeviceID:[deviceID intValue]];
+        [theSet addObject:tmpDevice];
+    }
 
     return [theSet copy];
 }
@@ -212,15 +228,28 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     if (self)
     {
         _myDevice = AudioObjectID;
-        [self registerForNotifications];
     }
 
     return self;
 }
 
+- (void)setDelegate:(id<AMCoreAudioDeviceDelegate>)delegate
+{
+    if (delegate)
+    {
+        [self registerForNotifications];
+    }
+    else
+    {
+        [self unregisterForNotifications];
+    }
+
+    _delegate = delegate;
+}
+
 - (void)dealloc
 {
-    [self unregisterForNotifications];
+    self.delegate = nil;
 }
 
 - (AMCoreAudioDevice *)clone
@@ -1360,42 +1389,40 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 {
     OSStatus err;
 
-    if (!_isRegisteredForNotifications)
+    if (_isRegisteredForNotifications)
     {
-        AudioObjectPropertyAddress address = {
-            kAudioObjectPropertySelectorWildcard,
-            kAudioObjectPropertyScopeWildcard,
-            kAudioObjectPropertyElementWildcard
-        };
-
-        DLog(@"Registering AudioObjectAddPropertyListener for audioObjectID = %d (%@)", _myDevice, self.deviceUID);
-
-        err = AudioObjectAddPropertyListener(_myDevice, &address, TLD_AMCoreAudioDevicePropertyListener, (void *)CFBridgingRetain(self));
-
-        if (err)
-        {
-            DLog(@"Error on AudioObjectAddPropertyListener %d\n", err);
-
-            return;
-        }
-
-        _isRegisteredForNotifications = (noErr == err);
+        [self unregisterForNotifications];
     }
+
+    AudioObjectPropertyAddress address = {
+        kAudioObjectPropertySelectorWildcard,
+        kAudioObjectPropertyScopeWildcard,
+        kAudioObjectPropertyElementWildcard
+    };
+
+    err = AudioObjectAddPropertyListener(_myDevice, &address, TLD_AMCoreAudioDevicePropertyListener, (void *)CFBridgingRetain(self));
+
+    if (err)
+    {
+        DLog(@"Error on AudioObjectAddPropertyListener %d\n", err);
+
+        return;
+    }
+
+    _isRegisteredForNotifications = (noErr == err);
 }
 
 - (void)unregisterForNotifications
 {
     OSStatus err;
 
-    if (_isRegisteredForNotifications)
+    if (self.deviceUID && _isRegisteredForNotifications)
     {
         AudioObjectPropertyAddress address = {
             kAudioObjectPropertySelectorWildcard,
             kAudioObjectPropertyScopeWildcard,
             kAudioObjectPropertyElementWildcard
         };
-
-        DLog(@"Unregistering property listener for audioObjectID = %d (%@)", _myDevice, self.cachedDeviceName);
 
         err = AudioObjectRemovePropertyListener(_myDevice, &address, TLD_AMCoreAudioDevicePropertyListener, (__bridge void *)self);
 
@@ -1405,6 +1432,10 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
         }
 
         _isRegisteredForNotifications = !(noErr == err);
+    }
+    else
+    {
+        _isRegisteredForNotifications = NO;
     }
 }
 

@@ -108,9 +108,18 @@ extern NSString *const AMCoreAudioDefaultClockSourceName;
 @property (readonly, retain) NSArray *nominalSampleRates;
 
 /**
+   A list of all the audio device IDs currently available in the system.
+
+   The list also includes Aggregate and Multi-Output devices.
+
+   @returns A set of audio device IDs wrapped as NSNumber instances.
+ */
++ (NSSet *)allDeviceIDs;
+
+/**
    A list of all the audio devices currently available in the system.
 
-   The list also includes aggregate and multi-output devices.
+   @note: The list also includes Aggregate and Multi-Output devices.
 
    @returns A set of AMCoreAudioDevice instances.
  */
