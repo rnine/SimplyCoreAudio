@@ -1073,13 +1073,6 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
             kAudioObjectPropertyElementMaster
         };
 
-        // A list of all the possible sample rates up to 192kHz
-        // to be used in the case we receive a range (see below)
-        possibleRates = @[@6400.0, @8000.0, @11025.0, @12000.0,
-                          @16000.0, @22050.0, @24000.0, @32000.0,
-                          @44100.0, @48000.0, @64000.0, @88200.0,
-                          @96000.0, @128000.0, @176400.0, @192000.0];
-
         hasProperty = AudioObjectHasProperty(_myDevice, &address);
 
         if (!hasProperty)
@@ -1114,6 +1107,13 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
             return @[];
         }
+
+        // A list of all the possible sample rates up to 192kHz
+        // to be used in the case we receive a range (see below)
+        possibleRates = @[@6400.0, @8000.0, @11025.0, @12000.0,
+                          @16000.0, @22050.0, @24000.0, @32000.0,
+                          @44100.0, @48000.0, @64000.0, @88200.0,
+                          @96000.0, @128000.0, @176400.0, @192000.0];
 
         // Initialize mutable array
         rv = [NSMutableArray array];
