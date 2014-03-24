@@ -22,7 +22,7 @@
 
  */
 
-#import <AMCoreAudio/AMCoreAudioTypes.h>
-#import <AMCoreAudio/AMCoreAudioHardware.h>
-#import <AMCoreAudio/AMCoreAudioDevice.h>
-#import <AMCoreAudio/AMCoreAudioUtilities.h>
+#import "AMCoreAudioTypes.h"
+#import "AMCoreAudioHardware.h"
+#import "AMCoreAudioDevice.h"
+#import "AMCoreAudioUtilities.h"
