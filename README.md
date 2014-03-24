@@ -12,7 +12,7 @@
 
 ### Hardware (a.k.a. system wide):
 
-```
+```objective-c
 @protocol AMCoreAudioHardwareDelegate <NSObject>
 
 @optional
@@ -46,7 +46,7 @@
 
 ### Per device:
 
-```
+```objective-c
 @protocol AMCoreAudioDeviceDelegate <NSObject>
 
 @optional
