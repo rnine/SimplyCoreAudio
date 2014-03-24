@@ -260,13 +260,22 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
 - (BOOL)isEqual:(id)other
 {
-    if (([other respondsToSelector:@selector(deviceID)]) &&
-        self.deviceID == [(AMCoreAudioDevice *)other deviceID])
+    if (other == self)
     {
         return YES;
     }
 
-    return NO;
+    if (!other || ![other isKindOfClass:[self class]])
+    {
+        return NO;
+    }
+
+    return [self isEqualToAudioDevice:other];
+}
+
+- (BOOL)isEqualToAudioDevice:(AMCoreAudioDevice *)audioDevice
+{
+    return audioDevice.hash == self.hash;
 }
 
 - (NSUInteger)hash
