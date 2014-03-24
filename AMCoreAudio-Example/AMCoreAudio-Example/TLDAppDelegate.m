@@ -175,8 +175,8 @@
 
 #pragma mark - Private
 
-- (void)audioDeviceSetDelegatesFor:(NSSet *)addedDevices
-             andRemoveDelegatesFor:(NSSet *)removedDevices
+- (void)audioDeviceSetDelegatesFor:(id<NSFastEnumeration>)addedDevices
+             andRemoveDelegatesFor:(id<NSFastEnumeration>)removedDevices
 {
     for (AMCoreAudioDevice *device in addedDevices)
     {
