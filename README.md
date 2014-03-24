@@ -100,7 +100,6 @@ Do you want to contribute to the project? Please fork, patch, and then submit a 
 ## TODO
 
 - Add podspec.
-- Add sample app.
 
 ## License
 
