@@ -64,8 +64,6 @@
             kAudioObjectPropertyElementWildcard
         };
 
-        DLog(@"Unregistering audio hardware property listener");
-
         OSStatus err = AudioObjectRemovePropertyListener(kAudioObjectSystemObject, &address, TLD_AMCoreAudioHardwarePropertyListener, (__bridge void *)self);
 
         if (err)

@@ -228,6 +228,7 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     if (self)
     {
         _myDevice = AudioObjectID;
+        _cachedDeviceName = TLD_DeviceNameForID(_myDevice);
     }
 
     return self;
@@ -275,7 +276,16 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@: %p id %d> %@", self.className, self, self.deviceID, self.deviceName];
+    NSString *deviceName;
+
+    deviceName = self.deviceName;
+
+    if (!deviceName)
+    {
+        deviceName = self.cachedDeviceName;
+    }
+
+    return [NSString stringWithFormat:@"<%@: %p id %d> %@", self.className, self, self.deviceID, deviceName];
 }
 
 #pragma mark - General Device Information
@@ -287,28 +297,16 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
 - (NSString *)deviceName
 {
-    OSStatus theStatus;
-    NSString *theString;
-    UInt32 theSize;
+    NSString *aDeviceName;
 
-    theSize = sizeof(CFStringRef);
+    aDeviceName = TLD_DeviceNameForID(_myDevice);
 
-    AudioObjectPropertyAddress address = {
-        kAudioDevicePropertyDeviceNameCFString,
-        kAudioObjectPropertyScopeGlobal,
-        kAudioObjectPropertyElementMaster
-    };
-
-    theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, NULL, &theSize, &theString);
-
-    if (kAudioHardwareNoError != theStatus || !theString)
+    if (aDeviceName)
     {
-        return nil;
+        _cachedDeviceName = aDeviceName;
     }
 
-    _cachedDeviceName = theString;
-
-    return theString;
+    return aDeviceName;
 }
 
 - (NSString *)deviceUID
@@ -1490,7 +1488,8 @@ static OSStatus TLD_AMCoreAudioDevicePropertyListener(AudioObjectID inObjectID,
     {
         case kAudioDevicePropertyNominalSampleRate:
 
-            if (self.delegate)
+            if (self.delegate &&
+                [self.delegate respondsToSelector:@selector(audioDeviceNominalSampleRateDidChange:)])
             {
                 [self.delegate audioDeviceNominalSampleRateDidChange:self];
             }
@@ -1499,7 +1498,8 @@ static OSStatus TLD_AMCoreAudioDevicePropertyListener(AudioObjectID inObjectID,
 
         case kAudioDevicePropertyAvailableNominalSampleRates:
 
-            if (self.delegate)
+            if (self.delegate &&
+                [self.delegate respondsToSelector:@selector(audioDeviceAvailableNominalSampleRatesDidChange:)])
             {
                 [self.delegate audioDeviceAvailableNominalSampleRatesDidChange:self];
             }
@@ -1508,7 +1508,8 @@ static OSStatus TLD_AMCoreAudioDevicePropertyListener(AudioObjectID inObjectID,
 
         case kAudioDevicePropertyClockSource:
 
-            if (self.delegate)
+            if (self.delegate &&
+                [self.delegate respondsToSelector:@selector(audioDeviceClockSourceDidChange:forChannel:andDirection:)])
             {
                 [self.delegate audioDeviceClockSourceDidChange:self
                                                     forChannel:inAddresses->mElement
@@ -1519,7 +1520,8 @@ static OSStatus TLD_AMCoreAudioDevicePropertyListener(AudioObjectID inObjectID,
 
         case kAudioDevicePropertyDeviceNameCFString:
 
-            if (self.delegate)
+            if (self.delegate &&
+                [self.delegate respondsToSelector:@selector(audioDeviceNameDidChange:)])
             {
                 [self.delegate audioDeviceNameDidChange:self];
             }
@@ -1528,7 +1530,8 @@ static OSStatus TLD_AMCoreAudioDevicePropertyListener(AudioObjectID inObjectID,
 
         case kAudioObjectPropertyOwnedObjects:
 
-            if (self.delegate)
+            if (self.delegate &&
+                [self.delegate respondsToSelector:@selector(audioDeviceListDidChange:)])
             {
                 [self.delegate audioDeviceListDidChange:self];
             }
@@ -1537,7 +1540,8 @@ static OSStatus TLD_AMCoreAudioDevicePropertyListener(AudioObjectID inObjectID,
 
         case kAudioDevicePropertyVolumeScalar:
 
-            if (self.delegate)
+            if (self.delegate &&
+                [self.delegate respondsToSelector:@selector(audioDeviceVolumeDidChange:forChannel:andDirection:)])
             {
                 [self.delegate audioDeviceVolumeDidChange:self
                                                forChannel:inAddresses->mElement
@@ -1602,6 +1606,30 @@ static NSString *TLD_ClockSourceNameForID(AudioObjectID theDeviceID,
     }
 
     return AMCoreAudioDefaultClockSourceName;
+}
+
+static NSString *TLD_DeviceNameForID(AudioObjectID theDeviceID)
+{
+    OSStatus theStatus;
+    NSString *theString;
+    UInt32 theSize;
+
+    theSize = sizeof(CFStringRef);
+
+    AudioObjectPropertyAddress address = {
+        kAudioDevicePropertyDeviceNameCFString,
+        kAudioObjectPropertyScopeGlobal,
+        kAudioObjectPropertyElementMaster
+    };
+
+    theStatus = AudioObjectGetPropertyData(theDeviceID, &address, 0, NULL, &theSize, &theString);
+
+    if (kAudioHardwareNoError != theStatus || !theString)
+    {
+        return nil;
+    }
+
+    return theString;
 }
 
 @end
