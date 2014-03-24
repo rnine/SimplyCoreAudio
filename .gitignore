@@ -1,3 +1,5 @@
 .DS_Store
 AMCoreAudio.xcodeproj/xcuserdata/*.xcuserdatad
 AMCoreAudio.xcodeproj/project.xcworkspace/xcuserdata/*.xcuserdatad
+AMCoreAudio.xcworkspace/xcuserdata/*.xcuserdatad
+AMCoreAudio-Example/AMCoreAudio-Example.xcodeproj/xcuserdata/*.xcuserdatad
