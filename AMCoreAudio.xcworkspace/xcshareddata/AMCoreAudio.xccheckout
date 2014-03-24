@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>46782745-199F-4F28-B1DE-09FEB9FF7EE1</string>
+	<key>IDESourceControlProjectName</key>
+	<string>AMCoreAudio</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>7B7E746E-0D04-4D4D-AEA5-BC60FFDF6264</key>
+		<string>ssh://github.com/sonicbee9/AMCoreAudio.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>AMCoreAudio.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>7B7E746E-0D04-4D4D-AEA5-BC60FFDF6264</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://github.com/sonicbee9/AMCoreAudio.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>7B7E746E-0D04-4D4D-AEA5-BC60FFDF6264</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>7B7E746E-0D04-4D4D-AEA5-BC60FFDF6264</string>
+			<key>IDESourceControlWCCName</key>
+			<string>AMCoreAudio</string>
+		</dict>
+	</array>
+</dict>
+</plist>
