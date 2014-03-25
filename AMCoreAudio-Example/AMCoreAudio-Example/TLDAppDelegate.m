@@ -46,6 +46,7 @@
                andRemoveDelegatesFor:self.allKnownDevices];
 
     self.audioHardware.delegate = nil;
+    self.audioHardware = nil;
 }
 
 #pragma mark - AMCoreAudioHardwareDelegate methods
