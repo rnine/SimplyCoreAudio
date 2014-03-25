@@ -94,8 +94,6 @@ extern NSString *const AMCoreAudioDefaultClockSourceName;
    is pointing to a device that is no longer available, so we can still
    access its name.
 
-   @note This will work only if deviceName was accessed previously.
-
    @returns The cached device name.
  */
 @property (readonly, retain) NSString *cachedDeviceName;
