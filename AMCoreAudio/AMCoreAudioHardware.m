@@ -90,7 +90,8 @@ static OSStatus TLD_AMCoreAudioHardwarePropertyListener(AudioObjectID inObjectID
     {
         case kAudioObjectPropertyOwnedObjects:
 
-            if (self.delegate)
+            if (self.delegate &&
+                [self.delegate respondsToSelector:@selector(hardwareDeviceListChanged:)])
             {
                 [self.delegate hardwareDeviceListChanged:self];
             }
@@ -99,7 +100,8 @@ static OSStatus TLD_AMCoreAudioHardwarePropertyListener(AudioObjectID inObjectID
 
         case kAudioHardwarePropertyDefaultInputDevice:
 
-            if (self.delegate)
+            if (self.delegate &&
+                [self.delegate respondsToSelector:@selector(hardwareDefaultInputDeviceChanged:)])
             {
                 [self.delegate hardwareDefaultInputDeviceChanged:self];
             }
@@ -108,7 +110,8 @@ static OSStatus TLD_AMCoreAudioHardwarePropertyListener(AudioObjectID inObjectID
 
         case kAudioHardwarePropertyDefaultOutputDevice:
 
-            if (self.delegate)
+            if (self.delegate &&
+                [self.delegate respondsToSelector:@selector(hardwareDefaultOutputDeviceChanged:)])
             {
                 [self.delegate hardwareDefaultOutputDeviceChanged:self];
             }
@@ -117,7 +120,8 @@ static OSStatus TLD_AMCoreAudioHardwarePropertyListener(AudioObjectID inObjectID
 
         case kAudioHardwarePropertyDefaultSystemOutputDevice:
 
-            if (self.delegate)
+            if (self.delegate &&
+                [self.delegate respondsToSelector:@selector(hardwareDefaultSystemDeviceChanged:)])
             {
                 [self.delegate hardwareDefaultSystemDeviceChanged:self];
             }
