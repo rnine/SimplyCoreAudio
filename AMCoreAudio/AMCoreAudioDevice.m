@@ -1393,6 +1393,69 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     return latencyFrames;
 }
 
+#pragma mark - Hog Mode
+
+- (pid_t)hogModePid
+{
+    OSStatus theStatus;
+    UInt32 theSize;
+    pid_t pid;
+
+    AudioObjectPropertyAddress address = {
+        kAudioDevicePropertyHogMode,
+        kAudioObjectPropertyScopeWildcard,
+        kAudioObjectPropertyElementMaster
+    };
+
+    theSize = sizeof(pid_t);
+    theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, NULL, &theSize, &pid);
+
+    if (kAudioHardwareNoError != theStatus)
+    {
+        return 0;
+    }
+
+    return pid;
+}
+
+- (BOOL)setHogModePid:(pid_t)pid
+{
+    OSStatus theStatus;
+    UInt32 theSize;
+
+    AudioObjectPropertyAddress address = {
+        kAudioDevicePropertyHogMode,
+        kAudioObjectPropertyScopeWildcard,
+        kAudioObjectPropertyElementMaster
+    };
+
+    theSize = sizeof(pid_t);
+    theStatus = AudioObjectSetPropertyData(_myDevice, &address, 0, 0, theSize, &pid);
+
+    if (kAudioHardwareNoError != theStatus)
+    {
+        DLog(@"Hog mode could not be set to %d", pid);
+
+        return NO;
+    }
+
+    return YES;
+}
+
+- (BOOL)setHogModePidToCurrentProcess
+{
+    pid_t pid = [[NSProcessInfo processInfo] processIdentifier];
+
+    return [self setHogModePid:pid];
+}
+
+- (BOOL)unsetHogMode
+{
+    pid_t pid = -1;
+
+    return [self setHogModePid:pid];
+}
+
 #pragma mark - Notification Methods
 
 - (void)registerForNotifications

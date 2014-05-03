@@ -470,6 +470,40 @@ extern NSString *const AMCoreAudioDefaultClockSourceName;
  */
 - (BOOL)setNominalSampleRate:(Float64)theRate;
 
+#pragma mark - Hog Mode
+
+/**
+   Indicates the pid that currently owns exclusive access to the
+   AudioDevice or a value of -1 indicating that the device is currently
+   available to all processes.
+
+   @returns a pid_t value.
+ */
+- (pid_t)hogModePid;
+
+/**
+   Attempts to set the pid that currently owns exclusive access to the
+   AudioDevice.
+
+   @returns YES on success, NO otherwise.
+ */
+- (BOOL)setHogModePid:(pid_t)pid;
+
+/**
+   Attempts to set the pid that currently owns exclusive access to the
+   AudioDevice to the current process.
+
+   @returns YES on success, NO otherwise.
+ */
+- (BOOL)setHogModePidToCurrentProcess;
+
+/**
+   Attempts to make the device available to all processes by setting
+   the hog mode to -1.
+
+   @returns YES on success, NO otherwise.
+ */
+- (BOOL)unsetHogMode;
 
 #pragma mark - Notification Methods
 
