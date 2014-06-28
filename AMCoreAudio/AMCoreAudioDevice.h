@@ -143,6 +143,24 @@ extern NSString *const AMCoreAudioDefaultClockSourceName;
 + (NSSet *)allDevices;
 
 /**
+   A subset of allDevices only containing devices with inputs.
+
+   @note: The list also includes Aggregate and Multi-Output devices.
+
+   @returns A set of AMCoreAudioDevice objects.
+ */
++ (NSSet *)allInputDevices;
+
+/**
+   A subset of allDevices only containing devices with outputs.
+
+   @note: The list also includes Aggregate and Multi-Output devices.
+
+   @returns A set of AMCoreAudioDevice objects.
+ */
++ (NSSet *)allOutputDevices;
+
+/**
    Returns an AMCoreAudioDevice that matches the provided AudioObjectID,
    or nil if the AudioObjectID is invalid.
 

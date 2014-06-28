@@ -105,21 +105,55 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
 + (NSSet *)allDevices
 {
-    NSMutableSet *theSet;
     NSSet *deviceIDs;
-    AMCoreAudioDevice *tmpDevice;
+    NSMutableSet *devices;
+    AMCoreAudioDevice *device;
 
     deviceIDs = [self allDeviceIDs];
-    theSet = [[NSMutableSet alloc] initWithCapacity:deviceIDs.count];
+    devices = [[NSMutableSet alloc] initWithCapacity:deviceIDs.count];
 
     for (id deviceID in deviceIDs)
     {
-        tmpDevice = [[self alloc] initWithDeviceID:[deviceID intValue]];
+        device = [[self alloc] initWithDeviceID:[deviceID intValue]];
 
-        [theSet addObject:tmpDevice];
+        [devices addObject:device];
     }
 
-    return [theSet copy];
+    return [devices copy];
+}
+
++ (NSSet *)allInputDevices
+{
+    NSMutableSet *devices;
+
+    devices = [NSMutableSet set];
+
+    for (id device in [self allDevices])
+    {
+        if ([device channelsForDirection:kAMCoreAudioDeviceRecordDirection] > 0)
+        {
+            [devices addObject:device];
+        }
+    }
+
+    return [devices copy];
+}
+
++ (NSSet *)allOutputDevices
+{
+    NSMutableSet *devices;
+
+    devices = [NSMutableSet set];
+
+    for (id device in [self allDevices])
+    {
+        if ([device channelsForDirection:kAMCoreAudioDevicePlaybackDirection] > 0)
+        {
+            [devices addObject:device];
+        }
+    }
+
+    return [devices copy];
 }
 
 + (AMCoreAudioDevice *)deviceWithID:(AudioObjectID)theID
