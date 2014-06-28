@@ -17,7 +17,7 @@
 ```
 Called whenever the list of audio devices in the system changes.
 
-**Note:** If you want to receive notifications when the list of owned audio devices on Aggregate Devices and Multi-Output devices changes, then try using `AMCoreAudioDevice` notifications instead.
+**Note:** If you want to receive notifications when the list of owned audio devices on *Aggregate Devices* and *Multi-Output Devices* changes, then try using `AMCoreAudioDevice` notifications instead.
 
 ```obj-c
 - (void)hardwareDefaultInputDeviceChanged:(id)sender;
@@ -49,7 +49,7 @@ Called whenever the audio device's sample rate changes.
 ```
 Called whenever the audio device's list of nominal sample rates changes.
 
-**Note:** This will typically happen on Aggregate Devices and Multi-Output devices when adding or removing other audio devices (either physical or virtual).
+**Note:** This will typically happen on *Aggregate Devices* and *Multi-Output Devices* when adding or removing other audio devices (either physical or virtual).
 
 ```obj-c
 - (void)audioDeviceClockSourceDidChange:(id)sender forChannel:(UInt32)channel andDirection:(AMCoreAudioDirection)direction;
@@ -66,7 +66,7 @@ Called whenever the audio device's name changes.
 ```
 Called whenever the list of owned audio devices on this audio device changes.
 
-**Note:** This will typically happen on Aggregate Devices and Multi-Output devices when adding or removing other audio devices (either physical or virtual).
+**Note:** This will typically happen on *Aggregate Devices* and *Multi-Output Devices* when adding or removing other audio devices (either physical or virtual).
 
 ```obj-c
 - (void)audioDeviceVolumeDidChange:(id)sender forChannel:(UInt32)channel andDirection:(AMCoreAudioDirection)direction;
@@ -90,4 +90,4 @@ Do you want to contribute to the project? Please fork, patch, and then submit a 
 
 `AMCoreAudio` was written by Ruben Nine ([@sonicbee9](https://twitter.com/sonicbee9)) in 2013-2014 (open-sourced in March 2014) and is licensed under the [MIT](http://opensource.org/licenses/MIT) license. See [LICENSE.md](LICENSE.md).
 
-`AMCoreAudio` includes some utility code adapted from TheAmazingAudioEngine project in [AMCoreAudioUtilities.h](AMCoreAudio/AMCoreAudioUtilities.h) and [AMCoreAudioUtilities.c](AMCoreAudio/AMCoreAudioUtilities.c). [TheAmazingAudioEngine](https://github.com/TheAmazingAudioEngine/TheAmazingAudioEngine) is licensed under the [MIT license](https://github.com/TheAmazingAudioEngine/TheAmazingAudioEngine/blob/master/License.txt) and was written by Michael Tyson (A Tasty Pixel).
+`AMCoreAudio` includes some utility code adapted from `The Amazing Audio Engine` in [AMCoreAudioUtilities.h](AMCoreAudio/AMCoreAudioUtilities.h) and [AMCoreAudioUtilities.c](AMCoreAudio/AMCoreAudioUtilities.c). [The Amazing Audio Engine](https://github.com/TheAmazingAudioEngine/TheAmazingAudioEngine) is licensed under the [MIT license](https://github.com/TheAmazingAudioEngine/TheAmazingAudioEngine/blob/master/License.txt) and was written by Michael Tyson (A Tasty Pixel).
