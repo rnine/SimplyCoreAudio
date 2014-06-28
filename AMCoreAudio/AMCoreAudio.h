@@ -25,4 +25,5 @@
 #import "AMCoreAudioTypes.h"
 #import "AMCoreAudioHardware.h"
 #import "AMCoreAudioDevice.h"
+#import "AMCoreAudioProtocols.h"
 #import "AMCoreAudioUtilities.h"

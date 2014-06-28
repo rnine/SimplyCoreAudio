@@ -24,66 +24,12 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreAudio/CoreAudio.h>
-
-/**
-    AMCoreAudioDeviceDelegate protocol
- */
-@protocol AMCoreAudioDeviceDelegate <NSObject>
-
-@optional
-
-/**
-    Called whenever the audio device's sample rate changes.
- */
-- (void)audioDeviceNominalSampleRateDidChange:(id)sender;
-
-/**
-   Called whenever the audio device's list of nominal sample rates changes.
-
-    @note This will typically happen on Aggregate Devices and Multi-Output devices when adding or removing other audio devices (either physical or virtual).
- */
-- (void)audioDeviceAvailableNominalSampleRatesDidChange:(id)sender;
-
-/**
-    Called whenever the audio device's clock source changes for a given channel and direction.
- */
-- (void)audioDeviceClockSourceDidChange:(id)sender
-                             forChannel:(UInt32)channel
-                           andDirection:(AMCoreAudioDirection)direction;
-
-/**
-   Called whenever the audio device's name changes.
- */
-- (void)audioDeviceNameDidChange:(id)sender;
-
-/**
-   Called whenever the list of owned audio devices on this audio device changes.
-
-   @note This will typically happen on Aggregate Devices and Multi-Output devices when adding or removing other audio devices (either physical or virtual).
- */
-- (void)audioDeviceListDidChange:(id)sender;
-
-/**
-    Called whenever the audio device's volume for a given channel and direction changes.
- */
-- (void)audioDeviceVolumeDidChange:(id)sender
-                        forChannel:(UInt32)channel
-                      andDirection:(AMCoreAudioDirection)direction;
-
-/**
-   Called whenever the audio device's mute state for a given channel and direction changes.
- */
-- (void)audioDeviceMuteDidChange:(id)sender
-                      forChannel:(UInt32)channel
-                    andDirection:(AMCoreAudioDirection)direction;
-
-@end
+#import "AMCoreAudioProtocols.h"
 
 /**
    The default clock source name when none is given.
  */
 extern NSString *const AMCoreAudioDefaultClockSourceName;
-
 
 /**
    AMCoreAudioDevice class
