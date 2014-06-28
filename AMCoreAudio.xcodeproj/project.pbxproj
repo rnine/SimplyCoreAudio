@@ -17,6 +17,7 @@
 		4573702118895E9B00C34775 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4573702018895E9B00C34775 /* AudioToolbox.framework */; };
 		4582344118D849FB00466FCF /* AMCoreAudioUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 4582343F18D849FB00466FCF /* AMCoreAudioUtilities.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4582344218D849FB00466FCF /* AMCoreAudioUtilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 4582344018D849FB00466FCF /* AMCoreAudioUtilities.c */; };
+		45BD75C6195EB50800388AB3 /* AMCoreAudioProtocols.h in Headers */ = {isa = PBXBuildFile; fileRef = 45BD75C4195EB50800388AB3 /* AMCoreAudioProtocols.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		45C345CA18DD01B900C6B185 /* AMCoreAudioHardware.h in Headers */ = {isa = PBXBuildFile; fileRef = 45C345C818DD01B900C6B185 /* AMCoreAudioHardware.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		45C345CB18DD01B900C6B185 /* AMCoreAudioHardware.m in Sources */ = {isa = PBXBuildFile; fileRef = 45C345C918DD01B900C6B185 /* AMCoreAudioHardware.m */; };
 /* End PBXBuildFile section */
@@ -40,6 +41,7 @@
 		4582344018D849FB00466FCF /* AMCoreAudioUtilities.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = AMCoreAudioUtilities.c; sourceTree = "<group>"; };
 		45A6D50618D368DB00E85F0E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		45A6D50818D3717100E85F0E /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.md; sourceTree = "<group>"; };
+		45BD75C4195EB50800388AB3 /* AMCoreAudioProtocols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMCoreAudioProtocols.h; sourceTree = "<group>"; };
 		45C345C818DD01B900C6B185 /* AMCoreAudioHardware.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMCoreAudioHardware.h; sourceTree = "<group>"; };
 		45C345C918DD01B900C6B185 /* AMCoreAudioHardware.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMCoreAudioHardware.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -102,6 +104,7 @@
 			isa = PBXGroup;
 			children = (
 				45638C4917A5D9280042EE1E /* AMCoreAudio.h */,
+				45BD75C4195EB50800388AB3 /* AMCoreAudioProtocols.h */,
 				45638C6F17A5DCB40042EE1E /* AMCoreAudioTypes.h */,
 				45638C6917A5D9790042EE1E /* AMCoreAudioDevice.h */,
 				45638C6A17A5D9790042EE1E /* AMCoreAudioDevice.m */,
@@ -135,6 +138,7 @@
 				4582344118D849FB00466FCF /* AMCoreAudioUtilities.h in Headers */,
 				45638C6B17A5D9790042EE1E /* AMCoreAudioDevice.h in Headers */,
 				45638C7017A5DCB40042EE1E /* AMCoreAudioTypes.h in Headers */,
+				45BD75C6195EB50800388AB3 /* AMCoreAudioProtocols.h in Headers */,
 				45C345CA18DD01B900C6B185 /* AMCoreAudioHardware.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

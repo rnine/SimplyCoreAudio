@@ -28,7 +28,7 @@ AudioBufferList *AMAllocateAndInitAudioBufferList(AudioStreamBasicDescription au
 
     audio->mNumberBuffers = numberOfBuffers;
 
-    for (int i = 0; i<numberOfBuffers; i++)
+    for (int i = 0; i < numberOfBuffers; i++)
     {
         if (bytesPerBuffer > 0)
         {
@@ -36,7 +36,7 @@ AudioBufferList *AMAllocateAndInitAudioBufferList(AudioStreamBasicDescription au
 
             if (!audio->mBuffers[i].mData)
             {
-                for (int j = 0; j<i; j++)
+                for (int j = 0; j < i; j++)
                 {
                     free(audio->mBuffers[j].mData);
                 }
@@ -69,13 +69,13 @@ AudioBufferList *AMCopyAudioBufferList(AudioBufferList *original)
 
     audio->mNumberBuffers = original->mNumberBuffers;
 
-    for (int i = 0; i<original->mNumberBuffers; i++)
+    for (int i = 0; i < original->mNumberBuffers; i++)
     {
         audio->mBuffers[i].mData = malloc(original->mBuffers[i].mDataByteSize);
 
         if (!audio->mBuffers[i].mData)
         {
-            for (int j = 0; j<i; j++)
+            for (int j = 0; j < i; j++)
             {
                 free(audio->mBuffers[j].mData);
             }
@@ -95,7 +95,7 @@ AudioBufferList *AMCopyAudioBufferList(AudioBufferList *original)
 
 void AMFreeAudioBufferList(AudioBufferList *bufferList)
 {
-    for (int i = 0; i<bufferList->mNumberBuffers; i++)
+    for (int i = 0; i < bufferList->mNumberBuffers; i++)
     {
         if (bufferList->mBuffers[i].mData)
         {
@@ -111,7 +111,7 @@ void AMInitAudioBufferList(AudioBufferList *list, int listSize, AudioStreamBasic
     list->mNumberBuffers = audioFormat.mFormatFlags & kAudioFormatFlagIsNonInterleaved ? audioFormat.mChannelsPerFrame : 1;
     assert(list->mNumberBuffers == 1 || listSize >= (sizeof(AudioBufferList) + sizeof(AudioBuffer)) );
 
-    for (int i = 0; i<list->mNumberBuffers; i++)
+    for (int i = 0; i < list->mNumberBuffers; i++)
     {
         list->mBuffers[0].mNumberChannels = audioFormat.mFormatFlags & kAudioFormatFlagIsNonInterleaved ? 1 : audioFormat.mChannelsPerFrame;
         list->mBuffers[0].mData = (char*)data + (i * (dataSize / list->mNumberBuffers));

@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "AMCoreAudio"
-  s.version      = "1.1"
+  s.version      = "1.2"
   s.summary      = "AMCoreAudio is an Objective-C wrapper for Apple's CoreAudio framework"
 
   s.description  = <<-DESC
@@ -12,11 +12,24 @@ Pod::Spec.new do |s|
                    DESC
 
   s.homepage     = "https://github.com/sonicbee9/AMCoreAudio"
-  s.license      = { :type => 'MIT', :file => 'LICENSE.md' }
-  s.author       = { "Ruben Nine" => "sonicbee9@gmx.com" }
+
+  s.license      = {
+    :type => 'MIT',
+    :file => 'LICENSE.md'
+  }
+
+  s.author       = {
+    "Ruben Nine" => "sonicbee9@gmx.com"
+  }
+
   s.social_media_url = "http://twitter.com/sonicbee9"
+
   s.platform     = :osx, '10.7'
-  s.source       = { :git => "https://github.com/sonicbee9/AMCoreAudio.git", :tag => "1.1" }
+
+  s.source       = {
+    :git => "https://github.com/sonicbee9/AMCoreAudio.git",
+    :tag => "1.2"
+  }
 
   s.source_files = 'AMCoreAudio/*.{h,m}'
   s.public_header_files = 'AMCoreAudio/*.h'
