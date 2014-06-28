@@ -73,7 +73,7 @@ extern NSString *const AMCoreAudioDefaultClockSourceName;
 /**
    A list of all the audio device IDs currently available in the system.
 
-   The list also includes Aggregate and Multi-Output devices.
+   The list also includes Aggregate and Multi-Output Devices.
 
    @returns A set of audio device IDs wrapped as NSNumber objects.
  */
@@ -82,25 +82,25 @@ extern NSString *const AMCoreAudioDefaultClockSourceName;
 /**
    A list of all the audio devices currently available in the system.
 
-   @note: The list also includes Aggregate and Multi-Output devices.
+   @note: The list also includes Aggregate and Multi-Output Devices.
 
    @returns A set of AMCoreAudioDevice objects.
  */
 + (NSSet *)allDevices;
 
 /**
-   A subset of allDevices only containing devices with inputs.
+   A subset of allDevices containing only devices with inputs.
 
-   @note: The list also includes Aggregate and Multi-Output devices.
+   @note: The list may also include Aggregate Devices.
 
    @returns A set of AMCoreAudioDevice objects.
  */
 + (NSSet *)allInputDevices;
 
 /**
-   A subset of allDevices only containing devices with outputs.
+   A subset of allDevices containing only devices with outputs.
 
-   @note: The list also includes Aggregate and Multi-Output devices.
+   @note: The list may also include Aggregate and Multi-Output Devices.
 
    @returns A set of AMCoreAudioDevice objects.
  */
