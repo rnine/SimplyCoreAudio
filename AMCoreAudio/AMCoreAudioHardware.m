@@ -10,9 +10,9 @@
 #import <AudioToolbox/AudioServices.h>
 
 @interface AMCoreAudioHardware ()
-{
-    BOOL _isRegisteredForNotifications;
-}
+
+@property (nonatomic, assign) BOOL isRegisteredForNotifications;
+
 @end
 
 @implementation AMCoreAudioHardware
@@ -44,19 +44,22 @@
         kAudioObjectPropertyElementWildcard
     };
 
-    OSStatus err = AudioObjectAddPropertyListener(kAudioObjectSystemObject, &address, TLD_AMCoreAudioHardwarePropertyListener, (__bridge void *)self);
+    OSStatus err = AudioObjectAddPropertyListener(kAudioObjectSystemObject,
+                                                  &address,
+                                                  TLD_AMCoreAudioHardwarePropertyListener,
+                                                  (__bridge void *)self);
 
     if (err)
     {
         DLog(@"error on AudioObjectAddPropertyListener %d\n", err);
     }
 
-    _isRegisteredForNotifications = (noErr == err);
+    self.isRegisteredForNotifications = (noErr == err);
 }
 
 - (void)unregisterForNotifications
 {
-    if (_isRegisteredForNotifications)
+    if (self.isRegisteredForNotifications)
     {
         AudioObjectPropertyAddress address = {
             kAudioObjectPropertySelectorWildcard,
@@ -64,14 +67,17 @@
             kAudioObjectPropertyElementWildcard
         };
 
-        OSStatus err = AudioObjectRemovePropertyListener(kAudioObjectSystemObject, &address, TLD_AMCoreAudioHardwarePropertyListener, (__bridge void *)self);
+        OSStatus err = AudioObjectRemovePropertyListener(kAudioObjectSystemObject,
+                                                         &address,
+                                                         TLD_AMCoreAudioHardwarePropertyListener,
+                                                         (__bridge void *)self);
 
         if (err)
         {
             DLog(@"Error on AudioObjectRemovePropertyListener %d\n", err);
         }
 
-        _isRegisteredForNotifications = !(noErr == err);
+        self.isRegisteredForNotifications = (noErr != err);
     }
 }
 
@@ -130,10 +136,10 @@ static OSStatus TLD_AMCoreAudioHardwarePropertyListener(AudioObjectID inObjectID
 
         default:
 
-            return kAudioHardwareNoError;
+            return noErr;
     }
 
-    return kAudioHardwareNoError;
+    return noErr;
 }
 
 @end

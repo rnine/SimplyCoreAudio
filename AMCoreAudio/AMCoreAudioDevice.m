@@ -33,15 +33,13 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
 
 @interface AMCoreAudioDevice ()
-{
-    AudioObjectID _myDevice;
-    BOOL _isRegisteredForNotifications;
-}
+
+@property (nonatomic, assign) BOOL isRegisteredForNotifications;
+@property (readwrite, nonatomic, retain) NSArray *nominalSampleRates;
+
 @end
 
 @implementation AMCoreAudioDevice
-
-@synthesize nominalSampleRates = _nominalSampleRates;
 
 #pragma mark - Class Methods
 
@@ -60,9 +58,13 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
         kAudioObjectPropertyElementMaster
     };
 
-    theStatus = AudioObjectGetPropertyDataSize(kAudioObjectSystemObject, &address, 0, NULL, &theSize);
+    theStatus = AudioObjectGetPropertyDataSize(kAudioObjectSystemObject,
+                                               &address,
+                                               0,
+                                               NULL,
+                                               &theSize);
 
-    if (kAudioHardwareNoError != theStatus)
+    if (noErr != theStatus)
     {
         return nil;
     }
@@ -75,9 +77,14 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
         return nil;
     }
 
-    theStatus = AudioObjectGetPropertyData(kAudioObjectSystemObject, &address, 0, NULL, &theSize, deviceList);
+    theStatus = AudioObjectGetPropertyData(kAudioObjectSystemObject,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           deviceList);
 
-    if (kAudioHardwareNoError != theStatus)
+    if (noErr != theStatus)
     {
         free(deviceList);
 
@@ -102,12 +109,13 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     NSSet *deviceIDs;
     AMCoreAudioDevice *tmpDevice;
 
-    deviceIDs = [self.class allDeviceIDs];
+    deviceIDs = [self allDeviceIDs];
     theSet = [[NSMutableSet alloc] initWithCapacity:deviceIDs.count];
 
     for (id deviceID in deviceIDs)
     {
-        tmpDevice = [[self.class alloc] initWithDeviceID:[deviceID intValue]];
+        tmpDevice = [[self alloc] initWithDeviceID:[deviceID intValue]];
+
         [theSet addObject:tmpDevice];
     }
 
@@ -116,7 +124,7 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
 + (AMCoreAudioDevice *)deviceWithID:(AudioObjectID)theID
 {
-    return [[self.class alloc] initWithDeviceID:theID];
+    return [[self alloc] initWithDeviceID:theID];
 }
 
 + (AMCoreAudioDevice *)deviceWithUID:(NSString *)theUID
@@ -139,11 +147,16 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
         kAudioObjectPropertyElementMaster
     };
 
-    theStatus = AudioObjectGetPropertyData(kAudioObjectSystemObject, &address, 0, NULL, &theSize, &theTranslation);
+    theStatus = AudioObjectGetPropertyData(kAudioObjectSystemObject,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           &theTranslation);
 
-    if (kAudioHardwareNoError == theStatus)
+    if (noErr == theStatus)
     {
-        audioDevice = [self.class deviceWithID:theID];
+        audioDevice = [self deviceWithID:theID];
     }
 
     if ([theUID isEqual:audioDevice.deviceUID])
@@ -167,11 +180,17 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     };
 
     theSize = sizeof(AudioObjectID);
-    theStatus = AudioObjectGetPropertyData(kAudioObjectSystemObject, &address, 0, NULL, &theSize, &theID);
 
-    if (kAudioHardwareNoError == theStatus)
+    theStatus = AudioObjectGetPropertyData(kAudioObjectSystemObject,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           &theID);
+
+    if (noErr == theStatus)
     {
-        return [self.class deviceWithID:theID];
+        return [self deviceWithID:theID];
     }
 
     return nil;
@@ -179,17 +198,17 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
 + (AMCoreAudioDevice *)defaultInputDevice
 {
-    return [self.class _defaultDevice:kAudioHardwarePropertyDefaultInputDevice];
+    return [self _defaultDevice:kAudioHardwarePropertyDefaultInputDevice];
 }
 
 + (AMCoreAudioDevice *)defaultOutputDevice
 {
-    return [self.class _defaultDevice:kAudioHardwarePropertyDefaultOutputDevice];
+    return [self _defaultDevice:kAudioHardwarePropertyDefaultOutputDevice];
 }
 
 + (AMCoreAudioDevice *)systemOutputDevice
 {
-    return [self.class _defaultDevice:kAudioHardwarePropertyDefaultSystemOutputDevice];
+    return [self _defaultDevice:kAudioHardwarePropertyDefaultSystemOutputDevice];
 }
 
 #pragma mark - Instance Methods
@@ -209,9 +228,14 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     theSize = sizeof(AudioObjectID);
     deviceID = self.deviceID;
 
-    theStatus = AudioObjectSetPropertyData(kAudioObjectSystemObject, &address, 0, NULL, theSize, &deviceID);
+    theStatus = AudioObjectSetPropertyData(kAudioObjectSystemObject,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           theSize,
+                                           &deviceID);
 
-    return kAudioHardwareNoError == theStatus;
+    return noErr == theStatus;
 }
 
 - (id)init
@@ -227,14 +251,14 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
     if (self)
     {
-        _myDevice = AudioObjectID;
-        _cachedDeviceName = TLD_DeviceNameForID(_myDevice);
+        self.deviceID = AudioObjectID;
+        _cachedDeviceName = TLD_DeviceNameForID(self.deviceID);
     }
 
     return self;
 }
 
-- (void)setDelegate:(id<AMCoreAudioDeviceDelegate>)delegate
+- (void)setDelegate:(id <AMCoreAudioDeviceDelegate> )delegate
 {
     if (delegate)
     {
@@ -294,21 +318,20 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
         deviceName = self.cachedDeviceName;
     }
 
-    return [NSString stringWithFormat:@"<%@: %p id %d> %@", self.className, self, self.deviceID, deviceName];
+    return [NSString stringWithFormat:@"<%@: %p id %d> %@",
+            self.className,
+            self,
+            self.deviceID,
+            deviceName];
 }
 
 #pragma mark - General Device Information
-
-- (AudioObjectID)deviceID
-{
-    return _myDevice;
-}
 
 - (NSString *)deviceName
 {
     NSString *aDeviceName;
 
-    aDeviceName = TLD_DeviceNameForID(_myDevice);
+    aDeviceName = TLD_DeviceNameForID(self.deviceID);
 
     if (aDeviceName)
     {
@@ -332,9 +355,14 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
         kAudioObjectPropertyElementMaster
     };
 
-    theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, NULL, &theSize, &theString);
+    theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           &theString);
 
-    if (kAudioHardwareNoError != theStatus || !theString)
+    if (noErr != theStatus || !theString)
     {
         return nil;
     }
@@ -356,9 +384,14 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
         kAudioObjectPropertyElementMaster
     };
 
-    theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, NULL, &theSize, &theString);
+    theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           &theString);
 
-    if (kAudioHardwareNoError != theStatus || !theString)
+    if (noErr != theStatus || !theString)
     {
         return nil;
     }
@@ -380,9 +413,14 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
         kAudioObjectPropertyElementMaster
     };
 
-    theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, NULL, &theSize, &theURL);
+    theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           &theURL);
 
-    if (kAudioHardwareNoError != theStatus || !theURL)
+    if (noErr != theStatus || !theURL)
     {
         return nil;
     }
@@ -404,9 +442,14 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
         kAudioObjectPropertyElementMaster
     };
 
-    theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, NULL, &theSize, &theString);
+    theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           &theString);
 
-    if (kAudioHardwareNoError != theStatus || !theString)
+    if (noErr != theStatus || !theString)
     {
         return nil;
     }
@@ -414,7 +457,8 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     return theString;
 }
 
-- (NSString *)nameForChannel:(UInt32)theChannel andDirection:(AMCoreAudioDirection)theDirection
+- (NSString *)nameForChannel:(UInt32)theChannel
+                andDirection:(AMCoreAudioDirection)theDirection
 {
     OSStatus theStatus;
     CFStringRef theCFString;
@@ -428,7 +472,12 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     };
 
     theSize = sizeof(CFStringRef);
-    theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, NULL, &theSize, &theCFString);
+    theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           &theCFString);
 
     if (theStatus != 0 || theCFString == NULL)
     {
@@ -459,24 +508,35 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
         kAudioObjectPropertyElementMaster
     };
 
-    hasProperty = AudioObjectHasProperty(_myDevice, &address);
+    hasProperty = AudioObjectHasProperty(self.deviceID,
+                                         &address);
 
     if (!hasProperty)
     {
         return nil;
     }
 
-    theStatus = AudioObjectGetPropertyDataSize(_myDevice, &address, 0, 0, &theSize);
+    theStatus = AudioObjectGetPropertyDataSize(self.deviceID,
+                                               &address,
+                                               0,
+                                               NULL,
+                                               &theSize);
 
-    if (kAudioHardwareNoError != theStatus)
+    if (noErr != theStatus)
     {
         return nil;
     }
 
     theList = (AudioBufferList *)malloc(theSize);
-    theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, 0, &theSize, theList);
 
-    if (kAudioHardwareNoError != theStatus)
+    theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           theList);
+
+    if (noErr != theStatus)
     {
         free(theList);
 
@@ -495,17 +555,11 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
 - (UInt32)channelsForDirection:(AMCoreAudioDirection)theDirection
 {
-    NSNumber *theNumberOfChannelsInThisStream;
-    NSEnumerator *channelEnumerator;
-    UInt32 rv;
+    UInt32 rv = 0;
 
-    rv = 0;
-
-    channelEnumerator = [[self channelsByStreamForDirection:theDirection] objectEnumerator];
-
-    while (theNumberOfChannelsInThisStream = [channelEnumerator nextObject])
+    for (id numberOfChannels in[self channelsByStreamForDirection:theDirection])
     {
-        rv += [theNumberOfChannelsInThisStream unsignedLongValue];
+        rv += [numberOfChannels unsignedLongValue];
     }
 
     return rv;
@@ -535,7 +589,8 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
 #pragma mark - Individual Channel Methods
 
-- (AMCoreAudioVolumeInfo)volumeInfoForChannel:(UInt32)theChannel andDirection:(AMCoreAudioDirection)theDirection
+- (AMCoreAudioVolumeInfo)volumeInfoForChannel:(UInt32)theChannel
+                                 andDirection:(AMCoreAudioDirection)theDirection
 {
     AMCoreAudioVolumeInfo rv;
     OSStatus theStatus;
@@ -559,28 +614,40 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
         theChannel
     };
 
-    hasProperty = AudioObjectHasProperty(_myDevice, &address);
+    hasProperty = AudioObjectHasProperty(self.deviceID,
+                                         &address);
 
     if (!hasProperty)
     {
         return rv;
     }
 
-    theStatus = AudioObjectGetPropertyDataSize(_myDevice, &address, 0, 0, &theSize);
+    theStatus = AudioObjectGetPropertyDataSize(self.deviceID,
+                                               &address,
+                                               0,
+                                               NULL,
+                                               &theSize);
 
-    if (theStatus != kAudioHardwareNoError)
+    if (theStatus != noErr)
     {
         return rv;
     }
 
-    theStatus = AudioObjectIsPropertySettable(_myDevice, &address, &rv.canSetVolume);
+    theStatus = AudioObjectIsPropertySettable(self.deviceID,
+                                              &address,
+                                              &rv.canSetVolume);
 
-    if (kAudioHardwareNoError == theStatus)
+    if (noErr == theStatus)
     {
         rv.hasVolume = true;
-        theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, 0, &theSize, &rv.theVolume);
+        theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                               &address,
+                                               0,
+                                               NULL,
+                                               &theSize,
+                                               &rv.theVolume);
 
-        if (kAudioHardwareNoError != theStatus)
+        if (noErr != theStatus)
         {
             rv.theVolume = 0.0;
         }
@@ -591,27 +658,39 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
     address.mSelector = kAudioDevicePropertyMute;
 
-    hasProperty = AudioObjectHasProperty(_myDevice, &address);
+    hasProperty = AudioObjectHasProperty(self.deviceID,
+                                         &address);
 
     if (!hasProperty)
     {
         return rv;
     }
 
-    theStatus = AudioObjectGetPropertyDataSize(_myDevice, &address, 0, 0, &theSize);
+    theStatus = AudioObjectGetPropertyDataSize(self.deviceID,
+                                               &address,
+                                               0,
+                                               NULL,
+                                               &theSize);
 
-    if (theStatus != kAudioHardwareNoError)
+    if (theStatus != noErr)
     {
         return rv;
     }
 
-    theStatus = AudioObjectIsPropertySettable(_myDevice, &address, &rv.canMute);
+    theStatus = AudioObjectIsPropertySettable(self.deviceID,
+                                              &address,
+                                              &rv.canMute);
 
-    if (kAudioHardwareNoError == theStatus)
+    if (noErr == theStatus)
     {
-        theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, 0, &theSize, &tmpBool32);
+        theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                               &address,
+                                               0,
+                                               NULL,
+                                               &theSize,
+                                               &tmpBool32);
 
-        if (kAudioHardwareNoError == theStatus)
+        if (noErr == theStatus)
         {
             rv.isMuted = tmpBool32;
         }
@@ -622,27 +701,39 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
     address.mSelector = kAudioDevicePropertyPlayThru;
 
-    hasProperty = AudioObjectHasProperty(_myDevice, &address);
+    hasProperty = AudioObjectHasProperty(self.deviceID,
+                                         &address);
 
     if (!hasProperty)
     {
         return rv;
     }
 
-    theStatus = AudioObjectGetPropertyDataSize(_myDevice, &address, 0, 0, &theSize);
+    theStatus = AudioObjectGetPropertyDataSize(self.deviceID,
+                                               &address,
+                                               0,
+                                               NULL,
+                                               &theSize);
 
-    if (theStatus != kAudioHardwareNoError)
+    if (theStatus != noErr)
     {
         return rv;
     }
 
-    theStatus = AudioObjectIsPropertySettable(_myDevice, &address, &rv.canPlayThru);
+    theStatus = AudioObjectIsPropertySettable(self.deviceID,
+                                              &address,
+                                              &rv.canPlayThru);
 
-    if (kAudioHardwareNoError == theStatus)
+    if (noErr == theStatus)
     {
-        theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, 0, &theSize, &tmpBool32);
+        theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                               &address,
+                                               0,
+                                               NULL,
+                                               &theSize,
+                                               &tmpBool32);
 
-        if (kAudioHardwareNoError == theStatus)
+        if (noErr == theStatus)
         {
             rv.isPlayThruSet = tmpBool32;
         }
@@ -651,7 +742,8 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     return rv;
 }
 
-- (Float32)volumeForChannel:(UInt32)theChannel andDirection:(AMCoreAudioDirection)theDirection
+- (Float32)volumeForChannel:(UInt32)theChannel
+               andDirection:(AMCoreAudioDirection)theDirection
 {
     OSStatus theStatus;
     UInt32 theSize;
@@ -664,9 +756,15 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     };
 
     theSize = sizeof(Float32);
-    theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, NULL, &theSize, &theVolumeScalar);
 
-    if (kAudioHardwareNoError == theStatus)
+    theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           &theVolumeScalar);
+
+    if (noErr == theStatus)
     {
         return theVolumeScalar;
     }
@@ -676,7 +774,8 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     }
 }
 
-- (Float32)volumeInDecibelsForChannel:(UInt32)theChannel andDirection:(AMCoreAudioDirection)theDirection
+- (Float32)volumeInDecibelsForChannel:(UInt32)theChannel
+                         andDirection:(AMCoreAudioDirection)theDirection
 {
     OSStatus theStatus;
     UInt32 theSize;
@@ -689,9 +788,15 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     };
 
     theSize = sizeof(Float32);
-    theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, NULL, &theSize, &theVolumeDecibels);
 
-    if (kAudioHardwareNoError == theStatus)
+    theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           &theVolumeDecibels);
+
+    if (noErr == theStatus)
     {
         return theVolumeDecibels;
     }
@@ -701,7 +806,9 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     }
 }
 
-- (BOOL)setVolume:(Float32)theVolume forChannel:(UInt32)theChannel andDirection:(AMCoreAudioDirection)theDirection
+- (BOOL)setVolume:(Float32)theVolume
+       forChannel:(UInt32)theChannel
+     andDirection:(AMCoreAudioDirection)theDirection
 {
     OSStatus theStatus;
     UInt32 theSize;
@@ -713,12 +820,20 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     };
 
     theSize = sizeof(Float32);
-    theStatus = AudioObjectSetPropertyData(_myDevice, &address, 0, 0, theSize, &theVolume);
 
-    return kAudioHardwareNoError == theStatus;
+    theStatus = AudioObjectSetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           theSize,
+                                           &theVolume);
+
+    return noErr == theStatus;
 }
 
-- (BOOL)setMute:(BOOL)isMuted forChannel:(UInt32)theChannel andDirection:(AMCoreAudioDirection)theDirection
+- (BOOL) setMute:(BOOL)isMuted
+      forChannel:(UInt32)theChannel
+    andDirection:(AMCoreAudioDirection)theDirection
 {
     OSStatus theStatus;
     UInt32 theSize;
@@ -732,12 +847,19 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
     valMute = (UInt32)isMuted;
     theSize = sizeof(UInt32);
-    theStatus = AudioObjectSetPropertyData(_myDevice, &address, 0, 0, theSize, &valMute);
 
-    return kAudioHardwareNoError == theStatus;
+    theStatus = AudioObjectSetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           theSize,
+                                           &valMute);
+
+    return noErr == theStatus;
 }
 
-- (BOOL)isChannelMuted:(UInt32)theChannel andDirection:(AMCoreAudioDirection)theDirection
+- (BOOL)isChannelMuted:(UInt32)theChannel
+          andDirection:(AMCoreAudioDirection)theDirection
 {
     OSStatus theStatus;
     UInt32 theSize;
@@ -750,9 +872,15 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     };
 
     theSize = sizeof(UInt32);
-    theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, 0, &theSize, &valMute);
 
-    if (kAudioHardwareNoError == theStatus)
+    theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           &valMute);
+
+    if (noErr == theStatus)
     {
         return (BOOL)valMute;
     }
@@ -760,7 +888,8 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     return NO;
 }
 
-- (BOOL)canMuteForChannel:(UInt32)theChannel andDirection:(AMCoreAudioDirection)theDirection
+- (BOOL)canMuteForChannel:(UInt32)theChannel
+             andDirection:(AMCoreAudioDirection)theDirection
 {
     AMCoreAudioVolumeInfo vi;
 
@@ -791,7 +920,8 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
     for (NSNumber *channel in preferredStereoChannels)
     {
-        if ([self canMuteForChannel:channel.intValue andDirection:theDirection])
+        if ([self canMuteForChannel:channel.intValue
+                       andDirection:theDirection])
         {
             muteCount++;
         }
@@ -800,7 +930,8 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     return muteCount == preferredStereoChannels.count;
 }
 
-- (BOOL)canSetVolumeForChannel:(UInt32)theChannel andDirection:(AMCoreAudioDirection)theDirection
+- (BOOL)canSetVolumeForChannel:(UInt32)theChannel
+                  andDirection:(AMCoreAudioDirection)theDirection
 {
     AMCoreAudioVolumeInfo vi;
 
@@ -824,11 +955,20 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     };
 
     theSize = sizeof(preferredChannels);
-    theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, NULL, &theSize, &preferredChannels);
 
-    if (kAudioHardwareNoError == theStatus)
+    theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           &preferredChannels);
+
+    if (noErr == theStatus)
     {
-        theChannels = @[@(preferredChannels[0]), @(preferredChannels[1])];
+        theChannels = @[
+            @(preferredChannels[0]),
+            @(preferredChannels[1])
+                      ];
 
         return theChannels;
     }
@@ -861,7 +1001,8 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
     for (NSNumber *channel in preferredStereoChannels)
     {
-        if ([self canSetVolumeForChannel:channel.intValue andDirection:theDirection])
+        if ([self canSetVolumeForChannel:channel.intValue
+                            andDirection:theDirection])
         {
             settableChannelsCount++;
         }
@@ -870,7 +1011,8 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     return settableChannelsCount == preferredStereoChannels.count;
 }
 
-- (BOOL)setMasterVolume:(Float32)volume forDirection:(AMCoreAudioDirection)theDirection
+- (BOOL)setMasterVolume:(Float32)volume
+           forDirection:(AMCoreAudioDirection)theDirection
 {
     OSStatus theStatus;
     UInt32 theSize;
@@ -882,9 +1024,15 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     };
 
     theSize = sizeof(Float32);
-    theStatus = AudioHardwareServiceSetPropertyData(_myDevice, &address, 0, NULL, theSize, &volume);
 
-    if (kAudioHardwareNoError == theStatus)
+    theStatus = AudioHardwareServiceSetPropertyData(self.deviceID,
+                                                    &address,
+                                                    0,
+                                                    NULL,
+                                                    theSize,
+                                                    &volume);
+
+    if (noErr == theStatus)
     {
         return YES;
     }
@@ -913,9 +1061,15 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     };
 
     theSize = sizeof(Float32);
-    theStatus = AudioHardwareServiceGetPropertyData(_myDevice, &address, 0, NULL, &theSize, &theVolumeScalar);
 
-    if (kAudioHardwareNoError == theStatus)
+    theStatus = AudioHardwareServiceGetPropertyData(self.deviceID,
+                                                    &address,
+                                                    0,
+                                                    NULL,
+                                                    &theSize,
+                                                    &theVolumeScalar);
+
+    if (noErr == theStatus)
     {
         return theVolumeScalar;
     }
@@ -945,7 +1099,7 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
             return -INFINITY;
         }
 
-        referenceChannel = ((NSNumber *)channels[0]).intValue;
+        referenceChannel = [channels[0] intValue];
     }
 
     volumeInDecibels = [self scalarToDecibels:[self masterVolumeForDirection:theDirection]
@@ -957,7 +1111,9 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
 #pragma mark - Volume Conversion Methods
 
-- (Float32)scalarToDecibels:(Float32)volume forChannel:(UInt32)theChannel andDirection:(AMCoreAudioDirection)theDirection
+- (Float32)scalarToDecibels:(Float32)volume
+                 forChannel:(UInt32)theChannel
+               andDirection:(AMCoreAudioDirection)theDirection
 {
     OSStatus theStatus;
     UInt32 theSize;
@@ -969,12 +1125,17 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
         theChannel
     };
 
+    theSize = sizeof(Float32);
     theVolumeDecibels = volume;
 
-    theSize = sizeof(Float32);
-    theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, NULL, &theSize, &theVolumeDecibels);
+    theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           &theVolumeDecibels);
 
-    if (kAudioHardwareNoError == theStatus)
+    if (noErr == theStatus)
     {
         return theVolumeDecibels;
     }
@@ -984,7 +1145,9 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     }
 }
 
-- (Float32)decibelsToScalar:(Float32)volume forChannel:(UInt32)theChannel andDirection:(AMCoreAudioDirection)theDirection
+- (Float32)decibelsToScalar:(Float32)volume
+                 forChannel:(UInt32)theChannel
+               andDirection:(AMCoreAudioDirection)theDirection
 {
     OSStatus theStatus;
     UInt32 theSize;
@@ -996,12 +1159,17 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
         theChannel
     };
 
+    theSize = sizeof(Float32);
     theVolumeScalar = volume;
 
-    theSize = sizeof(Float32);
-    theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, NULL, &theSize, &theVolumeScalar);
+    theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           &theVolumeScalar);
 
-    if (kAudioHardwareNoError == theStatus)
+    if (noErr == theStatus)
     {
         return theVolumeScalar;
     }
@@ -1019,17 +1187,22 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     UInt32 theSize;
     Float64 theSampleRate;
 
-    theSize = sizeof(Float64);
-
     AudioObjectPropertyAddress address = {
         kAudioDevicePropertyActualSampleRate,
         kAudioObjectPropertyScopeWildcard,
         kAudioObjectPropertyElementMaster
     };
 
-    theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, NULL, &theSize, &theSampleRate);
+    theSize = sizeof(Float64);
 
-    if (kAudioHardwareNoError != theStatus)
+    theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           &theSampleRate);
+
+    if (noErr != theStatus)
     {
         return 0.0;
     }
@@ -1043,17 +1216,22 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     UInt32 theSize;
     Float64 theSampleRate;
 
-    theSize = sizeof(Float64);
-
     AudioObjectPropertyAddress address = {
         kAudioDevicePropertyNominalSampleRate,
         kAudioObjectPropertyScopeWildcard,
         kAudioObjectPropertyElementMaster
     };
 
-    theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, NULL, &theSize, &theSampleRate);
+    theSize = sizeof(Float64);
 
-    if (kAudioHardwareNoError != theStatus)
+    theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           &theSampleRate);
+
+    if (noErr != theStatus)
     {
         return 0.0;
     }
@@ -1080,16 +1258,21 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
             kAudioObjectPropertyElementMaster
         };
 
-        hasProperty = AudioObjectHasProperty(_myDevice, &address);
+        hasProperty = AudioObjectHasProperty(self.deviceID,
+                                             &address);
 
         if (!hasProperty)
         {
             return @[];
         }
 
-        theStatus = AudioObjectGetPropertyDataSize(_myDevice, &address, 0, 0, &theSize);
+        theStatus = AudioObjectGetPropertyDataSize(self.deviceID,
+                                                   &address,
+                                                   0,
+                                                   NULL,
+                                                   &theSize);
 
-        if (kAudioHardwareNoError != theStatus)
+        if (noErr != theStatus)
         {
             return @[];
         }
@@ -1106,9 +1289,15 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
         rangeArray = malloc(theSize);
         numItems = theSize / sizeof(AudioValueRange);
-        theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, 0, &theSize, rangeArray);
 
-        if (kAudioHardwareNoError != theStatus)
+        theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                               &address,
+                                               0,
+                                               NULL,
+                                               &theSize,
+                                               rangeArray);
+
+        if (noErr != theStatus)
         {
             free(rangeArray);
 
@@ -1117,26 +1306,33 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
         // A list of all the possible sample rates up to 192kHz
         // to be used in the case we receive a range (see below)
+
         possibleRates = @[@6400.0, @8000.0, @11025.0, @12000.0,
                           @16000.0, @22050.0, @24000.0, @32000.0,
                           @44100.0, @48000.0, @64000.0, @88200.0,
                           @96000.0, @128000.0, @176400.0, @192000.0];
 
         // Initialize mutable array
+
         rv = [NSMutableArray array];
 
         // Populate mutable array
+
         for (x = 0; x < numItems; x++)
         {
             if (rangeArray[x].mMinimum < rangeArray[x].mMaximum)
             {
-                // We got a range.
+                /**
+                   We got a range.
 
-                // This is the case in some cheap audio devices such as:
-                // - CS50/CS60-USB Headset
-                //
-                // or virtual audio drivers such as:
-                // - "System Audio Recorder" (installed by WonderShare AllMyMusic)
+                   This is the case in some cheap audio devices such as:
+
+                        - CS50/CS60-USB Headset
+
+                   or virtual audio drivers such as:
+
+                        - "System Audio Recorder" (installed by WonderShare AllMyMusic)
+                 */
 
                 NSRange subArrayRange = NSMakeRange([possibleRates indexOfObject:@(rangeArray[x].mMinimum)],
                                                     [possibleRates indexOfObject:@(rangeArray[x].mMaximum)] + 1);
@@ -1182,9 +1378,15 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     };
 
     theSize = sizeof(Float64);
-    theStatus = AudioObjectSetPropertyData(_myDevice, &address, 0, 0, theSize, &theRate);
 
-    if (kAudioHardwareNoError != theStatus)
+    theStatus = AudioObjectSetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           theSize,
+                                           &theRate);
+
+    if (noErr != theStatus)
     {
         DLog(@"Sample rate could not be changed to %f", theRate);
 
@@ -1196,7 +1398,8 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
 #pragma mark - Clock Source Methods
 
-- (NSString *)clockSourceForChannel:(UInt32)theChannel andDirection:(AMCoreAudioDirection)theDirection
+- (NSString *)clockSourceForChannel:(UInt32)theChannel
+                       andDirection:(AMCoreAudioDirection)theDirection
 {
     OSStatus theStatus;
     UInt32 theSize;
@@ -1209,7 +1412,8 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
         theChannel
     };
 
-    hasProperty = AudioObjectHasProperty(_myDevice, &address);
+    hasProperty = AudioObjectHasProperty(self.deviceID,
+                                         &address);
 
     if (!hasProperty)
     {
@@ -1217,17 +1421,26 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     }
 
     theSize = sizeof(UInt32);
-    theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, NULL, &theSize, &theSourceID);
+    theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           &theSourceID);
 
-    if (kAudioHardwareNoError == theStatus)
+    if (noErr == theStatus)
     {
-        return TLD_ClockSourceNameForID(_myDevice, theDirection, theChannel, theSourceID);
+        return TLD_ClockSourceNameForID(self.deviceID,
+                                        theDirection,
+                                        theChannel,
+                                        theSourceID);
     }
 
     return nil;
 }
 
-- (NSArray *)clockSourcesForChannel:(UInt32)theChannel andDirection:(AMCoreAudioDirection)theDirection
+- (NSArray *)clockSourcesForChannel:(UInt32)theChannel
+                       andDirection:(AMCoreAudioDirection)theDirection
 {
     OSStatus theStatus;
     UInt32 theSize;
@@ -1243,16 +1456,21 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
         theChannel
     };
 
-    hasProperty = AudioObjectHasProperty(_myDevice, &address);
+    hasProperty = AudioObjectHasProperty(self.deviceID,
+                                         &address);
 
     if (!hasProperty)
     {
         return nil;
     }
 
-    theStatus = AudioObjectGetPropertyDataSize(_myDevice, &address, 0, 0, &theSize);
+    theStatus = AudioObjectGetPropertyDataSize(self.deviceID,
+                                               &address,
+                                               0,
+                                               NULL,
+                                               &theSize);
 
-    if (kAudioHardwareNoError != theStatus)
+    if (noErr != theStatus)
     {
         return nil;
     }
@@ -1260,9 +1478,14 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     theSourceIDs = (UInt32 *)malloc(theSize);
     numSources = theSize / sizeof(UInt32);
 
-    theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, NULL, &theSize, theSourceIDs);
+    theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           theSourceIDs);
 
-    if (kAudioHardwareNoError != theStatus)
+    if (noErr != theStatus)
     {
         free(theSourceIDs);
 
@@ -1273,7 +1496,10 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
     for (x = 0; x < numSources; x++)
     {
-        [rv addObject:TLD_ClockSourceNameForID(_myDevice, theDirection, theChannel, theSourceIDs[x])];
+        [rv addObject:TLD_ClockSourceNameForID(self.deviceID,
+                                               theDirection,
+                                               theChannel,
+                                               theSourceIDs[x])];
     }
 
     free(theSourceIDs);
@@ -1281,7 +1507,9 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     return rv;
 }
 
-- (BOOL)setClockSource:(NSString *)theSource forChannel:(UInt32)theChannel andDirection:(AMCoreAudioDirection)theDirection
+- (BOOL)setClockSource:(NSString *)theSource
+            forChannel:(UInt32)theChannel
+          andDirection:(AMCoreAudioDirection)theDirection
 {
     OSStatus theStatus;
     UInt32 theSize;
@@ -1302,25 +1530,36 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
         theChannel
     };
 
-    hasProperty = AudioObjectHasProperty(_myDevice, &address);
+    hasProperty = AudioObjectHasProperty(self.deviceID,
+                                         &address);
 
     if (!hasProperty)
     {
         return NO;
     }
 
-    theStatus = AudioObjectGetPropertyDataSize(_myDevice, &address, 0, 0, &theSize);
+    theStatus = AudioObjectGetPropertyDataSize(self.deviceID,
+                                               &address,
+                                               0,
+                                               NULL,
+                                               &theSize);
 
-    if (kAudioHardwareNoError != theStatus)
+    if (noErr != theStatus)
     {
         return NO;
     }
 
     theSourceIDs = (UInt32 *)malloc(theSize);
     numSources = theSize / sizeof(UInt32);
-    theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, NULL, &theSize, theSourceIDs);
 
-    if (kAudioHardwareNoError != theStatus)
+    theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           theSourceIDs);
+
+    if (noErr != theStatus)
     {
         free(theSourceIDs);
 
@@ -1331,18 +1570,27 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
     for (x = 0; x < numSources; x++)
     {
-        sourceName = TLD_ClockSourceNameForID(_myDevice, theDirection, theChannel, theSourceIDs[x]);
+        sourceName = TLD_ClockSourceNameForID(self.deviceID,
+                                              theDirection,
+                                              theChannel,
+                                              theSourceIDs[x]);
 
         if ([theSource isEqualTo:sourceName])
         {
             address.mSelector = kAudioDevicePropertyClockSource;
-            theStatus = AudioObjectSetPropertyData(_myDevice, &address, 0, 0, theSize, &theSourceIDs[x]);
+
+            theStatus = AudioObjectSetPropertyData(self.deviceID,
+                                                   &address,
+                                                   0,
+                                                   NULL,
+                                                   theSize,
+                                                   &theSourceIDs[x]);
         }
     }
 
     free(theSourceIDs);
 
-    return kAudioHardwareNoError == theStatus;
+    return noErr == theStatus;
 }
 
 #pragma mark - Latency Methods
@@ -1360,9 +1608,14 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     };
 
     theSize = sizeof(UInt32);
-    theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, NULL, &theSize, &latencyFrames);
+    theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           &latencyFrames);
 
-    if (kAudioHardwareNoError != theStatus)
+    if (noErr != theStatus)
     {
         return 0;
     }
@@ -1383,9 +1636,14 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     };
 
     theSize = sizeof(UInt32);
-    theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, NULL, &theSize, &latencyFrames);
+    theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           &latencyFrames);
 
-    if (kAudioHardwareNoError != theStatus)
+    if (noErr != theStatus)
     {
         return 0;
     }
@@ -1408,9 +1666,15 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     };
 
     theSize = sizeof(pid_t);
-    theStatus = AudioObjectGetPropertyData(_myDevice, &address, 0, NULL, &theSize, &pid);
 
-    if (kAudioHardwareNoError != theStatus)
+    theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           &pid);
+
+    if (noErr != theStatus)
     {
         return 0;
     }
@@ -1430,9 +1694,15 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     };
 
     theSize = sizeof(pid_t);
-    theStatus = AudioObjectSetPropertyData(_myDevice, &address, 0, 0, theSize, &pid);
 
-    if (kAudioHardwareNoError != theStatus)
+    theStatus = AudioObjectSetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           theSize,
+                                           &pid);
+
+    if (noErr != theStatus)
     {
         DLog(@"Hog mode could not be set to %d", pid);
 
@@ -1462,7 +1732,7 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 {
     OSStatus err;
 
-    if (_isRegisteredForNotifications)
+    if (self.isRegisteredForNotifications)
     {
         [self unregisterForNotifications];
     }
@@ -1473,7 +1743,10 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
         kAudioObjectPropertyElementWildcard
     };
 
-    err = AudioObjectAddPropertyListener(_myDevice, &address, TLD_AMCoreAudioDevicePropertyListener, (void *)CFBridgingRetain(self));
+    err = AudioObjectAddPropertyListener(self.deviceID,
+                                         &address,
+                                         TLD_AMCoreAudioDevicePropertyListener,
+                                         (void *)CFBridgingRetain(self));
 
     if (err)
     {
@@ -1482,14 +1755,14 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
         return;
     }
 
-    _isRegisteredForNotifications = (noErr == err);
+    self.isRegisteredForNotifications = (noErr == err);
 }
 
 - (void)unregisterForNotifications
 {
     OSStatus err;
 
-    if (self.deviceUID && _isRegisteredForNotifications)
+    if (self.deviceUID && self.isRegisteredForNotifications)
     {
         AudioObjectPropertyAddress address = {
             kAudioObjectPropertySelectorWildcard,
@@ -1497,18 +1770,21 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
             kAudioObjectPropertyElementWildcard
         };
 
-        err = AudioObjectRemovePropertyListener(_myDevice, &address, TLD_AMCoreAudioDevicePropertyListener, (__bridge void *)self);
+        err = AudioObjectRemovePropertyListener(self.deviceID,
+                                                &address,
+                                                TLD_AMCoreAudioDevicePropertyListener,
+                                                (__bridge void *)self);
 
         if (err)
         {
             DLog(@"Error on AudioObjectRemovePropertyListener %d\n", err);
         }
 
-        _isRegisteredForNotifications = !(noErr == err);
+        self.isRegisteredForNotifications = (noErr != err);
     }
     else
     {
-        _isRegisteredForNotifications = NO;
+        self.isRegisteredForNotifications = NO;
     }
 }
 
@@ -1624,7 +1900,8 @@ static OSStatus TLD_AMCoreAudioDevicePropertyListener(AudioObjectID inObjectID,
 
         case kAudioDevicePropertyMute:
 
-            if (self.delegate)
+            if (self.delegate &&
+                [self.delegate respondsToSelector:@selector(audioDeviceMuteDidChange:forChannel:andDirection:)])
             {
                 [self.delegate audioDeviceMuteDidChange:self
                                              forChannel:inAddresses->mElement
@@ -1634,6 +1911,7 @@ static OSStatus TLD_AMCoreAudioDevicePropertyListener(AudioObjectID inObjectID,
             break;
 
         // Unhandled cases beyond this point
+
         case kAudioDevicePropertyBufferSize:
         case kAudioDevicePropertyBufferSizeRange:
         case kAudioDevicePropertyBufferFrameSize:
@@ -1645,7 +1923,7 @@ static OSStatus TLD_AMCoreAudioDevicePropertyListener(AudioObjectID inObjectID,
             break;
     }
 
-    return kAudioHardwareNoError;
+    return noErr;
 }
 
 static NSString *TLD_ClockSourceNameForID(AudioObjectID theDeviceID,
@@ -1670,9 +1948,14 @@ static NSString *TLD_ClockSourceNameForID(AudioObjectID theDeviceID,
         theChannel
     };
 
-    theStatus = AudioObjectGetPropertyData(theDeviceID, &address, 0, NULL, &theSize, &theTranslation);
+    theStatus = AudioObjectGetPropertyData(theDeviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           &theTranslation);
 
-    if ((kAudioHardwareNoError == theStatus) && theString.length > 0)
+    if ((noErr == theStatus) && theString.length > 0)
     {
         return theString;
     }
@@ -1694,9 +1977,14 @@ static NSString *TLD_DeviceNameForID(AudioObjectID theDeviceID)
         kAudioObjectPropertyElementMaster
     };
 
-    theStatus = AudioObjectGetPropertyData(theDeviceID, &address, 0, NULL, &theSize, &theString);
+    theStatus = AudioObjectGetPropertyData(theDeviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           &theString);
 
-    if (kAudioHardwareNoError != theStatus || !theString)
+    if (noErr != theStatus || !theString)
     {
         return nil;
     }

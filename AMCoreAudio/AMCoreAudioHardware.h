@@ -46,6 +46,6 @@
 /**
    A delegate conforming to the AMCoreAudioHardwareDelegate protocol.
  */
-@property (weak, nonatomic) id<AMCoreAudioHardwareDelegate>delegate;
+@property (nonatomic, weak) id<AMCoreAudioHardwareDelegate>delegate;
 
 @end
