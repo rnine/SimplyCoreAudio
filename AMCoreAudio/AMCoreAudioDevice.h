@@ -129,7 +129,7 @@ extern NSString *const AMCoreAudioDefaultClockSourceName;
 
    The list also includes Aggregate and Multi-Output devices.
 
-   @returns A set of audio device IDs wrapped as NSNumber instances.
+   @returns A set of audio device IDs wrapped as NSNumber objects.
  */
 + (NSSet *)allDeviceIDs;
 
@@ -138,7 +138,7 @@ extern NSString *const AMCoreAudioDefaultClockSourceName;
 
    @note: The list also includes Aggregate and Multi-Output devices.
 
-   @returns A set of AMCoreAudioDevice instances.
+   @returns A set of AMCoreAudioDevice objects.
  */
 + (NSSet *)allDevices;
 
@@ -146,7 +146,7 @@ extern NSString *const AMCoreAudioDefaultClockSourceName;
    Returns an AMCoreAudioDevice that matches the provided AudioObjectID,
    or nil if the AudioObjectID is invalid.
 
-   @returns An AMCoreAudioDevice instance.
+   @returns An AMCoreAudioDevice object.
  */
 + (AMCoreAudioDevice *)deviceWithID:(AudioObjectID)theID;
 
@@ -154,28 +154,28 @@ extern NSString *const AMCoreAudioDefaultClockSourceName;
    Returns an AMCoreAudioDevice that matches the provided audio UID,
    or nil if the UID is invalid.
 
-   @returns An AMCoreAudioDevice instance.
+   @returns An AMCoreAudioDevice object.
  */
 + (AMCoreAudioDevice *)deviceWithUID:(NSString *)theUID;
 
 /**
    Returns an AMCoreAudioDevice that represents the default input device.
 
-   @returns An AMCoreAudioDevice instance.
+   @returns An AMCoreAudioDevice object.
  */
 + (AMCoreAudioDevice *)defaultInputDevice;
 
 /**
    Returns an AMCoreAudioDevice that represents the default output device.
 
-   @returns An AMCoreAudioDevice instance.
+   @returns An AMCoreAudioDevice object.
  */
 + (AMCoreAudioDevice *)defaultOutputDevice;
 
 /**
    Returns an AMCoreAudioDevice that represents the system's output device.
 
-   @returns An AMCoreAudioDevice instance.
+   @returns An AMCoreAudioDevice object.
  */
 + (AMCoreAudioDevice *)systemOutputDevice;
 
@@ -198,7 +198,7 @@ extern NSString *const AMCoreAudioDefaultClockSourceName;
    Initializes an AMCoreAudioDevice by providing a valid AudioObjectID
    referencing an existing audio device in the system.
 
-   @returns An AMCoreAudioDevice instance.
+   @returns An AMCoreAudioDevice object.
  */
 - (AMCoreAudioDevice *)initWithDeviceID:(AudioObjectID)theID;
 
