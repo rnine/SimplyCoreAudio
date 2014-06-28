@@ -8,6 +8,11 @@
 
 `AMCoreAudio` is currently powering [AudioMate](http://audiomateapp.com) (in fact, that's where the AM prefix comes from!) and also plays an important role in another project of mine that is currently in development.
 
+### Requirements
+
+* Mac OS X 10.7 or later
+* 64-bit
+
 ### Delegates
 
 #### AMCoreAudioHardwareDelegate
@@ -84,7 +89,7 @@ Do you want to contribute to the project? Please fork, patch, and then submit a 
 
 ### To-Do
 
-- Rewrite example
+* Rewrite example.
 
 ### License
 
