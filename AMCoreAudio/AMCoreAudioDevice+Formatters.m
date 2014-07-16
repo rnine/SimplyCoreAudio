@@ -1,6 +1,6 @@
 //
-//  AudioDevice.m
-//  AudioMate
+//  AMCoreAudioDevice+Formatters.m
+//  AMCoreAudio
 //
 //  Created by Ruben Nine on 12/20/12.
 //  Copyright (c) 2012 Ruben Nine. All rights reserved.
