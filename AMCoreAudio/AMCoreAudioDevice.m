@@ -26,11 +26,7 @@
 #import "AMCoreAudioDevice.h"
 #import <AudioToolbox/AudioServices.h>
 
-/**
-   The default clock source name when none is given.
- */
 NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
-
 
 @interface AMCoreAudioDevice ()
 
@@ -359,7 +355,7 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
             deviceName];
 }
 
-#pragma mark - General Device Information
+#pragma mark - General Device Information Methods
 
 - (NSString *)deviceName
 {
@@ -1356,7 +1352,7 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
         {
             if (rangeArray[x].mMinimum < rangeArray[x].mMaximum)
             {
-                /**
+                /*!
                    We got a range.
 
                    This is the case in some cheap audio devices such as:
@@ -1685,7 +1681,7 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     return latencyFrames;
 }
 
-#pragma mark - Hog Mode
+#pragma mark - Hog Mode Methods
 
 - (pid_t)hogModePid
 {
@@ -1822,7 +1818,7 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     }
 }
 
-#pragma mark - Static C functions
+#pragma mark - Static C Functions
 
 static UInt32 TLD_AMCoreAudioDirectionToScope(AMCoreAudioDirection theDirection)
 {

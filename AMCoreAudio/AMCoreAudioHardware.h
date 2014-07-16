@@ -11,7 +11,7 @@
 
 @interface AMCoreAudioHardware : NSObject
 
-/**
+/*!
    A delegate conforming to the AMCoreAudioHardwareDelegate protocol.
  */
 @property (nonatomic, weak) id<AMCoreAudioHardwareDelegate>delegate;
