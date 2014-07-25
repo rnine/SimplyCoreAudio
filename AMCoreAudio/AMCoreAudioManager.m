@@ -28,7 +28,7 @@
     static dispatch_once_t onceToken;
 
     dispatch_once(&onceToken, ^{
-        sharedManager = [AMCoreAudioManager new];
+        sharedManager = [[super allocWithZone:NULL] init];
         sharedManager.allKnownDevices = [AMCoreAudioDevice allDevices];
 
         [sharedManager setup];
