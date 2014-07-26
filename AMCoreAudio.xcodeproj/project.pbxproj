@@ -15,8 +15,6 @@
 		45638C7017A5DCB40042EE1E /* AMCoreAudioTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 45638C6F17A5DCB40042EE1E /* AMCoreAudioTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		45638C7117A5DDC00042EE1E /* AMCoreAudio.h in Headers */ = {isa = PBXBuildFile; fileRef = 45638C4917A5D9280042EE1E /* AMCoreAudio.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4573702118895E9B00C34775 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4573702018895E9B00C34775 /* AudioToolbox.framework */; };
-		4582344118D849FB00466FCF /* AMCoreAudioUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 4582343F18D849FB00466FCF /* AMCoreAudioUtilities.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		4582344218D849FB00466FCF /* AMCoreAudioUtilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 4582344018D849FB00466FCF /* AMCoreAudioUtilities.c */; };
 		459289791976D32000E76265 /* AMCoreAudioDevice+Formatters.m in Sources */ = {isa = PBXBuildFile; fileRef = 459289751976D32000E76265 /* AMCoreAudioDevice+Formatters.m */; };
 		4592897B1976D32000E76265 /* AMCoreAudioDevice+PreferredDirections.m in Sources */ = {isa = PBXBuildFile; fileRef = 459289771976D32000E76265 /* AMCoreAudioDevice+PreferredDirections.m */; };
 		4592897C1976D3CB00E76265 /* AMCoreAudioDevice+Formatters.h in Headers */ = {isa = PBXBuildFile; fileRef = 459289741976D32000E76265 /* AMCoreAudioDevice+Formatters.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -43,8 +41,6 @@
 		45638C6D17A5D9DD0042EE1E /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		45638C6F17A5DCB40042EE1E /* AMCoreAudioTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMCoreAudioTypes.h; sourceTree = "<group>"; };
 		4573702018895E9B00C34775 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		4582343F18D849FB00466FCF /* AMCoreAudioUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMCoreAudioUtilities.h; sourceTree = "<group>"; };
-		4582344018D849FB00466FCF /* AMCoreAudioUtilities.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = AMCoreAudioUtilities.c; sourceTree = "<group>"; };
 		459289741976D32000E76265 /* AMCoreAudioDevice+Formatters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AMCoreAudioDevice+Formatters.h"; sourceTree = "<group>"; };
 		459289751976D32000E76265 /* AMCoreAudioDevice+Formatters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AMCoreAudioDevice+Formatters.m"; sourceTree = "<group>"; };
 		459289761976D32000E76265 /* AMCoreAudioDevice+PreferredDirections.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AMCoreAudioDevice+PreferredDirections.h"; sourceTree = "<group>"; };
@@ -125,8 +121,6 @@
 				4592897F1976D42D00E76265 /* AMCoreAudioManager.m */,
 				45BD75C4195EB50800388AB3 /* AMCoreAudioProtocols.h */,
 				45638C6F17A5DCB40042EE1E /* AMCoreAudioTypes.h */,
-				4582343F18D849FB00466FCF /* AMCoreAudioUtilities.h */,
-				4582344018D849FB00466FCF /* AMCoreAudioUtilities.c */,
 				45638C4317A5D9280042EE1E /* Supporting Files */,
 			);
 			path = AMCoreAudio;
@@ -166,7 +160,6 @@
 				459289821976D43900E76265 /* AMCoreAudioManager.h in Headers */,
 				45BD75C6195EB50800388AB3 /* AMCoreAudioProtocols.h in Headers */,
 				45638C7017A5DCB40042EE1E /* AMCoreAudioTypes.h in Headers */,
-				4582344118D849FB00466FCF /* AMCoreAudioUtilities.h in Headers */,
 				4592897C1976D3CB00E76265 /* AMCoreAudioDevice+Formatters.h in Headers */,
 				4592897D1976D3CB00E76265 /* AMCoreAudioDevice+PreferredDirections.h in Headers */,
 			);
@@ -236,7 +229,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				459289791976D32000E76265 /* AMCoreAudioDevice+Formatters.m in Sources */,
-				4582344218D849FB00466FCF /* AMCoreAudioUtilities.c in Sources */,
 				4592897B1976D32000E76265 /* AMCoreAudioDevice+PreferredDirections.m in Sources */,
 				45C345CB18DD01B900C6B185 /* AMCoreAudioHardware.m in Sources */,
 				45638C6C17A5D9790042EE1E /* AMCoreAudioDevice.m in Sources */,

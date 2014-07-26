@@ -94,5 +94,3 @@ Do you want to contribute to the project? Please fork, patch, and then submit a 
 ### License
 
 `AMCoreAudio` was written by Ruben Nine ([@sonicbee9](https://twitter.com/sonicbee9)) in 2013-2014 (open-sourced in March 2014) and is licensed under the [MIT](http://opensource.org/licenses/MIT) license. See [LICENSE.md](LICENSE.md).
-
-`AMCoreAudio` includes some utility code adapted from `The Amazing Audio Engine` in [AMCoreAudioUtilities.h](AMCoreAudio/AMCoreAudioUtilities.h) and [AMCoreAudioUtilities.c](AMCoreAudio/AMCoreAudioUtilities.c). [The Amazing Audio Engine](https://github.com/TheAmazingAudioEngine/TheAmazingAudioEngine) is licensed under the [MIT license](https://github.com/TheAmazingAudioEngine/TheAmazingAudioEngine/blob/master/License.txt) and was written by Michael Tyson (A Tasty Pixel).
