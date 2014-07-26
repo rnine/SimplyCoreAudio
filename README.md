@@ -6,7 +6,7 @@
 - Providing accessors for the most relevant audio device properties (i.e., device name, device manufacturer, device UID, volume, mute, sample rate, clock source, etc.)
 - Subscribing to system and audio device specific notifications using the delegate pattern.
 
-`AMCoreAudio` is currently powering [AudioMate](http://audiomateapp.com) (in fact, that's where the AM prefix comes from!) and also plays an important role in another project of mine that is currently in development.
+`AMCoreAudio` is currently powering [AudioMate](http://audiomateapp.com) (recently open-sourced and available at https://github.com/sonicbee9/AudioMate).
 
 ### Requirements
 
@@ -87,9 +87,9 @@ Called whenever the audio device's mute state for a given channel and direction 
 
 Do you want to contribute to the project? Please fork, patch, and then submit a pull request!
 
-### To-Do
+### Sample Projects
 
-* Rewrite example.
+* [AudioMate](https://github.com/sonicbee9/AudioMate) (a full-featured app recently open-sourced.)
 
 ### License
 
