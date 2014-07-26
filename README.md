@@ -1,5 +1,8 @@
 ## AMCoreAudio
 
+[![Version](http://cocoapod-badges.herokuapp.com/v/AMCoreAudio/badge.png)](http://cocoadocs.org/docsets/AMCoreAudio)
+[![Platform](http://cocoapod-badges.herokuapp.com/p/AMCoreAudio/badge.png)](http://cocoadocs.org/docsets/AMCoreAudio)
+
 `AMCoreAudio` is an Objective-C wrapper for [Apple's Core Audio](https://developer.apple.com/library/mac/documentation/musicaudio/Conceptual/CoreAudioOverview/WhatisCoreAudio/WhatisCoreAudio.html) framework focusing on:
 
 - Simplifying audio device enumeration
