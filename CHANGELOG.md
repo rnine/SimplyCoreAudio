@@ -2,6 +2,7 @@
 
 | Version       | Description   | Date     |
 | -------------:|:------------- |:--------:|
+| 1.4           | AMCoreAudio + AudioMate are now soulmates ;) | July 26th, 2014|
 | 1.3.2         | Fixing AMCoreAudioManager sharedManager instantiation. | July 25th, 2014|
 | 1.3.1         | Adding AMCoreAudioManager.h import to AMCoreAudio.h | July 25th, 2014|
 | 1.3           | Adding AMCoreAudioManager, AMCoreAudioDevice+Formatters, and AMCoreAudioDevice+PreferredDirections. | July 16th, 2014|
