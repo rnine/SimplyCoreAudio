@@ -1876,6 +1876,10 @@ static OSStatus TLD_AMCoreAudioDevicePropertyListener(AudioObjectID inObjectID,
 
         case kAudioDevicePropertyAvailableNominalSampleRates:
 
+            // Let's invalidate cached nominal samplerates
+
+            self.nominalSampleRates = nil;
+
             if (self.delegate &&
                 [self.delegate respondsToSelector:@selector(audioDeviceAvailableNominalSampleRatesDidChange:)])
             {
@@ -1907,6 +1911,10 @@ static OSStatus TLD_AMCoreAudioDevicePropertyListener(AudioObjectID inObjectID,
             break;
 
         case kAudioObjectPropertyOwnedObjects:
+
+            // Let's invalidate cached nominal samplerates
+
+            self.nominalSampleRates = nil;
 
             if (self.delegate &&
                 [self.delegate respondsToSelector:@selector(audioDeviceListDidChange:)])
