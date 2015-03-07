@@ -17,11 +17,11 @@
 
     if (useShortFormat)
     {
-        formattedString = [NSString stringWithFormat:@"%.1f kHz", sampleRate * 0.001];
+        formattedString = [NSString stringWithFormat:NSLocalizedString(@"%.1f kHz", nil), sampleRate * 0.001];
     }
     else
     {
-        formattedString = [NSString stringWithFormat:@"%.3f kHz", sampleRate * 0.001];
+        formattedString = [NSString stringWithFormat:NSLocalizedString(@"%.3f kHz", nil), sampleRate * 0.001];
     }
 
     return formattedString;

@@ -2,6 +2,7 @@
 
 | Version       | Description   | Date     |
 | -------------:|:------------- |:--------:|
+| 1.4.2         | Adding localizable strings support for AMCoreAudioDevice -formattedSampleRate:useShortFormat:| March 7th, 2015|
 | 1.4.1         | Invalidating cached nominal sample rates after owned objects changes or the nominal sample rates changes.| October 27th, 2014|
 | 1.4           | AMCoreAudio + AudioMate are now soulmates ;) | July 26th, 2014|
 | 1.3.2         | Fixing AMCoreAudioManager sharedManager instantiation. | July 25th, 2014|
