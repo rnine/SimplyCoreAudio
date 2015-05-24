@@ -174,6 +174,21 @@
     NSLog(@"%@ nominal sample rates changed to %@", audioDevice.deviceName, [audioDevice nominalSampleRates]);
 }
 
+- (void)audioDeviceIsAliveDidChange:(AMCoreAudioDevice *)audioDevice
+{
+    NSLog(@"%@ 'is alive' changed to %@", audioDevice.deviceName, @([audioDevice isAlive]));
+}
+
+- (void)audioDeviceIsRunningDidChange:(AMCoreAudioDevice *)audioDevice
+{
+    NSLog(@"%@ 'is running' changed to %@", audioDevice.deviceName, @([audioDevice isRunning]));
+}
+
+- (void)audioDeviceIsRunningSomewhereDidChange:(AMCoreAudioDevice *)audioDevice
+{
+    NSLog(@"%@ 'is running somewhere' changed to %@", audioDevice.deviceName, @([audioDevice isRunningSomewhere]));
+}
+
 #pragma mark - Private
 
 - (void)audioDeviceSetDelegatesFor:(id<NSFastEnumeration>)addedDevices

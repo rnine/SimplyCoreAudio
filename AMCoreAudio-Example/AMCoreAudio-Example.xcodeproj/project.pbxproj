@@ -14,19 +14,8 @@
 		45E7D2A618E0442700A722DB /* TLDAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 45E7D2A518E0442700A722DB /* TLDAppDelegate.m */; };
 		45E7D2A918E0442700A722DB /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45E7D2A718E0442700A722DB /* MainMenu.xib */; };
 		45E7D2AB18E0442700A722DB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45E7D2AA18E0442700A722DB /* Images.xcassets */; };
-		45E7D2B318E0442700A722DB /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45E7D29218E0442700A722DB /* Cocoa.framework */; };
 		45E7D2C718E0446E00A722DB /* AMCoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45E7D2C618E0446E00A722DB /* AMCoreAudio.framework */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		45E7D2B418E0442700A722DB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 45E7D28718E0442700A722DB /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 45E7D28E18E0442700A722DB;
-			remoteInfo = "AMCoreAudio-Example";
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		45E7D28F18E0442700A722DB /* AMCoreAudio-Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AMCoreAudio-Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -43,7 +32,6 @@
 		45E7D2A518E0442700A722DB /* TLDAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLDAppDelegate.m; sourceTree = "<group>"; };
 		45E7D2A818E0442700A722DB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		45E7D2AA18E0442700A722DB /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		45E7D2B018E0442700A722DB /* AMCoreAudio-ExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AMCoreAudio-ExampleTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		45E7D2C618E0446E00A722DB /* AMCoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AMCoreAudio.framework; path = ../build/Debug/AMCoreAudio.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -54,14 +42,6 @@
 			files = (
 				45E7D2C718E0446E00A722DB /* AMCoreAudio.framework in Frameworks */,
 				45E7D29318E0442700A722DB /* Cocoa.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		45E7D2AD18E0442700A722DB /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				45E7D2B318E0442700A722DB /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,7 +61,6 @@
 			isa = PBXGroup;
 			children = (
 				45E7D28F18E0442700A722DB /* AMCoreAudio-Example.app */,
-				45E7D2B018E0442700A722DB /* AMCoreAudio-ExampleTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -150,24 +129,6 @@
 			productReference = 45E7D28F18E0442700A722DB /* AMCoreAudio-Example.app */;
 			productType = "com.apple.product-type.application";
 		};
-		45E7D2AF18E0442700A722DB /* AMCoreAudio-ExampleTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 45E7D2C318E0442700A722DB /* Build configuration list for PBXNativeTarget "AMCoreAudio-ExampleTests" */;
-			buildPhases = (
-				45E7D2AC18E0442700A722DB /* Sources */,
-				45E7D2AD18E0442700A722DB /* Frameworks */,
-				45E7D2AE18E0442700A722DB /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				45E7D2B518E0442700A722DB /* PBXTargetDependency */,
-			);
-			name = "AMCoreAudio-ExampleTests";
-			productName = "AMCoreAudio-ExampleTests";
-			productReference = 45E7D2B018E0442700A722DB /* AMCoreAudio-ExampleTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -177,11 +138,6 @@
 				CLASSPREFIX = TLD;
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Ruben Nine";
-				TargetAttributes = {
-					45E7D2AF18E0442700A722DB = {
-						TestTargetID = 45E7D28E18E0442700A722DB;
-					};
-				};
 			};
 			buildConfigurationList = 45E7D28A18E0442700A722DB /* Build configuration list for PBXProject "AMCoreAudio-Example" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -197,7 +153,6 @@
 			projectRoot = "";
 			targets = (
 				45E7D28E18E0442700A722DB /* AMCoreAudio-Example */,
-				45E7D2AF18E0442700A722DB /* AMCoreAudio-ExampleTests */,
 			);
 		};
 /* End PBXProject section */
@@ -214,13 +169,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		45E7D2AE18E0442700A722DB /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -233,22 +181,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		45E7D2AC18E0442700A722DB /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		45E7D2B518E0442700A722DB /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 45E7D28E18E0442700A722DB /* AMCoreAudio-Example */;
-			targetProxy = 45E7D2B418E0442700A722DB /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		45E7D29B18E0442700A722DB /* InfoPlist.strings */ = {
@@ -375,46 +308,6 @@
 			};
 			name = Release;
 		};
-		45E7D2C418E0442700A722DB /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/AMCoreAudio-Example.app/Contents/MacOS/AMCoreAudio-Example";
-				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-					"$(inherited)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "AMCoreAudio-Example/AMCoreAudio-Example-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "AMCoreAudio-ExampleTests/AMCoreAudio-ExampleTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Debug;
-		};
-		45E7D2C518E0442700A722DB /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/AMCoreAudio-Example.app/Contents/MacOS/AMCoreAudio-Example";
-				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-					"$(inherited)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "AMCoreAudio-Example/AMCoreAudio-Example-Prefix.pch";
-				INFOPLIST_FILE = "AMCoreAudio-ExampleTests/AMCoreAudio-ExampleTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -434,14 +327,7 @@
 				45E7D2C218E0442700A722DB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-		};
-		45E7D2C318E0442700A722DB /* Build configuration list for PBXNativeTarget "AMCoreAudio-ExampleTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				45E7D2C418E0442700A722DB /* Debug */,
-				45E7D2C518E0442700A722DB /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

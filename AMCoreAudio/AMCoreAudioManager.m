@@ -165,6 +165,17 @@
                                andDirection:direction];
 }
 
+- (void)audioDeviceIsAliveDidChange:(id)sender
+{
+    [self.delegate audioDeviceIsAliveDidChange:sender];
+}
+
+- (void)audioDeviceIsRunningDidChange:(id)sender
+{
+    [self.delegate audioDeviceIsRunningDidChange:sender];
+}
+
+
 #pragma mark - Private
 
 - (void)setup

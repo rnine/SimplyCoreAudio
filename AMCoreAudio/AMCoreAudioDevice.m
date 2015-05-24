@@ -519,6 +519,94 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     return rv;
 }
 
+- (BOOL)isAlive
+{
+    OSStatus theStatus;
+    UInt32 theSize;
+    UInt32 valIsAlive;
+
+    AudioObjectPropertyAddress address = {
+        kAudioDevicePropertyDeviceIsAlive,
+        kAudioObjectPropertyScopeGlobal,
+        kAudioObjectPropertyElementMaster
+    };
+
+    theSize = sizeof(UInt32);
+
+    theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           &valIsAlive);
+
+    if (noErr == theStatus)
+    {
+        return (BOOL)valIsAlive;
+    }
+
+
+    return NO;
+}
+
+- (BOOL)isRunning
+{
+    OSStatus theStatus;
+    UInt32 theSize;
+    UInt32 valIsRunning;
+
+    AudioObjectPropertyAddress address = {
+        kAudioDevicePropertyDeviceIsRunning,
+        kAudioObjectPropertyScopeGlobal,
+        kAudioObjectPropertyElementMaster
+    };
+
+    theSize = sizeof(UInt32);
+
+    theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           &valIsRunning);
+
+    if (noErr == theStatus)
+    {
+        return (BOOL)valIsRunning;
+    }
+
+    return NO;
+}
+
+- (BOOL)isRunningSomewhere
+{
+    OSStatus theStatus;
+    UInt32 theSize;
+    UInt32 valIsRunningSomewhere;
+
+    AudioObjectPropertyAddress address = {
+        kAudioDevicePropertyDeviceIsRunningSomewhere,
+        kAudioObjectPropertyScopeGlobal,
+        kAudioObjectPropertyElementMaster
+    };
+
+    theSize = sizeof(UInt32);
+
+    theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           &valIsRunningSomewhere);
+
+    if (noErr == theStatus)
+    {
+        return (BOOL)valIsRunningSomewhere;
+    }
+
+    return NO;
+}
+
 #pragma mark - Input/Output Layout Methods
 
 - (NSArray *)channelsByStreamForDirection:(AMCoreAudioDirection)theDirection
@@ -1948,14 +2036,41 @@ static OSStatus TLD_AMCoreAudioDevicePropertyListener(AudioObjectID inObjectID,
 
             break;
 
+        case kAudioDevicePropertyDeviceIsAlive:
+
+            if (self.delegate &&
+                [self.delegate respondsToSelector:@selector(audioDeviceIsAliveDidChange:)])
+            {
+                [self.delegate audioDeviceIsAliveDidChange:self];
+            }
+
+            break;
+        case kAudioDevicePropertyDeviceIsRunning:
+
+            if (self.delegate &&
+                [self.delegate respondsToSelector:@selector(audioDeviceIsRunningDidChange:)])
+            {
+                [self.delegate audioDeviceIsRunningDidChange:self];
+            }
+
+            break;
+
+        case kAudioDevicePropertyDeviceIsRunningSomewhere:
+
+            if (self.delegate &&
+                [self.delegate respondsToSelector:@selector(audioDeviceIsRunningSomewhereDidChange:)])
+            {
+                [self.delegate audioDeviceIsRunningSomewhereDidChange:self];
+            }
+
+            break;
+
         // Unhandled cases beyond this point
 
         case kAudioDevicePropertyBufferSize:
         case kAudioDevicePropertyBufferSizeRange:
         case kAudioDevicePropertyBufferFrameSize:
         case kAudioDevicePropertyStreamFormat:
-        case kAudioDevicePropertyDeviceIsAlive:
-        case kAudioDevicePropertyDeviceIsRunning:
         case kAudioDevicePropertyPlayThru:
         case kAudioDevicePropertyDataSource:
             break;

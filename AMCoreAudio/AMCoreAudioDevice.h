@@ -221,6 +221,27 @@ extern NSString *const AMCoreAudioDefaultClockSourceName;
                 andDirection:(AMCoreAudioDirection)theDirection;
 
 
+/*!
+ Whether the device is alive.
+
+ @return YES when the device is alive, NO otherwise.
+ */
+- (BOOL)isAlive;
+
+/*!
+ Whether the device is running.
+
+ @return YES when the device is running, NO otherwise.
+ */
+- (BOOL)isRunning;
+
+/*!
+ Whether the device is running somewhere.
+
+ @return YES when the device is running somewhere, NO otherwise.
+ */
+- (BOOL)isRunningSomewhere;
+
 #pragma mark - Clock Source Methods
 
 /*!

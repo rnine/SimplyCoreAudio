@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "AMCoreAudio"
-  s.version      = "1.4.2"
+  s.version      = "1.4.3"
   s.summary      = "AMCoreAudio is an Objective-C wrapper for Apple's CoreAudio framework"
 
   s.description  = <<-DESC
@@ -28,7 +28,7 @@ Pod::Spec.new do |s|
 
   s.source       = {
     :git => "https://github.com/sonicbee9/AMCoreAudio.git",
-    :tag => "1.4.2"
+    :tag => "1.4.3"
   }
 
   s.source_files = 'AMCoreAudio/*.{h,m}'

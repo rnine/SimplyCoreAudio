@@ -101,6 +101,21 @@
                       forChannel:(UInt32)channel
                     andDirection:(AMCoreAudioDirection)direction;
 
+/*!
+ Called whenever the audio device's "is alive" flag changes.
+ */
+- (void)audioDeviceIsAliveDidChange:(AMCoreAudioDevice *)audioDevice;
+
+/*!
+ Called whenever the audio device's "is running" flag changes.
+ */
+- (void)audioDeviceIsRunningDidChange:(AMCoreAudioDevice *)audioDevice;
+
+/*!
+ Called whenever the audio device's "is running somewhere" flag changes.
+ */
+- (void)audioDeviceIsRunningSomewhereDidChange:(AMCoreAudioDevice *)audioDevice;
+
 @end
 
 /*!
@@ -187,5 +202,20 @@
 - (void)audioDeviceMuteDidChange:(id)sender
                       forChannel:(UInt32)channel
                     andDirection:(AMCoreAudioDirection)direction;
+
+/*!
+ Called whenever the audio device's "is alive" flag changes.
+ */
+- (void)audioDeviceIsAliveDidChange:(AMCoreAudioDevice *)audioDevice;
+
+/*!
+ Called whenever the audio device's "is running" flag changes.
+ */
+- (void)audioDeviceIsRunningDidChange:(AMCoreAudioDevice *)audioDevice;
+
+/*!
+ Called whenever the audio device's "is running somewhere" flag changes.
+ */
+- (void)audioDeviceIsRunningSomewhereDidChange:(AMCoreAudioDevice *)audioDevice;
 
 @end
