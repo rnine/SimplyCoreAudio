@@ -2,6 +2,8 @@
 
 | Version       | Description   | Date     |
 | -------------:|:------------- |:--------:|
+| 1.4.3         | Adding AMCoreAudioDevice -isRunning, -isRunningSomewhere, -isAlive| May 24th, 2015|
+|               | Adding audioDeviceIsAliveDidChange:, audioDeviceIsRunningDidChange: and audioDeviceIsRunningSomewhereDidChange: methods to AMCoreAudioDeviceDelegate protocol.||
 | 1.4.2         | Adding localizable strings support for AMCoreAudioDevice -formattedSampleRate:useShortFormat:| March 7th, 2015|
 | 1.4.1         | Invalidating cached nominal sample rates after owned objects changes or the nominal sample rates changes.| October 27th, 2014|
 | 1.4           | AMCoreAudio + AudioMate are now soulmates ;) | July 26th, 2014|
