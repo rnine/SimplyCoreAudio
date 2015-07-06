@@ -9,202 +9,112 @@
 #import "TLDAppDelegate.h"
 #import <AMCoreAudio/AMCoreAudio.h>
 
-@interface TLDAppDelegate () <AMCoreAudioHardwareDelegate, AMCoreAudioDeviceDelegate>
+@interface TLDAppDelegate () <AMCoreAudioManagerDelegate>
 
-@property (nonatomic, retain) AMCoreAudioHardware *audioHardware;
-
-/*
-   Keeps state of all the known devices
- **/
-@property (nonatomic, retain) NSSet *allKnownDevices;
+@property (nonatomic, strong) AMCoreAudioManager *audioDeviceManager;
 
 @end
 
 @implementation TLDAppDelegate
 
+#pragma mark - Accessors
+
+-(AMCoreAudioManager *)audioDeviceManager {
+    if (!_audioDeviceManager) {
+        _audioDeviceManager = [AMCoreAudioManager sharedManager];
+    }
+
+    return _audioDeviceManager;
+}
+
+#pragma mark - NSApplicationDelegate Methods
+
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    // Populate allKnownDevices
+    // Set AMCoreAudioManager delegate
+    self.audioDeviceManager.delegate = self;
 
-    self.allKnownDevices = [AMCoreAudioDevice allDevices];
-
-    // Update delegates
-
-    [self audioDeviceSetDelegatesFor:self.allKnownDevices
-               andRemoveDelegatesFor:nil];
-
-    // Initialize our AMCoreAudioHardware object and set its delegate
-    // to self, so we can start receiving hardware-related notifications
-
-    self.audioHardware = [AMCoreAudioHardware new];
-    self.audioHardware.delegate = self;
+    NSLog(@"All known devices: %@", self.audioDeviceManager.allKnownDevices);
 }
 
-- (void)applicationWillTerminate:(NSNotification *)notification
-{
-    [self audioDeviceSetDelegatesFor:nil
-               andRemoveDelegatesFor:self.allKnownDevices];
+#pragma mark - AMCoreAudioManagerDelegate Methods
 
-    self.audioHardware.delegate = nil;
-    self.audioHardware = nil;
+-(void)hardwareDeviceListChangedWithAddedDevices:(NSSet *)addedDevices andRemovedDevices:(NSSet *)removedDevices
+{
+    NSLog(@"Devices added: %@", addedDevices);
+    NSLog(@"Devices removed: %@", removedDevices);
 }
 
-#pragma mark - AMCoreAudioHardwareDelegate methods
-
-- (void)hardwareDeviceListChanged:(id)sender
+-(void)hardwareDefaultInputDeviceChangedTo:(AMCoreAudioDevice *)audioDevice
 {
-    NSSet *latestDeviceList;
-    NSMutableSet *addedDevices;
-    NSMutableSet *removedDevices;
-
-    // Get the latest device list
-
-    latestDeviceList = [AMCoreAudioDevice allDevices];
-
-    // Do some basic arithmetic with mutable sets
-    // to obtain added and removed devices
-
-    addedDevices = [latestDeviceList mutableCopy];
-    [addedDevices minusSet:self.allKnownDevices];
-
-    removedDevices = [self.allKnownDevices mutableCopy];
-    [removedDevices minusSet:latestDeviceList];
-
-    // Update our allKnownDevices
-
-    self.allKnownDevices = latestDeviceList;
-
-    // Update delegates
-
-    [self audioDeviceSetDelegatesFor:addedDevices
-               andRemoveDelegatesFor:removedDevices];
-
-    // Display results
-
-    if (addedDevices && addedDevices.count > 0)
-    {
-        NSLog(@"Devices added: %@", addedDevices);
-    }
-
-    if (removedDevices && removedDevices.count > 0)
-    {
-        NSLog(@"Devices removed: %@", removedDevices);
-    }
+    NSLog(@"Default input device changed to %@", audioDevice);
 }
 
-- (void)hardwareDefaultInputDeviceChanged:(id)sender
+-(void)hardwareDefaultOutputDeviceChangedTo:(AMCoreAudioDevice *)audioDevice
 {
-    AMCoreAudioDevice *audioDevice;
-
-    audioDevice = [AMCoreAudioDevice defaultInputDevice];
-
-    NSLog(@"Default input device changed to %@", audioDevice.deviceName);
+    NSLog(@"Default output device changed to %@", audioDevice);
 }
 
-- (void)hardwareDefaultOutputDeviceChanged:(id)sender
+-(void)hardwareDefaultSystemDeviceChangedTo:(AMCoreAudioDevice *)audioDevice
 {
-    AMCoreAudioDevice *audioDevice;
-
-    audioDevice = [AMCoreAudioDevice defaultOutputDevice];
-
-    NSLog(@"Default output device changed to %@", audioDevice.deviceName);
+    NSLog(@"System output device changed to %@", audioDevice);
 }
 
-- (void)hardwareDefaultSystemDeviceChanged:(id)sender
-{
-    AMCoreAudioDevice *audioDevice;
-
-    audioDevice = [AMCoreAudioDevice systemOutputDevice];
-
-    NSLog(@"System output device changed to %@", audioDevice.deviceName);
+-(void)audioDeviceListDidChange:(AMCoreAudioDevice *)audioDevice {
+    NSLog(@"%@ owned devices list changed", audioDevice);
 }
 
-#pragma mark - AMCoreAudioDeviceDelegate methods
-
-- (void)audioDeviceNominalSampleRateDidChange:(id)sender
+-(void)audioDeviceNominalSampleRateDidChange:(AMCoreAudioDevice *)audioDevice
 {
-    AMCoreAudioDevice *audioDevice = sender;
-
-    NSLog(@"%@ sample rate changed to %f", audioDevice.deviceName, audioDevice.nominalSampleRate);
+    NSLog(@"%@ sample rate changed to %f", audioDevice, audioDevice.nominalSampleRate);
 }
 
-- (void)audioDeviceVolumeDidChange:(id)sender
-                        forChannel:(UInt32)channel
-                      andDirection:(AMCoreAudioDirection)direction
+-(void)audioDeviceVolumeDidChange:(AMCoreAudioDevice *)audioDevice forChannel:(UInt32)channel andDirection:(AMCoreAudioDirection)direction
 {
-    AMCoreAudioDevice *audioDevice = sender;
     Float32 newVolume = [audioDevice volumeInDecibelsForChannel:channel
                                                    andDirection:direction];
 
-    NSLog(@"%@ volume for channel %d and direction %ld changed to %.2fdbFS", audioDevice.deviceName, channel, direction, newVolume);
+    NSLog(@"%@ volume for channel %d and direction %ld changed to %.2fdbFS", audioDevice, channel, direction, newVolume);
 }
 
-- (void)audioDeviceMuteDidChange:(id)sender
-                      forChannel:(UInt32)channel
-                    andDirection:(AMCoreAudioDirection)direction
+-(void)audioDeviceMuteDidChange:(AMCoreAudioDevice *)audioDevice forChannel:(UInt32)channel andDirection:(AMCoreAudioDirection)direction
 {
-    AMCoreAudioDevice *audioDevice = sender;
     BOOL isMuted = [audioDevice isChannelMuted:channel andDirection:direction];
 
-    NSLog(@"%@ mute for channel %d and direction %ld changed to %d", audioDevice.deviceName, channel, direction, isMuted);
+    NSLog(@"%@ mute for channel %d and direction %ld changed to %d", audioDevice, channel, direction, isMuted);
 }
 
-- (void)audioDeviceClockSourceDidChange:(id)sender
-                             forChannel:(UInt32)channel
-                           andDirection:(AMCoreAudioDirection)direction
+-(void)audioDeviceClockSourceDidChange:(AMCoreAudioDevice *)audioDevice forChannel:(UInt32)channel andDirection:(AMCoreAudioDirection)direction
 {
-    AMCoreAudioDevice *audioDevice = sender;
     NSString *clockSourceName = [audioDevice clockSourceForChannel:channel
                                                       andDirection:direction];
 
-    NSLog(@"%@ clock source changed to %@", audioDevice.deviceName, clockSourceName);
+    NSLog(@"%@ clock source changed to %@", audioDevice, clockSourceName);
 }
 
-- (void)audioDeviceNameDidChange:(id)sender
+-(void)audioDeviceNameDidChange:(AMCoreAudioDevice *)audioDevice
 {
-    AMCoreAudioDevice *audioDevice = sender;
-
-    NSLog(@"%@ name changed to %@", audioDevice.deviceUID, audioDevice.deviceName);
+    NSLog(@"%@ name changed to %@", audioDevice.deviceUID, audioDevice);
 }
 
-- (void)audioDeviceAvailableNominalSampleRatesDidChange:(id)sender
+-(void)audioDeviceAvailableNominalSampleRatesDidChange:(AMCoreAudioDevice *)audioDevice
 {
-    AMCoreAudioDevice *audioDevice = sender;
-
-    NSLog(@"%@ nominal sample rates changed to %@", audioDevice.deviceName, [audioDevice nominalSampleRates]);
+    NSLog(@"%@ nominal sample rates changed to %@", audioDevice, [audioDevice nominalSampleRates]);
 }
 
-- (void)audioDeviceIsAliveDidChange:(AMCoreAudioDevice *)audioDevice
+-(void)audioDeviceIsAliveDidChange:(AMCoreAudioDevice *)audioDevice
 {
-    NSLog(@"%@ 'is alive' changed to %@", audioDevice.deviceName, @([audioDevice isAlive]));
+    NSLog(@"%@ 'is alive' changed to %@", audioDevice, @([audioDevice isAlive]));
 }
 
 - (void)audioDeviceIsRunningDidChange:(AMCoreAudioDevice *)audioDevice
 {
-    NSLog(@"%@ 'is running' changed to %@", audioDevice.deviceName, @([audioDevice isRunning]));
+    NSLog(@"%@ 'is running' changed to %@", audioDevice, @([audioDevice isRunning]));
 }
 
 - (void)audioDeviceIsRunningSomewhereDidChange:(AMCoreAudioDevice *)audioDevice
 {
-    NSLog(@"%@ 'is running somewhere' changed to %@", audioDevice.deviceName, @([audioDevice isRunningSomewhere]));
-}
-
-#pragma mark - Private
-
-- (void)audioDeviceSetDelegatesFor:(id<NSFastEnumeration>)addedDevices
-             andRemoveDelegatesFor:(id<NSFastEnumeration>)removedDevices
-{
-    for (AMCoreAudioDevice *device in addedDevices)
-    {
-        device.delegate = self;
-        NSLog(@"Setting delegate for %@", device.deviceName);
-    }
-
-    for (AMCoreAudioDevice *device in removedDevices)
-    {
-        device.delegate = nil;
-        NSLog(@"Removing delegate for %@", device.cachedDeviceName);
-    }
+    NSLog(@"%@ 'is running somewhere' changed to %@", audioDevice, @([audioDevice isRunningSomewhere]));
 }
 
 @end
