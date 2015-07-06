@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		45BF6B121B4ACF7000CE2E5D /* AMCoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45BF6B0D1B4ACF3D00CE2E5D /* AMCoreAudio.framework */; };
+		45BF6B131B4ACF7000CE2E5D /* AMCoreAudio.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 45BF6B0D1B4ACF3D00CE2E5D /* AMCoreAudio.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		45E7D29318E0442700A722DB /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45E7D29218E0442700A722DB /* Cocoa.framework */; };
 		45E7D29D18E0442700A722DB /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 45E7D29B18E0442700A722DB /* InfoPlist.strings */; };
 		45E7D29F18E0442700A722DB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 45E7D29E18E0442700A722DB /* main.m */; };
@@ -14,10 +16,24 @@
 		45E7D2A618E0442700A722DB /* TLDAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 45E7D2A518E0442700A722DB /* TLDAppDelegate.m */; };
 		45E7D2A918E0442700A722DB /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45E7D2A718E0442700A722DB /* MainMenu.xib */; };
 		45E7D2AB18E0442700A722DB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45E7D2AA18E0442700A722DB /* Images.xcassets */; };
-		45E7D2C718E0446E00A722DB /* AMCoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45E7D2C618E0446E00A722DB /* AMCoreAudio.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		45BF6B141B4ACF7000CE2E5D /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				45BF6B131B4ACF7000CE2E5D /* AMCoreAudio.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		45BF6B0D1B4ACF3D00CE2E5D /* AMCoreAudio.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = AMCoreAudio.framework; path = "/Users/ruben/Library/Developer/Xcode/DerivedData/AMCoreAudio-cbumjbxojhxhscctomyfgnwvsebs/Build/Products/Debug/AMCoreAudio.framework"; sourceTree = "<absolute>"; };
 		45E7D28F18E0442700A722DB /* AMCoreAudio-Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AMCoreAudio-Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		45E7D29218E0442700A722DB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		45E7D29518E0442700A722DB /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -32,7 +48,6 @@
 		45E7D2A518E0442700A722DB /* TLDAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLDAppDelegate.m; sourceTree = "<group>"; };
 		45E7D2A818E0442700A722DB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		45E7D2AA18E0442700A722DB /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		45E7D2C618E0446E00A722DB /* AMCoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AMCoreAudio.framework; path = ../build/Debug/AMCoreAudio.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,7 +55,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				45E7D2C718E0446E00A722DB /* AMCoreAudio.framework in Frameworks */,
+				45BF6B121B4ACF7000CE2E5D /* AMCoreAudio.framework in Frameworks */,
 				45E7D29318E0442700A722DB /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -68,7 +83,7 @@
 		45E7D29118E0442700A722DB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				45E7D2C618E0446E00A722DB /* AMCoreAudio.framework */,
+				45BF6B0D1B4ACF3D00CE2E5D /* AMCoreAudio.framework */,
 				45E7D29218E0442700A722DB /* Cocoa.framework */,
 				45E7D29418E0442700A722DB /* Other Frameworks */,
 			);
@@ -119,6 +134,7 @@
 				45E7D28B18E0442700A722DB /* Sources */,
 				45E7D28C18E0442700A722DB /* Frameworks */,
 				45E7D28D18E0442700A722DB /* Resources */,
+				45BF6B141B4ACF7000CE2E5D /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -286,9 +302,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/AMCoreAudio-cbumjbxojhxhscctomyfgnwvsebs/Build/Products/Debug",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AMCoreAudio-Example/AMCoreAudio-Example-Prefix.pch";
 				INFOPLIST_FILE = "AMCoreAudio-Example/AMCoreAudio-Example-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -299,9 +320,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/AMCoreAudio-cbumjbxojhxhscctomyfgnwvsebs/Build/Products/Debug",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AMCoreAudio-Example/AMCoreAudio-Example-Prefix.pch";
 				INFOPLIST_FILE = "AMCoreAudio-Example/AMCoreAudio-Example-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LLVM_LTO = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;

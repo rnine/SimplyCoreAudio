@@ -7,7 +7,7 @@
 //
 
 #import "TLDAppDelegate.h"
-#import <AMCoreAudio/AMCoreAudio.h>
+@import AMCoreAudio;
 
 @interface TLDAppDelegate () <AMCoreAudioManagerDelegate>
 
