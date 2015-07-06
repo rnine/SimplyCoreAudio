@@ -49,14 +49,14 @@ extern NSString *const AMCoreAudioDefaultClockSourceName;
 
    @return The cached device name.
  */
-@property (readonly, retain) NSString *cachedDeviceName;
+@property (readonly, strong) NSString *cachedDeviceName;
 
 /*!
    A list of all the nominal sample rates supported by this audio device.
 
    @return An array of NSNumber objects with all the nominal sample rates.
  */
-@property (readonly, nonatomic, retain) NSArray *nominalSampleRates;
+@property (readonly, nonatomic, strong) NSArray *nominalSampleRates;
 
 /*!
    An audio device identifier.

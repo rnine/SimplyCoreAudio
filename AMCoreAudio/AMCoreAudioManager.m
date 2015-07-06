@@ -14,7 +14,7 @@
                                   AMCoreAudioHardwareDelegate>
 
 @property (nonatomic, strong) AMCoreAudioHardware *audioHardware;
-@property (nonatomic, retain) NSSet *allKnownDevices;
+@property (readwrite) NSSet *allKnownDevices;
 
 @end
 

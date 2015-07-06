@@ -31,7 +31,7 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 @interface AMCoreAudioDevice ()
 
 @property (nonatomic, assign) BOOL isRegisteredForNotifications;
-@property (readwrite, nonatomic, retain) NSArray *nominalSampleRates;
+@property (readwrite) NSArray *nominalSampleRates;
 
 @end
 

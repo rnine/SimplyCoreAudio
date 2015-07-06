@@ -28,7 +28,7 @@
    @note This set is automatically maintained by AMCoreAudioManager
    (i.e., if the list of hardware devices changes, so will this NSSet.)
  */
-@property (readonly, retain) NSSet *allKnownDevices;
+@property (readonly, nonatomic, strong) NSSet *allKnownDevices;
 
 /*!
    A delegate conforming to the AMCoreAudioManagerDelegate protocol.
