@@ -22,8 +22,8 @@
 
  */
 
-#import <Foundation/Foundation.h>
-#import <CoreAudio/CoreAudio.h>
+@import Foundation;
+@import CoreAudio.AudioHardwareBase;
 #import "AMCoreAudioProtocols.h"
 
 /*!

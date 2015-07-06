@@ -22,8 +22,18 @@
 
  */
 
+@import Foundation;
+
+//! Project version number for AMCoreAudio.
+FOUNDATION_EXPORT double AMCoreAudioVersionNumber;
+
+//! Project version string for AMCoreAudio.
+FOUNDATION_EXPORT const unsigned char AMCoreAudioVersionString[];
+
 #import "AMCoreAudioTypes.h"
 #import "AMCoreAudioHardware.h"
 #import "AMCoreAudioDevice.h"
 #import "AMCoreAudioManager.h"
 #import "AMCoreAudioProtocols.h"
+#import "AMCoreAudioDevice+Formatters.h"
+#import "AMCoreAudioDevice+PreferredDirections.h"

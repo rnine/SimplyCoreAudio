@@ -6,9 +6,10 @@
 //  Copyright (c) 2014 Ruben Nine. All rights reserved.
 //
 
-#import <AMCoreAudio/AMCoreAudio.h>
-
 #import "AMCoreAudioManager.h"
+#import "AMCoreAudioDevice.h"
+#import "AMCoreAudioHardware.h"
+@import CoreAudio.AudioHardware;
 
 @interface AMCoreAudioManager () <AMCoreAudioDeviceDelegate,
                                   AMCoreAudioHardwareDelegate>

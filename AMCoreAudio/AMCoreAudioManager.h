@@ -6,7 +6,9 @@
 //  Copyright (c) 2014 Ruben Nine. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+@import Foundation;
+
+@protocol AMCoreAudioManagerDelegate;
 
 @class AMCoreAudioDevice;
 

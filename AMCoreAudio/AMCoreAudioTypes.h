@@ -22,6 +22,8 @@
 
  */
 
+@import Foundation;
+
 typedef NS_ENUM (NSInteger, AMCoreAudioDirection) {
     kAMCoreAudioDeviceInvalidDirection = -1,
     kAMCoreAudioDevicePlaybackDirection = 0,

@@ -7,7 +7,7 @@
 //
 
 #import "AMCoreAudioHardware.h"
-#import <AudioToolbox/AudioServices.h>
+@import AudioToolbox.AudioServices;
 
 @interface AMCoreAudioHardware ()
 

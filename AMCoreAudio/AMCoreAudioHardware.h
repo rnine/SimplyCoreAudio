@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 9Labs. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+@import Foundation;
 #import "AMCoreAudioProtocols.h"
 
 @interface AMCoreAudioHardware : NSObject
