@@ -35,11 +35,11 @@
 		45638C4417A5D9280042EE1E /* AMCoreAudio-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AMCoreAudio-Info.plist"; sourceTree = "<group>"; };
 		45638C4617A5D9280042EE1E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		45638C4817A5D9280042EE1E /* AMCoreAudio-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AMCoreAudio-Prefix.pch"; sourceTree = "<group>"; };
-		45638C4917A5D9280042EE1E /* AMCoreAudio.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AMCoreAudio.h; sourceTree = "<group>"; };
-		45638C6917A5D9790042EE1E /* AMCoreAudioDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMCoreAudioDevice.h; sourceTree = "<group>"; };
-		45638C6A17A5D9790042EE1E /* AMCoreAudioDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMCoreAudioDevice.m; sourceTree = "<group>"; };
+		45638C4917A5D9280042EE1E /* AMCoreAudio.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = AMCoreAudio.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		45638C6917A5D9790042EE1E /* AMCoreAudioDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = AMCoreAudioDevice.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		45638C6A17A5D9790042EE1E /* AMCoreAudioDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AMCoreAudioDevice.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		45638C6D17A5D9DD0042EE1E /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
-		45638C6F17A5DCB40042EE1E /* AMCoreAudioTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMCoreAudioTypes.h; sourceTree = "<group>"; };
+		45638C6F17A5DCB40042EE1E /* AMCoreAudioTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = AMCoreAudioTypes.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4573702018895E9B00C34775 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		459289741976D32000E76265 /* AMCoreAudioDevice+Formatters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AMCoreAudioDevice+Formatters.h"; sourceTree = "<group>"; };
 		459289751976D32000E76265 /* AMCoreAudioDevice+Formatters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AMCoreAudioDevice+Formatters.m"; sourceTree = "<group>"; };
@@ -49,9 +49,9 @@
 		4592897F1976D42D00E76265 /* AMCoreAudioManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMCoreAudioManager.m; sourceTree = "<group>"; };
 		45A6D50618D368DB00E85F0E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		45A6D50818D3717100E85F0E /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.md; sourceTree = "<group>"; };
-		45BD75C4195EB50800388AB3 /* AMCoreAudioProtocols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMCoreAudioProtocols.h; sourceTree = "<group>"; };
-		45C345C818DD01B900C6B185 /* AMCoreAudioHardware.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMCoreAudioHardware.h; sourceTree = "<group>"; };
-		45C345C918DD01B900C6B185 /* AMCoreAudioHardware.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMCoreAudioHardware.m; sourceTree = "<group>"; };
+		45BD75C4195EB50800388AB3 /* AMCoreAudioProtocols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = AMCoreAudioProtocols.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		45C345C818DD01B900C6B185 /* AMCoreAudioHardware.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = AMCoreAudioHardware.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		45C345C918DD01B900C6B185 /* AMCoreAudioHardware.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AMCoreAudioHardware.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */

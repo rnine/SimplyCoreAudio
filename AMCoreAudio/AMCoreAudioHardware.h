@@ -3,7 +3,7 @@
 //  AMCoreAudio
 //
 //  Created by Ruben Nine on 22/03/14.
-//  Copyright (c) 2014 TroikaLabs. All rights reserved.
+//  Copyright (c) 2014 9Labs. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

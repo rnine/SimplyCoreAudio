@@ -19,7 +19,4 @@
 - (NSString *)numberOfChannelsDescription;
 - (NSString *)latencyDescription;
 
-//- (NSString *)clockSourceName;
-//- (NSArray *)supportedClockSourceNames;
-
 @end
