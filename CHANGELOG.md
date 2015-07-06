@@ -2,6 +2,7 @@
 
 | Version       | Description   | Date     |
 | -------------:|:------------- |:--------:|
+| 1.5           | Adding support for modules so `AMCoreAudio` can be included using the new @import directive.| July 6th, 2015|
 | 1.4.3         | Adding AMCoreAudioDevice -isRunning, -isRunningSomewhere, -isAlive| May 24th, 2015|
 |               | Adding audioDeviceIsAliveDidChange:, audioDeviceIsRunningDidChange: and audioDeviceIsRunningSomewhereDidChange: methods to AMCoreAudioDeviceDelegate protocol.||
 | 1.4.2         | Adding localizable strings support for AMCoreAudioDevice -formattedSampleRate:useShortFormat:| March 7th, 2015|
