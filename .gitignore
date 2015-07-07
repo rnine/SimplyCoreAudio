@@ -1,5 +1,11 @@
 .DS_Store
-AMCoreAudio.xcodeproj/xcuserdata/*.xcuserdatad
-AMCoreAudio.xcodeproj/project.xcworkspace/xcuserdata/*.xcuserdatad
-AMCoreAudio.xcworkspace/xcuserdata/*.xcuserdatad
-AMCoreAudio-Example/AMCoreAudio-Example.xcodeproj/xcuserdata/*.xcuserdatad
+
+# Xcode
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.xcuserstate
+project.xcworkspace/
+xcuserdata/
+Pods/
