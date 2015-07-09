@@ -13,7 +13,8 @@ import AMCoreAudio
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBOutlet weak var window: NSWindow!
-    private let audioDeviceManager = AMCoreAudioManager.sharedManager()
+
+    private let audioDeviceManager = AMCoreAudioManager.sharedManager
 
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         // Insert code here to initialize your application
@@ -30,63 +31,70 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 // MARK: - AMCoreAudioManagerDelegate Methods
 extension AppDelegate : AMCoreAudioManagerDelegate {
 
-    func hardwareDeviceListChangedWithAddedDevices(addedDevices: Set<NSObject>!, andRemovedDevices removedDevices: Set<NSObject>!) {
+    func hardwareDeviceListChangedWithAddedDevices(addedDevices: [AMCoreAudioDevice], andRemovedDevices removedDevices: [AMCoreAudioDevice]) {
         print("Devices added: \(addedDevices)")
         print("Devices removed: \(removedDevices)")
     }
 
-    func hardwareDefaultInputDeviceChangedTo(audioDevice: AMCoreAudioDevice!) {
+    func hardwareDefaultInputDeviceChanged(audioDevice: AMCoreAudioDevice) {
         print("Default input device changed to \(audioDevice)")
     }
 
-    func hardwareDefaultOutputDeviceChangedTo(audioDevice: AMCoreAudioDevice!) {
+    func hardwareDefaultOutputDeviceChanged(audioDevice: AMCoreAudioDevice) {
         print("Default output device changed to \(audioDevice)")
     }
 
-    func hardwareDefaultSystemDeviceChangedTo(audioDevice: AMCoreAudioDevice!) {
+    func hardwareDefaultSystemDeviceChanged(audioDevice: AMCoreAudioDevice) {
         print("System output device changed to \(audioDevice)")
     }
 
-    func audioDeviceListDidChange(audioDevice: AMCoreAudioDevice!) {
-        print("\(audioDevice) owned devices list changed")
-    }
-
-    func audioDeviceNominalSampleRateDidChange(audioDevice: AMCoreAudioDevice!) {
-        print("\(audioDevice) sample rate changed to \(audioDevice.nominalSampleRate())")
-    }
-
-    func audioDeviceVolumeDidChange(audioDevice: AMCoreAudioDevice!, forChannel channel: UInt32, andDirection direction: AMCoreAudioDirection) {
-        let newVolume = audioDevice.volumeInDecibelsForChannel(channel, andDirection: direction)
-        print("\(audioDevice) volume for channel \(channel) and direction \(direction) changed to \(newVolume)dbFS")
-    }
-
-    func audioDeviceMuteDidChange(audioDevice: AMCoreAudioDevice!, forChannel channel: UInt32, andDirection direction: AMCoreAudioDirection) {
-        let isMuted = audioDevice.isChannelMuted(channel, andDirection: direction)
-        print("\(audioDevice) mute for channel \(channel) and direction \(direction) changed to \(isMuted)")
-    }
-
-    func audioDeviceClockSourceDidChange(audioDevice: AMCoreAudioDevice!, forChannel channel: UInt32, andDirection direction: AMCoreAudioDirection) {
-        let clockSourceName = audioDevice.clockSourceForChannel(channel, andDirection: direction)
-        print("\(audioDevice) clock source changed to \(clockSourceName)")
-    }
-
-    func audioDeviceNameDidChange(audioDevice: AMCoreAudioDevice!) {
+    func audioDeviceNameDidChange(audioDevice: AMCoreAudioDevice) {
         print("\(audioDevice) name changed to \(audioDevice.deviceName())")
     }
 
-    func audioDeviceAvailableNominalSampleRatesDidChange(audioDevice: AMCoreAudioDevice!) {
-        print("\(audioDevice) nominal sample rates changed to \(audioDevice.nominalSampleRates)")
+    func audioDeviceListDidChange(audioDevice: AMCoreAudioDevice) {
+        print("\(audioDevice) owned devices list changed")
     }
 
-    func audioDeviceIsAliveDidChange(audioDevice: AMCoreAudioDevice!) {
+    func audioDeviceNominalSampleRateDidChange(audioDevice: AMCoreAudioDevice) {
+        if let sampleRate = audioDevice.nominalSampleRate() {
+            print("\(audioDevice) sample rate changed to \(sampleRate)")
+        }
+    }
+
+    func audioDeviceVolumeDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: AMCoreAudioDirection) {
+        if let newVolume = audioDevice.volumeInDecibelsForChannel(channel, andDirection: direction) {
+            print("\(audioDevice) volume for channel \(channel) and direction \(direction) changed to \(newVolume)dbFS")
+        }
+    }
+
+    func audioDeviceMuteDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: AMCoreAudioDirection) {
+        if let isMuted = audioDevice.isChannelMuted(channel, andDirection: direction) {
+            print("\(audioDevice) mute for channel \(channel) and direction \(direction) changed to \(isMuted)")
+        }
+    }
+
+    func audioDeviceClockSourceDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: AMCoreAudioDirection) {
+        if let clockSourceName = audioDevice.clockSourceForChannel(channel, andDirection: direction) {
+            print("\(audioDevice) clock source changed to \(clockSourceName)")
+        }
+    }
+
+    func audioDeviceAvailableNominalSampleRatesDidChange(audioDevice: AMCoreAudioDevice) {
+        if let nominalSampleRates = audioDevice.nominalSampleRates() {
+            print("\(audioDevice) nominal sample rates changed to \(nominalSampleRates)")
+        }
+    }
+
+    func audioDeviceIsAliveDidChange(audioDevice: AMCoreAudioDevice) {
         print("\(audioDevice) 'is alive' changed to \(audioDevice.isAlive())")
     }
 
-    func audioDeviceIsRunningDidChange(audioDevice: AMCoreAudioDevice!) {
+    func audioDeviceIsRunningDidChange(audioDevice: AMCoreAudioDevice) {
         print("\(audioDevice) 'is running' changed to \(audioDevice.isRunning())")
     }
 
-    func audioDeviceIsRunningSomewhereDidChange(audioDevice: AMCoreAudioDevice!) {
+    func audioDeviceIsRunningSomewhereDidChange(audioDevice: AMCoreAudioDevice) {
         print("\(audioDevice) 'is running somewhere' changed to \(audioDevice.isRunningSomewhere())")
     }
 }

@@ -2,9 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:Demo/Demo.xcodeproj">
+      location = "group:AMCoreAudio/AMCoreAudio.xcodeproj">
    </FileRef>
    <FileRef
-      location = "container:AMCoreAudio.xcodeproj">
+      location = "group:/Users/ruben/src/frameworks/AMCoreAudio/Demo/Demo.xcodeproj">
    </FileRef>
 </Workspace>

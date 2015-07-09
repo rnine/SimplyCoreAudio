@@ -10,7 +10,47 @@
 		45846DCA1B4BDB5B00273DA2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45846DC91B4BDB5B00273DA2 /* AppDelegate.swift */; };
 		45846DCC1B4BDB5B00273DA2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45846DCB1B4BDB5B00273DA2 /* Assets.xcassets */; };
 		45846DCF1B4BDB5B00273DA2 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45846DCD1B4BDB5B00273DA2 /* MainMenu.xib */; };
+		45A740741B4EF94D00C19842 /* AMCoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45A740711B4EF93600C19842 /* AMCoreAudio.framework */; };
+		45A740751B4EF94D00C19842 /* AMCoreAudio.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 45A740711B4EF93600C19842 /* AMCoreAudio.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		45A740701B4EF93600C19842 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 45A7406C1B4EF93600C19842 /* AMCoreAudio.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 454D245A1B4BE40E0043FA12;
+			remoteInfo = AMCoreAudio;
+		};
+		45A740721B4EF93900C19842 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 45A7406C1B4EF93600C19842 /* AMCoreAudio.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 454D24591B4BE40E0043FA12;
+			remoteInfo = AMCoreAudio;
+		};
+		45A740761B4EF94D00C19842 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 45A7406C1B4EF93600C19842 /* AMCoreAudio.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 454D24591B4BE40E0043FA12;
+			remoteInfo = AMCoreAudio;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		45A740781B4EF94D00C19842 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				45A740751B4EF94D00C19842 /* AMCoreAudio.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		45846DC61B4BDB5B00273DA2 /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -18,6 +58,8 @@
 		45846DCB1B4BDB5B00273DA2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		45846DCE1B4BDB5B00273DA2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		45846DD01B4BDB5B00273DA2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		45A740681B4EF01D00C19842 /* AMCoreAudio.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = AMCoreAudio.framework; path = "/Users/ruben/Library/Developer/Xcode/DerivedData/AMCoreAudio-cbumjbxojhxhscctomyfgnwvsebs/Build/Products/Debug/AMCoreAudio.framework"; sourceTree = "<absolute>"; };
+		45A7406C1B4EF93600C19842 /* AMCoreAudio.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = AMCoreAudio.xcodeproj; path = ../AMCoreAudio/AMCoreAudio.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -25,6 +67,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45A740741B4EF94D00C19842 /* AMCoreAudio.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -34,6 +77,8 @@
 		45846DBD1B4BDB5B00273DA2 = {
 			isa = PBXGroup;
 			children = (
+				45A7406C1B4EF93600C19842 /* AMCoreAudio.xcodeproj */,
+				45A740681B4EF01D00C19842 /* AMCoreAudio.framework */,
 				45846DC81B4BDB5B00273DA2 /* Demo */,
 				45846DC71B4BDB5B00273DA2 /* Products */,
 			);
@@ -58,6 +103,14 @@
 			path = Demo;
 			sourceTree = "<group>";
 		};
+		45A7406D1B4EF93600C19842 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				45A740711B4EF93600C19842 /* AMCoreAudio.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -68,10 +121,13 @@
 				45846DC21B4BDB5B00273DA2 /* Sources */,
 				45846DC31B4BDB5B00273DA2 /* Frameworks */,
 				45846DC41B4BDB5B00273DA2 /* Resources */,
+				45A740781B4EF94D00C19842 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				45A740731B4EF93900C19842 /* PBXTargetDependency */,
+				45A740771B4EF94D00C19842 /* PBXTargetDependency */,
 			);
 			name = Demo;
 			productName = Demo;
@@ -84,6 +140,7 @@
 		45846DBE1B4BDB5B00273DA2 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = 9Labs;
 				TargetAttributes = {
@@ -103,12 +160,28 @@
 			mainGroup = 45846DBD1B4BDB5B00273DA2;
 			productRefGroup = 45846DC71B4BDB5B00273DA2 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 45A7406D1B4EF93600C19842 /* Products */;
+					ProjectRef = 45A7406C1B4EF93600C19842 /* AMCoreAudio.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				45846DC51B4BDB5B00273DA2 /* Demo */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		45A740711B4EF93600C19842 /* AMCoreAudio.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = AMCoreAudio.framework;
+			remoteRef = 45A740701B4EF93600C19842 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		45846DC41B4BDB5B00273DA2 /* Resources */ = {
@@ -132,6 +205,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		45A740731B4EF93900C19842 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = AMCoreAudio;
+			targetProxy = 45A740721B4EF93900C19842 /* PBXContainerItemProxy */;
+		};
+		45A740771B4EF94D00C19842 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = AMCoreAudio;
+			targetProxy = 45A740761B4EF94D00C19842 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		45846DCD1B4BDB5B00273DA2 /* MainMenu.xib */ = {
@@ -230,10 +316,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.9labs.Demo;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Demo;
 			};
 			name = Debug;
 		};
@@ -242,10 +329,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.9labs.Demo;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Demo;
 			};
 			name = Release;
 		};
@@ -268,6 +356,7 @@
 				45846DD51B4BDB5B00273DA2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
