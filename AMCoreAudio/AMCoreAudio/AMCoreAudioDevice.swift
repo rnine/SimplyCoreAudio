@@ -1292,22 +1292,16 @@ final public class AMCoreAudioDevice: NSObject {
     }
 
     private class func defaultDeviceOfType(deviceType: AudioObjectPropertySelector) -> AMCoreAudioDevice? {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: deviceType,
             mScope: kAudioObjectPropertyScopeGlobal,
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        var size = UInt32(sizeof(AudioObjectID))
         var audioDeviceID = AudioDeviceID()
+        let status = getPropertyData(AudioObjectID(kAudioObjectSystemObject), address: address, andValue: &audioDeviceID)
 
-        let status = AudioObjectGetPropertyData(AudioObjectID(kAudioObjectSystemObject), &address, UInt32(0), nil, &size, &audioDeviceID)
-
-        if noErr != status {
-            return nil
-        }
-
-        return AMCoreAudioDevice(deviceID: audioDeviceID)
+        return noErr == status ? AMCoreAudioDevice(deviceID: audioDeviceID) : nil
     }
 
     // MARK: - Notification Book-keeping
