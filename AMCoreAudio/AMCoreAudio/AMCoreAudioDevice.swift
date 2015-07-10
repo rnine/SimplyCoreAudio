@@ -511,11 +511,10 @@ final public class AMCoreAudioDevice: NSObject {
         )
 
         var volumeInfo = AMCoreAudioVolumeInfo()
-        var status: OSStatus
 
         if Bool(boolean: AudioObjectHasProperty(deviceID, &address)) {
             var canSetVolumeBoolean = Boolean(0)
-            status = AudioObjectIsPropertySettable(deviceID, &address, &canSetVolumeBoolean)
+            var status = AudioObjectIsPropertySettable(deviceID, &address, &canSetVolumeBoolean)
 
             if noErr == status {
                 volumeInfo.canSetVolume = Bool(boolean: canSetVolumeBoolean)
@@ -535,7 +534,7 @@ final public class AMCoreAudioDevice: NSObject {
 
         if Bool(boolean: AudioObjectHasProperty(deviceID, &address)) {
             var canMuteBoolean = Boolean(0)
-            status = AudioObjectIsPropertySettable(deviceID, &address, &canMuteBoolean)
+            var status = AudioObjectIsPropertySettable(deviceID, &address, &canMuteBoolean)
 
             if noErr == status {
                 volumeInfo.canMute = Bool(boolean: canMuteBoolean)
@@ -544,7 +543,7 @@ final public class AMCoreAudioDevice: NSObject {
                 status = getPropertyData(address, andValue: &isMutedValue)
 
                 if noErr == status {
-                    volumeInfo.isMuted = isMutedValue == 1
+                    volumeInfo.isMuted = Bool(boolean: Boolean(isMutedValue))
                 }
             }
         }
@@ -554,7 +553,7 @@ final public class AMCoreAudioDevice: NSObject {
 
         if Bool(boolean: AudioObjectHasProperty(deviceID, &address)) {
             var canPlayThruBoolean = Boolean(0)
-            status = AudioObjectIsPropertySettable(deviceID, &address, &canPlayThruBoolean)
+            var status = AudioObjectIsPropertySettable(deviceID, &address, &canPlayThruBoolean)
 
             if noErr == status {
                 volumeInfo.canPlayThru = Bool(boolean: canPlayThruBoolean)
@@ -563,7 +562,7 @@ final public class AMCoreAudioDevice: NSObject {
                 status = getPropertyData(address, andValue: &isPlayThruSetValue)
 
                 if noErr == status {
-                    volumeInfo.isPlayThruSet = isPlayThruSetValue == 1
+                    volumeInfo.isPlayThruSet = Bool(boolean: Boolean(isPlayThruSetValue))
                 }
             }
         }
