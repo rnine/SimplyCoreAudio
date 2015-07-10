@@ -175,6 +175,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             print("|- Related devices are \(relatedDevices)")
         }
 
+        if let controlList = audioDevice.controlList() {
+            print("|- Control list is \(controlList)")
+        }
+
         if let ownedObjectIDs = audioDevice.ownedObjectIDs() {
             print("|- Owned object IDs are \(ownedObjectIDs)")
         }

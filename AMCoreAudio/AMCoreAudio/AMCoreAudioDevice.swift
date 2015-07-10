@@ -495,6 +495,24 @@ final public class AMCoreAudioDevice: NSObject {
     }
 
     /*!
+        An array of AudioObjectIDs that represent the AudioControls of the audio device.
+
+        @return An array of AudioObjectIDs
+    */
+    public func controlList() -> [AudioObjectID]? {
+        let address = AudioObjectPropertyAddress(
+            mSelector: kAudioObjectPropertyControlList,
+            mScope: kAudioObjectPropertyScopeGlobal,
+            mElement: kAudioObjectPropertyElementMaster
+        )
+
+        var controlList = [AudioObjectID]()
+        let status = getPropertyDataArray(address, value: &controlList, andDefaultValue: AudioObjectID())
+
+        return noErr == status ? controlList : nil
+    }
+
+    /*!
         An array of AMCoreAudioDevices for devices related to the AMCoreAudioDevice.
     
         @return An array of AMCoreAudioDevices
