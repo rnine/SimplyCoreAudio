@@ -50,8 +50,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             print("|- UID: \(deviceUID)")
         }
 
+        if let modelUID = audioDevice.deviceModelUID() {
+            print("|- Model UID: \(modelUID)")
+        }
+
         if let manufacturer = audioDevice.deviceManufacturer() {
             print("|- Manufacturer: \(manufacturer)")
+        }
+
+        if let transportType = audioDevice.transportType() {
+            print("|- Transport type: \(transportType)")
         }
 
         if let configurationApplication = audioDevice.deviceConfigurationApplication() {
@@ -61,10 +69,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let deviceIsHidden = audioDevice.deviceIsHidden()
         print("|- Is hidden? \(deviceIsHidden)")
 
-        let playbackDirection = AMCoreAudioDirection.Playback
+        let playbackDirection = Direction.Playback
         print("|- Preferred stereo channels for \(playbackDirection): \(audioDevice.preferredStereoChannelsForDirection(playbackDirection))")
 
-        let recordingDirection = AMCoreAudioDirection.Recording
+        let recordingDirection = Direction.Recording
         print("|- Preferred stereo channels for \(recordingDirection): \(audioDevice.preferredStereoChannelsForDirection(recordingDirection))")
 
         if let nominalSampleRates = audioDevice.nominalSampleRates() {
@@ -138,7 +146,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
             for channel in 1...playbackChannels {
                 if let volume = audioDevice.volumeInDecibelsForChannel(channel, andDirection: playbackDirection) {
-                    print("|  - Channel \(channel) volume is \(volume)dBFS")
+                    let nameForChannel = audioDevice.nameForChannel(channel, andDirection: playbackDirection) ?? "<No named>"
+                    print("|  - Channel \(channel) (\(nameForChannel)) volume is \(volume)dBFS")
 
                     if let volumeInfo = audioDevice.volumeInfoForChannel(channel, andDirection: playbackDirection) {
                         print("|    - Volume info: \(volumeInfo)")
@@ -152,13 +161,22 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
             for channel in 1...recordingChannels {
                 if let volume = audioDevice.volumeInDecibelsForChannel(channel, andDirection: recordingDirection) {
-                    print("|  - Channel \(channel) volume is \(volume)dBFS")
+                    let nameForChannel = audioDevice.nameForChannel(channel, andDirection: recordingDirection) ?? "<No named>"
+                    print("|  - Channel \(channel) (\(nameForChannel)) volume is \(volume)dBFS")
 
                     if let volumeInfo = audioDevice.volumeInfoForChannel(channel, andDirection: recordingDirection) {
                         print("|    - Volume info: \(volumeInfo)")
                     }
                 }
             }
+        }
+
+        if let relatedDevices = audioDevice.relatedDevices() {
+            print("|- Related devices are \(relatedDevices)")
+        }
+
+        if let ownedObjectIDs = audioDevice.ownedObjectIDs() {
+            print("|- Owned object IDs are \(ownedObjectIDs)")
         }
         
         if let hogModePID = audioDevice.hogModePID() {
@@ -203,19 +221,19 @@ extension AppDelegate : AMCoreAudioManagerDelegate {
         }
     }
 
-    func audioDeviceVolumeDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: AMCoreAudioDirection) {
+    func audioDeviceVolumeDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: Direction) {
         if let newVolume = audioDevice.volumeInDecibelsForChannel(channel, andDirection: direction) {
             print("\(audioDevice) volume for channel \(channel) and direction \(direction) changed to \(newVolume)dbFS")
         }
     }
 
-    func audioDeviceMuteDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: AMCoreAudioDirection) {
+    func audioDeviceMuteDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: Direction) {
         if let isMuted = audioDevice.isChannelMuted(channel, andDirection: direction) {
             print("\(audioDevice) mute for channel \(channel) and direction \(direction) changed to \(isMuted)")
         }
     }
 
-    func audioDeviceClockSourceDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: AMCoreAudioDirection) {
+    func audioDeviceClockSourceDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: Direction) {
         if let clockSourceName = audioDevice.clockSourceForChannel(channel, andDirection: direction) {
             print("\(audioDevice) clock source changed to \(clockSourceName)")
         }

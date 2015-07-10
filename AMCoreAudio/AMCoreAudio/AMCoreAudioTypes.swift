@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum AMCoreAudioDirection: Int, CustomStringConvertible {
+public enum Direction: Int, CustomStringConvertible {
     case Invalid = -1
     case Playback = 0
     case Recording = 1
@@ -22,7 +22,24 @@ public enum AMCoreAudioDirection: Int, CustomStringConvertible {
     }
 }
 
-public struct AMCoreAudioVolumeInfo {
+public enum TransportType: String {
+    case Unknown
+    case BuiltIn
+    case Aggregate
+    case Virtual
+    case PCI
+    case USB
+    case FireWire
+    case Bluetooth
+    case BluetoothLE
+    case HDMI
+    case DisplayPort
+    case AirPlay
+    case AVB
+    case Thunderbolt
+}
+
+public struct VolumeInfo {
     var volume: Float32?
     var hasVolume: Bool
     var canSetVolume: Bool

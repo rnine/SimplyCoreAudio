@@ -44,7 +44,7 @@ public protocol AMCoreAudioManagerDelegate: class {
     /*!
         Called whenever the audio device's clock source changes for a given channel and direction.
     */
-    func audioDeviceClockSourceDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: AMCoreAudioDirection)
+    func audioDeviceClockSourceDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: Direction)
 
     /*!
         Called whenever the audio device's name changes.
@@ -60,12 +60,12 @@ public protocol AMCoreAudioManagerDelegate: class {
     /*!
         Called whenever the audio device's volume for a given channel and direction changes.
     */
-    func audioDeviceVolumeDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: AMCoreAudioDirection)
+    func audioDeviceVolumeDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: Direction)
 
     /*!
         Called whenever the audio device's mute state for a given channel and direction changes.
     */
-    func audioDeviceMuteDidChange(audioDevice: AMCoreAudioDevice, forChannel channel:UInt32, andDirection direction: AMCoreAudioDirection)
+    func audioDeviceMuteDidChange(audioDevice: AMCoreAudioDevice, forChannel channel:UInt32, andDirection direction: Direction)
 
     /*!
         Called whenever the audio device's "is alive" flag changes.
@@ -135,7 +135,7 @@ extension AMCoreAudioManager: AMCoreAudioDeviceDelegate {
         delegate?.audioDeviceAvailableNominalSampleRatesDidChange(audioDevice)
     }
 
-    public func audioDeviceClockSourceDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: AMCoreAudioDirection) {
+    public func audioDeviceClockSourceDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: Direction) {
         delegate?.audioDeviceClockSourceDidChange(audioDevice, forChannel: channel, andDirection: direction)
     }
 
@@ -147,11 +147,11 @@ extension AMCoreAudioManager: AMCoreAudioDeviceDelegate {
         delegate?.audioDeviceListDidChange(audioDevice)
     }
 
-    public func audioDeviceVolumeDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: AMCoreAudioDirection) {
+    public func audioDeviceVolumeDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: Direction) {
         delegate?.audioDeviceVolumeDidChange(audioDevice, forChannel: channel, andDirection: direction)
     }
 
-    public func audioDeviceMuteDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: AMCoreAudioDirection) {
+    public func audioDeviceMuteDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: Direction) {
         delegate?.audioDeviceMuteDidChange(audioDevice, forChannel: channel, andDirection: direction)
     }
 
