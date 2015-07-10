@@ -64,7 +64,7 @@ public protocol AMCoreAudioDeviceDelegate: class {
     func audioDeviceIsRunningSomewhereDidChange(audioDevice: AMCoreAudioDevice)
 }
 
-public class AMCoreAudioDevice: NSObject {
+final public class AMCoreAudioDevice: NSObject {
 
     let AMCoreAudioDefaultClockSourceName = "Default"
 
@@ -163,30 +163,29 @@ public class AMCoreAudioDevice: NSObject {
         Initializes an AMCoreAudioDevice that matches the provided audio UID, or nil if the UID is invalid.
     */
     public convenience init?(deviceUID: String) {
-        var size = UInt32(sizeof(AudioValueTranslation))
-        var objectID = AudioObjectID(0)
+        var deviceID = AudioObjectID(0)
         var uid = deviceUID
 
         var translation = AudioValueTranslation(
             mInputData: &uid,
             mInputDataSize: UInt32(sizeof(CFStringRef)),
-            mOutputData: &objectID,
+            mOutputData: &deviceID,
             mOutputDataSize: UInt32(sizeof(AudioObjectID))
         )
 
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioHardwarePropertyDeviceForUID,
             mScope: kAudioObjectPropertyScopeGlobal,
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        let status = AudioObjectGetPropertyData(AudioObjectID(kAudioObjectSystemObject), &address, UInt32(0), nil, &size, &translation)
+        let status = self.dynamicType.getPropertyData(AudioObjectID(kAudioObjectSystemObject), address: address, andValue: &translation)
 
-        if (noErr == status) {
-            self.init(deviceID: objectID)
+        if noErr != status {
+            return nil
         }
 
-        return nil
+        self.init(deviceID: deviceID)
     }
 
     deinit {
@@ -214,16 +213,14 @@ public class AMCoreAudioDevice: NSObject {
         @return true on success, false otherwise.
     */
     public func setAsDefaultDevice(deviceType: AudioObjectPropertySelector) -> Bool {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: deviceType,
             mScope: kAudioObjectPropertyScopeGlobal,
             mElement: kAudioObjectPropertyElementMaster
         )
 
         var deviceID = self.deviceID
-        let size = UInt32(sizeof(AudioObjectID))
-
-        let status = AudioObjectSetPropertyData(AudioObjectID(kAudioObjectSystemObject), &address, UInt32(0), nil, size, &deviceID)
+        let status = setPropertyData(AudioObjectID(kAudioObjectSystemObject), address: address, andValue: &deviceID)
 
         return noErr == status
     }
@@ -234,37 +231,18 @@ public class AMCoreAudioDevice: NSObject {
 
         @return An array of AudioObjectID's.
     */
-    class func allDeviceIDs() -> [AudioObjectID] {
-        var address = AudioObjectPropertyAddress(
+    public class func allDeviceIDs() -> [AudioObjectID] {
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioHardwarePropertyDevices,
             mScope: kAudioObjectPropertyScopeGlobal,
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        var size = UInt32(0)
-        var status: OSStatus
+        let systemObjectID = AudioObjectID(kAudioObjectSystemObject)
+        var allIDs = [AudioObjectID]()
+        let status = getPropertyDataArray(systemObjectID, address: address, value: &allIDs, andDefaultValue: 0)
 
-        status = AudioObjectGetPropertyDataSize(
-            AudioObjectID(kAudioObjectSystemObject),
-            &address,
-            UInt32(0),
-            nil,
-            &size
-        )
-
-        if noErr != status {
-            return []
-        }
-
-        var allIDs = [AudioObjectID](count:Int(size) / sizeof(AudioObjectID), repeatedValue: 0)
-
-        status = AudioObjectGetPropertyData(AudioObjectID(kAudioObjectSystemObject), &address, UInt32(0), nil, &size, &allIDs)
-
-        if noErr != status {
-            return []
-        }
-
-        return allIDs
+        return noErr == status ? allIDs : []
     }
 
     /*!
@@ -273,7 +251,7 @@ public class AMCoreAudioDevice: NSObject {
 
         @return An array of AMCoreAudioDevices.
     */
-    class func allDevices() -> [AMCoreAudioDevice] {
+    public class func allDevices() -> [AMCoreAudioDevice] {
         let deviceIDs = allDeviceIDs()
 
         let devices = deviceIDs.map { (let deviceID) -> AMCoreAudioDevice in
@@ -289,11 +267,11 @@ public class AMCoreAudioDevice: NSObject {
 
         @return An array of AMCoreAudioDevices.
     */
-    class func allInputDevices() -> [AMCoreAudioDevice] {
+    public class func allInputDevices() -> [AMCoreAudioDevice] {
         let devices = allDevices()
 
         return devices.filter({ (let device) -> Bool in
-            return device.channelsForDirection(.Record) > 0
+            return device.channelsForDirection(.Recording) > 0
         })
     }
 
@@ -311,15 +289,15 @@ public class AMCoreAudioDevice: NSObject {
         })
     }
 
-    class func defaultInputDevice() -> AMCoreAudioDevice? {
+    public class func defaultInputDevice() -> AMCoreAudioDevice? {
         return defaultDeviceOfType(kAudioHardwarePropertyDefaultInputDevice)
     }
 
-    class func defaultOutputDevice() -> AMCoreAudioDevice? {
+    public class func defaultOutputDevice() -> AMCoreAudioDevice? {
         return defaultDeviceOfType(kAudioHardwarePropertyDefaultOutputDevice)
     }
 
-    class func defaultSystemOutputDevice() -> AMCoreAudioDevice? {
+    public class func defaultSystemOutputDevice() -> AMCoreAudioDevice? {
         return defaultDeviceOfType(kAudioHardwarePropertyDefaultSystemOutputDevice)
     }
 
@@ -335,22 +313,16 @@ public class AMCoreAudioDevice: NSObject {
         @return A string with the audio device's unique identifier.
     */
     public func deviceUID() -> String? {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyDeviceUID,
             mScope: kAudioObjectPropertyScopeGlobal,
             mElement: kAudioObjectPropertyElementMaster
         )
 
         var uid: CFString = ""
-        var size = UInt32(sizeof(CFStringRef))
+        let status = getPropertyData(address, andValue: &uid)
 
-        let status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &uid)
-
-        if (noErr != status) {
-            return nil
-        }
-
-        return uid as String
+        return noErr == status ? (uid as String) : nil
     }
 
     /*!
@@ -359,22 +331,16 @@ public class AMCoreAudioDevice: NSObject {
         @return A string with the audio device's manufacturer name.
     */
     public func deviceManufacturer() -> String? {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyDeviceManufacturerCFString,
             mScope: kAudioObjectPropertyScopeGlobal,
             mElement: kAudioObjectPropertyElementMaster
         )
 
         var manufacturer: CFString = ""
-        var size = UInt32(sizeof(CFStringRef))
+        let status = getPropertyData(address, andValue: &manufacturer)
 
-        let status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &manufacturer)
-
-        if (noErr != status) {
-            return nil
-        }
-
-        return manufacturer as String
+        return noErr == status ? (manufacturer as String) : nil
     }
 
     /*!
@@ -384,22 +350,16 @@ public class AMCoreAudioDevice: NSObject {
         @return A string pointing to the bundle ID
     */
     public func deviceConfigurationApplication() -> String? {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyConfigurationApplication,
             mScope: kAudioObjectPropertyScopeGlobal,
             mElement: kAudioObjectPropertyElementMaster
         )
 
         var application: CFString = ""
-        var size = UInt32(sizeof(CFStringRef))
+        let status = getPropertyData(address, andValue: &application)
 
-        let status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &application)
-
-        if (noErr != status) {
-            return nil
-        }
-
-        return application as String
+        return noErr == status ? (application as String) : nil
     }
 
     /*!
@@ -407,23 +367,17 @@ public class AMCoreAudioDevice: NSObject {
 
         @return An URL pointing to the image file
     */
-    public func deviceIconURL() -> NSURL? {
-        var address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyIcon,
+    public func deviceIsHidden() -> Bool {
+        let address = AudioObjectPropertyAddress(
+            mSelector: kAudioDevicePropertyIsHidden,
             mScope: kAudioObjectPropertyScopeGlobal,
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        var url = NSURL()
-        var size = UInt32(sizeof(CFURLRef))
+        var isHiddenValue = UInt32(0)
+        let status = getPropertyData(address, andValue: &isHiddenValue)
 
-        let status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &url)
-
-        if (noErr != status) {
-            return nil
-        }
-
-        return url
+        return noErr == status ? isHiddenValue != 0 : false
     }
 
     /*!
@@ -433,21 +387,16 @@ public class AMCoreAudioDevice: NSObject {
 
     */
     public func nameForChannel(channel: UInt32, andDirection direction: AMCoreAudioDirection) -> String? {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioObjectPropertyElementName,
             mScope: directionToScope(direction),
             mElement: channel
         )
 
         var name: CFString = ""
-        var size = UInt32(sizeof(CFStringRef))
-        let status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &name)
+        let status = getPropertyData(address, andValue: &name)
 
-        if noErr != status {
-            return nil
-        }
-
-        return name as String
+        return noErr == status ? (name as String) : nil
     }
 
     /*!
@@ -456,22 +405,16 @@ public class AMCoreAudioDevice: NSObject {
         @return true when the device is alive, false otherwise.
     */
     public func isAlive() -> Bool {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyDeviceIsAlive,
             mScope: kAudioObjectPropertyScopeGlobal,
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        var size = UInt32(sizeof(UInt32))
         var valIsAlive = UInt32(0)
+        let status = getPropertyData(address, andValue: &valIsAlive)
 
-        let status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &valIsAlive)
-
-        if noErr != status {
-            return false
-        }
-        
-        return Bool(boolean: Boolean(valIsAlive))
+        return noErr == status ? Bool(boolean: Boolean(valIsAlive)) : false
     }
 
     /*!
@@ -480,22 +423,16 @@ public class AMCoreAudioDevice: NSObject {
         @return true when the device is running, false otherwise.
     */
     public func isRunning() -> Bool {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyDeviceIsRunning,
             mScope: kAudioObjectPropertyScopeGlobal,
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        var size = UInt32(sizeof(UInt32))
         var valIsRunning = UInt32(0)
+        let status = getPropertyData(address, andValue: &valIsRunning)
 
-        let status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &valIsRunning)
-
-        if noErr != status {
-            return false
-        }
-
-        return Bool(boolean: Boolean(valIsRunning))
+        return noErr == status ? Bool(boolean: Boolean(valIsRunning)) : false
     }
 
     /*!
@@ -504,22 +441,16 @@ public class AMCoreAudioDevice: NSObject {
         @return true when the device is running somewhere, false otherwise.
     */
     public func isRunningSomewhere() -> Bool {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyDeviceIsRunningSomewhere,
             mScope: kAudioObjectPropertyScopeGlobal,
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        var size = UInt32(sizeof(UInt32))
         var valIsRunningSomewhere = UInt32(0)
+        let status = getPropertyData(address, andValue: &valIsRunningSomewhere)
 
-        let status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &valIsRunningSomewhere)
-
-        if noErr != status {
-            return false
-        }
-
-        return Bool(boolean: Boolean(valIsRunningSomewhere))
+        return noErr == status ? Bool(boolean: Boolean(valIsRunningSomewhere)) : false
     }
 
     // MARK: - Input/Output Layout Methods
@@ -529,54 +460,21 @@ public class AMCoreAudioDevice: NSObject {
 
         @return An UInt32 value.
     */
-    public func channelsForDirection(direction: AMCoreAudioDirection) -> UInt32 {
-        let channels = channelsByStreamForDirection(direction)
-        return channels.reduce(0) { $0 + $1 }
-    }
-
-    /*!
-        An array listing the number of channels per stream in a given direction.
-
-        @return An array containing the list of channels.
-    */
-    public func channelsByStreamForDirection(direction: AMCoreAudioDirection) -> [UInt32] {
+    public func channelsForDirection(direction: AMCoreAudioDirection) -> UInt32? {
         var address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyStreamConfiguration,
+            mSelector: kAudioDevicePropertyPreferredChannelLayout,
             mScope: directionToScope(direction),
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        let hasProperty = Bool(boolean: AudioObjectHasProperty(deviceID, &address))
+        if Bool(boolean: AudioObjectHasProperty(deviceID, &address)) {
+            var result = AudioChannelLayout()
+            let status = getPropertyData(address, andValue: &result)
 
-        if !hasProperty {
-            return []
+            return noErr == status ? result.mNumberChannelDescriptions : nil
         }
 
-        var status: OSStatus
-        var size = UInt32(0)
-
-        status = AudioObjectGetPropertyDataSize(deviceID, &address, UInt32(0), nil, &size)
-
-        if noErr != status {
-            return []
-        }
-
-        var audioBuffer = AudioBufferList()
-
-        status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &audioBuffer)
-
-        if noErr != status {
-            return []
-        }
-
-        var result = [UInt32](count: Int(audioBuffer.mNumberBuffers), repeatedValue: 0)
-        let abl = UnsafeMutableAudioBufferListPointer(&audioBuffer)
-
-        for buffer in abl {
-            result.append(buffer.mNumberChannels)
-        }
-
-        return result
+        return nil
     }
 
     /*!
@@ -585,7 +483,7 @@ public class AMCoreAudioDevice: NSObject {
         @return true when the device is input only, false otherwise.
     */
     public func isInputOnlyDevice() -> Bool {
-        return channelsForDirection(.Playback) == 0 && channelsForDirection(.Record) > 0
+        return channelsForDirection(.Playback) == 0 && channelsForDirection(.Recording) > 0
     }
 
     /*!
@@ -594,7 +492,7 @@ public class AMCoreAudioDevice: NSObject {
         @return true when the device is output only, false otherwise.
     */
     public func isOutputOnlyDevice() -> Bool {
-        return channelsForDirection(.Record) == 0 && channelsForDirection(.Playback) > 0
+        return channelsForDirection(.Recording) == 0 && channelsForDirection(.Playback) > 0
     }
 
     // MARK: - Individual Channel Methods
@@ -605,8 +503,6 @@ public class AMCoreAudioDevice: NSObject {
         @return A AMCoreAudioVolumeInfo struct.
     */
     public func volumeInfoForChannel(channel: UInt32, andDirection direction: AMCoreAudioDirection) -> AMCoreAudioVolumeInfo? {
-        var volumeInfo = AMCoreAudioVolumeInfo()
-
         // obtain volume info
         var address: AudioObjectPropertyAddress
 
@@ -616,108 +512,62 @@ public class AMCoreAudioDevice: NSObject {
             mElement: channel
         )
 
+        var volumeInfo = AMCoreAudioVolumeInfo()
         var status: OSStatus
-        var hasProperty: Bool
-        var size = UInt32()
 
-        hasProperty = Bool(boolean: AudioObjectHasProperty(deviceID, &address))
-
-        if !hasProperty {
-            return nil
-        }
-
-        status = AudioObjectGetPropertyDataSize(deviceID, &address, UInt32(0), nil, &size)
-
-        if noErr != status {
-            return nil
-        }
-
-        var canSetVolumeBoolean = Boolean(0)
-        status = AudioObjectIsPropertySettable(deviceID, &address, &canSetVolumeBoolean)
-
-        if noErr == status {
-            volumeInfo.canSetVolume = Bool(boolean: canSetVolumeBoolean)
-            volumeInfo.hasVolume = true
-
-            var volume = Float32(0)
-
-            status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &volume)
+        if Bool(boolean: AudioObjectHasProperty(deviceID, &address)) {
+            var canSetVolumeBoolean = Boolean(0)
+            status = AudioObjectIsPropertySettable(deviceID, &address, &canSetVolumeBoolean)
 
             if noErr == status {
-                volumeInfo.volume = volume
-            } else {
-                return nil
+                volumeInfo.canSetVolume = Bool(boolean: canSetVolumeBoolean)
+                volumeInfo.hasVolume = true
+
+                var volume = Float32(0)
+                status = getPropertyData(address, andValue: &volume)
+
+                if noErr == status {
+                    volumeInfo.volume = volume
+                }
             }
-        } else {
-            return nil
         }
 
         // obtain mute info
         address.mSelector = kAudioDevicePropertyMute
 
-        hasProperty = Bool(boolean: AudioObjectHasProperty(deviceID, &address))
-
-        if !hasProperty {
-            return nil
-        }
-
-        status = AudioObjectGetPropertyDataSize(deviceID, &address, UInt32(0), nil, &size)
-
-        if noErr != status {
-            return nil
-        }
-
-        var canMuteBoolean = Boolean(0)
-        status = AudioObjectIsPropertySettable(deviceID, &address, &canMuteBoolean)
-
-        if noErr == status {
-            volumeInfo.canMute = Bool(boolean: canMuteBoolean)
-
-            var isMuted = Boolean(0)
-
-            status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &isMuted)
+        if Bool(boolean: AudioObjectHasProperty(deviceID, &address)) {
+            var canMuteBoolean = Boolean(0)
+            status = AudioObjectIsPropertySettable(deviceID, &address, &canMuteBoolean)
 
             if noErr == status {
-                volumeInfo.isMuted = Bool(boolean: isMuted)
-            } else {
-                return nil
+                volumeInfo.canMute = Bool(boolean: canMuteBoolean)
+
+                var isMutedValue = UInt32(0)
+                status = getPropertyData(address, andValue: &isMutedValue)
+
+                if noErr == status {
+                    volumeInfo.isMuted = isMutedValue == 1
+                }
             }
-        } else {
-            return nil
         }
 
         // obtain play thru info
         address.mSelector = kAudioDevicePropertyPlayThru
 
-        hasProperty = Bool(boolean: AudioObjectHasProperty(deviceID, &address))
-
-        if !hasProperty {
-            return nil
-        }
-
-        status = AudioObjectGetPropertyDataSize(deviceID, &address, UInt32(0), nil, &size)
-
-        if noErr != status {
-            return nil
-        }
-
-        var canPlayThruBoolean = Boolean(0)
-        status = AudioObjectIsPropertySettable(deviceID, &address, &canPlayThruBoolean)
-
-        if noErr == status {
-            volumeInfo.canPlayThru = Bool(boolean: canPlayThruBoolean)
-
-            var isPlayThruSet = Boolean(0)
-
-            status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &isPlayThruSet)
+        if Bool(boolean: AudioObjectHasProperty(deviceID, &address)) {
+            var canPlayThruBoolean = Boolean(0)
+            status = AudioObjectIsPropertySettable(deviceID, &address, &canPlayThruBoolean)
 
             if noErr == status {
-                volumeInfo.isPlayThruSet = Bool(boolean: isPlayThruSet)
-            } else {
-                return nil
+                volumeInfo.canPlayThru = Bool(boolean: canPlayThruBoolean)
+
+                var isPlayThruSetValue = UInt32(0)
+                status = getPropertyData(address, andValue: &isPlayThruSetValue)
+
+                if noErr == status {
+                    volumeInfo.isPlayThruSet = isPlayThruSetValue == 1
+                }
             }
-        } else {
-            return nil
         }
 
         return volumeInfo
@@ -729,22 +579,16 @@ public class AMCoreAudioDevice: NSObject {
         @return The scalar volume as a Float32 value.
     */
     public func volumeForChannel(channel: UInt32, andDirection direction: AMCoreAudioDirection) -> Float32? {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyVolumeScalar,
             mScope: directionToScope(direction),
             mElement: channel
         )
 
-        var size = UInt32(sizeof(Float32))
         var volume = Float32(0)
+        let status = getPropertyData(address, andValue: &volume)
 
-        let status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &volume)
-
-        if noErr != status {
-            return nil
-        }
-
-        return volume
+        return noErr == status ? volume : nil
     }
 
     /*!
@@ -753,22 +597,16 @@ public class AMCoreAudioDevice: NSObject {
         @return The volume in decibels as a Float32 value.
     */
     public func volumeInDecibelsForChannel(channel: UInt32, andDirection direction: AMCoreAudioDirection) -> Float32? {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyVolumeDecibels,
             mScope: directionToScope(direction),
             mElement: channel
         )
 
-        var size = UInt32(sizeof(Float32))
         var volumeInDecibels = Float32(0)
+        let status = getPropertyData(address, andValue: &volumeInDecibels)
 
-        let status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &volumeInDecibels)
-
-        if noErr != status {
-            return nil
-        }
-
-        return volumeInDecibels
+        return noErr == status ? volumeInDecibels : nil
     }
 
     /*!
@@ -777,16 +615,14 @@ public class AMCoreAudioDevice: NSObject {
         @return true on success, false otherwise.
     */
     public func setVolume(volume: Float32, forChannel channel: UInt32, andDirection direction: AMCoreAudioDirection) -> Bool {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyVolumeScalar,
             mScope: directionToScope(direction),
             mElement: channel
         )
 
-        let size = UInt32(sizeof(Float32))
         var newVolume = volume
-
-        let status = AudioObjectSetPropertyData(deviceID, &address, UInt32(0), nil, size, &newVolume)
+        let status = setPropertyData(address, andValue: &newVolume)
 
         return noErr == status
     }
@@ -797,16 +633,14 @@ public class AMCoreAudioDevice: NSObject {
         @return true on success, false otherwise.
     */
     public func setMute(shouldMute: Bool, forChannel channel: UInt32, andDirection direction: AMCoreAudioDirection) -> Bool {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyMute,
             mScope: directionToScope(direction),
             mElement: channel
         )
 
-        let size = UInt32(sizeof(UInt32))
         var willMute = UInt32(shouldMute == true ? 1 : 0)
-
-        let status = AudioObjectSetPropertyData(deviceID, &address, UInt32(0), nil, size, &willMute)
+        let status = setPropertyData(address, andValue: &willMute)
 
         return noErr == status
     }
@@ -817,22 +651,16 @@ public class AMCoreAudioDevice: NSObject {
         @return true if channel is muted, false otherwise.
     */
     public func isChannelMuted(channel: UInt32, andDirection direction: AMCoreAudioDirection) -> Bool? {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyMute,
             mScope: directionToScope(direction),
             mElement: channel
         )
 
-        var size = UInt32(sizeof(UInt32))
         var valIsMuted = UInt32(0)
+        let status = getPropertyData(address, andValue: &valIsMuted)
 
-        let status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &valIsMuted)
-
-        if noErr != status {
-            return nil
-        }
-
-        return Bool(boolean: Boolean(valIsMuted))
+        return noErr == status ? Bool(boolean: Boolean(valIsMuted)) : nil
     }
 
     /*!
@@ -840,9 +668,8 @@ public class AMCoreAudioDevice: NSObject {
 
         @return true if channel can be muted, false otherwise.
     */
-    public func canMuteForChannel(channel: UInt32, andDirection direction: AMCoreAudioDirection) -> Bool? {
-        let volumeInfo = volumeInfoForChannel(channel, andDirection: direction)
-        return volumeInfo?.canMute
+    public func canMuteForChannel(channel: UInt32, andDirection direction: AMCoreAudioDirection) -> Bool {
+        return volumeInfoForChannel(channel, andDirection: direction)?.canMute ?? false
     }
 
     /*!
@@ -851,7 +678,7 @@ public class AMCoreAudioDevice: NSObject {
         @return true if the channel's volume can be set, false otherwise.
     */
     public func canSetVolumeForChannel(channel: UInt32, andDirection direction: AMCoreAudioDirection) -> Bool {
-        return volumeInfoForChannel(channel, andDirection: direction)?.canMute ?? false
+        return volumeInfoForChannel(channel, andDirection: direction)?.canSetVolume ?? false
     }
 
     /*!
@@ -861,22 +688,16 @@ public class AMCoreAudioDevice: NSObject {
         @return An array containing channel numbers.
     */
     public func preferredStereoChannelsForDirection(direction: AMCoreAudioDirection) -> [UInt32] {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyPreferredChannelsForStereo,
             mScope: directionToScope(direction),
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        var preferredChannels = [UInt32](count: 2, repeatedValue: 0)
-        var size = UInt32(sizeof(UInt32) * 2)
+        var preferredChannels = [UInt32]()
+        let status = getPropertyDataArray(address, value: &preferredChannels, andDefaultValue: 0)
 
-        let status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &preferredChannels)
-
-        if noErr != status {
-            return []
-        } else {
-            return preferredChannels
-        }
+        return noErr == status ? preferredChannels : []
     }
 
     // MARK: - Master Volume Methods
@@ -899,7 +720,7 @@ public class AMCoreAudioDevice: NSObject {
 
         let muteCount = preferredStereoChannels.filter { (channel) -> Bool in
             return canMuteForChannel(channel, andDirection: direction) == true
-            }.count
+        }.count
 
         return muteCount == preferredStereoChannels.count
     }
@@ -921,8 +742,8 @@ public class AMCoreAudioDevice: NSObject {
         }
 
         let canSetVolumeCount = preferredStereoChannels.filter { (channel) -> Bool in
-            return canSetVolumeForChannel(channel, andDirection: direction) == true
-            }.count
+            return canSetVolumeForChannel(channel, andDirection: direction)
+        }.count
 
         return canSetVolumeCount == preferredStereoChannels.count
     }
@@ -1019,21 +840,16 @@ public class AMCoreAudioDevice: NSObject {
         @return A Float64 number.
     */
     public func actualSampleRate() -> Float64? {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyActualSampleRate,
             mScope: kAudioObjectPropertyScopeWildcard,
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        var size = UInt32(sizeof(Float64))
         var sampleRate = Float64(0)
-        let status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &sampleRate)
+        let status = getPropertyData(address, andValue: &sampleRate)
 
-        if noErr != status {
-            return nil
-        }
-
-        return sampleRate
+        return noErr == status ? sampleRate : nil
     }
 
     /*!
@@ -1042,21 +858,16 @@ public class AMCoreAudioDevice: NSObject {
         @return A Float64 number.
     */
     public func nominalSampleRate() -> Float64? {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyNominalSampleRate,
             mScope: kAudioObjectPropertyScopeWildcard,
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        var size = UInt32(sizeof(Float64))
         var sampleRate = Float64(0)
-        let status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &sampleRate)
+        let status = getPropertyData(address, andValue: &sampleRate)
 
-        if noErr != status {
-            return nil
-        }
-
-        return sampleRate
+        return noErr == status ? sampleRate : nil
     }
 
     /*!
@@ -1065,15 +876,14 @@ public class AMCoreAudioDevice: NSObject {
         @return true on success, false otherwise.
     */
     public func setNominalSampleRate(sampleRate: Float64) -> Bool {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyNominalSampleRate,
             mScope: kAudioObjectPropertyScopeWildcard,
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        let size = UInt32(sizeof(Float64))
         var nominalSampleRate = sampleRate
-        let status = AudioObjectSetPropertyData(deviceID, &address, UInt32(0), nil, size, &nominalSampleRate)
+        let status = setPropertyData(address, andValue: &nominalSampleRate)
 
         return noErr == status
     }
@@ -1097,26 +907,8 @@ public class AMCoreAudioDevice: NSObject {
             return nil
         }
 
-        var size = UInt32(0)
-        var status: OSStatus
-
-        status = AudioObjectGetPropertyDataSize(deviceID, &address, UInt32(0), nil, &size)
-
-        if noErr != status {
-            return nil
-        }
-
-        // Sometimes an audio device will not support any sample rate.
-        // For instance, this would be the case when an Aggregate Device
-        // does not have any sub audio devices associated to it.
-        // In this case, we will simply return an empty array
-        if size == 0 {
-            return nil
-        }
-
-        var valueRanges = [AudioValueRange](count: Int(size) / sizeof(AudioValueRange), repeatedValue: AudioValueRange())
-
-        status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &valueRanges)
+        var valueRanges = [AudioValueRange]()
+        let status = getPropertyDataArray(address, value: &valueRanges, andDefaultValue: AudioValueRange())
 
         if noErr != status {
             return nil
@@ -1169,12 +961,11 @@ public class AMCoreAudioDevice: NSObject {
         let hasProperty = Bool(boolean: AudioObjectHasProperty(deviceID, &address))
 
         if !hasProperty {
-            return AMCoreAudioDefaultClockSourceName
+            return nil
         }
 
-        var size = UInt32(sizeof(UInt32))
         var sourceID = UInt32(0)
-        let status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &sourceID)
+        let status = getPropertyData(address, andValue: &sourceID)
 
         if noErr != status {
             return nil
@@ -1201,16 +992,8 @@ public class AMCoreAudioDevice: NSObject {
             return nil
         }
 
-        var status: OSStatus
-        var size = UInt32(0)
-        status = AudioObjectGetPropertyDataSize(deviceID, &address, UInt32(0), nil, &size)
-
-        if noErr != status {
-            return nil
-        }
-
-        var clockSourceIDs = [UInt32](count: Int(size) / sizeof(UInt32), repeatedValue: 0)
-        status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &clockSourceIDs)
+        var clockSourceIDs = [UInt32]()
+        let status = getPropertyDataArray(address, value: &clockSourceIDs, andDefaultValue: 0)
 
         if noErr != status {
             return nil
@@ -1227,15 +1010,14 @@ public class AMCoreAudioDevice: NSObject {
         @return true on success, or false otherwise.
     */
     public func setClockSourceID(clockSourceID: UInt32, forChannel channel: UInt32, andDirection direction: AMCoreAudioDirection) -> Bool {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyClockSource,
             mScope: directionToScope(direction),
             mElement: channel
         )
 
-        let size = UInt32(sizeof(UInt32))
         var theClockSourceID = clockSourceID
-        let status = AudioObjectSetPropertyData(deviceID, &address, UInt32(0), nil, size, &theClockSourceID)
+        let status = setPropertyData(address, andValue: &theClockSourceID)
 
         return noErr == status
     }
@@ -1248,21 +1030,16 @@ public class AMCoreAudioDevice: NSObject {
         @return The amount of frames as a UInt32 value.
     */
     public func deviceLatencyFramesForDirection(direction: AMCoreAudioDirection) -> UInt32? {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyLatency,
             mScope: directionToScope(direction),
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        var size = UInt32(sizeof(UInt32))
         var latencyFrames = UInt32(0)
-        let status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &latencyFrames)
+        let status = getPropertyData(address, andValue: &latencyFrames)
 
-        if noErr != status {
-            return nil
-        }
-
-        return latencyFrames
+        return noErr == status ? latencyFrames : nil
     }
 
     /*!
@@ -1271,21 +1048,16 @@ public class AMCoreAudioDevice: NSObject {
         @return The amount of frames as a UInt32 value.
     */
     public func deviceSafetyOffsetFramesForDirection(direction: AMCoreAudioDirection) -> UInt32? {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertySafetyOffset,
             mScope: directionToScope(direction),
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        var size = UInt32(sizeof(UInt32))
         var safetyOffsetFrames = UInt32(0)
-        let status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &safetyOffsetFrames)
+        let status = getPropertyData(address, andValue: &safetyOffsetFrames)
 
-        if noErr != status {
-            return nil
-        }
-
-        return safetyOffsetFrames
+        return noErr == status ? safetyOffsetFrames : nil
     }
 
     // MARK: - Hog Mode Methods
@@ -1297,21 +1069,16 @@ public class AMCoreAudioDevice: NSObject {
         @return a pid_t value.
     */
     public func hogModePID() -> pid_t? {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyHogMode,
             mScope: kAudioObjectPropertyScopeWildcard,
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        var size = UInt32(sizeof(pid_t))
         var pid = pid_t()
-        let status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &pid)
+        let status = getPropertyData(address, andValue: &pid)
 
-        if noErr != status {
-            return nil
-        }
-
-        return pid
+        return noErr == status ? pid : nil
     }
 
     /*!
@@ -1321,15 +1088,14 @@ public class AMCoreAudioDevice: NSObject {
         @return true on success, false otherwise.
     */
     public func setHogModePID(pid: pid_t) -> Bool {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyHogMode,
             mScope: kAudioObjectPropertyScopeWildcard,
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        let size = UInt32(sizeof(pid_t))
         var thePID = pid
-        let status = AudioObjectSetPropertyData(deviceID, &address, UInt32(0), nil, size, &thePID)
+        let status = setPropertyData(address, andValue: &thePID)
 
         return noErr == status
     }
@@ -1363,21 +1129,16 @@ public class AMCoreAudioDevice: NSObject {
         @return The converted decibel value as a Float32.
     */
     public func scalarToDecibels(volume: Float32, forChannel channel: UInt32, andDirection direction: AMCoreAudioDirection) -> Float32? {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyVolumeScalarToDecibels,
             mScope: directionToScope(direction),
             mElement: channel
         )
 
-        var size = UInt32(sizeof(Float32))
         var volumeInDecibels = -Float32.infinity
-        let status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &volumeInDecibels)
+        let status = getPropertyData(address, andValue: &volumeInDecibels)
 
-        if noErr != status {
-            return nil
-        }
-
-        return volumeInDecibels
+        return noErr == status ? volumeInDecibels : nil
     }
 
     /*!
@@ -1387,42 +1148,110 @@ public class AMCoreAudioDevice: NSObject {
         @return The converted scalar value as a Float32.
     */
     public func decibelsToScalar(volume: Float32, forChannel channel: UInt32, andDirection direction: AMCoreAudioDirection) -> Float32? {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyVolumeDecibelsToScalar,
             mScope: directionToScope(direction),
             mElement: channel
         )
 
-        var size = UInt32(sizeof(Float32))
         var scalarVolume = Float32(0)
-        let status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &scalarVolume)
+        let status = getPropertyData(address, andValue: &scalarVolume)
 
-        if noErr != status {
-            return nil
-        }
-
-        return scalarVolume
+        return noErr == status ? scalarVolume : nil
     }
 
     // MARK: - Private Methods
 
+    private class func getPropertyDataSize(deviceID: AudioDeviceID, address: AudioObjectPropertyAddress, inout andSize size: UInt32) -> (OSStatus) {
+        var theAddress = address
+
+        return AudioObjectGetPropertyDataSize(deviceID, &theAddress, UInt32(0), nil, &size)
+    }
+
+    private class func getPropertyData<T>(deviceID: AudioDeviceID, address: AudioObjectPropertyAddress, inout andValue value: T) -> OSStatus {
+        var theAddress = address
+        var size = UInt32(sizeof(T))
+        let status = AudioObjectGetPropertyData(deviceID, &theAddress, UInt32(0), nil, &size, &value)
+
+        return status
+    }
+
+    private class func getPropertyDataArray<T>(deviceID: AudioDeviceID, address: AudioObjectPropertyAddress, inout value: Array<T>, andDefaultValue defaultValue: T) -> OSStatus {
+        var theAddress = address
+        var size = UInt32(0)
+        let sizeStatus = getPropertyDataSize(deviceID, address: address, andSize: &size)
+
+        if noErr == sizeStatus {
+            value = Array<T>(count: Int(size) / sizeof(T), repeatedValue: defaultValue)
+        } else {
+            return sizeStatus
+        }
+
+        let status = AudioObjectGetPropertyData(deviceID, &theAddress, UInt32(0), nil, &size, &value)
+
+        return status
+    }
+
+    private func getPropertyDataSize(deviceID: AudioDeviceID, address: AudioObjectPropertyAddress, inout andSize size: UInt32) -> OSStatus {
+        return self.dynamicType.getPropertyDataSize(deviceID, address: address, andSize: &size)
+    }
+
+    private func getPropertyDataSize(address: AudioObjectPropertyAddress, inout andSize size: UInt32) -> OSStatus {
+        return self.dynamicType.getPropertyDataSize(deviceID, address: address, andSize: &size)
+    }
+
+    private func getPropertyData<T>(deviceID: AudioDeviceID, address: AudioObjectPropertyAddress, inout andValue value: T) -> OSStatus {
+        return self.dynamicType.getPropertyData(deviceID, address: address, andValue: &value)
+    }
+
+    private func getPropertyDataArray<T>(deviceID: AudioDeviceID, address: AudioObjectPropertyAddress, inout value: Array<T>, andDefaultValue defaultValue: T) -> OSStatus {
+        return self.dynamicType.getPropertyDataArray(deviceID, address: address, value: &value, andDefaultValue: defaultValue)
+    }
+
+    private func getPropertyData<T>(address: AudioObjectPropertyAddress, inout andValue value: T) -> OSStatus {
+        return self.dynamicType.getPropertyData(deviceID, address: address, andValue: &value)
+    }
+
+    private func getPropertyDataArray<T>(address: AudioObjectPropertyAddress, inout value: Array<T>, andDefaultValue defaultValue: T) -> OSStatus {
+        return self.dynamicType.getPropertyDataArray(deviceID, address: address, value: &value, andDefaultValue: defaultValue)
+    }
+
+    private func setPropertyData<T>(deviceID: AudioDeviceID, address: AudioObjectPropertyAddress, inout andValue value: T) -> OSStatus {
+        var theAddress = address
+        let size = UInt32(sizeof(T))
+        let status = AudioObjectSetPropertyData(deviceID, &theAddress, UInt32(0), nil, size, &value)
+
+        return status
+    }
+
+    private func setPropertyData<T>(deviceID: AudioDeviceID, address: AudioObjectPropertyAddress, inout andValue value: Array<T>) -> OSStatus {
+        var theAddress = address
+        let size = UInt32(value.count * sizeof(T))
+        let status = AudioObjectSetPropertyData(deviceID, &theAddress, UInt32(0), nil, size, &value)
+
+        return status
+    }
+
+    private func setPropertyData<T>(address: AudioObjectPropertyAddress, inout andValue value: T) -> OSStatus {
+        return setPropertyData(deviceID, address: address, andValue: &value)
+    }
+
+    private func setPropertyData<T>(address: AudioObjectPropertyAddress, inout andValue value: Array<T>) -> OSStatus {
+        return setPropertyData(deviceID, address: address, andValue: &value)
+    }
+
     private func getDeviceName() -> String {
         var name: CFString = ""
-        var size = UInt32(sizeof(CFStringRef))
 
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyDeviceNameCFString,
             mScope: kAudioObjectPropertyScopeGlobal,
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        let status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &name)
+        let status = getPropertyData(address, andValue: &name)
 
-        if (noErr != status) {
-            return "<Unknown Device Name>"
-        } else {
-            return name as String
-        }
+        return noErr == status ? (name as String) : "<Unknown Device Name>"
     }
 
     private func directionToScope(direction: AMCoreAudioDirection) -> AudioObjectPropertyScope {
@@ -1434,7 +1263,7 @@ public class AMCoreAudioDevice: NSObject {
         case kAudioObjectPropertyScopeOutput:
             return .Playback
         case kAudioObjectPropertyScopeInput:
-            return .Record
+            return .Recording
         default:
             return .Invalid
         }
@@ -1451,20 +1280,15 @@ public class AMCoreAudioDevice: NSObject {
             mOutputDataSize: UInt32(sizeof(CFStringRef))
         )
 
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyClockSourceNameForIDCFString,
             mScope: directionToScope(direction),
             mElement: channel
         )
 
-        var size = UInt32(sizeof(AudioValueTranslation))
-        let status = AudioObjectGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &translation)
+        let status = getPropertyData(address, andValue: &translation)
 
-        if noErr != status {
-            return AMCoreAudioDefaultClockSourceName
-        }
-
-        return name as String
+        return noErr == status ? (name as String) : AMCoreAudioDefaultClockSourceName
     }
 
     private class func defaultDeviceOfType(deviceType: AudioObjectPropertySelector) -> AMCoreAudioDevice? {
@@ -1530,7 +1354,7 @@ public class AMCoreAudioDevice: NSObject {
 extension AMCoreAudioDevice {
 
     public override var description: String {
-        return "<\(unsafeAddressOf(self)) id=\(deviceID), uid=\(deviceUID()!)> \(deviceName())"
+        return "\(deviceName()) (\(deviceID))"
     }
 }
 

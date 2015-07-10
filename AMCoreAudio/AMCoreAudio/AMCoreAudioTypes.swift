@@ -11,19 +11,19 @@ import Foundation
 public enum AMCoreAudioDirection: Int, CustomStringConvertible {
     case Invalid = -1
     case Playback = 0
-    case Record = 1
+    case Recording = 1
 
     public var description: String {
         switch self {
         case .Invalid: return "Invalid"
         case .Playback: return "Playback"
-        case .Record: return "Record"
+        case .Recording: return "Recording"
         }
     }
 }
 
 public struct AMCoreAudioVolumeInfo {
-    var volume: Float32
+    var volume: Float32?
     var hasVolume: Bool
     var canSetVolume: Bool
     var canMute: Bool
@@ -32,7 +32,6 @@ public struct AMCoreAudioVolumeInfo {
     var isPlayThruSet: Bool
 
     init() {
-        volume = 0
         hasVolume = false
         canSetVolume = false
         canMute = false

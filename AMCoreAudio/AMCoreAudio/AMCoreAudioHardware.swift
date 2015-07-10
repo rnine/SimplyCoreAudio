@@ -32,7 +32,7 @@ public protocol AMCoreAudioHardwareDelegate: class {
     func hardwareDefaultSystemDeviceChanged(audioHardware: AMCoreAudioHardware)
 }
 
-public class AMCoreAudioHardware: NSObject {
+final public class AMCoreAudioHardware: NSObject {
 
     /*!
     A delegate conforming to the AMCoreAudioDeviceDelegate protocol.

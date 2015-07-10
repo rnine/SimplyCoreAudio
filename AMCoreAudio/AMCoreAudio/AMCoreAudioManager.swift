@@ -83,7 +83,7 @@ public protocol AMCoreAudioManagerDelegate: class {
     func audioDeviceIsRunningSomewhereDidChange(audioDevice: AMCoreAudioDevice)
 }
 
-public class AMCoreAudioManager: NSObject {
+final public class AMCoreAudioManager: NSObject {
     public static let sharedManager = AMCoreAudioManager()
     public weak var delegate: AMCoreAudioManagerDelegate?
 
