@@ -95,10 +95,10 @@
 		45846DC81B4BDB5B00273DA2 /* Demo */ = {
 			isa = PBXGroup;
 			children = (
+				45846DD01B4BDB5B00273DA2 /* Info.plist */,
 				45846DC91B4BDB5B00273DA2 /* AppDelegate.swift */,
 				45846DCB1B4BDB5B00273DA2 /* Assets.xcassets */,
 				45846DCD1B4BDB5B00273DA2 /* MainMenu.xib */,
-				45846DD01B4BDB5B00273DA2 /* Info.plist */,
 			);
 			path = Demo;
 			sourceTree = "<group>";
