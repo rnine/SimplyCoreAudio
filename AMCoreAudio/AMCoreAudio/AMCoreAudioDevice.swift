@@ -1251,7 +1251,7 @@ final public class AMCoreAudioDevice: NSObject {
 
         let status = getPropertyData(address, andValue: &name)
 
-        return noErr == status ? (name as String) : "<Unknown Device Name>"
+        return noErr == status ? (name as String) : (cachedDeviceName ?? "<Unknown Device Name>")
     }
 
     private func directionToScope(direction: AMCoreAudioDirection) -> AudioObjectPropertyScope {
@@ -1326,14 +1326,14 @@ final public class AMCoreAudioDevice: NSObject {
         let err = AudioObjectAddPropertyListenerBlock(deviceID, &address, notificationsQueue, propertyListenerBlock)
 
         if noErr != err {
-            print("Error on AudioObjectAddPropertyListenerBlock: \(err)", appendNewLine: true)
+            print("Error on AudioObjectAddPropertyListenerBlock: \(err)")
         }
 
         isRegisteredForNotifications = noErr == err
     }
 
     private func unregisterForNotifications() {
-        if isRegisteredForNotifications {
+        if isAlive() && isRegisteredForNotifications {
             var address = AudioObjectPropertyAddress(
                 mSelector: kAudioObjectPropertySelectorWildcard,
                 mScope: kAudioObjectPropertyScopeWildcard,
@@ -1343,21 +1343,27 @@ final public class AMCoreAudioDevice: NSObject {
             let err = AudioObjectRemovePropertyListenerBlock(deviceID, &address, notificationsQueue, propertyListenerBlock)
 
             if noErr != err {
-                print("Error on AudioObjectRemovePropertyListenerBlock: \(err)", appendNewLine: true)
+                print("Error on AudioObjectRemovePropertyListenerBlock: \(err)")
             }
 
             isRegisteredForNotifications = noErr != err
+        } else {
+            isRegisteredForNotifications = false
         }
     }
 }
 
 extension AMCoreAudioDevice {
 
+    public override var hashValue: Int {
+        return Int(deviceID)
+    }
+
     public override var description: String {
         return "\(deviceName()) (\(deviceID))"
     }
 }
 
-public func ==(lhs: AMCoreAudioDevice, rhs: AMCoreAudioDevice) -> Bool {
-    return lhs.deviceID == rhs.deviceID
+func ==(lhs: AMCoreAudioDevice, rhs: AMCoreAudioDevice) -> Bool {
+    return lhs.hashValue == rhs.hashValue
 }

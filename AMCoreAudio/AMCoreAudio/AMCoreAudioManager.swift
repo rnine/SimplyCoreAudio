@@ -111,7 +111,6 @@ final public class AMCoreAudioManager: NSObject {
     }
 
     private func setAudioDeviceDelegatesFor(addedDevices: [AMCoreAudioDevice]?, andRemovedDevices removedDevices: [AMCoreAudioDevice]?) {
-
         if addedDevices != nil {
             for audioDevice in addedDevices! {
                 audioDevice.delegate = self
@@ -176,11 +175,19 @@ extension AMCoreAudioManager: AMCoreAudioHardwareDelegate {
         let latestDeviceList = AMCoreAudioDevice.allDevices()
 
         let addedDevices = latestDeviceList.filter { (audioDevice) -> Bool in
-            return !allKnownDevices.contains(audioDevice)
+            let isContained = allKnownDevices.filter({ (oldAudioDevice) -> Bool in
+                return oldAudioDevice == audioDevice
+            }).count > 0
+
+            return !isContained
         }
 
-        let removedDevices = latestDeviceList.filter { (audioDevice) -> Bool in
-            return allKnownDevices.contains(audioDevice)
+        let removedDevices = allKnownDevices.filter { (audioDevice) -> Bool in
+            let isContained = latestDeviceList.filter({ (oldAudioDevice) -> Bool in
+                return oldAudioDevice == audioDevice
+            }).count > 0
+
+            return !isContained
         }
 
         // Update allKnownDevices

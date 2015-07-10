@@ -38,8 +38,8 @@ final public class AMCoreAudioHardware: NSObject {
     A delegate conforming to the AMCoreAudioDeviceDelegate protocol.
     */
     weak var delegate: AMCoreAudioHardwareDelegate? {
-        didSet(newValue) {
-            if newValue != nil {
+        didSet {
+            if self.delegate != nil {
                 self.registerForNotifications()
             } else {
                 self.unregisterForNotifications()
@@ -90,7 +90,7 @@ final public class AMCoreAudioHardware: NSObject {
         let err = AudioObjectAddPropertyListenerBlock(AudioObjectID(kAudioObjectSystemObject), &address, notificationsQueue, propertyListenerBlock)
 
         if noErr != err {
-            print("Error on AudioObjectAddPropertyListenerBlock: \(err)", appendNewLine: true)
+            print("Error on AudioObjectAddPropertyListenerBlock: \(err)")
         }
 
         isRegisteredForNotifications = noErr == err
@@ -107,7 +107,7 @@ final public class AMCoreAudioHardware: NSObject {
             let err = AudioObjectRemovePropertyListenerBlock(AudioObjectID(kAudioObjectSystemObject), &address, notificationsQueue, propertyListenerBlock)
 
             if noErr != err {
-                print("Error on AudioObjectRemovePropertyListenerBlock: \(err)", appendNewLine: true)
+                print("Error on AudioObjectRemovePropertyListenerBlock: \(err)")
             }
 
             isRegisteredForNotifications = noErr != err
