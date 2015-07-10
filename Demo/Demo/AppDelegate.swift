@@ -164,6 +164,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if let hogModePID = audioDevice.hogModePID() {
             print("|- Hog mode PID is \(hogModePID)")
         }
+
+        print("")
     }
 }
 
