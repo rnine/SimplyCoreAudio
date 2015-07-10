@@ -54,8 +54,8 @@ final public class AMCoreAudioHardware: NSObject {
     private var isRegisteredForNotifications = false
 
     private lazy var notificationsQueue: dispatch_queue_t = {
-        return dispatch_queue_create("io.9labs.AMCoreAudio.notifications", DISPATCH_QUEUE_CONCURRENT)
-        }()
+        return dispatch_queue_create("io.9labs.AMCoreAudio.HW-notifications", DISPATCH_QUEUE_CONCURRENT)
+    }()
 
     private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { (inNumberAddresses, inAddresses) -> Void in
         let address: AudioObjectPropertyAddress = inAddresses.memory
