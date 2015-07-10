@@ -8,18 +8,10 @@
 
 import Foundation
 
-public enum Direction: Int, CustomStringConvertible {
-    case Invalid = -1
-    case Playback = 0
-    case Recording = 1
-
-    public var description: String {
-        switch self {
-        case .Invalid: return "Invalid"
-        case .Playback: return "Playback"
-        case .Recording: return "Recording"
-        }
-    }
+public enum Direction: String {
+    case Invalid
+    case Playback
+    case Recording
 }
 
 public enum TransportType: String {
