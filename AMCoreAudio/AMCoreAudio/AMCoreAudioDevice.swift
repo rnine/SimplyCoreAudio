@@ -66,8 +66,6 @@ public protocol AMCoreAudioDeviceDelegate: class {
 
 final public class AMCoreAudioDevice: NSObject {
 
-    let AMCoreAudioDefaultClockSourceName = "Default"
-
     /*!
         A delegate conforming to the AMCoreAudioDeviceDelegate protocol.
     */
@@ -1000,7 +998,9 @@ final public class AMCoreAudioDevice: NSObject {
         }
 
         return clockSourceIDs.map { (clockSourceID) -> String in
-            return clockSourceNameForClockSourceID(clockSourceID, forChannel: channel, andDirection: direction)
+            // We expect clockSourceNameForClockSourceID to never fail in this case, 
+            // but in the unlikely case it does, we provide a default value.
+            return clockSourceNameForClockSourceID(clockSourceID, forChannel: channel, andDirection: direction) ?? "Clock source \(clockSourceID)"
         }
     }
 
@@ -1269,7 +1269,7 @@ final public class AMCoreAudioDevice: NSObject {
         }
     }
 
-    private func clockSourceNameForClockSourceID(clockSourceID: UInt32, forChannel channel: UInt32, andDirection direction: AMCoreAudioDirection) -> String {
+    private func clockSourceNameForClockSourceID(clockSourceID: UInt32, forChannel channel: UInt32, andDirection direction: AMCoreAudioDirection) -> String? {
         var name: CFString = ""
         var theClockSourceID = clockSourceID
 
@@ -1288,7 +1288,7 @@ final public class AMCoreAudioDevice: NSObject {
 
         let status = getPropertyData(address, andValue: &translation)
 
-        return noErr == status ? (name as String) : AMCoreAudioDefaultClockSourceName
+        return noErr == status ? (name as String) : nil
     }
 
     private class func defaultDeviceOfType(deviceType: AudioObjectPropertySelector) -> AMCoreAudioDevice? {
