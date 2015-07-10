@@ -39,10 +39,10 @@ final public class AMCoreAudioHardware: NSObject {
     */
     weak var delegate: AMCoreAudioHardwareDelegate? {
         didSet {
-            if self.delegate != nil {
-                self.registerForNotifications()
+            if delegate != nil {
+                registerForNotifications()
             } else {
-                self.unregisterForNotifications()
+                unregisterForNotifications()
             }
         }
     }
@@ -58,7 +58,7 @@ final public class AMCoreAudioHardware: NSObject {
     }()
 
     private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { (inNumberAddresses, inAddresses) -> Void in
-        let address: AudioObjectPropertyAddress = inAddresses.memory
+        let address = inAddresses.memory
 
         switch address.mSelector {
         case kAudioObjectPropertyOwnedObjects:

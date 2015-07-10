@@ -70,10 +70,10 @@ final public class AMCoreAudioDevice: NSObject {
     */
     public weak var delegate: AMCoreAudioDeviceDelegate? {
         didSet {
-            if self.delegate != nil {
-                self.registerForNotifications()
+            if delegate != nil {
+                registerForNotifications()
             } else {
-                self.unregisterForNotifications()
+                unregisterForNotifications()
             }
         }
     }
@@ -105,7 +105,7 @@ final public class AMCoreAudioDevice: NSObject {
 
     private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { (inNumberAddresses, inAddresses) -> Void in
 
-        let address: AudioObjectPropertyAddress = inAddresses.memory
+        let address = inAddresses.memory
         let direction = self.scopeToDirection(address.mScope)
 
         switch address.mSelector {
@@ -153,7 +153,7 @@ final public class AMCoreAudioDevice: NSObject {
     public init(deviceID: AudioObjectID) {
         self.deviceID = deviceID
         super.init()
-        cachedDeviceName = self.getDeviceName()
+        cachedDeviceName = getDeviceName()
     }
 
     /*!
