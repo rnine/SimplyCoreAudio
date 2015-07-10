@@ -3,18 +3,18 @@
 [![Version](http://cocoapod-badges.herokuapp.com/v/AMCoreAudio/badge.png)](http://cocoadocs.org/docsets/AMCoreAudio)
 [![Platform](http://cocoapod-badges.herokuapp.com/p/AMCoreAudio/badge.png)](http://cocoadocs.org/docsets/AMCoreAudio)
 
-`AMCoreAudio` is an Objective-C wrapper for [Apple's Core Audio](https://developer.apple.com/library/mac/documentation/MusicAudio/Conceptual/CoreAudioOverview/) framework focusing on:
+`AMCoreAudio` is a Swift wrapper for [Apple's Core Audio](https://developer.apple.com/library/mac/documentation/MusicAudio/Conceptual/CoreAudioOverview/) framework focusing on:
 
 - Simplifying audio device enumeration
 - Providing accessors for the most relevant audio device properties (i.e., device name, device manufacturer, device UID, volume, mute, sample rate, clock source, etc.)
-- Subscribing to system and audio device specific notifications using the delegate pattern.
+- Subscribing to system and audio device specific notifications using delegation, etc.
 
 `AMCoreAudio` is currently powering [AudioMate](http://audiomateapp.com) (recently open-sourced and available at https://github.com/The9Labs/AudioMate).
 
 ### Requirements
 
-* OS X 10.7 or later
-* 64-bit
+* Xcode 7 and Swift 2 (Objective-C support may be reintroduced anytime but it is not a high priority at this moment.)
+* OS X 10.9 or later
 
 ### Documentation
 
