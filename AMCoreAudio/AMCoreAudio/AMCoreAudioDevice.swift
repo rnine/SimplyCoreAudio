@@ -489,7 +489,7 @@ final public class AMCoreAudioDevice: NSObject {
         let qualifierDataSize = UInt32(sizeof(AudioClassID) * qualifierData.count)
         var ownedObjects = [AudioObjectID]()
 
-        let status = getPropertyDataArray(address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, value: &ownedObjects, andDefaultValue: AudioDeviceID())
+        let status = getPropertyDataArray(address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, value: &ownedObjects, andDefaultValue: AudioObjectID())
 
         return noErr == status ? ownedObjects : nil
     }
