@@ -10,23 +10,24 @@ import Foundation
 import AudioToolbox.AudioServices
 
 public protocol AMCoreAudioHardwareDelegate: class {
-    /*!
+
+    /**
         Called whenever the list of hardware devices and device subdevices changes.
         (i.e., devices that are part of Aggregate Devices or Multi-Output devices.)
     */
     func hardwareDeviceListChanged(audioHardware: AMCoreAudioHardware)
 
-    /*!
+    /**
         Called whenever the default input device changes.
     */
     func hardwareDefaultInputDeviceChanged(audioHardware: AMCoreAudioHardware)
 
-    /*!
+    /**
         Called whenever the default output device changes.
     */
     func hardwareDefaultOutputDeviceChanged(audioHardware: AMCoreAudioHardware)
 
-    /*!
+    /**
         Called whenever the default system device changes.
     */
     func hardwareDefaultSystemDeviceChanged(audioHardware: AMCoreAudioHardware)
@@ -34,8 +35,8 @@ public protocol AMCoreAudioHardwareDelegate: class {
 
 final public class AMCoreAudioHardware: NSObject {
 
-    /*!
-    A delegate conforming to the AMCoreAudioDeviceDelegate protocol.
+    /**
+        A delegate conforming to the AMCoreAudioDeviceDelegate protocol.
     */
     weak var delegate: AMCoreAudioHardwareDelegate? {
         didSet {

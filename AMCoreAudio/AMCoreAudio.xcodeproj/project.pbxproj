@@ -12,7 +12,7 @@
 		454D24771B4BE6610043FA12 /* AMCoreAudioTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454D24761B4BE6610043FA12 /* AMCoreAudioTypes.swift */; };
 		454D24821B4BE9800043FA12 /* AMCoreAudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454D24811B4BE9800043FA12 /* AMCoreAudioManager.swift */; };
 		45A7405A1B4EE37400C19842 /* AMCoreAudioHardware.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A740591B4EE37400C19842 /* AMCoreAudioHardware.swift */; };
-		45B5A17B1B502353002C255F /* AMCoreAudioDevice+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B5A17A1B502353002C255F /* AMCoreAudioDevice+Helpers.swift */; };
+		45B5A17B1B502353002C255F /* AMCoreAudioDevice+PropertyData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B5A17A1B502353002C255F /* AMCoreAudioDevice+PropertyData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,7 +23,7 @@
 		454D24761B4BE6610043FA12 /* AMCoreAudioTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMCoreAudioTypes.swift; sourceTree = "<group>"; };
 		454D24811B4BE9800043FA12 /* AMCoreAudioManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMCoreAudioManager.swift; sourceTree = "<group>"; };
 		45A740591B4EE37400C19842 /* AMCoreAudioHardware.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMCoreAudioHardware.swift; sourceTree = "<group>"; };
-		45B5A17A1B502353002C255F /* AMCoreAudioDevice+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AMCoreAudioDevice+Helpers.swift"; sourceTree = "<group>"; };
+		45B5A17A1B502353002C255F /* AMCoreAudioDevice+PropertyData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AMCoreAudioDevice+PropertyData.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,7 +40,7 @@
 		450765241B4E92A8005E87C9 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				45B5A17A1B502353002C255F /* AMCoreAudioDevice+Helpers.swift */,
+				45B5A17A1B502353002C255F /* AMCoreAudioDevice+PropertyData.swift */,
 				450765251B4E92B8005E87C9 /* Bool+Boolean.swift */,
 			);
 			name = Extensions;
@@ -158,7 +158,7 @@
 				454D24751B4BE4860043FA12 /* AMCoreAudioDevice.swift in Sources */,
 				454D24771B4BE6610043FA12 /* AMCoreAudioTypes.swift in Sources */,
 				45A7405A1B4EE37400C19842 /* AMCoreAudioHardware.swift in Sources */,
-				45B5A17B1B502353002C255F /* AMCoreAudioDevice+Helpers.swift in Sources */,
+				45B5A17B1B502353002C255F /* AMCoreAudioDevice+PropertyData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

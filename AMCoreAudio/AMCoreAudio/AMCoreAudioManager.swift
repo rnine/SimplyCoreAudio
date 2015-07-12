@@ -9,81 +9,85 @@
 import Foundation
 
 public protocol AMCoreAudioManagerDelegate: class {
-    /*!
+
+    /**
         Called whenever the list of hardware devices and device subdevices changes.
-        (i.e., devices that are part of Aggregate Devices or Multi-Output devices.)
+        (i.e., devices that are part of *Aggregate* or *Multi-Output* devices.)
     */
     func hardwareDeviceListChangedWithAddedDevices(addedDevices: [AMCoreAudioDevice], andRemovedDevices removedDevices: [AMCoreAudioDevice])
 
-    /*!
+    /**
         Called whenever the default input device changes.
     */
     func hardwareDefaultInputDeviceChanged(audioDevice: AMCoreAudioDevice)
 
-    /*!
+    /**
         Called whenever the default output device changes.
     */
     func hardwareDefaultOutputDeviceChanged(audioDevice: AMCoreAudioDevice)
 
-    /*!
+    /**
         Called whenever the default system device changes.
     */
     func hardwareDefaultSystemDeviceChanged(audioDevice: AMCoreAudioDevice)
 
-    /*!
+    /**
         Called whenever the audio device's sample rate changes.
     */
     func audioDeviceNominalSampleRateDidChange(audioDevice: AMCoreAudioDevice)
 
-    /*!
+    /**
         Called whenever the audio device's list of nominal sample rates changes.
-        @note This will typically happen on Aggregate Devices and Multi-Output devices when adding or removing other audio devices (either physical or virtual).
+        
+        **Note:** This will typically happen on *Aggregate* and *Multi-Output* devices when adding or removing other audio devices (either physical or virtual).
     */
     func audioDeviceAvailableNominalSampleRatesDidChange(audioDevice: AMCoreAudioDevice)
 
-    /*!
+    /**
         Called whenever the audio device's clock source changes for a given channel and direction.
     */
     func audioDeviceClockSourceDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: Direction)
 
-    /*!
+    /**
         Called whenever the audio device's name changes.
     */
     func audioDeviceNameDidChange(audioDevice: AMCoreAudioDevice)
 
-    /*!
+    /**
         Called whenever the list of owned audio devices on this audio device changes.
-        @note This will typically happen on Aggregate Devices and Multi-Output devices when adding or removing other audio devices (either physical or virtual).
+
+        **Note:** This will typically happen on *Aggregate* and *Multi-Output* devices when adding or removing other audio devices (either physical or virtual).
     */
     func audioDeviceListDidChange(audioDevice: AMCoreAudioDevice)
 
-    /*!
+    /**
         Called whenever the audio device's volume for a given channel and direction changes.
     */
     func audioDeviceVolumeDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: Direction)
 
-    /*!
+    /**
         Called whenever the audio device's mute state for a given channel and direction changes.
     */
     func audioDeviceMuteDidChange(audioDevice: AMCoreAudioDevice, forChannel channel:UInt32, andDirection direction: Direction)
 
-    /*!
-        Called whenever the audio device's "is alive" flag changes.
+    /**
+        Called whenever the audio device's *is alive* flag changes.
     */
     func audioDeviceIsAliveDidChange(audioDevice: AMCoreAudioDevice)
 
-    /*!
-        Called whenever the audio device's "is running" flag changes.
+    /**
+        Called whenever the audio device's *is running* flag changes.
     */
     func audioDeviceIsRunningDidChange(audioDevice: AMCoreAudioDevice)
 
-    /*!
-        Called whenever the audio device's "is running somewhere" flag changes.
+    /**
+        Called whenever the audio device's *is running somewhere* flag changes.
     */
     func audioDeviceIsRunningSomewhereDidChange(audioDevice: AMCoreAudioDevice)
 }
 
 final public class AMCoreAudioManager: NSObject {
+
     public static let sharedManager = AMCoreAudioManager()
     public weak var delegate: AMCoreAudioManagerDelegate?
 
@@ -192,10 +196,8 @@ extension AMCoreAudioManager: AMCoreAudioHardwareDelegate {
 
         // Update allKnownDevices
         allKnownDevices = latestDeviceList
-
         // Update delegates
         setAudioDeviceDelegatesFor(addedDevices, andRemovedDevices: removedDevices)
-
         // And notify our delegate
         delegate?.hardwareDeviceListChangedWithAddedDevices(addedDevices, andRemovedDevices: removedDevices)
     }
