@@ -2,6 +2,8 @@
 
 | Version       | Description   | Date     |
 | -------------:|:------------- |:--------:|
+| 2.0.1         | `preferredStereoChannelsForDirection(Direction)` now returns an optional `UInt32` array. | July 12th, 2015|
+|               | Misc improvements in documentation. ||
 | 2.0           | First Swift-only release. | July 12th, 2015|
 |               | Adding `deviceManufacturer()`, `deviceIsHidden()`, `transportType()`, `ownedObjectIDs()`, `controlList()`, `relatedDevices()`, `classID()` to `AMCoreAudioDevice`.||
 |               | Changing `channelsForDirection(Direction)` so it is based on `kAudioDevicePropertyPreferredChannelLayout`.||

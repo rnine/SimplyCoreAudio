@@ -9,6 +9,7 @@
 import Foundation
 import AudioToolbox.AudioServices
 
+/// `AMCoreAudioHardwareDelegate` protocol
 public protocol AMCoreAudioHardwareDelegate: class {
 
     /**
@@ -33,6 +34,13 @@ public protocol AMCoreAudioHardwareDelegate: class {
     func hardwareDefaultSystemDeviceChanged(audioHardware: AMCoreAudioHardware)
 }
 
+/**
+    `AMCoreAudioHardware`
+
+    This class allows subscribing to hardware-related audio notifications.
+
+    For a comprehensive list of supported notifications, see `AMCoreAudioHardwareDelegate`.
+*/
 final public class AMCoreAudioHardware: NSObject {
 
     /**

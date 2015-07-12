@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// `AMCoreAudioManagerDelegate` protocol
 public protocol AMCoreAudioManagerDelegate: class {
 
     /**
@@ -38,7 +39,7 @@ public protocol AMCoreAudioManagerDelegate: class {
 
     /**
         Called whenever the audio device's list of nominal sample rates changes.
-        
+
         **Note:** This will typically happen on *Aggregate* and *Multi-Output* devices when adding or removing other audio devices (either physical or virtual.)
     */
     func audioDeviceAvailableNominalSampleRatesDidChange(audioDevice: AMCoreAudioDevice)
@@ -86,6 +87,16 @@ public protocol AMCoreAudioManagerDelegate: class {
     func audioDeviceIsRunningSomewhereDidChange(audioDevice: AMCoreAudioDevice)
 }
 
+/**
+   `AMCoreAudioManager`
+
+   This class encapsulates most (if not all) of the functionality
+   available in `AMCoreAudioDevice` and `AMCoreAudioHardware` but provides,
+   a much easier and convenient interface.
+
+   To receive audio device and/or audio hardware notifications you simply need 
+   to implement the `AMCoreAudioManagerDelegate` protocol in your delegate class.
+ */
 final public class AMCoreAudioManager: NSObject {
 
     /**
