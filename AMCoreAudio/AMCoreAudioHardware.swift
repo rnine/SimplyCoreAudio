@@ -46,7 +46,7 @@ final public class AMCoreAudioHardware: NSObject {
     /**
         A delegate conforming to the `AMCoreAudioHardwareDelegate` protocol.
     */
-    weak var delegate: AMCoreAudioHardwareDelegate? {
+    public weak var delegate: AMCoreAudioHardwareDelegate? {
         didSet {
             if delegate != nil {
                 registerForNotifications()
