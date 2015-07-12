@@ -288,7 +288,7 @@ final public class AMCoreAudioDevice: NSObject {
 
         - Returns: An array of `AMCoreAudioDevice`s.
     */
-    class func allOutputDevices() -> [AMCoreAudioDevice] {
+    public class func allOutputDevices() -> [AMCoreAudioDevice] {
         let devices = allDevices()
 
         return devices.filter({ (let device) -> Bool in
