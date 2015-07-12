@@ -1229,7 +1229,7 @@ final public class AMCoreAudioDevice: NSObject {
     // MARK: - Hog Mode Methods
 
     /**
-        Indicates the pid that currently owns exclusive access to the audio device or
+        Indicates the `pid` that currently owns exclusive access to the audio device or
         a value of `-1` indicating that the device is currently available to all processes.
 
         - Returns: a `pid_t` value.
@@ -1248,7 +1248,7 @@ final public class AMCoreAudioDevice: NSObject {
     }
 
     /**
-        Attempts to set the pid that currently owns exclusive access to the
+        Attempts to set the `pid` that currently owns exclusive access to the
         audio device.
 
         - Returns: `true` on success, `false` otherwise.
@@ -1267,7 +1267,7 @@ final public class AMCoreAudioDevice: NSObject {
     }
 
     /**
-        Attempts to set the pid that currently owns exclusive access to the
+        Attempts to set the `pid` that currently owns exclusive access to the
         audio device to the current process.
 
         - Returns: `true` on success, `false` otherwise.
