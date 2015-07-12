@@ -193,15 +193,6 @@ final public class AMCoreAudioDevice: NSObject {
     }
 
     /**
-        The audio device's name as reported by the system.
-
-        - Returns: An audio device's name.
-    */
-    public func deviceName() -> String {
-        return getDeviceName()
-    }
-
-    /**
         Promotes a device to become the default system output device, output device, or input device.
 
         Valid types are:
@@ -224,6 +215,8 @@ final public class AMCoreAudioDevice: NSObject {
 
         return noErr == status
     }
+
+    // MARK: - Class Methods
 
     /**
         An array of all the `AudioObjectID`'s currently available in the system.
@@ -305,7 +298,16 @@ final public class AMCoreAudioDevice: NSObject {
         return defaultDeviceOfType(kAudioHardwarePropertyDefaultSystemOutputDevice)
     }
 
-    // MARK: - General Device Information Methods
+    // MARK: - ✪ General Device Information Methods
+
+    /**
+        The audio device's name as reported by the system.
+
+        - Returns: An audio device's name.
+    */
+    public func deviceName() -> String {
+        return getDeviceName()
+    }
 
     /**
         An system audio device unique identifier.
@@ -617,7 +619,7 @@ final public class AMCoreAudioDevice: NSObject {
         return noErr == status ? Bool(boolean: Boolean(valIsRunningSomewhere)) : false
     }
 
-    // MARK: - Input/Output Layout Methods
+    // MARK: - ⇄ Input/Output Layout Methods
 
     /**
         The number of channels for a given direction.
@@ -659,7 +661,7 @@ final public class AMCoreAudioDevice: NSObject {
         return channelsForDirection(.Recording) == 0 && channelsForDirection(.Playback) > 0
     }
 
-    // MARK: - Individual Channel Methods
+    // MARK: - ⇉ Individual Channel Methods
 
     /**
         A `VolumeInfo` struct containing information about a particular channel and direction combination.
@@ -863,7 +865,7 @@ final public class AMCoreAudioDevice: NSObject {
         return noErr == status ? preferredChannels : []
     }
 
-    // MARK: - Master Volume Methods
+    // MARK: - 🔊 Master Volume Methods
 
     /**
         Whether the master volume can be muted for a given direction.
@@ -995,7 +997,7 @@ final public class AMCoreAudioDevice: NSObject {
         return volumeInDecibels
     }
 
-    // MARK: - Sample Rate Methods
+    // MARK: - 〰 Sample Rate Methods
 
     /**
         The actual audio device's sample rate.
@@ -1108,7 +1110,7 @@ final public class AMCoreAudioDevice: NSObject {
         return sampleRates
     }
 
-    // MARK: - Clock Source Methods
+    // MARK: - 𝍄 Clock Source Methods
 
     /**
         The clock source name for the channel number and direction specified.
@@ -1188,7 +1190,7 @@ final public class AMCoreAudioDevice: NSObject {
         return noErr == status
     }
 
-    // MARK: - Latency Methods
+    // MARK: - ↹ Latency Methods
 
     /**
         The latency in frames for the specified direction.
@@ -1226,7 +1228,7 @@ final public class AMCoreAudioDevice: NSObject {
         return noErr == status ? safetyOffsetFrames : nil
     }
 
-    // MARK: - Hog Mode Methods
+    // MARK: - 🐗 Hog Mode Methods
 
     /**
         Indicates the `pid` that currently owns exclusive access to the audio device or
@@ -1287,7 +1289,7 @@ final public class AMCoreAudioDevice: NSObject {
         return setHogModePID(pid_t(-1))
     }
 
-    // MARK: - Volume Conversion Methods
+    // MARK: - ♺ Volume Conversion Methods
 
     /**
         Converts a scalar volume to a decibel *(dbFS)* volume
