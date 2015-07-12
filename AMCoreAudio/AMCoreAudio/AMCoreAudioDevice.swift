@@ -160,7 +160,7 @@ final public class AMCoreAudioDevice: NSObject {
     }
 
     /**
-        Initializes an `AMCoreAudioDevice` that matches the provided audio device UID, or nil if the UID is invalid.
+        Initializes an `AMCoreAudioDevice` that matches the provided audio device `UID`, or nil if the `UID` is invalid.
     */
     public convenience init?(deviceUID: String) {
         var deviceID = AudioObjectID(0)
@@ -316,7 +316,7 @@ final public class AMCoreAudioDevice: NSObject {
         and will not change even after restarts. Two (or more) identical audio devices
         are also guaranteed to have unique identifiers.
 
-        - Returns: A `String` with the audio device's unique identifier *(UID)*.
+        - Returns: A `String` with the audio device's unique identifier (`UID`).
     */
     public func deviceUID() -> String? {
         let address = AudioObjectPropertyAddress(
@@ -332,9 +332,9 @@ final public class AMCoreAudioDevice: NSObject {
     }
 
     /**
-        The audio device's model UID.
+        The audio device's model `UID`.
 
-        - Returns: A `String` with the audio device's model UID.
+        - Returns: A `String` with the audio device's model `UID`.
     */
     public func deviceModelUID() -> String? {
         let address = AudioObjectPropertyAddress(
@@ -343,10 +343,10 @@ final public class AMCoreAudioDevice: NSObject {
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        var manufacturer: CFString = ""
-        let status = getPropertyData(address, andValue: &manufacturer)
+        var modelUID: CFString = ""
+        let status = getPropertyData(address, andValue: &modelUID)
 
-        return noErr == status ? (manufacturer as String) : nil
+        return noErr == status ? (modelUID as String) : nil
     }
     
     /**
@@ -389,7 +389,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         Whether the audio device is included in the normal list of devices.
         
-        **Note:** Hidden devices can only be discovered by knowing their *UID* and
+        **Note:** Hidden devices can only be discovered by knowing their `UID` and
         using `kAudioHardwarePropertyDeviceForUID`.
 
         - Returns: `true` when device is hidden, `false` otherwise.
@@ -464,7 +464,6 @@ final public class AMCoreAudioDevice: NSObject {
         A human readable name for the channel number and direction specified.
 
         - Returns: A `String` with the name of the channel.
-
     */
     public func nameForChannel(channel: UInt32, andDirection direction: Direction) -> String? {
         let address = AudioObjectPropertyAddress(
@@ -506,7 +505,7 @@ final public class AMCoreAudioDevice: NSObject {
     }
 
     /**
-        An array of `AudioObjectID`s that represent the AudioControls of the audio device.
+        An array of `AudioObjectID`s that represent the audio controls of the audio device.
 
         - Returns: An array of `AudioObjectID`s
     */
@@ -548,7 +547,7 @@ final public class AMCoreAudioDevice: NSObject {
     }
 
     /**
-        An `AudioClassID` that identifies the class of the AudioObject.
+        An `AudioClassID` that identifies the class of the audio object.
     
         - Returns: An `AudioClassID`
     */
@@ -757,7 +756,7 @@ final public class AMCoreAudioDevice: NSObject {
     }
 
     /**
-        The volume in decibels (dbFS) for a given channel and direction.
+        The volume in decibels *(dbFS)* for a given channel and direction.
 
         - Returns: The volume in decibels as a `Float32` value.
     */
@@ -848,7 +847,7 @@ final public class AMCoreAudioDevice: NSObject {
 
     /**
         A list of channel numbers that best represent the preferred stereo channels
-        used by this device (usually 1 and 2).
+        used by this device (usually `1` and `2`).
 
         - Returns: An array containing the channel numbers.
     */

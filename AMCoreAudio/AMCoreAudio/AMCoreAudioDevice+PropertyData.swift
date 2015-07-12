@@ -1,5 +1,5 @@
 //
-//  AMCoreAudioDevice+Helpers.swift
+//  AMCoreAudioDevice+PropertyData.swift
 //  AMCoreAudio
 //
 //  Created by Ruben Nine on 10/07/15.
