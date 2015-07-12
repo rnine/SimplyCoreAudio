@@ -2,6 +2,12 @@
 
 | Version       | Description   | Date     |
 | -------------:|:------------- |:--------:|
+| 2.0           | First Swift-only release. | July 12th, 2015|
+|               | Adding `deviceManufacturer()`, `deviceIsHidden()`, `transportType()`, `ownedObjectIDs()`, `controlList()`, `relatedDevices()`, `classID()` to `AMCoreAudioDevice`.||
+|               | Changing `channelsForDirection(Direction)` so it is based on `kAudioDevicePropertyPreferredChannelLayout`.||
+|               | Audio device and audio hardware notifications now run on their own GCD queues.||
+|               | `AMCoreAudioDirection` is now `Direction`. `AMCoreAudioVolumeInfo` is now `VolumeInfo`.||
+|               | Many functions DO return optionals now.||
 | 1.5           | Adding support for modules so `AMCoreAudio` can be included using the new @import directive.| July 6th, 2015|
 | 1.4.3         | Adding AMCoreAudioDevice -isRunning, -isRunningSomewhere, -isAlive| May 24th, 2015|
 |               | Adding audioDeviceIsAliveDidChange:, audioDeviceIsRunningDidChange: and audioDeviceIsRunningSomewhereDidChange: methods to AMCoreAudioDeviceDelegate protocol.||
