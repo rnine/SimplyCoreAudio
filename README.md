@@ -16,6 +16,8 @@
 * Xcode 7 and Swift 2 (Objective-C support may be reintroduced anytime but it is not a high priority at this moment.)
 * OS X 10.9 or later
 
+**Note:** If you are targetting OS X 10.7 please use `AMCoreAudio` 1.5.
+
 ### Documentation
 
 * [AMCoreAudio Documentation](http://cocoadocs.org/docsets/AMCoreAudio/) (powered by [CocoaDocs.org](http://cocoadocs.org))
