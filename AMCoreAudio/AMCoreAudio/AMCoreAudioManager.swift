@@ -39,7 +39,7 @@ public protocol AMCoreAudioManagerDelegate: class {
     /**
         Called whenever the audio device's list of nominal sample rates changes.
         
-        **Note:** This will typically happen on *Aggregate* and *Multi-Output* devices when adding or removing other audio devices (either physical or virtual).
+        **Note:** This will typically happen on *Aggregate* and *Multi-Output* devices when adding or removing other audio devices (either physical or virtual.)
     */
     func audioDeviceAvailableNominalSampleRatesDidChange(audioDevice: AMCoreAudioDevice)
 
@@ -56,7 +56,7 @@ public protocol AMCoreAudioManagerDelegate: class {
     /**
         Called whenever the list of owned audio devices on this audio device changes.
 
-        **Note:** This will typically happen on *Aggregate* and *Multi-Output* devices when adding or removing other audio devices (either physical or virtual).
+        **Note:** This will typically happen on *Aggregate* and *Multi-Output* devices when adding or removing other audio devices (either physical or virtual.)
     */
     func audioDeviceListDidChange(audioDevice: AMCoreAudioDevice)
 
@@ -88,10 +88,25 @@ public protocol AMCoreAudioManagerDelegate: class {
 
 final public class AMCoreAudioManager: NSObject {
 
+    /**
+        A singleton instance of `AMCoreAudioManager`.
+    */
     public static let sharedManager = AMCoreAudioManager()
+
+    /**
+        A delegate conforming to the `AMCoreAudioManagerDelegate` protocol.
+    */
     public weak var delegate: AMCoreAudioManagerDelegate?
 
+    /**
+        An auto-maintained array of all the `AudioObjectID`'s currently available in the system.
+
+        **Note:** The list may also include *Aggregate* and *Multi-Output* devices.
+
+        - Returns: An array of AudioObjectID's.
+    */
     public private(set) var allKnownDevices: [AMCoreAudioDevice]
+
     private var audioHardware = AMCoreAudioHardware()
 
     private override init() {

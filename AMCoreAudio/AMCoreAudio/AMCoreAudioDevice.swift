@@ -69,7 +69,7 @@ public protocol AMCoreAudioDeviceDelegate: class {
 final public class AMCoreAudioDevice: NSObject {
 
     /**
-        A delegate conforming to the AMCoreAudioDeviceDelegate protocol.
+        A delegate conforming to the `AMCoreAudioDeviceDelegate` protocol.
     */
     public weak var delegate: AMCoreAudioDeviceDelegate? {
         didSet {
@@ -85,7 +85,7 @@ final public class AMCoreAudioDevice: NSObject {
         The cached device name. This may be useful in some situations where the class instance
         is pointing to a device that is no longer available, so we can still access its name.
 
-        :returns: The cached device name.
+        - Returns: The cached device name.
     */
     private(set) var cachedDeviceName: String?
 
@@ -96,7 +96,7 @@ final public class AMCoreAudioDevice: NSObject {
         This identifier will change with system restarts.
         If you need an unique identifier that persists between restarts, use `deviceUID()` instead.
 
-        :returns: An audio device identifier.
+        - Returns: An audio device identifier.
     */
     public let deviceID: AudioObjectID
 
@@ -195,7 +195,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         The audio device's name as reported by the system.
 
-        :returns: An audio device's name.
+        - Returns: An audio device's name.
     */
     public func deviceName() -> String {
         return getDeviceName()
@@ -210,7 +210,7 @@ final public class AMCoreAudioDevice: NSObject {
         - kAudioHardwarePropertyDefaultOutputDevice,
         - kAudioHardwarePropertyDefaultInputDevice.
 
-        :returns: true on success, false otherwise.
+        - Returns: `true` on success, `false` otherwise.
     */
     public func setAsDefaultDevice(deviceType: AudioObjectPropertySelector) -> Bool {
         let address = AudioObjectPropertyAddress(
@@ -228,9 +228,9 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         An array of all the `AudioObjectID`'s currently available in the system.
         
-        **Note:** The list also includes *Aggregate* and *Multi-Output* devices.
+        **Note:** The list may also include *Aggregate* and *Multi-Output* devices.
 
-        :returns: An array of AudioObjectID's.
+        - Returns: An array of `AudioObjectID`'s.
     */
     public class func allDeviceIDs() -> [AudioObjectID] {
         let address = AudioObjectPropertyAddress(
@@ -249,9 +249,9 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         An array of all the `AMCoreAudioDevice`s currently available in the system.
         
-        **Note:** The list also includes *Aggregate* and *Multi-Output* devices.
+        **Note:** The list may also include *Aggregate* and *Multi-Output* devices.
 
-        :returns: An array of `AMCoreAudioDevice`s.
+        - Returns: An array of `AMCoreAudioDevice`s.
     */
     public class func allDevices() -> [AMCoreAudioDevice] {
         let deviceIDs = allDeviceIDs()
@@ -268,7 +268,7 @@ final public class AMCoreAudioDevice: NSObject {
         
         **Note:** The list may also include *Aggregate* devices.
 
-        :returns: An array of `AMCoreAudioDevice`s.
+        - Returns: An array of `AMCoreAudioDevice`s.
     */
     public class func allInputDevices() -> [AMCoreAudioDevice] {
         let devices = allDevices()
@@ -283,7 +283,7 @@ final public class AMCoreAudioDevice: NSObject {
         
         **Note:** The list may also include *Aggregate* and *Multi-Output* devices.
 
-        :returns: An array of `AMCoreAudioDevice`s.
+        - Returns: An array of `AMCoreAudioDevice`s.
     */
     class func allOutputDevices() -> [AMCoreAudioDevice] {
         let devices = allDevices()
@@ -314,7 +314,7 @@ final public class AMCoreAudioDevice: NSObject {
         and will not change even after restarts. Two (or more) identical audio devices
         are also guaranteed to have unique identifiers.
 
-        :returns: A string with the audio device's unique identifier *(UID)*.
+        - Returns: A `String` with the audio device's unique identifier *(UID)*.
     */
     public func deviceUID() -> String? {
         let address = AudioObjectPropertyAddress(
@@ -332,7 +332,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         The audio device's model UID.
 
-        :returns: A string with the audio device's model UID.
+        - Returns: A `String` with the audio device's model UID.
     */
     public func deviceModelUID() -> String? {
         let address = AudioObjectPropertyAddress(
@@ -350,7 +350,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         The audio device's manufacturer.
 
-        :returns: A string with the audio device's manufacturer name.
+        - Returns: A `String` with the audio device's manufacturer name.
     */
     public func deviceManufacturer() -> String? {
         let address = AudioObjectPropertyAddress(
@@ -369,7 +369,7 @@ final public class AMCoreAudioDevice: NSObject {
         The bundle ID for an application that provides a GUI for configuring the AudioDevice. 
         By default, the value of this property is the bundle ID for *Audio MIDI Setup*.
 
-        :returns: A string pointing to the bundle ID
+        - Returns: A `String` pointing to the bundle ID
     */
     public func deviceConfigurationApplication() -> String? {
         let address = AudioObjectPropertyAddress(
@@ -390,7 +390,7 @@ final public class AMCoreAudioDevice: NSObject {
         **Note:** Hidden devices can only be discovered by knowing their *UID* and
         using `kAudioHardwarePropertyDeviceForUID`.
 
-        :returns: true when device is hidden, no otherwise.
+        - Returns: `true` when device is hidden, `false` otherwise.
     */
     public func deviceIsHidden() -> Bool {
         let address = AudioObjectPropertyAddress(
@@ -408,7 +408,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         A `TransportType` that indicates how the audio device is connected to the CPU.
 
-        :returns: A `TransportType`.
+        - Returns: A `TransportType`.
     */
     public func transportType() -> TransportType? {
         let address = AudioObjectPropertyAddress(
@@ -461,7 +461,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         A human readable name for the channel number and direction specified.
 
-        :returns: A string with the name of the channel.
+        - Returns: A `String` with the name of the channel.
 
     */
     public func nameForChannel(channel: UInt32, andDirection direction: Direction) -> String? {
@@ -485,7 +485,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         An array of `AudioObjectID`s that represent all the audio objects owned by the given object.
     
-        :returns: An array of `AudioObjectID`s
+        - Returns: An array of `AudioObjectID`s
     */
     public func ownedObjectIDs() -> [AudioObjectID]? {
         let address = AudioObjectPropertyAddress(
@@ -506,7 +506,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         An array of `AudioObjectID`s that represent the AudioControls of the audio device.
 
-        :returns: An array of `AudioObjectID`s
+        - Returns: An array of `AudioObjectID`s
     */
     public func controlList() -> [AudioObjectID]? {
         let address = AudioObjectPropertyAddress(
@@ -524,7 +524,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         An array of `AMCoreAudioDevice`s for devices related to the `AMCoreAudioDevice`.
     
-        :returns: An array of `AMCoreAudioDevice`s
+        - Returns: An array of `AMCoreAudioDevice`s
     */
     public func relatedDevices() -> [AMCoreAudioDevice]? {
         let address = AudioObjectPropertyAddress(
@@ -548,7 +548,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         An `AudioClassID` that identifies the class of the AudioObject.
     
-        :returns: An `AudioClassID`
+        - Returns: An `AudioClassID`
     */
     public func classID() -> AudioClassID? {
         let address = AudioObjectPropertyAddress(
@@ -566,7 +566,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         Whether the device is alive.
 
-        :returns: true when the device is alive, false otherwise.
+        - Returns: `true` when the device is alive, `false` otherwise.
     */
     public func isAlive() -> Bool {
         let address = AudioObjectPropertyAddress(
@@ -584,7 +584,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         Whether the device is running.
 
-        :returns: true when the device is running, false otherwise.
+        - Returns: `true` when the device is running, `false` otherwise.
     */
     public func isRunning() -> Bool {
         let address = AudioObjectPropertyAddress(
@@ -602,7 +602,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         Whether the device is running somewhere.
 
-        :returns: true when the device is running somewhere, false otherwise.
+        - Returns: `true` when the device is running somewhere, `false` otherwise.
     */
     public func isRunningSomewhere() -> Bool {
         let address = AudioObjectPropertyAddress(
@@ -622,7 +622,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         The number of channels for a given direction.
 
-        :returns: An `UInt32` value.
+        - Returns: An `UInt32` value.
     */
     public func channelsForDirection(direction: Direction) -> UInt32? {
         var address = AudioObjectPropertyAddress(
@@ -644,7 +644,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         Whether the device has only inputs but no outputs.
 
-        :returns: true when the device is input only, false otherwise.
+        - Returns: `true` when the device is input only, `false` otherwise.
     */
     public func isInputOnlyDevice() -> Bool {
         return channelsForDirection(.Playback) == 0 && channelsForDirection(.Recording) > 0
@@ -653,7 +653,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         Whether the device has only outputs but no inputs.
 
-        :returns: true when the device is output only, false otherwise.
+        - Returns: `true` when the device is output only, `false` otherwise.
     */
     public func isOutputOnlyDevice() -> Bool {
         return channelsForDirection(.Recording) == 0 && channelsForDirection(.Playback) > 0
@@ -664,7 +664,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         A `VolumeInfo` struct containing information about a particular channel and direction combination.
 
-        :returns: A `VolumeInfo` struct.
+        - Returns: A `VolumeInfo` struct.
     */
     public func volumeInfoForChannel(channel: UInt32, andDirection direction: Direction) -> VolumeInfo? {
         // obtain volume info
@@ -739,7 +739,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         The scalar volume for a given channel and direction.
 
-        :returns: The scalar volume as a `Float32` value.
+        - Returns: The scalar volume as a `Float32` value.
     */
     public func volumeForChannel(channel: UInt32, andDirection direction: Direction) -> Float32? {
         let address = AudioObjectPropertyAddress(
@@ -757,7 +757,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         The volume in decibels (dbFS) for a given channel and direction.
 
-        :returns: The volume in decibels as a `Float32` value.
+        - Returns: The volume in decibels as a `Float32` value.
     */
     public func volumeInDecibelsForChannel(channel: UInt32, andDirection direction: Direction) -> Float32? {
         let address = AudioObjectPropertyAddress(
@@ -775,7 +775,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         Sets the channel's volume for a given direction.
 
-        :returns: true on success, false otherwise.
+        - Returns: `true` on success, `false` otherwise.
     */
     public func setVolume(volume: Float32, forChannel channel: UInt32, andDirection direction: Direction) -> Bool {
         let address = AudioObjectPropertyAddress(
@@ -793,7 +793,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         Mutes a channel for a given direction.
 
-        :returns: true on success, false otherwise.
+        - Returns: `true` on success, `false` otherwise.
     */
     public func setMute(shouldMute: Bool, forChannel channel: UInt32, andDirection direction: Direction) -> Bool {
         let address = AudioObjectPropertyAddress(
@@ -811,7 +811,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         Whether a channel is muted for a given direction.
 
-        :returns: true if channel is muted, false otherwise.
+        - Returns: `true` if channel is muted, false otherwise.
     */
     public func isChannelMuted(channel: UInt32, andDirection direction: Direction) -> Bool? {
         let address = AudioObjectPropertyAddress(
@@ -829,7 +829,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         Whether a channel can be muted for a given direction.
 
-        :returns: true if channel can be muted, false otherwise.
+        - Returns: `true` if channel can be muted, `false` otherwise.
     */
     public func canMuteForChannel(channel: UInt32, andDirection direction: Direction) -> Bool {
         return volumeInfoForChannel(channel, andDirection: direction)?.canMute ?? false
@@ -838,7 +838,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         Whether a channel's volume can be set for a given direction.
 
-        :returns: true if the channel's volume can be set, false otherwise.
+        - Returns: `true` if the channel's volume can be set, `false` otherwise.
     */
     public func canSetVolumeForChannel(channel: UInt32, andDirection direction: Direction) -> Bool {
         return volumeInfoForChannel(channel, andDirection: direction)?.canSetVolume ?? false
@@ -848,7 +848,7 @@ final public class AMCoreAudioDevice: NSObject {
         A list of channel numbers that best represent the preferred stereo channels
         used by this device (usually 1 and 2).
 
-        :returns: An array containing the channel numbers.
+        - Returns: An array containing the channel numbers.
     */
     public func preferredStereoChannelsForDirection(direction: Direction) -> [UInt32] {
         let address = AudioObjectPropertyAddress(
@@ -868,7 +868,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         Whether the master volume can be muted for a given direction.
 
-        :returns: true when the volume can be muted, false otherwise.
+        - Returns: `true` when the volume can be muted, `false` otherwise.
     */
     public func canMuteMasterVolumeForDirection(direction: Direction) -> Bool {
         if canMuteForChannel(kAudioObjectPropertyElementMaster, andDirection: direction) == true {
@@ -891,7 +891,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         Whether the master volume can be set for a given direction.
 
-        :returns: true when the volume can be set, false otherwise.
+        - Returns: `true` when the volume can be set, `false` otherwise.
     */
     public func canSetMasterVolumeForDirection(direction: Direction) -> Bool {
         if canSetVolumeForChannel(kAudioObjectPropertyElementMaster, andDirection: direction) == true {
@@ -914,7 +914,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         Sets the master volume for a given direction.
 
-        :returns: true on success, false otherwise.
+        - Returns: `true` on success, `false` otherwise.
     */
     public func setMasterVolume(volume: Float32, forDirection direction: Direction) -> Bool {
         var address = AudioObjectPropertyAddress(
@@ -934,7 +934,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         Whether the volume is muted for a given direction.
 
-        :returns: true if muted, false otherwise.
+        - Returns: `true` when muted, `false` otherwise.
     */
     public func isMasterVolumeMutedForDirection(direction: Direction) -> Bool? {
         return isChannelMuted(kAudioObjectPropertyElementMaster, andDirection: direction)
@@ -943,7 +943,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         The master scalar volume for a given direction.
 
-        :returns: The scalar volume as a `Float32`.
+        - Returns: The scalar volume as a `Float32`.
     */
     public func masterVolumeForDirection(direction: Direction) -> Float32? {
         var address = AudioObjectPropertyAddress(
@@ -967,7 +967,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         The master volume in decibels for a given direction.
 
-        :returns: The volume in decibels as a `Float32`.
+        - Returns: The volume in decibels as a `Float32`.
     */
     public func masterVolumeInDecibelsForDirection(direction: Direction) -> Float32? {
         var volumeInDecibels = Float32(0)
@@ -1000,7 +1000,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         The actual audio device's sample rate.
 
-        :returns: A `Float64` number.
+        - Returns: A `Float64` number.
     */
     public func actualSampleRate() -> Float64? {
         let address = AudioObjectPropertyAddress(
@@ -1018,7 +1018,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         The nominal audio device's sample rate.
 
-        :returns: A `Float64` number.
+        - Returns: A `Float64` number.
     */
     public func nominalSampleRate() -> Float64? {
         let address = AudioObjectPropertyAddress(
@@ -1036,7 +1036,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         Sets the nominal sample rate.
 
-        :returns: true on success, false otherwise.
+        - Returns: `true` on success, `false` otherwise.
     */
     public func setNominalSampleRate(sampleRate: Float64) -> Bool {
         let address = AudioObjectPropertyAddress(
@@ -1053,7 +1053,8 @@ final public class AMCoreAudioDevice: NSObject {
 
     /**
         A list of all the nominal sample rates supported by this audio device.
-        :returns: An array of `Float64` with all the nominal sample rates.
+
+        - Returns: An array of `Float64` with all the nominal sample rates.
     */
     public func nominalSampleRates() -> [Float64]? {
         var sampleRates = [Float64]()
@@ -1112,7 +1113,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         The clock source name for the channel number and direction specified.
 
-        :returns: A string containing the clock source name.
+        - Returns: A `String` containing the clock source name.
     */
     public func clockSourceForChannel(channel: UInt32, andDirection direction: Direction) -> String? {
         var address = AudioObjectPropertyAddress(
@@ -1140,7 +1141,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         A list of clock source names for the channel number and direction specified.
 
-        :returns: An array containing all the clock source names.
+        - Returns: An array containing all the clock source names.
     */
     public func clockSourcesForChannel(channel: UInt32, andDirection direction: Direction) -> [String]? {
         var address = AudioObjectPropertyAddress(
@@ -1172,7 +1173,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         Sets the clock source for a channel and direction.
 
-        :returns: true on success, or false otherwise.
+        - Returns: `true` on success, `false` otherwise.
     */
     public func setClockSourceID(clockSourceID: UInt32, forChannel channel: UInt32, andDirection direction: Direction) -> Bool {
         let address = AudioObjectPropertyAddress(
@@ -1192,7 +1193,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         The latency in frames for the specified direction.
 
-        :returns: The amount of frames as a `UInt32` value.
+        - Returns: The amount of frames as a `UInt32` value.
     */
     public func deviceLatencyFramesForDirection(direction: Direction) -> UInt32? {
         let address = AudioObjectPropertyAddress(
@@ -1210,7 +1211,7 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         The safety offset frames for the specified direction.
 
-        :returns: The amount of frames as a `UInt32` value.
+        - Returns: The amount of frames as a `UInt32` value.
     */
     public func deviceSafetyOffsetFramesForDirection(direction: Direction) -> UInt32? {
         let address = AudioObjectPropertyAddress(
@@ -1229,9 +1230,9 @@ final public class AMCoreAudioDevice: NSObject {
 
     /**
         Indicates the pid that currently owns exclusive access to the audio device or
-        a value of -1 indicating that the device is currently available to all processes.
+        a value of `-1` indicating that the device is currently available to all processes.
 
-        :returns: a `pid_t` value.
+        - Returns: a `pid_t` value.
     */
     public func hogModePID() -> pid_t? {
         let address = AudioObjectPropertyAddress(
@@ -1250,7 +1251,7 @@ final public class AMCoreAudioDevice: NSObject {
         Attempts to set the pid that currently owns exclusive access to the
         audio device.
 
-        :returns: true on success, false otherwise.
+        - Returns: `true` on success, `false` otherwise.
     */
     public func setHogModePID(pid: pid_t) -> Bool {
         let address = AudioObjectPropertyAddress(
@@ -1269,7 +1270,7 @@ final public class AMCoreAudioDevice: NSObject {
         Attempts to set the pid that currently owns exclusive access to the
         audio device to the current process.
 
-        :returns: true on success, false otherwise.
+        - Returns: `true` on success, `false` otherwise.
     */
     public func setHogModePidToCurrentProcess() -> Bool {
         let currentPID = pid_t(NSProcessInfo.processInfo().processIdentifier)
@@ -1278,9 +1279,9 @@ final public class AMCoreAudioDevice: NSObject {
 
     /**
         Attempts to make the audio device available to all processes by setting
-        the hog mode to -1.
+        the hog mode to `-1`.
 
-        :returns: true on success, false otherwise.
+        - Returns: `true` on success, `false` otherwise.
     */
     public func unsetHogMode() -> Bool {
         return setHogModePID(pid_t(-1))
@@ -1289,10 +1290,10 @@ final public class AMCoreAudioDevice: NSObject {
     // MARK: - Volume Conversion Methods
 
     /**
-        Converts a scalar volume to a decibel (dbFS) volume
+        Converts a scalar volume to a decibel *(dbFS)* volume
         for the given channel and direction.
 
-        :returns: The converted decibel value as a `Float32`.
+        - Returns: The converted decibel value as a `Float32`.
     */
     public func scalarToDecibels(volume: Float32, forChannel channel: UInt32, andDirection direction: Direction) -> Float32? {
         let address = AudioObjectPropertyAddress(
@@ -1308,10 +1309,10 @@ final public class AMCoreAudioDevice: NSObject {
     }
 
     /**
-        Converts a relative decibel (dbFS) volume to a scalar volume
+        Converts a relative decibel *(dbFS)* volume to a scalar volume
         for the given channel and direction.
 
-        :returns: The converted scalar value as a `Float32`.
+        - Returns: The converted scalar value as a `Float32`.
     */
     public func decibelsToScalar(volume: Float32, forChannel channel: UInt32, andDirection direction: Direction) -> Float32? {
         let address = AudioObjectPropertyAddress(

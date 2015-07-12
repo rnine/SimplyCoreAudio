@@ -19,7 +19,7 @@
 		450765251B4E92B8005E87C9 /* Bool+Boolean.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bool+Boolean.swift"; sourceTree = "<group>"; };
 		454D245A1B4BE40E0043FA12 /* AMCoreAudio.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AMCoreAudio.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		454D245F1B4BE40E0043FA12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		454D24741B4BE4860043FA12 /* AMCoreAudioDevice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMCoreAudioDevice.swift; sourceTree = "<group>"; };
+		454D24741B4BE4860043FA12 /* AMCoreAudioDevice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AMCoreAudioDevice.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		454D24761B4BE6610043FA12 /* AMCoreAudioTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMCoreAudioTypes.swift; sourceTree = "<group>"; };
 		454D24811B4BE9800043FA12 /* AMCoreAudioManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMCoreAudioManager.swift; sourceTree = "<group>"; };
 		45A740591B4EE37400C19842 /* AMCoreAudioHardware.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMCoreAudioHardware.swift; sourceTree = "<group>"; };

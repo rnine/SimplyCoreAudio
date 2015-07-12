@@ -36,7 +36,7 @@ public protocol AMCoreAudioHardwareDelegate: class {
 final public class AMCoreAudioHardware: NSObject {
 
     /**
-        A delegate conforming to the AMCoreAudioDeviceDelegate protocol.
+        A delegate conforming to the `AMCoreAudioHardwareDelegate` protocol.
     */
     weak var delegate: AMCoreAudioHardwareDelegate? {
         didSet {
