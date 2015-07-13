@@ -34,6 +34,15 @@ public protocol AMCoreAudioHardwareDelegate: class {
     func hardwareDefaultSystemDeviceChanged(audioHardware: AMCoreAudioHardware)
 }
 
+/// Optional `AMCoreAudioHardwareDelegate` protocol methods
+public extension AMCoreAudioHardwareDelegate {
+
+    func hardwareDeviceListChanged(audioHardware: AMCoreAudioHardware) {}
+    func hardwareDefaultInputDeviceChanged(audioDevice: AMCoreAudioDevice) {}
+    func hardwareDefaultOutputDeviceChanged(audioDevice: AMCoreAudioDevice) {}
+    func hardwareDefaultSystemDeviceChanged(audioDevice: AMCoreAudioDevice) {}
+}
+
 /**
     `AMCoreAudioHardware`
 

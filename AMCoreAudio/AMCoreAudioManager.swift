@@ -87,6 +87,26 @@ public protocol AMCoreAudioManagerDelegate: class {
     func audioDeviceIsRunningSomewhereDidChange(audioDevice: AMCoreAudioDevice)
 }
 
+/// Optional `AMCoreAudioManagerDelegate` protocol methods
+public extension AMCoreAudioManagerDelegate {
+
+    func hardwareDeviceListChangedWithAddedDevices(addedDevices: [AMCoreAudioDevice], andRemovedDevices removedDevices: [AMCoreAudioDevice]) {}
+    func hardwareDefaultInputDeviceChanged(audioDevice: AMCoreAudioDevice) {}
+    func hardwareDefaultOutputDeviceChanged(audioDevice: AMCoreAudioDevice) {}
+    func hardwareDefaultSystemDeviceChanged(audioDevice: AMCoreAudioDevice) {}
+    func audioDeviceNominalSampleRateDidChange(audioDevice: AMCoreAudioDevice) {}
+    func audioDeviceAvailableNominalSampleRatesDidChange(audioDevice: AMCoreAudioDevice) {}
+    func audioDeviceClockSourceDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: Direction) {}
+    func audioDeviceNameDidChange(audioDevice: AMCoreAudioDevice) {}
+    func audioDeviceListDidChange(audioDevice: AMCoreAudioDevice) {}
+    func audioDeviceVolumeDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: Direction) {}
+    func audioDeviceMuteDidChange(audioDevice: AMCoreAudioDevice, forChannel channel:UInt32, andDirection direction: Direction) {}
+    func audioDeviceIsAliveDidChange(audioDevice: AMCoreAudioDevice) {}
+    func audioDeviceIsRunningDidChange(audioDevice: AMCoreAudioDevice) {}
+    func audioDeviceIsRunningSomewhereDidChange(audioDevice: AMCoreAudioDevice) {}
+}
+
+
 /**
    `AMCoreAudioManager`
 
