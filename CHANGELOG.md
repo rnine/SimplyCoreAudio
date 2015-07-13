@@ -2,6 +2,7 @@
 
 | Version       | Description   | Date     |
 | -------------:|:------------- |:--------:|
+| 2.0.4         | Fixing `AMCoreAudioDevice(deviceID:)` initializer by reimplementing its core functionality in C. | July 13th, 2015|
 | 2.0.3         | Fixing that `AMCoreAudioHardware` `delegate` was not declared as a public variable. | July 13th, 2015|
 | 2.0.2         | Fixing that `AMCoreAudio.allOutputDevices()` was not declared as a public method. | July 13th, 2015|
 | 2.0.1         | `preferredStereoChannelsForDirection(Direction)` now returns an optional `UInt32` array. | July 12th, 2015|
