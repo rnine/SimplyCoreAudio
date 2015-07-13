@@ -174,24 +174,9 @@ final public class AMCoreAudioDevice: NSObject {
     */
     public convenience init?(deviceUID: String) {
         var deviceID = AudioObjectID(0)
-        var uid = deviceUID
+        let status = AMAudioHardwarePropertyDeviceForUID(deviceUID, &deviceID)
 
-        var translation = AudioValueTranslation(
-            mInputData: &uid,
-            mInputDataSize: UInt32(sizeof(CFStringRef)),
-            mOutputData: &deviceID,
-            mOutputDataSize: UInt32(sizeof(AudioObjectID))
-        )
-
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioHardwarePropertyDeviceForUID,
-            mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMaster
-        )
-
-        let status = self.dynamicType.getPropertyData(AudioObjectID(kAudioObjectSystemObject), address: address, andValue: &translation)
-
-        if noErr != status {
+        if noErr != status || deviceID == kAudioDeviceUnknown {
             return nil
         }
 
