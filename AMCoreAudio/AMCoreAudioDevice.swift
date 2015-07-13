@@ -907,19 +907,19 @@ final public class AMCoreAudioDevice: NSObject {
     /**
         Sets the master volume for a given direction.
 
+        **Note:** The volume is given as a scalar value (i.e., 0 to 1)
+
         - Returns: `true` on success, `false` otherwise.
     */
     public func setMasterVolume(volume: Float32, forDirection direction: Direction) -> Bool {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioHardwareServiceDeviceProperty_VirtualMasterVolume,
             mScope: directionToScope(direction),
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        let size = UInt32(sizeof(Float32))
         var theVolume = volume
-
-        let status = AudioHardwareServiceSetPropertyData(deviceID, &address, UInt32(0), nil, size, &theVolume)
+        let status = setPropertyData(address, andValue: &theVolume)
 
         return noErr == status
     }
@@ -939,16 +939,14 @@ final public class AMCoreAudioDevice: NSObject {
         - Returns: *(optional)* A `Float32` value with the scalar volume.
     */
     public func masterVolumeForDirection(direction: Direction) -> Float32? {
-        var address = AudioObjectPropertyAddress(
+        let address = AudioObjectPropertyAddress(
             mSelector: kAudioHardwareServiceDeviceProperty_VirtualMasterVolume,
             mScope: directionToScope(direction),
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        var size = UInt32(sizeof(Float32))
         var volumeScalar = Float32(0)
-
-        let status = AudioHardwareServiceGetPropertyData(deviceID, &address, UInt32(0), nil, &size, &volumeScalar)
+        let status = getPropertyData(address, andValue: &volumeScalar)
 
         if noErr != status {
             return nil
