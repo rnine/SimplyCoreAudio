@@ -1143,12 +1143,12 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
     theSize = sizeof(Float32);
 
-    theStatus = AudioHardwareServiceSetPropertyData(self.deviceID,
-                                                    &address,
-                                                    0,
-                                                    NULL,
-                                                    theSize,
-                                                    &volume);
+    theStatus = AudioObjectSetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           theSize,
+                                           &volume);
 
     if (noErr == theStatus)
     {
@@ -1180,12 +1180,12 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
     theSize = sizeof(Float32);
 
-    theStatus = AudioHardwareServiceGetPropertyData(self.deviceID,
-                                                    &address,
-                                                    0,
-                                                    NULL,
-                                                    &theSize,
-                                                    &theVolumeScalar);
+    theStatus = AudioObjectGetPropertyData(self.deviceID,
+                                           &address,
+                                           0,
+                                           NULL,
+                                           &theSize,
+                                           &theVolumeScalar);
 
     if (noErr == theStatus)
     {
