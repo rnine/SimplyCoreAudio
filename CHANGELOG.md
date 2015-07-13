@@ -2,6 +2,7 @@
 
 | Version       | Description   | Date     |
 | -------------:|:------------- |:--------:|
+| 2.0.6         | Marking protocol methods in `AMCoreAudioManagerDelegate`, `AMCoreAudioDeviceDelegate`, and `AMCoreAudioHardwareDelegate` as optional by providing default implementations in protocol extensions. | July 13th, 2015|
 | 2.0.5         | Stop using deprecated APIs: `AudioHardwareServiceSetPropertyData` and `AudioHardwareServiceGetPropertyData.` | July 13th, 2015|
 | 2.0.4         | Fixing `AMCoreAudioDevice(deviceID:)` initializer by reimplementing its core functionality in C. | July 13th, 2015|
 | 2.0.3         | Fixing that `AMCoreAudioHardware` `delegate` was not declared as a public variable. | July 13th, 2015|
