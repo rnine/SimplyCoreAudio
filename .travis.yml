@@ -1,5 +1,6 @@
 sudo: false
 language: objective-c
+osx_image: xcode7.0
 xcode_project: AMCoreAudio.xcodeproj
 matrix:
   include:
