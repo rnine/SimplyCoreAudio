@@ -7,8 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		450765261B4E92B8005E87C9 /* Bool+Boolean.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450765251B4E92B8005E87C9 /* Bool+Boolean.swift */; };
+		450765261B4E92B8005E87C9 /* Bool+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450765251B4E92B8005E87C9 /* Bool+Extensions.swift */; };
 		452129C81B53C5890077A712 /* AMCoreAudioBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 452129C71B53C5890077A712 /* AMCoreAudioBridge.m */; };
+		453C2B9A1B7E1BFF00466C7D /* AMCoreAudioTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453C2B991B7E1BFF00466C7D /* AMCoreAudioTests.swift */; };
+		453C2B9C1B7E1BFF00466C7D /* AMCoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 454D245A1B4BE40E0043FA12 /* AMCoreAudio.framework */; };
+		453C2BA31B7E248700466C7D /* AMCoreAudioDeviceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453C2BA21B7E248700466C7D /* AMCoreAudioDeviceTests.swift */; };
 		454D24751B4BE4860043FA12 /* AMCoreAudioDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454D24741B4BE4860043FA12 /* AMCoreAudioDevice.swift */; };
 		454D24771B4BE6610043FA12 /* AMCoreAudioTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454D24761B4BE6610043FA12 /* AMCoreAudioTypes.swift */; };
 		454D24821B4BE9800043FA12 /* AMCoreAudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454D24811B4BE9800043FA12 /* AMCoreAudioManager.swift */; };
@@ -16,11 +19,25 @@
 		45B5A17B1B502353002C255F /* AMCoreAudioDevice+PropertyData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B5A17A1B502353002C255F /* AMCoreAudioDevice+PropertyData.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		453C2B9D1B7E1BFF00466C7D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 454D24511B4BE40D0043FA12 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 454D24591B4BE40E0043FA12;
+			remoteInfo = AMCoreAudio;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
-		450765251B4E92B8005E87C9 /* Bool+Boolean.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bool+Boolean.swift"; sourceTree = "<group>"; };
+		450765251B4E92B8005E87C9 /* Bool+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bool+Extensions.swift"; sourceTree = "<group>"; };
 		452129C71B53C5890077A712 /* AMCoreAudioBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMCoreAudioBridge.m; sourceTree = "<group>"; };
 		452129C91B53C5A30077A712 /* AMCoreAudioBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AMCoreAudioBridge.h; sourceTree = "<group>"; };
 		452129D21B53C7820077A712 /* AMCoreAudio-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AMCoreAudio-Bridging-Header.h"; sourceTree = "<group>"; };
+		453C2B971B7E1BFF00466C7D /* AMCoreAudioTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AMCoreAudioTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		453C2B991B7E1BFF00466C7D /* AMCoreAudioTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AMCoreAudioTests.swift; sourceTree = "<group>"; };
+		453C2B9B1B7E1BFF00466C7D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		453C2BA21B7E248700466C7D /* AMCoreAudioDeviceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMCoreAudioDeviceTests.swift; sourceTree = "<group>"; };
 		454D245A1B4BE40E0043FA12 /* AMCoreAudio.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AMCoreAudio.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		454D245F1B4BE40E0043FA12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		454D24741B4BE4860043FA12 /* AMCoreAudioDevice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AMCoreAudioDevice.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -31,6 +48,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		453C2B941B7E1BFF00466C7D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				453C2B9C1B7E1BFF00466C7D /* AMCoreAudio.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		454D24561B4BE40E0043FA12 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -45,15 +70,26 @@
 			isa = PBXGroup;
 			children = (
 				45B5A17A1B502353002C255F /* AMCoreAudioDevice+PropertyData.swift */,
-				450765251B4E92B8005E87C9 /* Bool+Boolean.swift */,
+				450765251B4E92B8005E87C9 /* Bool+Extensions.swift */,
 			);
 			name = Extensions;
+			sourceTree = "<group>";
+		};
+		453C2B981B7E1BFF00466C7D /* AMCoreAudioTests */ = {
+			isa = PBXGroup;
+			children = (
+				453C2B991B7E1BFF00466C7D /* AMCoreAudioTests.swift */,
+				453C2B9B1B7E1BFF00466C7D /* Info.plist */,
+				453C2BA21B7E248700466C7D /* AMCoreAudioDeviceTests.swift */,
+			);
+			path = AMCoreAudioTests;
 			sourceTree = "<group>";
 		};
 		454D24501B4BE40D0043FA12 = {
 			isa = PBXGroup;
 			children = (
 				454D245C1B4BE40E0043FA12 /* AMCoreAudio */,
+				453C2B981B7E1BFF00466C7D /* AMCoreAudioTests */,
 				454D245B1B4BE40E0043FA12 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -62,6 +98,7 @@
 			isa = PBXGroup;
 			children = (
 				454D245A1B4BE40E0043FA12 /* AMCoreAudio.framework */,
+				453C2B971B7E1BFF00466C7D /* AMCoreAudioTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -95,6 +132,24 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		453C2B961B7E1BFF00466C7D /* AMCoreAudioTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 453C2BA11B7E1BFF00466C7D /* Build configuration list for PBXNativeTarget "AMCoreAudioTests" */;
+			buildPhases = (
+				453C2B931B7E1BFF00466C7D /* Sources */,
+				453C2B941B7E1BFF00466C7D /* Frameworks */,
+				453C2B951B7E1BFF00466C7D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				453C2B9E1B7E1BFF00466C7D /* PBXTargetDependency */,
+			);
+			name = AMCoreAudioTests;
+			productName = AMCoreAudioTests;
+			productReference = 453C2B971B7E1BFF00466C7D /* AMCoreAudioTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		454D24591B4BE40E0043FA12 /* AMCoreAudio */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 454D246E1B4BE40E0043FA12 /* Build configuration list for PBXNativeTarget "AMCoreAudio" */;
@@ -123,6 +178,9 @@
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = 9Labs;
 				TargetAttributes = {
+					453C2B961B7E1BFF00466C7D = {
+						CreatedOnToolsVersion = 7.0;
+					};
 					454D24591B4BE40E0043FA12 = {
 						CreatedOnToolsVersion = 7.0;
 					};
@@ -141,11 +199,19 @@
 			projectRoot = "";
 			targets = (
 				454D24591B4BE40E0043FA12 /* AMCoreAudio */,
+				453C2B961B7E1BFF00466C7D /* AMCoreAudioTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		453C2B951B7E1BFF00466C7D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		454D24581B4BE40E0043FA12 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -156,11 +222,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		453C2B931B7E1BFF00466C7D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				453C2B9A1B7E1BFF00466C7D /* AMCoreAudioTests.swift in Sources */,
+				453C2BA31B7E248700466C7D /* AMCoreAudioDeviceTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		454D24551B4BE40E0043FA12 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				450765261B4E92B8005E87C9 /* Bool+Boolean.swift in Sources */,
+				450765261B4E92B8005E87C9 /* Bool+Extensions.swift in Sources */,
 				454D24821B4BE9800043FA12 /* AMCoreAudioManager.swift in Sources */,
 				454D24751B4BE4860043FA12 /* AMCoreAudioDevice.swift in Sources */,
 				454D24771B4BE6610043FA12 /* AMCoreAudioTypes.swift in Sources */,
@@ -172,7 +247,37 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		453C2B9E1B7E1BFF00466C7D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 454D24591B4BE40E0043FA12 /* AMCoreAudio */;
+			targetProxy = 453C2B9D1B7E1BFF00466C7D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		453C2B9F1B7E1BFF00466C7D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = AMCoreAudioTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = io.9labs.AMCoreAudioTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		453C2BA01B7E1BFF00466C7D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = AMCoreAudioTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = io.9labs.AMCoreAudioTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		454D246C1B4BE40E0043FA12 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -302,6 +407,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		453C2BA11B7E1BFF00466C7D /* Build configuration list for PBXNativeTarget "AMCoreAudioTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				453C2B9F1B7E1BFF00466C7D /* Debug */,
+				453C2BA01B7E1BFF00466C7D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		454D24541B4BE40D0043FA12 /* Build configuration list for PBXProject "AMCoreAudio" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

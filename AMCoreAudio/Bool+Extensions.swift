@@ -9,7 +9,7 @@
 import Foundation
 
 extension Bool {
-    init(boolean: Boolean) {
-        self.init(booleanLiteral: boolean == 1)
+    init<T : IntegerType>(_ integer: T){
+        self.init(integer != 0)
     }
 }
