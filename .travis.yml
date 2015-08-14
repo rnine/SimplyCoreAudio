@@ -1,0 +1,7 @@
+sudo: false
+language: objective-c
+xcode_project: AMCoreAudio/AMCoreAudio.xcodeproj
+matrix:
+  include:
+    - xcode_sdk: macosx
+      xcode_scheme: AMCoreAudio
