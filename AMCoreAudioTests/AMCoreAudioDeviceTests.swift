@@ -28,7 +28,7 @@ class AMCoreAudioDeviceTests: XCTestCase {
     }
 
     func testValidDeviceUIDInitializer() {
-        if let someAudioDevice: AMCoreAudioDevice = AMCoreAudioDevice.allDevices()[0],
+        if let someAudioDevice: AMCoreAudioDevice = AMCoreAudioDevice.allDevices().first,
             let validDeviceUID = someAudioDevice.deviceUID() {
                 let validDevice = AMCoreAudioDevice(deviceUID: validDeviceUID)
 
@@ -41,8 +41,7 @@ class AMCoreAudioDeviceTests: XCTestCase {
         let allDeviceIDs = AMCoreAudioDevice.allDeviceIDs()
         let allDevices = AMCoreAudioDevice.allDevices()
 
-        XCTAssertGreaterThan(allDeviceIDs.count, 0)
-        XCTAssertGreaterThan(allDevices.count, 0)
+        XCTAssertEqual(allDeviceIDs.count, allDevices.count)
         XCTAssertEqual(allDeviceIDs, allDevices.map { $0.deviceID })
     }
 
@@ -71,7 +70,7 @@ class AMCoreAudioDeviceTests: XCTestCase {
     }
 
     func testNominalSampleRate() {
-        if let someAudioDevice: AMCoreAudioDevice = AMCoreAudioDevice.allDevices()[0] {
+        if let someAudioDevice: AMCoreAudioDevice = AMCoreAudioDevice.allDevices().first {
             if let nominalSampleRates = someAudioDevice.nominalSampleRates(),
                    nominalSampleRate = someAudioDevice.nominalSampleRate() {
                 XCTAssertTrue(nominalSampleRates.contains(nominalSampleRate), "Expected \(nominalSampleRates) to contain \(nominalSampleRate).")
