@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'AMCoreAudio'
-  s.version      = '2.0.8'
+  s.version      = '2.0.9'
   s.summary      = 'AMCoreAudio is a Swift wrapper for Apple\'s CoreAudio framework'
 
   s.description  = <<-DESC

@@ -187,6 +187,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             print("|- Hog mode PID is \(hogModePID)")
         }
 
+        print("|")
+        print("| (Formatters Extension)")
+        print("|")
+        print("|- Actual sample rate: \(audioDevice.actualSampleRateFormattedWithShortFormat(true))")
+        print("|- Latency: \(audioDevice.latencyDescription())")
+        print("|- Number of channels: \(audioDevice.numberOfChannelsDescription())")
         print("")
     }
 }

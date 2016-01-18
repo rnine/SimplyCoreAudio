@@ -2,6 +2,7 @@
 
 | Version       | Description   | Date     |
 | -------------:|:------------- |:--------:|
+| 2.0.9         | Adding `AMCoreAudioDevice+Formatters` extension. | January 18th, 2016|
 | 2.0.8         | Adding XCode 7 compatibility. | September 17th, 2015|
 | 2.0.7         | Minor fixes. | July 13th, 2015|
 | 2.0.6         | Marking protocol methods in `AMCoreAudioManagerDelegate`, `AMCoreAudioDeviceDelegate`, and `AMCoreAudioHardwareDelegate` as optional by providing default implementations in protocol extensions. | July 13th, 2015|
