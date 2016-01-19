@@ -1294,10 +1294,10 @@ final public class AMCoreAudioDevice: NSObject {
             mElement: channel
         )
 
-        var volumeInDecibels = -Float32.infinity
-        let status = getPropertyData(address, andValue: &volumeInDecibels)
+        var inOutVolume = volume
+        let status = getPropertyData(address, andValue: &inOutVolume)
 
-        return noErr == status ? volumeInDecibels : nil
+        return noErr == status ? inOutVolume : nil
     }
 
     /**
@@ -1313,10 +1313,10 @@ final public class AMCoreAudioDevice: NSObject {
             mElement: channel
         )
 
-        var scalarVolume = Float32(0)
-        let status = getPropertyData(address, andValue: &scalarVolume)
+        var inOutVolume = volume
+        let status = getPropertyData(address, andValue: &inOutVolume)
 
-        return noErr == status ? scalarVolume : nil
+        return noErr == status ? inOutVolume : nil
     }
 
     // MARK: - Private Methods
