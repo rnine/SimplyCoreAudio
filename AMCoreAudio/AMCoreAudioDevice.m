@@ -110,7 +110,7 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
     for (id deviceID in deviceIDs)
     {
-        device = [[self alloc] initWithDeviceID:[deviceID intValue]];
+        device = [[self alloc] initWithDeviceID:(AudioObjectID)[deviceID unsignedIntValue]];
 
         [devices addObject:device];
     }
@@ -626,8 +626,8 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
         kAudioObjectPropertyElementMaster
     };
 
-    hasProperty = AudioObjectHasProperty(self.deviceID,
-                                         &address);
+    hasProperty = (BOOL)AudioObjectHasProperty(self.deviceID,
+                                               &address);
 
     if (!hasProperty)
     {
@@ -732,8 +732,8 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
         theChannel
     };
 
-    hasProperty = AudioObjectHasProperty(self.deviceID,
-                                         &address);
+    hasProperty = (BOOL)AudioObjectHasProperty(self.deviceID,
+                                               &address);
 
     if (!hasProperty)
     {
@@ -776,8 +776,8 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
     address.mSelector = kAudioDevicePropertyMute;
 
-    hasProperty = AudioObjectHasProperty(self.deviceID,
-                                         &address);
+    hasProperty = (BOOL)AudioObjectHasProperty(self.deviceID,
+                                               &address);
 
     if (!hasProperty)
     {
@@ -810,7 +810,7 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
         if (noErr == theStatus)
         {
-            rv.isMuted = tmpBool32;
+            rv.isMuted = (Boolean)tmpBool32;
         }
     }
 
@@ -819,8 +819,8 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
     address.mSelector = kAudioDevicePropertyPlayThru;
 
-    hasProperty = AudioObjectHasProperty(self.deviceID,
-                                         &address);
+    hasProperty = (BOOL)AudioObjectHasProperty(self.deviceID,
+                                               &address);
 
     if (!hasProperty)
     {
@@ -853,7 +853,7 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
         if (noErr == theStatus)
         {
-            rv.isPlayThruSet = tmpBool32;
+            rv.isPlayThruSet = (Boolean)tmpBool32;
         }
     }
 
@@ -1014,12 +1014,12 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     vi = [self volumeInfoForChannel:theChannel
                        andDirection:theDirection];
 
-    return vi.canMute;
+    return (BOOL)vi.canMute;
 }
 
 - (BOOL)canMuteMasterVolumeForDirection:(AMCoreAudioDirection)theDirection
 {
-    NSInteger muteCount;
+    NSUInteger muteCount;
     NSArray *preferredStereoChannels;
 
     if ([self canMuteForChannel:kAudioObjectPropertyElementMaster
@@ -1038,7 +1038,7 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
     for (NSNumber *channel in preferredStereoChannels)
     {
-        if ([self canMuteForChannel:channel.intValue
+        if ([self canMuteForChannel:channel.unsignedIntValue
                        andDirection:theDirection])
         {
             muteCount++;
@@ -1056,7 +1056,7 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
     vi = [self volumeInfoForChannel:theChannel
                        andDirection:theDirection];
 
-    return vi.canSetVolume;
+    return (BOOL)vi.canSetVolume;
 }
 
 - (NSArray *)preferredStereoChannelsForDirection:(AMCoreAudioDirection)theDirection
@@ -1100,7 +1100,7 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
 - (BOOL)canSetMasterVolumeForDirection:(AMCoreAudioDirection)theDirection
 {
-    NSInteger settableChannelsCount;
+    NSUInteger settableChannelsCount;
     NSArray *preferredStereoChannels;
 
     if ([self canSetVolumeForChannel:kAudioObjectPropertyElementMaster
@@ -1119,7 +1119,7 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
 
     for (NSNumber *channel in preferredStereoChannels)
     {
-        if ([self canSetVolumeForChannel:channel.intValue
+        if ([self canSetVolumeForChannel:channel.unsignedIntValue
                             andDirection:theDirection])
         {
             settableChannelsCount++;
@@ -1217,7 +1217,7 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
             return -INFINITY;
         }
 
-        referenceChannel = [channels[0] intValue];
+        referenceChannel = [channels[0] unsignedIntValue];
     }
 
     volumeInDecibels = [self scalarToDecibels:[self masterVolumeForDirection:theDirection]
@@ -1376,8 +1376,8 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
             kAudioObjectPropertyElementMaster
         };
 
-        hasProperty = AudioObjectHasProperty(self.deviceID,
-                                             &address);
+        hasProperty = (BOOL)AudioObjectHasProperty(self.deviceID,
+                                                   &address);
 
         if (!hasProperty)
         {
@@ -1530,8 +1530,8 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
         theChannel
     };
 
-    hasProperty = AudioObjectHasProperty(self.deviceID,
-                                         &address);
+    hasProperty = (BOOL)AudioObjectHasProperty(self.deviceID,
+                                               &address);
 
     if (!hasProperty)
     {
@@ -1574,8 +1574,8 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
         theChannel
     };
 
-    hasProperty = AudioObjectHasProperty(self.deviceID,
-                                         &address);
+    hasProperty = (BOOL)AudioObjectHasProperty(self.deviceID,
+                                               &address);
 
     if (!hasProperty)
     {
@@ -1648,8 +1648,8 @@ NSString *const AMCoreAudioDefaultClockSourceName = @"Default";
         theChannel
     };
 
-    hasProperty = AudioObjectHasProperty(self.deviceID,
-                                         &address);
+    hasProperty = (BOOL)AudioObjectHasProperty(self.deviceID,
+                                               &address);
 
     if (!hasProperty)
     {
