@@ -1,6 +1,5 @@
 ## AMCoreAudio
 
-[![Build Status](https://travis-ci.org/rnine/AMCoreAudio.svg)](https://travis-ci.org/rnine/AMCoreAudio)
 [![Version](http://cocoapod-badges.herokuapp.com/v/AMCoreAudio/badge.png)](http://cocoadocs.org/docsets/AMCoreAudio)
 [![Platform](http://cocoapod-badges.herokuapp.com/p/AMCoreAudio/badge.png)](http://cocoadocs.org/docsets/AMCoreAudio)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
