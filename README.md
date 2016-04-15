@@ -12,6 +12,7 @@
 - Providing accessors for the most relevant audio device properties (i.e., device name, device manufacturer, device UID, volume, mute, sample rate, clock source, etc.)
 - Subscribing to system and audio device specific notifications using delegation
 - Managing (physical and virtual) audio streams associated to an audio device
+- Subscribing for audio stream notifications
 - etc.
 
 `AMCoreAudio` is currently powering [AudioMate](http://audiomateapp.com) (recently open-sourced and available at https://github.com/The9Labs/AudioMate).
