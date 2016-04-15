@@ -91,7 +91,7 @@ public extension AMCoreAudioDeviceDelegate {
     Devices may be physical or virtual. For a comprehensive list of
     supported types, please refer to `TransportType`.
 */
-final public class AMCoreAudioDevice: NSObject {
+final public class AMCoreAudioDevice: AMCoreAudioObject {
 
     /**
         A delegate conforming to the `AMCoreAudioDeviceDelegate` protocol.
@@ -123,7 +123,11 @@ final public class AMCoreAudioDevice: NSObject {
 
         - Returns: An audio device identifier.
     */
-    public let deviceID: AudioObjectID
+    public var deviceID: AudioObjectID {
+        get {
+            return objectID
+        }
+    }
 
     private var isRegisteredForNotifications = false
 
@@ -173,8 +177,7 @@ final public class AMCoreAudioDevice: NSObject {
         Initializes an `AMCoreAudioDevice` by providing a valid `AudioObjectID` referencing an existing audio device in the system.
     */
     public init(deviceID: AudioObjectID) {
-        self.deviceID = deviceID
-        super.init()
+        super.init(objectID: deviceID)
         cachedDeviceName = getDeviceName()
     }
 
@@ -248,7 +251,7 @@ final public class AMCoreAudioDevice: NSObject {
         
         **Note:** The list may also include *Aggregate* and *Multi-Output* devices.
 
-        - Returns: An array of `AMCoreAudioDevice`s.
+        - Returns: An array of `AMCoreAudioDevice`
     */
     public class func allDevices() -> [AMCoreAudioDevice] {
         let deviceIDs = allDeviceIDs()
@@ -1319,6 +1322,31 @@ final public class AMCoreAudioDevice: NSObject {
         return noErr == status ? inOutVolume : nil
     }
 
+    // MARK: - Stream Methods
+
+    public func streamsForDirection(direction: Direction) -> [AMCoreAudioStream]? {
+        var address = AudioObjectPropertyAddress(
+            mSelector: kAudioDevicePropertyStreams,
+            mScope: directionToScope(direction),
+            mElement: kAudioObjectPropertyElementMaster
+        )
+
+        if !AudioObjectHasProperty(deviceID, &address) {
+            return nil
+        }
+
+        var streamIDs = [AudioStreamID]()
+        let status = getPropertyDataArray(address, value: &streamIDs, andDefaultValue: 0)
+
+        if noErr != status {
+            return nil
+        }
+
+        return streamIDs.map({ (streamID) -> AMCoreAudioStream in
+            AMCoreAudioStream(streamID: streamID)
+        })
+    }
+
     // MARK: - Private Methods
 
     private func getDeviceName() -> String {
@@ -1333,21 +1361,6 @@ final public class AMCoreAudioDevice: NSObject {
         let status = getPropertyData(address, andValue: &name)
 
         return noErr == status ? (name as String) : (cachedDeviceName ?? "<Unknown Device Name>")
-    }
-
-    private func directionToScope(direction: Direction) -> AudioObjectPropertyScope {
-        return .Playback == direction ? kAudioObjectPropertyScopeOutput : kAudioObjectPropertyScopeInput
-    }
-
-    private func scopeToDirection(scope: AudioObjectPropertyScope) -> Direction {
-        switch scope {
-        case kAudioObjectPropertyScopeOutput:
-            return .Playback
-        case kAudioObjectPropertyScopeInput:
-            return .Recording
-        default:
-            return .Invalid
-        }
     }
 
     private func clockSourceNameForClockSourceID(clockSourceID: UInt32, forChannel channel: UInt32, andDirection direction: Direction) -> String? {

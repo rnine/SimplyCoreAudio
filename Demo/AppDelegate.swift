@@ -171,6 +171,46 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
 
+        if let streamIDsForPlayback = audioDevice.streamsForDirection(.Playback) {
+            print("|- Streams for playback: \(streamIDsForPlayback)")
+
+            streamIDsForPlayback.forEach({ (stream) in
+                if let availableFormats = stream.availablePhysicalFormats {
+                    print("|- Available physical formats for playback (\(stream.streamID)): \(availableFormats)")
+                }
+
+                if let filteredAvailableFormats = stream.availablePhysicalFormatsMatchingCurrentNominalSampleRate(false) {
+
+                    print("|- Available physical formats for playback (filtered by sample rate) (\(stream.streamID)): \(filteredAvailableFormats)")
+                }
+
+                if let streamForPlayback = stream.physicalFormat {
+                    print("|- Physical ASBD for playback (\(stream.streamID)): \(streamForPlayback)")
+                }
+            })
+        }
+
+        if let streamIDsForRecording = audioDevice.streamsForDirection(.Recording) {
+            print("|- Streams for recording: \(streamIDsForRecording)")
+
+            streamIDsForRecording.forEach({ (stream) in
+                print("|- Stream (recording): \(stream.streamID)")
+
+                if let availableFormats = stream.availablePhysicalFormats {
+                    print("|- Available physical formats for recording (\(stream.streamID)): \(availableFormats)")
+                }
+
+                if let filteredAvailableFormats = stream.availablePhysicalFormatsMatchingCurrentNominalSampleRate(false) {
+
+                    print("|- Available physical formats for recording (filtered by sample rate) (\(stream.streamID)): \(filteredAvailableFormats)")
+                }
+
+                if let streamForRecording = stream.physicalFormat {
+                    print("|- Physical ASBD for recording (\(stream.streamID)): \(streamForRecording)")
+                }
+            })
+        }
+
         if let relatedDevices = audioDevice.relatedDevices() {
             print("|- Related devices are \(relatedDevices)")
         }
