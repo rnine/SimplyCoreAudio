@@ -11,9 +11,7 @@
 		450A4B311CBDB09400EB7B34 /* AMCoreAudioStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450A4B301CBDB09400EB7B34 /* AMCoreAudioStream.swift */; };
 		450A4B331CBDB14E00EB7B34 /* AMUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450A4B321CBDB14E00EB7B34 /* AMUtils.swift */; };
 		452129C81B53C5890077A712 /* AMCoreAudioBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 452129C71B53C5890077A712 /* AMCoreAudioBridge.m */; };
-		453C2B9A1B7E1BFF00466C7D /* AMCoreAudioTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453C2B991B7E1BFF00466C7D /* AMCoreAudioTests.swift */; };
 		453C2B9C1B7E1BFF00466C7D /* AMCoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 454D245A1B4BE40E0043FA12 /* AMCoreAudio.framework */; };
-		453C2BA31B7E248700466C7D /* AMCoreAudioDeviceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453C2BA21B7E248700466C7D /* AMCoreAudioDeviceTests.swift */; };
 		454D24751B4BE4860043FA12 /* AMCoreAudioDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454D24741B4BE4860043FA12 /* AMCoreAudioDevice.swift */; };
 		454D24771B4BE6610043FA12 /* AMCoreAudioTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454D24761B4BE6610043FA12 /* AMCoreAudioTypes.swift */; };
 		454D24821B4BE9800043FA12 /* AMCoreAudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454D24811B4BE9800043FA12 /* AMCoreAudioManager.swift */; };
@@ -40,9 +38,6 @@
 		452129C91B53C5A30077A712 /* AMCoreAudioBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AMCoreAudioBridge.h; sourceTree = "<group>"; };
 		452129D21B53C7820077A712 /* AMCoreAudio-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AMCoreAudio-Bridging-Header.h"; sourceTree = "<group>"; };
 		453C2B971B7E1BFF00466C7D /* AMCoreAudioTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AMCoreAudioTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		453C2B991B7E1BFF00466C7D /* AMCoreAudioTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AMCoreAudioTests.swift; sourceTree = "<group>"; };
-		453C2B9B1B7E1BFF00466C7D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		453C2BA21B7E248700466C7D /* AMCoreAudioDeviceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMCoreAudioDeviceTests.swift; sourceTree = "<group>"; };
 		454D245A1B4BE40E0043FA12 /* AMCoreAudio.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AMCoreAudio.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		454D245F1B4BE40E0043FA12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		454D24741B4BE4860043FA12 /* AMCoreAudioDevice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AMCoreAudioDevice.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -81,21 +76,10 @@
 			name = Extensions;
 			sourceTree = "<group>";
 		};
-		453C2B981B7E1BFF00466C7D /* AMCoreAudioTests */ = {
-			isa = PBXGroup;
-			children = (
-				453C2B991B7E1BFF00466C7D /* AMCoreAudioTests.swift */,
-				453C2B9B1B7E1BFF00466C7D /* Info.plist */,
-				453C2BA21B7E248700466C7D /* AMCoreAudioDeviceTests.swift */,
-			);
-			path = AMCoreAudioTests;
-			sourceTree = "<group>";
-		};
 		454D24501B4BE40D0043FA12 = {
 			isa = PBXGroup;
 			children = (
 				454D245C1B4BE40E0043FA12 /* AMCoreAudio */,
-				453C2B981B7E1BFF00466C7D /* AMCoreAudioTests */,
 				454D245B1B4BE40E0043FA12 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -235,8 +219,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				453C2B9A1B7E1BFF00466C7D /* AMCoreAudioTests.swift in Sources */,
-				453C2BA31B7E248700466C7D /* AMCoreAudioDeviceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
