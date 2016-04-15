@@ -1321,8 +1321,13 @@ final public class AMCoreAudioDevice: AMCoreAudioObject {
         return noErr == status ? inOutVolume : nil
     }
 
-    // MARK: - Stream Methods
+    // MARK: - ♨︎ Stream Methods
 
+    /**
+        Returns a list of streams for a given direction.
+
+        - Returns: *(optional)* An array of `AMCoreAudioStream`.
+     */
     public func streamsForDirection(direction: Direction) -> [AMCoreAudioStream]? {
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyStreams,
