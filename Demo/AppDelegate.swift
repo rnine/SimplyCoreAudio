@@ -177,6 +177,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             streamForPlayback.forEach({ (stream) in
                 print("|- Stream (playback): \(stream.streamID)")
 
+                // Set delegate
+                stream.delegate = self
+
                 if let physicalFormats = stream.availablePhysicalFormats {
                     print("|- Available physical formats for playback (\(stream.streamID)): \(physicalFormats)")
                 }
@@ -208,6 +211,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
             streamForRecording.forEach({ (stream) in
                 print("|- Stream (recording): \(stream.streamID)")
+
+                // Set delegate
+                stream.delegate = self
 
                 if let physicalFormats = stream.availablePhysicalFormats {
                     print("|- Available physical formats for recording (\(stream.streamID)): \(physicalFormats)")
@@ -329,5 +335,21 @@ extension AppDelegate : AMCoreAudioManagerDelegate {
 
     func audioDeviceIsRunningSomewhereDidChange(audioDevice: AMCoreAudioDevice) {
         print("\(audioDevice) 'is running somewhere' changed to \(audioDevice.isRunningSomewhere())")
+    }
+}
+
+// MARK: - AMCoreAudioManagerDelegate Methods
+extension AppDelegate : AMCoreAudioStreamDelegate {
+
+    func audioStreamIsActiveChanged(audioStream: AMCoreAudioStream) {
+        print("\(audioStream) is active changed \(audioStream.active)")
+    }
+
+    func audioStreamPhysicalFormatChanged(audioStream: AMCoreAudioStream) {
+        print("\(audioStream) physical format changed \(audioStream.physicalFormat)")
+    }
+
+    func audioStreamVirtualFormatChanged(audioStream: AMCoreAudioStream) {
+        print("\(audioStream) virtual format changed \(audioStream.virtualFormat)")
     }
 }

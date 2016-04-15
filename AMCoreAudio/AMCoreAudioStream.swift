@@ -8,7 +8,42 @@
 
 import Foundation
 
-public final class AMCoreAudioStream: AMCoreAudioObject {
+/// `AMCoreAudioStreamDelegate` protocol
+public protocol AMCoreAudioStreamDelegate: class {
+    /**
+        Called whenever the audio stream `isActive` flag changes state.
+     */
+    func audioStreamIsActiveChanged(audioStream: AMCoreAudioStream)
+
+    /**
+        Called whenever the audio stream physical format changes.
+     */
+    func audioStreamPhysicalFormatChanged(audioStream: AMCoreAudioStream)
+}
+
+/// Optional `AMCoreAudioStreamDelegate` protocol methods
+public extension AMCoreAudioStreamDelegate {
+    func audioStreamIsActiveChanged(audioStream: AMCoreAudioStream) {}
+    func audioStreamPhysicalFormatChanged(audioStream: AMCoreAudioStream) {}
+}
+
+/**
+    `AMCoreAudioStream`
+ */
+final public class AMCoreAudioStream: AMCoreAudioObject {
+
+    /**
+        A delegate conforming to the `AMCoreAudioStreamDelegate` protocol.
+     */
+    public weak var delegate: AMCoreAudioStreamDelegate? {
+        didSet {
+            if delegate != nil {
+                registerForNotifications()
+            } else {
+                unregisterForNotifications()
+            }
+        }
+    }
 
     /**
         The audio stream ID that this `AMCoreAudioStream` instance represents.
@@ -281,6 +316,12 @@ public final class AMCoreAudioStream: AMCoreAudioObject {
         return asrd
     }()
 
+    private var isRegisteredForNotifications = false
+
+    private lazy var notificationsQueue: dispatch_queue_t = {
+        return dispatch_queue_create("io.9labs.AMCoreAudio.notifications", DISPATCH_QUEUE_CONCURRENT)
+    }()
+
     // MARK: - Public Functions
 
     /**
@@ -350,5 +391,63 @@ public final class AMCoreAudioStream: AMCoreAudioObject {
         }
 
         return filteredFormats
+    }
+
+    // MARK: - Private Methods
+
+    // MARK: - Notification Book-keeping
+
+    private func registerForNotifications() {
+        if isRegisteredForNotifications {
+            unregisterForNotifications()
+        }
+
+        var address = AudioObjectPropertyAddress(
+            mSelector: kAudioObjectPropertySelectorWildcard,
+            mScope: kAudioObjectPropertyScopeWildcard,
+            mElement: kAudioObjectPropertyElementWildcard
+        )
+
+        let err = AudioObjectAddPropertyListenerBlock(streamID, &address, notificationsQueue, propertyListenerBlock)
+
+        if noErr != err {
+            print("Error on AudioObjectAddPropertyListenerBlock: \(err)")
+        }
+
+        isRegisteredForNotifications = noErr == err
+    }
+
+    private func unregisterForNotifications() {
+        if isRegisteredForNotifications {
+            var address = AudioObjectPropertyAddress(
+                mSelector: kAudioObjectPropertySelectorWildcard,
+                mScope: kAudioObjectPropertyScopeWildcard,
+                mElement: kAudioObjectPropertyElementWildcard
+            )
+
+            let err = AudioObjectRemovePropertyListenerBlock(streamID, &address, notificationsQueue, propertyListenerBlock)
+
+            if noErr != err {
+                print("Error on AudioObjectRemovePropertyListenerBlock: \(err)")
+            }
+
+            isRegisteredForNotifications = noErr != err
+        } else {
+            isRegisteredForNotifications = false
+        }
+    }
+
+    private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { (inNumberAddresses, inAddresses) -> Void in
+        let address = inAddresses.memory
+        let direction = self.scopeToDirection(address.mScope)
+
+        switch address.mSelector {
+        case kAudioStreamPropertyIsActive:
+            self.delegate?.audioStreamIsActiveChanged(self)
+        case kAudioStreamPropertyPhysicalFormat:
+            self.delegate?.audioStreamPhysicalFormatChanged(self)
+        default:
+            break
+        }
     }
 }
