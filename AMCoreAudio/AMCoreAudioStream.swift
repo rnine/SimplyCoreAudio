@@ -51,7 +51,7 @@ public final class AMCoreAudioStream: AMCoreAudioObject {
         Returns a `UInt32` that specifies the first element in the owning device that corresponds to
         element one of this stream.
 
-        - Returns: A `UInt32`
+        - Returns: *(optional)* A `UInt32`
      */
     public lazy var startingChannel: UInt32? = {
         var address = AudioObjectPropertyAddress(
@@ -80,7 +80,7 @@ public final class AMCoreAudioStream: AMCoreAudioObject {
         For output streams, and to continue using the same `Direction` concept used by `AMCoreAudioDevice`,
         this will be `Direction.Playback`, likewise, for input streams, `Direction.Recording` will be returned.
 
-        - Returns: Optionally, a `Direction`
+        - Returns: *(optional)* A `Direction`
      */
     public lazy var direction: Direction? = {
         var address = AudioObjectPropertyAddress(
@@ -113,7 +113,7 @@ public final class AMCoreAudioStream: AMCoreAudioObject {
     /**
         An `AudioStreamBasicDescription` that describes the current data format for this audio stream.
 
-        - Returns: A `AudioStreamBasicDescription`
+        - Returns: *(optional)* A `AudioStreamBasicDescription`
      */
     public lazy var physicalFormat: AudioStreamBasicDescription? = {
         guard let direction = self.direction else {
@@ -142,9 +142,9 @@ public final class AMCoreAudioStream: AMCoreAudioObject {
 
 
     /**
-     An array of all the available physical formats for this audio stream.
+        An array of all the available physical formats for this audio stream.
 
-     - Returns: An array of `AudioStreamRangedDescription`
+        - Returns: *(optional)* An array of `AudioStreamRangedDescription`
      */
     public lazy var availablePhysicalFormats: [AudioStreamRangedDescription]? = {
         guard let direction = self.direction else {
@@ -187,7 +187,7 @@ public final class AMCoreAudioStream: AMCoreAudioObject {
         **Discussion:** By default, non-mixable streams are returned, however, these can be filtered 
         out by setting `includeNonMixable` to `false`.
 
-        - Returns: An array of `AudioStreamBasicDescription`
+        - Returns: *(optional)* An array of `AudioStreamBasicDescription`
      */
     public final func availablePhysicalFormatsMatchingCurrentNominalSampleRate(includeNonMixable: Bool = true) -> [AudioStreamBasicDescription]? {
         guard let physicalFormats = availablePhysicalFormats,
