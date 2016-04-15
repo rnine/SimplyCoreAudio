@@ -136,7 +136,6 @@ final public class AMCoreAudioDevice: AMCoreAudioObject {
     }()
 
     private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { (inNumberAddresses, inAddresses) -> Void in
-
         let address = inAddresses.memory
         let direction = self.scopeToDirection(address.mScope)
 
