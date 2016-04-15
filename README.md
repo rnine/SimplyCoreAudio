@@ -26,7 +26,7 @@
 
 ### Documentation
 
-* [AMCoreAudio Documentation](http://cocoadocs.org/docsets/AMCoreAudio/) (powered by [CocoaDocs.org](http://cocoadocs.org))
+* [AMCoreAudio Documentation](http://rnine.github.io/AMCoreAudio) (powered by [jazzy ♪♫](https://github.com/realm/jazzy) and [GitHub Pages](https://pages.github.com))
 
 ### Further Development & Patches
 
