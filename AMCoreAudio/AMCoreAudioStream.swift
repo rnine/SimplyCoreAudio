@@ -113,33 +113,113 @@ public final class AMCoreAudioStream: AMCoreAudioObject {
     /**
         An `AudioStreamBasicDescription` that describes the current data format for this audio stream.
 
-        - Returns: *(optional)* A `AudioStreamBasicDescription`
+        - Returns: *(optional)* An `AudioStreamBasicDescription`
      */
-    public lazy var physicalFormat: AudioStreamBasicDescription? = {
-        guard let direction = self.direction else {
-            return nil
+    public var physicalFormat: AudioStreamBasicDescription? {
+        get {
+            guard let direction = direction else {
+                return nil
+            }
+
+            var address = AudioObjectPropertyAddress(
+                mSelector: kAudioStreamPropertyPhysicalFormat,
+                mScope: directionToScope(direction),
+                mElement: kAudioObjectPropertyElementMaster
+            )
+
+            if !AudioObjectHasProperty(streamID, &address) {
+                return nil
+            }
+
+            var asbd = AudioStreamBasicDescription()
+            let status = getPropertyData(address, andValue: &asbd)
+
+            if noErr != status {
+                return nil
+            }
+            
+            return asbd
         }
 
-        var address = AudioObjectPropertyAddress(
-            mSelector: kAudioStreamPropertyPhysicalFormat,
-            mScope: self.directionToScope(direction),
-            mElement: kAudioObjectPropertyElementMaster
-        )
+        set {
+            guard let direction = direction else {
+                return
+            }
 
-        if !AudioObjectHasProperty(self.streamID, &address) {
-            return nil
+            var address = AudioObjectPropertyAddress(
+                mSelector: kAudioStreamPropertyPhysicalFormat,
+                mScope: directionToScope(direction),
+                mElement: kAudioObjectPropertyElementMaster
+            )
+
+            if !AudioObjectHasProperty(streamID, &address) {
+                return
+            }
+
+            var asbd = newValue
+            let status = setPropertyData(address, andValue: &asbd)
+
+            if noErr != status {
+                return
+            }
+        }
+    }
+
+
+    /**
+        An `AudioStreamBasicDescription` that describes the current virtual data format for this audio stream.
+
+        - Returns: *(optional)* An `AudioStreamBasicDescription`
+     */
+    public var virtualFormat: AudioStreamBasicDescription? {
+        get {
+            guard let direction = direction else {
+                return nil
+            }
+
+            var address = AudioObjectPropertyAddress(
+                mSelector: kAudioStreamPropertyVirtualFormat,
+                mScope: directionToScope(direction),
+                mElement: kAudioObjectPropertyElementMaster
+            )
+
+            if !AudioObjectHasProperty(streamID, &address) {
+                return nil
+            }
+
+            var asbd = AudioStreamBasicDescription()
+            let status = getPropertyData(address, andValue: &asbd)
+
+            if noErr != status {
+                return nil
+            }
+
+            return asbd
         }
 
-        var asbd = AudioStreamBasicDescription()
-        let status = self.getPropertyData(address, andValue: &asbd)
+        set {
+            guard let direction = direction else {
+                return
+            }
 
-        if noErr != status {
-            return nil
+            var address = AudioObjectPropertyAddress(
+                mSelector: kAudioStreamPropertyVirtualFormat,
+                mScope: directionToScope(direction),
+                mElement: kAudioObjectPropertyElementMaster
+            )
+
+            if !AudioObjectHasProperty(streamID, &address) {
+                return
+            }
+
+            var asbd = newValue
+            let status = setPropertyData(address, andValue: &asbd)
+            
+            if noErr != status {
+                return
+            }
         }
-        
-        return asbd
-    }()
-
+    }
 
     /**
         An array of all the available physical formats for this audio stream.
@@ -168,6 +248,36 @@ public final class AMCoreAudioStream: AMCoreAudioObject {
             return nil
         }
 
+        return asrd
+    }()
+
+    /**
+        An array of all the available virtual formats for this audio stream.
+
+        - Returns: *(optional)* An array of `AudioStreamRangedDescription`
+     */
+    public lazy var availableVirtualFormats: [AudioStreamRangedDescription]? = {
+        guard let direction = self.direction else {
+            return nil
+        }
+
+        var address = AudioObjectPropertyAddress(
+            mSelector: kAudioStreamPropertyAvailableVirtualFormats,
+            mScope: self.directionToScope(direction),
+            mElement: kAudioObjectPropertyElementMaster
+        )
+
+        if !AudioObjectHasProperty(self.streamID, &address) {
+            return nil
+        }
+
+        var asrd = [AudioStreamRangedDescription]()
+        let status = self.getPropertyDataArray(address, value: &asrd, andDefaultValue: AudioStreamRangedDescription())
+
+        if noErr != status {
+            return nil
+        }
+        
         return asrd
     }()
 
@@ -201,6 +311,37 @@ public final class AMCoreAudioStream: AMCoreAudioObject {
         }.map({ (asrd) -> AudioStreamBasicDescription in
             asrd.mFormat
         })
+
+        if !includeNonMixable {
+            filteredFormats = filteredFormats.filter({ (asbd) -> Bool in
+                asbd.mFormatFlags & kAudioFormatFlagIsNonMixable == 0
+            })
+        }
+
+        return filteredFormats
+    }
+
+    /**
+        An array of all the available virtual formats for this audio stream matching the current
+        virtual format's sample rate.
+
+        **Discussion:** By default, non-mixable streams are returned, however, these can be filtered
+        out by setting `includeNonMixable` to `false`.
+
+        - Returns: *(optional)* An array of `AudioStreamBasicDescription`
+     */
+    public final func availableVirtualFormatsMatchingCurrentNominalSampleRate(includeNonMixable: Bool = true) -> [AudioStreamBasicDescription]? {
+        guard let virtualFormats = availableVirtualFormats,
+            let virtualFormat = virtualFormat else {
+                return nil
+        }
+
+        var filteredFormats = virtualFormats.filter { (format) -> Bool in
+            format.mSampleRateRange.mMinimum >= virtualFormat.mSampleRate &&
+                format.mSampleRateRange.mMaximum <= virtualFormat.mSampleRate
+            }.map({ (asrd) -> AudioStreamBasicDescription in
+                asrd.mFormat
+            })
 
         if !includeNonMixable {
             filteredFormats = filteredFormats.filter({ (asbd) -> Bool in

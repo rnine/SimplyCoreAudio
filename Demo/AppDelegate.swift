@@ -171,42 +171,66 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
 
-        if let streamIDsForPlayback = audioDevice.streamsForDirection(.Playback) {
-            print("|- Streams for playback: \(streamIDsForPlayback)")
+        if let streamForPlayback = audioDevice.streamsForDirection(.Playback) {
+            print("|- Streams for playback: \(streamForPlayback)")
 
-            streamIDsForPlayback.forEach({ (stream) in
-                if let availableFormats = stream.availablePhysicalFormats {
-                    print("|- Available physical formats for playback (\(stream.streamID)): \(availableFormats)")
+            streamForPlayback.forEach({ (stream) in
+                print("|- Stream (playback): \(stream.streamID)")
+
+                if let physicalFormats = stream.availablePhysicalFormats {
+                    print("|- Available physical formats for playback (\(stream.streamID)): \(physicalFormats)")
                 }
 
-                if let filteredAvailableFormats = stream.availablePhysicalFormatsMatchingCurrentNominalSampleRate(false) {
-
-                    print("|- Available physical formats for playback (filtered by sample rate) (\(stream.streamID)): \(filteredAvailableFormats)")
+                if let virtualFormats = stream.availableVirtualFormats {
+                    print("|- Available virtual formats for playback (\(stream.streamID)): \(virtualFormats)")
                 }
 
-                if let streamForPlayback = stream.physicalFormat {
-                    print("|- Physical ASBD for playback (\(stream.streamID)): \(streamForPlayback)")
+                if let filteredPhysicalFormats = stream.availablePhysicalFormatsMatchingCurrentNominalSampleRate(false) {
+                    print("|- Available physical formats for playback (filtered by sample rate) (\(stream.streamID)): \(filteredPhysicalFormats)")
+                }
+
+                if let filteredVirtualFormats = stream.availableVirtualFormatsMatchingCurrentNominalSampleRate(false) {
+                    print("|- Available physical formats for playback (filtered by sample rate) (\(stream.streamID)): \(filteredVirtualFormats)")
+                }
+
+                if let physicalFormat = stream.physicalFormat {
+                    print("|- Physical format for playback (\(stream.streamID)): \(physicalFormat)")
+                }
+
+                if let virtualFormat = stream.virtualFormat {
+                    print("|- Virtual format for playback (\(stream.streamID)): \(virtualFormat)")
                 }
             })
         }
 
-        if let streamIDsForRecording = audioDevice.streamsForDirection(.Recording) {
-            print("|- Streams for recording: \(streamIDsForRecording)")
+        if let streamForRecording = audioDevice.streamsForDirection(.Recording) {
+            print("|- Streams for recording: \(streamForRecording)")
 
-            streamIDsForRecording.forEach({ (stream) in
+            streamForRecording.forEach({ (stream) in
                 print("|- Stream (recording): \(stream.streamID)")
 
-                if let availableFormats = stream.availablePhysicalFormats {
-                    print("|- Available physical formats for recording (\(stream.streamID)): \(availableFormats)")
+                if let physicalFormats = stream.availablePhysicalFormats {
+                    print("|- Available physical formats for recording (\(stream.streamID)): \(physicalFormats)")
                 }
 
-                if let filteredAvailableFormats = stream.availablePhysicalFormatsMatchingCurrentNominalSampleRate(false) {
-
-                    print("|- Available physical formats for recording (filtered by sample rate) (\(stream.streamID)): \(filteredAvailableFormats)")
+                if let virtualFormats = stream.availableVirtualFormats {
+                    print("|- Available virtual formats for recording (\(stream.streamID)): \(virtualFormats)")
                 }
 
-                if let streamForRecording = stream.physicalFormat {
-                    print("|- Physical ASBD for recording (\(stream.streamID)): \(streamForRecording)")
+                if let filteredPhysicalFormats = stream.availablePhysicalFormatsMatchingCurrentNominalSampleRate(false) {
+                    print("|- Available physical formats for recording (filtered by sample rate) (\(stream.streamID)): \(filteredPhysicalFormats)")
+                }
+
+                if let filteredVirtualFormats = stream.availableVirtualFormatsMatchingCurrentNominalSampleRate(false) {
+                    print("|- Available physical formats for recording (filtered by sample rate) (\(stream.streamID)): \(filteredVirtualFormats)")
+                }
+
+                if let physicalFormat = stream.physicalFormat {
+                    print("|- Physical format for recording (\(stream.streamID)): \(physicalFormat)")
+                }
+
+                if let virtualFormat = stream.virtualFormat {
+                    print("|- Virtual format for recording (\(stream.streamID)): \(virtualFormat)")
                 }
             })
         }
