@@ -160,7 +160,7 @@ final public class AMCoreAudioStream: AMCoreAudioObject {
             var asbd = AudioStreamBasicDescription()
 
             if let status = getStreamPropertyData(kAudioStreamPropertyPhysicalFormat, andValue: &asbd) {
-                if noErr != status {
+                if noErr == status {
                     return asbd
                 }
             }
@@ -191,7 +191,7 @@ final public class AMCoreAudioStream: AMCoreAudioObject {
             var asbd = AudioStreamBasicDescription()
 
             if let status = getStreamPropertyData(kAudioStreamPropertyVirtualFormat, andValue: &asbd) {
-                if noErr != status {
+                if noErr == status {
                     return asbd
                 }
             }
