@@ -61,47 +61,6 @@ final public class AMCoreAudioStream: AMCoreAudioObject {
     }
 
     /**
-        The audio object that owns this audio stream.
-
-        - Returns: *(optional)* An `AMCoreAudioObject`.
-     */
-    public lazy var owningObject: AMCoreAudioObject? = {
-        var address = AudioObjectPropertyAddress(
-            mSelector: kAudioObjectPropertyOwner,
-            mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMaster
-        )
-
-        if !AudioObjectHasProperty(self.streamID, &address) {
-            return nil
-        }
-
-        var objectID = AudioObjectID()
-        let status = self.getPropertyData(address, andValue: &objectID)
-
-        if noErr != status {
-            return nil
-        }
-
-        return AMCoreAudioObject(objectID: objectID)
-    }()
-
-    /**
-        The audio device that owns this audio stream.
-
-        - Returns: *(optional)* An `AMCoreAudioDevice`.
-     */
-    public lazy var owningDevice: AMCoreAudioDevice? = {
-        if let object = self.owningObject {
-            if object.classID == kAudioDeviceClassID {
-                return AMCoreAudioDevice(deviceID: object.objectID)
-            }
-        }
-
-        return nil
-    }()
-
-    /**
         Returns whether this audio stream stream is enabled and doing I/O.
      
         - Returns: `true` when enabled, `false` otherwise.
