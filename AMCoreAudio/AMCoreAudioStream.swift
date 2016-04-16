@@ -30,7 +30,7 @@ public extension AMCoreAudioStreamDelegate {
 /**
     `AMCoreAudioStream`
  
-    This class represents an audio stream belonging to an audio device.
+    This class represents an audio stream belonging to an audio object.
  */
 final public class AMCoreAudioStream: AMCoreAudioObject {
 
