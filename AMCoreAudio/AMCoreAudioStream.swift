@@ -13,18 +13,18 @@ public protocol AMCoreAudioStreamDelegate: class {
     /**
         Called whenever the audio stream `isActive` flag changes state.
      */
-    func audioStreamIsActiveChanged(audioStream: AMCoreAudioStream)
+    func audioStreamIsActiveDidChange(audioStream: AMCoreAudioStream)
 
     /**
         Called whenever the audio stream physical format changes.
      */
-    func audioStreamPhysicalFormatChanged(audioStream: AMCoreAudioStream)
+    func audioStreamPhysicalFormatDidChange(audioStream: AMCoreAudioStream)
 }
 
 /// Optional `AMCoreAudioStreamDelegate` protocol functions
 public extension AMCoreAudioStreamDelegate {
-    func audioStreamIsActiveChanged(audioStream: AMCoreAudioStream) {}
-    func audioStreamPhysicalFormatChanged(audioStream: AMCoreAudioStream) {}
+    func audioStreamIsActiveDidChange(audioStream: AMCoreAudioStream) {}
+    func audioStreamPhysicalFormatDidChange(audioStream: AMCoreAudioStream) {}
 }
 
 /**
@@ -61,7 +61,7 @@ final public class AMCoreAudioStream: AMCoreAudioObject {
     }
 
     /**
-        Returns whether this audio stream stream is enabled and doing I/O.
+        Returns whether this audio stream is enabled and doing I/O.
      
         - Returns: `true` when enabled, `false` otherwise.
      */
@@ -288,9 +288,9 @@ final public class AMCoreAudioStream: AMCoreAudioObject {
 
         switch address.mSelector {
         case kAudioStreamPropertyIsActive:
-            self.delegate?.audioStreamIsActiveChanged(self)
+            self.delegate?.audioStreamIsActiveDidChange(self)
         case kAudioStreamPropertyPhysicalFormat:
-            self.delegate?.audioStreamPhysicalFormatChanged(self)
+            self.delegate?.audioStreamPhysicalFormatDidChange(self)
         default:
             break
         }
@@ -308,9 +308,9 @@ final public class AMCoreAudioStream: AMCoreAudioObject {
     /**
         All the available physical formats for this audio stream matching the current physical format's sample rate.
      
-        - Note: By default, non-mixable streams are returned, however, these can be filtered
-        out by setting `includeNonMixable` to `false`.
-     
+        - Note: By default, both mixable and non-mixable streams are returned, however,  non-mixable
+        streams can be filtered out by setting `includeNonMixable` to `false`.
+
         - Parameters:
             - includeNonMixable: Whether to include non-mixable streams in the returned array. Defaults to `true`.
 
@@ -343,8 +343,8 @@ final public class AMCoreAudioStream: AMCoreAudioObject {
     /**
         All the available virtual formats for this audio stream matching the current virtual format's sample rate.
 
-        - Note: By default, non-mixable streams are returned, however, these can be filtered
-        out by setting `includeNonMixable` to `false`.
+        - Note: By default, both mixable and non-mixable streams are returned, however,  non-mixable 
+        streams can be filtered out by setting `includeNonMixable` to `false`.
 
         - Parameters:
             - includeNonMixable: Whether to include non-mixable streams in the returned array. Defaults to `true`.

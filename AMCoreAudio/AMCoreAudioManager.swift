@@ -87,6 +87,16 @@ public protocol AMCoreAudioManagerDelegate: class {
         Called whenever the audio device's *is running somewhere* flag changes.
      */
     func audioDeviceIsRunningSomewhereDidChange(audioDevice: AMCoreAudioDevice)
+
+    /**
+        Called whenever the audio stream `isActive` flag changes state.
+     */
+    func audioStreamIsActiveDidChange(audioStream: AMCoreAudioStream)
+
+    /**
+        Called whenever the audio stream physical format changes.
+     */
+    func audioStreamPhysicalFormatDidChange(audioStream: AMCoreAudioStream)
 }
 
 /// Optional `AMCoreAudioManagerDelegate` protocol functions
@@ -106,18 +116,22 @@ public extension AMCoreAudioManagerDelegate {
     func audioDeviceIsAliveDidChange(audioDevice: AMCoreAudioDevice) {}
     func audioDeviceIsRunningDidChange(audioDevice: AMCoreAudioDevice) {}
     func audioDeviceIsRunningSomewhereDidChange(audioDevice: AMCoreAudioDevice) {}
+    func audioStreamIsActiveDidChange(audioStream: AMCoreAudioStream) {}
+    func audioStreamPhysicalFormatDidChange(audioStream: AMCoreAudioStream) {}
 }
 
 
 /**
    `AMCoreAudioManager`
 
-   This class encapsulates most (if not all) of the functionality
-   available in `AMCoreAudioDevice` and `AMCoreAudioHardware` but provides,
-   a much easier and convenient interface.
+    This class simplifies the process of receiving notifications coming from the following sources:
 
-   To receive audio device and/or audio hardware notifications you simply need 
-   to implement the `AMCoreAudioManagerDelegate` protocol in your delegate class.
+    1. Audio devices (`AMCoreAudioDevice`)
+    2. Audio hardware (`AMCoreAudioHardware`)
+    3. Audio streams (`AMCoreAudioStream`)
+
+    To receive notifications from any of these sources, you'll simply need to implement
+    the `AMCoreAudioManagerDelegate` protocol in your delegate class.
  */
 final public class AMCoreAudioManager: NSObject {
 
@@ -140,14 +154,18 @@ final public class AMCoreAudioManager: NSObject {
 
         - Returns: An array of `AMCoreAudioDevice` objects.
      */
-    public private(set) var allKnownDevices: [AMCoreAudioDevice]
+    public var allKnownDevices: [AMCoreAudioDevice] {
+        get {
+            return Array(allDevicesAndStreams.keys)
+        }
+    }
 
+    private var allDevicesAndStreams = [AMCoreAudioDevice: [AMCoreAudioStream]]()
     private var audioHardware = AMCoreAudioHardware()
 
     // MARK: - Public Functions
 
     private override init() {
-        allKnownDevices = AMCoreAudioDevice.allDevices()
         super.init()
         setup()
     }
@@ -158,27 +176,47 @@ final public class AMCoreAudioManager: NSObject {
 
     // MARK: - Private Functions
 
-    private func cleanup() {
-        setAudioDeviceDelegatesFor(nil, andRemovedDevices: allKnownDevices)
-        audioHardware.delegate = nil
-    }
-
     private func setup() {
-        setAudioDeviceDelegatesFor(allKnownDevices, andRemovedDevices: nil)
+        let allDevices = AMCoreAudioDevice.allDevices()
+
+        allDevices.forEach { (device) in
+            addDevice(device)
+        }
+
         audioHardware.delegate = self
     }
 
-    private func setAudioDeviceDelegatesFor(addedDevices: [AMCoreAudioDevice]?, andRemovedDevices removedDevices: [AMCoreAudioDevice]?) {
-        if addedDevices != nil {
-            for audioDevice in addedDevices! {
-                audioDevice.delegate = self
-            }
+    private func cleanup() {
+        allKnownDevices.forEach { (device) in
+            removeDevice(device)
         }
 
-        if removedDevices != nil {
-            for audioDevice in removedDevices! {
-                audioDevice.delegate = nil
-            }
+        audioHardware.delegate = nil
+    }
+
+    private func addDevice(device: AMCoreAudioDevice) {
+        let playbackStreams = device.streamsForDirection(.Playback) ?? []
+        let recordingStreams = device.streamsForDirection(.Recording) ?? []
+        let streams = playbackStreams + recordingStreams
+
+        allDevicesAndStreams[device] = streams
+
+        device.delegate = self
+
+        streams.forEach { (stream) in
+            stream.delegate = self
+        }
+    }
+
+    private func removeDevice(device: AMCoreAudioDevice) {
+        if let streams = allDevicesAndStreams[device] {
+            streams.forEach({ (stream) in
+                stream.delegate = nil
+            })
+
+            device.delegate = nil
+
+            allDevicesAndStreams.removeValueForKey(device)
         }
     }
 }
@@ -248,11 +286,17 @@ extension AMCoreAudioManager: AMCoreAudioHardwareDelegate {
             return !isContained
         }
 
-        // Update allKnownDevices
-        allKnownDevices = latestDeviceList
-        // Update delegates
-        setAudioDeviceDelegatesFor(addedDevices, andRemovedDevices: removedDevices)
-        // And notify our delegate
+        // Add new devices
+        addedDevices.forEach { (device) in
+            addDevice(device)
+        }
+
+        // Remove old devices
+        removedDevices.forEach { (device) in
+            removeDevice(device)
+        }
+
+        // Notify our delegate
         delegate?.hardwareDeviceListChangedWithAddedDevices(addedDevices, andRemovedDevices: removedDevices)
     }
 
@@ -272,5 +316,16 @@ extension AMCoreAudioManager: AMCoreAudioHardwareDelegate {
         if let audioDevice = AMCoreAudioDevice.defaultSystemOutputDevice() {
             delegate?.hardwareDefaultSystemDeviceChanged(audioDevice)
         }
+    }
+}
+
+extension AMCoreAudioManager : AMCoreAudioStreamDelegate {
+
+    public func audioStreamIsActiveDidChange(audioStream: AMCoreAudioStream) {
+        delegate?.audioStreamIsActiveDidChange(audioStream)
+    }
+
+    public func audioStreamPhysicalFormatDidChange(audioStream: AMCoreAudioStream) {
+        delegate?.audioStreamPhysicalFormatDidChange(audioStream)
     }
 }

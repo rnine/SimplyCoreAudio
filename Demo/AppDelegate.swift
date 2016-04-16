@@ -177,9 +177,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             streamForPlayback.forEach({ (stream) in
                 print("|- Stream (playback): \(stream.streamID)")
 
-                // Set delegate
-                stream.delegate = self
-
                 if let owningDevice = stream.owningDevice {
                     print("|- Owned by device: \(owningDevice)")
                 }
@@ -215,9 +212,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
             streamForRecording.forEach({ (stream) in
                 print("|- Stream (recording): \(stream.streamID)")
-
-                // Set delegate
-                stream.delegate = self
 
                 if let owningDevice = stream.owningDevice {
                     print("|- Owned by device: \(owningDevice)")
@@ -264,14 +258,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if let hogModePID = audioDevice.hogModePID() {
             print("|- Hog mode PID is \(hogModePID)")
         }
-
-        print("|")
-        print("| (Formatters Extension)")
-        print("|")
-        print("|- Actual sample rate: \(audioDevice.actualSampleRateFormattedWithShortFormat(true))")
-        print("|- Latency: \(audioDevice.latencyDescription())")
-        print("|- Number of channels: \(audioDevice.numberOfChannelsDescription())")
-        print("")
     }
 }
 
@@ -349,15 +335,11 @@ extension AppDelegate : AMCoreAudioManagerDelegate {
 // MARK: - AMCoreAudioManagerDelegate Functions
 extension AppDelegate : AMCoreAudioStreamDelegate {
 
-    func audioStreamIsActiveChanged(audioStream: AMCoreAudioStream) {
+    func audioStreamIsActiveDidChange(audioStream: AMCoreAudioStream) {
         print("\(audioStream) is active changed \(audioStream.active)")
     }
 
-    func audioStreamPhysicalFormatChanged(audioStream: AMCoreAudioStream) {
+    func audioStreamPhysicalFormatDidChange(audioStream: AMCoreAudioStream) {
         print("\(audioStream) physical format changed \(audioStream.physicalFormat)")
-    }
-
-    func audioStreamVirtualFormatChanged(audioStream: AMCoreAudioStream) {
-        print("\(audioStream) virtual format changed \(audioStream.virtualFormat)")
     }
 }
