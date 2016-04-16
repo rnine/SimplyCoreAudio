@@ -9,3 +9,5 @@
 project.xcworkspace/
 xcuserdata/
 Pods/
+build/
+docsets/
