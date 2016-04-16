@@ -21,7 +21,7 @@ public protocol AMCoreAudioStreamDelegate: class {
     func audioStreamPhysicalFormatChanged(audioStream: AMCoreAudioStream)
 }
 
-/// Optional `AMCoreAudioStreamDelegate` protocol methods
+/// Optional `AMCoreAudioStreamDelegate` protocol functions
 public extension AMCoreAudioStreamDelegate {
     func audioStreamIsActiveChanged(audioStream: AMCoreAudioStream) {}
     func audioStreamPhysicalFormatChanged(audioStream: AMCoreAudioStream) {}
@@ -31,6 +31,8 @@ public extension AMCoreAudioStreamDelegate {
     `AMCoreAudioStream`
  */
 final public class AMCoreAudioStream: AMCoreAudioObject {
+
+    // MARK: - Public Properties
 
     /**
         A delegate conforming to the `AMCoreAudioStreamDelegate` protocol.
@@ -46,9 +48,9 @@ final public class AMCoreAudioStream: AMCoreAudioObject {
     }
 
     /**
-        The audio stream ID that this `AMCoreAudioStream` instance represents.
+        This audio stream's identifier.
 
-        - Returns: An `AudioObjectID`
+        - Returns: An `AudioObjectID`.
      */
     public var streamID: AudioObjectID {
         get {
@@ -57,9 +59,9 @@ final public class AMCoreAudioStream: AMCoreAudioObject {
     }
 
     /**
-        Returns whether this audio stream stream is enabled and doing IO.
+        Returns whether this audio stream stream is enabled and doing I/O.
      
-        - Returns: `true` when enabled, `false` otherwise
+        - Returns: `true` when enabled, `false` otherwise.
      */
     public lazy var active: Bool = {
         var address = AudioObjectPropertyAddress(
@@ -83,10 +85,9 @@ final public class AMCoreAudioStream: AMCoreAudioObject {
     }()
 
     /**
-        Returns a `UInt32` that specifies the first element in the owning device that corresponds to
-        element one of this stream.
+        Specifies the first element in the owning device that corresponds to the element one of this stream.
 
-        - Returns: *(optional)* A `UInt32`
+        - Returns: *(optional)* A `UInt32`.
      */
     public lazy var startingChannel: UInt32? = {
         var address = AudioObjectPropertyAddress(
@@ -110,12 +111,12 @@ final public class AMCoreAudioStream: AMCoreAudioObject {
     }()
 
     /**
-        Audio stream direction. 
+        The audio stream's direction.
         
         For output streams, and to continue using the same `Direction` concept used by `AMCoreAudioDevice`,
         this will be `Direction.Playback`, likewise, for input streams, `Direction.Recording` will be returned.
 
-        - Returns: *(optional)* A `Direction`
+        - Returns: *(optional)* A `Direction`.
      */
     public lazy var direction: Direction? = {
         var address = AudioObjectPropertyAddress(
@@ -147,119 +148,72 @@ final public class AMCoreAudioStream: AMCoreAudioObject {
 
     /**
         An `AudioStreamBasicDescription` that describes the current data format for this audio stream.
+     
+        - SeeAlso: `virtualFormat`
 
-        - Returns: *(optional)* An `AudioStreamBasicDescription`
+        - Returns: *(optional)* An `AudioStreamBasicDescription`.
      */
     public var physicalFormat: AudioStreamBasicDescription? {
         get {
-            guard let direction = direction else {
-                return nil
-            }
-
-            var address = AudioObjectPropertyAddress(
-                mSelector: kAudioStreamPropertyPhysicalFormat,
-                mScope: directionToScope(direction),
-                mElement: kAudioObjectPropertyElementMaster
-            )
-
-            if !AudioObjectHasProperty(streamID, &address) {
-                return nil
-            }
-
             var asbd = AudioStreamBasicDescription()
-            let status = getPropertyData(address, andValue: &asbd)
 
-            if noErr != status {
-                return nil
+            if let status = getStreamPropertyData(kAudioStreamPropertyPhysicalFormat, andValue: &asbd) {
+                if noErr != status {
+                    return asbd
+                }
             }
-            
-            return asbd
+
+            return nil
         }
 
         set {
-            guard let direction = direction else {
-                return
-            }
-
-            var address = AudioObjectPropertyAddress(
-                mSelector: kAudioStreamPropertyPhysicalFormat,
-                mScope: directionToScope(direction),
-                mElement: kAudioObjectPropertyElementMaster
-            )
-
-            if !AudioObjectHasProperty(streamID, &address) {
-                return
-            }
-
             var asbd = newValue
-            let status = setPropertyData(address, andValue: &asbd)
 
-            if noErr != status {
-                return
+            if let status = setStreamPropertyData(kAudioStreamPropertyPhysicalFormat, andValue: &asbd) {
+                if noErr != status {
+                    print("Error setting physicalFormat to \(newValue)")
+                }
             }
         }
     }
-
 
     /**
         An `AudioStreamBasicDescription` that describes the current virtual data format for this audio stream.
 
-        - Returns: *(optional)* An `AudioStreamBasicDescription`
+        - SeeAlso: `physicalFormat`
+
+        - Returns: *(optional)* An `AudioStreamBasicDescription`.
      */
     public var virtualFormat: AudioStreamBasicDescription? {
         get {
-            guard let direction = direction else {
-                return nil
-            }
-
-            var address = AudioObjectPropertyAddress(
-                mSelector: kAudioStreamPropertyVirtualFormat,
-                mScope: directionToScope(direction),
-                mElement: kAudioObjectPropertyElementMaster
-            )
-
-            if !AudioObjectHasProperty(streamID, &address) {
-                return nil
-            }
-
             var asbd = AudioStreamBasicDescription()
-            let status = getPropertyData(address, andValue: &asbd)
 
-            if noErr != status {
-                return nil
+            if let status = getStreamPropertyData(kAudioStreamPropertyVirtualFormat, andValue: &asbd) {
+                if noErr != status {
+                    return asbd
+                }
             }
 
-            return asbd
+            return nil
         }
 
         set {
-            guard let direction = direction else {
-                return
-            }
-
-            var address = AudioObjectPropertyAddress(
-                mSelector: kAudioStreamPropertyVirtualFormat,
-                mScope: directionToScope(direction),
-                mElement: kAudioObjectPropertyElementMaster
-            )
-
-            if !AudioObjectHasProperty(streamID, &address) {
-                return
-            }
-
             var asbd = newValue
-            let status = setPropertyData(address, andValue: &asbd)
-            
-            if noErr != status {
-                return
+
+            if let status = setStreamPropertyData(kAudioStreamPropertyVirtualFormat, andValue: &asbd) {
+                if noErr != status {
+                    print("Error setting virtualFormat to \(newValue)")
+                }
             }
         }
     }
 
     /**
-        An array of all the available physical formats for this audio stream.
+        All the available physical formats for this audio stream.
+     
+        - SeeAlso: `availableVirtualFormats`
 
-        - Returns: *(optional)* An array of `AudioStreamRangedDescription`
+        - Returns: *(optional)* An array of `AudioStreamRangedDescription` structs.
      */
     public lazy var availablePhysicalFormats: [AudioStreamRangedDescription]? = {
         guard let direction = self.direction else {
@@ -287,9 +241,11 @@ final public class AMCoreAudioStream: AMCoreAudioObject {
     }()
 
     /**
-        An array of all the available virtual formats for this audio stream.
+        All the available virtual formats for this audio stream.
+     
+        - SeeAlso: `availablePhysicalFormats`
 
-        - Returns: *(optional)* An array of `AudioStreamRangedDescription`
+        - Returns: *(optional)* An array of `AudioStreamRangedDescription` structs.
      */
     public lazy var availableVirtualFormats: [AudioStreamRangedDescription]? = {
         guard let direction = self.direction else {
@@ -316,11 +272,27 @@ final public class AMCoreAudioStream: AMCoreAudioObject {
         return asrd
     }()
 
+    // MARK: - Private Properties
+
     private var isRegisteredForNotifications = false
 
     private lazy var notificationsQueue: dispatch_queue_t = {
         return dispatch_queue_create("io.9labs.AMCoreAudio.notifications", DISPATCH_QUEUE_CONCURRENT)
     }()
+
+    private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { (inNumberAddresses, inAddresses) -> Void in
+        let address = inAddresses.memory
+        let direction = self.scopeToDirection(address.mScope)
+
+        switch address.mSelector {
+        case kAudioStreamPropertyIsActive:
+            self.delegate?.audioStreamIsActiveChanged(self)
+        case kAudioStreamPropertyPhysicalFormat:
+            self.delegate?.audioStreamPhysicalFormatChanged(self)
+        default:
+            break
+        }
+    }
 
     // MARK: - Public Functions
 
@@ -332,13 +304,17 @@ final public class AMCoreAudioStream: AMCoreAudioObject {
     }
 
     /**
-        An array of all the available physical formats for this audio stream matching the current
-        physical format's sample rate.
+        All the available physical formats for this audio stream matching the current physical format's sample rate.
      
-        **Discussion:** By default, non-mixable streams are returned, however, these can be filtered 
+        - Note: By default, non-mixable streams are returned, however, these can be filtered
         out by setting `includeNonMixable` to `false`.
+     
+        - Parameters:
+            - includeNonMixable: Whether to include non-mixable streams in the returned array. Defaults to `true`.
 
-        - Returns: *(optional)* An array of `AudioStreamBasicDescription`
+        - SeeAlso: `availableVirtualFormatsMatchingCurrentNominalSampleRate(_:)`
+
+        - Returns: *(optional)* An array of `AudioStreamBasicDescription` structs.
      */
     public final func availablePhysicalFormatsMatchingCurrentNominalSampleRate(includeNonMixable: Bool = true) -> [AudioStreamBasicDescription]? {
         guard let physicalFormats = availablePhysicalFormats,
@@ -363,13 +339,17 @@ final public class AMCoreAudioStream: AMCoreAudioObject {
     }
 
     /**
-        An array of all the available virtual formats for this audio stream matching the current
-        virtual format's sample rate.
+        All the available virtual formats for this audio stream matching the current virtual format's sample rate.
 
-        **Discussion:** By default, non-mixable streams are returned, however, these can be filtered
+        - Note: By default, non-mixable streams are returned, however, these can be filtered
         out by setting `includeNonMixable` to `false`.
 
-        - Returns: *(optional)* An array of `AudioStreamBasicDescription`
+        - Parameters:
+            - includeNonMixable: Whether to include non-mixable streams in the returned array. Defaults to `true`.
+     
+        - SeeAlso: `availablePhysicalFormatsMatchingCurrentNominalSampleRate(_:)`
+
+        - Returns: *(optional)* An array of `AudioStreamBasicDescription` structs.
      */
     public final func availableVirtualFormatsMatchingCurrentNominalSampleRate(includeNonMixable: Bool = true) -> [AudioStreamBasicDescription]? {
         guard let virtualFormats = availableVirtualFormats,
@@ -393,7 +373,67 @@ final public class AMCoreAudioStream: AMCoreAudioObject {
         return filteredFormats
     }
 
-    // MARK: - Private Methods
+    // MARK: - Private Functions
+
+    /**
+        This is an specialized version of `getPropertyData` that only requires passing an `AudioObjectPropertySelector`
+        instead of an `AudioObjectPropertyAddress`. The scope is computed from the stream's `Direction`, and the element 
+        is assumed to be `kAudioObjectPropertyElementMaster`.
+
+        Additionally, the property address is validated before calling `getPropertyData`.
+
+        - Parameter selector: The `AudioObjectPropertySelector` that points to the property we want to get.
+        - Parameter value: The value that will be returned.
+     
+        - Returns: An `OSStatus` with `noErr` on success, or an error code other than `noErr` when it fails.
+     */
+    private func getStreamPropertyData<T>(selector: AudioObjectPropertySelector, inout andValue value: T) -> OSStatus? {
+        guard let direction = direction else {
+            return nil
+        }
+
+        var address = AudioObjectPropertyAddress(
+            mSelector: selector,
+            mScope: directionToScope(direction),
+            mElement: kAudioObjectPropertyElementMaster
+        )
+
+        if !AudioObjectHasProperty(streamID, &address) {
+            return nil
+        }
+
+        return getPropertyData(address, andValue: &value)
+    }
+
+    /**
+        This is an specialized version of `setPropertyData` that only requires passing an `AudioObjectPropertySelector`
+        instead of an `AudioObjectPropertyAddress`. The scope is computed from the stream's `Direction`, and the element
+        is assumed to be `kAudioObjectPropertyElementMaster`.
+
+        Additionally, the property address is validated before calling `setPropertyData`.
+
+        - Parameter selector: The `AudioObjectPropertySelector` that points to the property we want to set.
+        - Parameter value: The new value we want to set.
+     
+        - Returns: An `OSStatus` with `noErr` on success, or an error code other than `noErr` when it fails.
+     */
+    private func setStreamPropertyData<T>(selector: AudioObjectPropertySelector, inout andValue value: T) -> OSStatus? {
+        guard let direction = direction else {
+            return nil
+        }
+
+        var address = AudioObjectPropertyAddress(
+            mSelector: selector,
+            mScope: directionToScope(direction),
+            mElement: kAudioObjectPropertyElementMaster
+        )
+
+        if !AudioObjectHasProperty(streamID, &address) {
+            return nil
+        }
+
+        return setPropertyData(address, andValue: &value)
+    }
 
     // MARK: - Notification Book-keeping
 
@@ -434,20 +474,6 @@ final public class AMCoreAudioStream: AMCoreAudioObject {
             isRegisteredForNotifications = noErr != err
         } else {
             isRegisteredForNotifications = false
-        }
-    }
-
-    private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { (inNumberAddresses, inAddresses) -> Void in
-        let address = inAddresses.memory
-        let direction = self.scopeToDirection(address.mScope)
-
-        switch address.mSelector {
-        case kAudioStreamPropertyIsActive:
-            self.delegate?.audioStreamIsActiveChanged(self)
-        case kAudioStreamPropertyPhysicalFormat:
-            self.delegate?.audioStreamPhysicalFormatChanged(self)
-        default:
-            break
         }
     }
 }

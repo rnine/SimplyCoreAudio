@@ -267,7 +267,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 }
 
-// MARK: - AMCoreAudioManagerDelegate Methods
+// MARK: - AMCoreAudioManagerDelegate Functions
 extension AppDelegate : AMCoreAudioManagerDelegate {
 
     func hardwareDeviceListChangedWithAddedDevices(addedDevices: [AMCoreAudioDevice], andRemovedDevices removedDevices: [AMCoreAudioDevice]) {
@@ -338,7 +338,7 @@ extension AppDelegate : AMCoreAudioManagerDelegate {
     }
 }
 
-// MARK: - AMCoreAudioManagerDelegate Methods
+// MARK: - AMCoreAudioManagerDelegate Functions
 extension AppDelegate : AMCoreAudioStreamDelegate {
 
     func audioStreamIsActiveChanged(audioStream: AMCoreAudioStream) {

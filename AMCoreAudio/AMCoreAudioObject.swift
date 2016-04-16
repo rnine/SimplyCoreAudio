@@ -28,7 +28,7 @@ public class AMCoreAudioObject: NSObject {
 
 extension AMCoreAudioObject {
 
-    // MARK: - Class Methods
+    // MARK: - Class Functions
 
     internal class func getPropertyDataSize<Q>(objectID: AudioObjectID, address: AudioObjectPropertyAddress, qualifierDataSize: UInt32?, inout qualifierData: [Q], inout andSize size: UInt32) -> (OSStatus) {
         var theAddress = address
@@ -92,7 +92,7 @@ extension AMCoreAudioObject {
         return getPropertyDataArray(objectID, address: address, qualifierDataSize: nil, qualifierData: &nilValue, value: &value, andDefaultValue: defaultValue)
     }
 
-    // MARK: - Instance Methods
+    // MARK: - Instance Functions
 
     internal func getPropertyDataSize<Q>(objectID: AudioObjectID, address: AudioObjectPropertyAddress, qualifierDataSize: UInt32?, inout qualifierData: [Q], inout andSize size: UInt32) -> (OSStatus) {
         return self.dynamicType.getPropertyDataSize(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, andSize: &size)
