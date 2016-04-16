@@ -180,6 +180,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 // Set delegate
                 stream.delegate = self
 
+                if let owningDevice = stream.owningDevice {
+                    print("|- Owned by device: \(owningDevice)")
+                }
+
                 if let physicalFormats = stream.availablePhysicalFormats {
                     print("|- Available physical formats for playback (\(stream.streamID)): \(physicalFormats)")
                 }
@@ -214,6 +218,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
                 // Set delegate
                 stream.delegate = self
+
+                if let owningDevice = stream.owningDevice {
+                    print("|- Owned by device: \(owningDevice)")
+                }
 
                 if let physicalFormats = stream.availablePhysicalFormats {
                     print("|- Available physical formats for recording (\(stream.streamID)): \(physicalFormats)")

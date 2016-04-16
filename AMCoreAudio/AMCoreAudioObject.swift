@@ -24,6 +24,32 @@ public class AMCoreAudioObject: NSObject {
         self.objectID = objectID
         super.init()
     }
+
+    /**
+        The `AudioClassID` that identifies the class of this audio object.
+
+        - Returns: *(optional)* An `AudioClassID`.
+     */
+    public lazy var classID: AudioClassID? = {
+        var address = AudioObjectPropertyAddress(
+            mSelector: kAudioObjectPropertyClass,
+            mScope: kAudioObjectPropertyScopeGlobal,
+            mElement: kAudioObjectPropertyElementMaster
+        )
+
+        if !AudioObjectHasProperty(self.objectID, &address) {
+            return nil
+        }
+
+        var klassID = AudioClassID()
+        let status = self.getPropertyData(address, andValue: &klassID)
+
+        if noErr != status {
+            return nil
+        }
+
+        return klassID
+    }()
 }
 
 extension AMCoreAudioObject {

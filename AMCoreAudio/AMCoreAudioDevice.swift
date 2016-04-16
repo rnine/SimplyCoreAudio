@@ -85,11 +85,9 @@ public extension AMCoreAudioDeviceDelegate {
 /**
     `AMCoreAudioDevice`
 
-    This class represents an audio device in the system and 
-    allows subscribing to audio device notifications.
+    This class represents an audio device in the system and allows subscribing to audio device notifications.
 
-    Devices may be physical or virtual. For a comprehensive list of
-    supported types, please refer to `TransportType`.
+    Devices may be physical or virtual. For a comprehensive list of supported types, please refer to `TransportType`.
  */
 final public class AMCoreAudioDevice: AMCoreAudioObject {
 
@@ -594,19 +592,12 @@ final public class AMCoreAudioDevice: AMCoreAudioObject {
     /**
         The `AudioClassID` that identifies the class of this audio device.
     
-        - Returns: *(optional)* An `AudioClassID` value.
+        - SeeAlso: `classID`
+
+        - Returns: *(optional)* An `AudioClassID`.
      */
-    public func classID() -> AudioClassID? {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioObjectPropertyClass,
-            mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMaster
-        )
-
-        var classID = AudioClassID()
-        let status = getPropertyData(address, andValue: &classID)
-
-        return noErr == status ? classID : nil
+     @available(*, deprecated, message="this function will be removed in version 3.0. Please use the property `classID` instead.") public func classID() -> AudioClassID? {
+        return classID
     }
 
     /**
