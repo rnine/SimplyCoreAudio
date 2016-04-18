@@ -9,8 +9,8 @@
 import Foundation
 import CoreAudio.AudioHardwareBase
 
-public class AMAudioObjectPool: NSObject {
-    public static var instancePool = NSMapTable(keyOptions: .WeakMemory, valueOptions: .WeakMemory)
+internal class AMAudioObjectPool: NSObject {
+    static var instancePool = NSMapTable(keyOptions: .WeakMemory, valueOptions: .WeakMemory)
 }
 
 public class AMAudioObject: NSObject {
