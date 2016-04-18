@@ -1,5 +1,5 @@
 //
-//  AMCoreAudioStream.swift
+//  AMAudioStream.swift
 //  AMCoreAudio
 //
 //  Created by Ruben Nine on 13/04/16.
@@ -8,46 +8,27 @@
 
 import Foundation
 
-/// `AMCoreAudioStreamDelegate` protocol
-public protocol AMCoreAudioStreamDelegate: class {
+///// `AMAudioStreamEvent` enum
+public enum AMAudioStreamEvent: AMEvent {
     /**
         Called whenever the audio stream `isActive` flag changes state.
      */
-    func audioStreamIsActiveDidChange(audioStream: AMCoreAudioStream)
+    case IsActiveDidChange(audioStream: AMAudioStream)
 
     /**
         Called whenever the audio stream physical format changes.
      */
-    func audioStreamPhysicalFormatDidChange(audioStream: AMCoreAudioStream)
-}
-
-/// Optional `AMCoreAudioStreamDelegate` protocol functions
-public extension AMCoreAudioStreamDelegate {
-    func audioStreamIsActiveDidChange(audioStream: AMCoreAudioStream) {}
-    func audioStreamPhysicalFormatDidChange(audioStream: AMCoreAudioStream) {}
+    case PhysicalFormatDidChange(audioStream: AMAudioStream)
 }
 
 /**
-    `AMCoreAudioStream`
+    `AMAudioStream`
  
     This class represents an audio stream belonging to an audio object.
  */
-final public class AMCoreAudioStream: AMCoreAudioObject {
+final public class AMAudioStream: AMAudioObject {
 
     // MARK: - Public Properties
-
-    /**
-        A delegate conforming to the `AMCoreAudioStreamDelegate` protocol.
-     */
-    public weak var delegate: AMCoreAudioStreamDelegate? {
-        didSet {
-            if delegate != nil {
-                registerForNotifications()
-            } else {
-                unregisterForNotifications()
-            }
-        }
-    }
 
     /**
         This audio stream's identifier.
@@ -115,7 +96,7 @@ final public class AMCoreAudioStream: AMCoreAudioObject {
     /**
         The audio stream's direction.
         
-        For output streams, and to continue using the same `Direction` concept used by `AMCoreAudioDevice`,
+        For output streams, and to continue using the same `Direction` concept used by `AMAudioDevice`,
         this will be `Direction.Playback`, likewise, for input streams, `Direction.Recording` will be returned.
 
         - Returns: *(optional)* A `Direction`.
@@ -285,12 +266,13 @@ final public class AMCoreAudioStream: AMCoreAudioObject {
     private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { (inNumberAddresses, inAddresses) -> Void in
         let address = inAddresses.memory
         let direction = self.scopeToDirection(address.mScope)
+        let notificationCenter = AMNotificationCenter.defaultCenter
 
         switch address.mSelector {
         case kAudioStreamPropertyIsActive:
-            self.delegate?.audioStreamIsActiveDidChange(self)
+            notificationCenter.publish(AMAudioStreamEvent.IsActiveDidChange(audioStream: self))
         case kAudioStreamPropertyPhysicalFormat:
-            self.delegate?.audioStreamPhysicalFormatDidChange(self)
+            notificationCenter.publish(AMAudioStreamEvent.PhysicalFormatDidChange(audioStream: self))
         default:
             break
         }
@@ -298,11 +280,28 @@ final public class AMCoreAudioStream: AMCoreAudioObject {
 
     // MARK: - Public Functions
 
+    static func lookupByID(ID: AudioObjectID) -> AMAudioStream {
+        var instance = AMAudioObjectPool.instancePool.objectForKey(UInt(ID)) as? AMAudioStream
+
+        if instance == nil {
+            instance = AMAudioStream(streamID: ID)
+        }
+
+        return instance!
+    }
+
     /**
-        Initializes an `AMCoreAudioStream` by providing a valid `AudioObjectID` referencing an existing audio stream.
+        Initializes an `AMAudioStream` by providing a valid `AudioObjectID` referencing an existing audio stream.
      */
-    public init(streamID: AudioObjectID) {
+    private init(streamID: AudioObjectID) {
         super.init(objectID: streamID)
+        registerForNotifications()
+        AMAudioObjectPool.instancePool.setObject(self, forKey: UInt(objectID))
+    }
+
+    deinit {
+        unregisterForNotifications()
+        AMAudioObjectPool.instancePool.removeObjectForKey(UInt(objectID))
     }
 
     /**

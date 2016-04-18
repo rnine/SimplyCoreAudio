@@ -36,6 +36,13 @@
 			remoteGlobalIDString = 454D24591B4BE40E0043FA12;
 			remoteInfo = AMCoreAudio;
 		};
+		45D2F50E1CC50A3A00B59D86 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4502B8461B526F0F003BBB30 /* AMCoreAudio.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 453C2B971B7E1BFF00466C7D;
+			remoteInfo = AMCoreAudioTests;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -55,7 +62,7 @@
 /* Begin PBXFileReference section */
 		4502B8461B526F0F003BBB30 /* AMCoreAudio.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = AMCoreAudio.xcodeproj; sourceTree = "<group>"; };
 		45846DC61B4BDB5B00273DA2 /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		45846DC91B4BDB5B00273DA2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		45846DC91B4BDB5B00273DA2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AppDelegate.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		45846DCB1B4BDB5B00273DA2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		45846DCE1B4BDB5B00273DA2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		45846DD01B4BDB5B00273DA2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -77,6 +84,7 @@
 			isa = PBXGroup;
 			children = (
 				4502B84B1B526F0F003BBB30 /* AMCoreAudio.framework */,
+				45D2F50F1CC50A3A00B59D86 /* AMCoreAudioTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -177,6 +185,13 @@
 			fileType = wrapper.framework;
 			path = AMCoreAudio.framework;
 			remoteRef = 4502B84A1B526F0F003BBB30 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		45D2F50F1CC50A3A00B59D86 /* AMCoreAudioTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = AMCoreAudioTests.xctest;
+			remoteRef = 45D2F50E1CC50A3A00B59D86 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */

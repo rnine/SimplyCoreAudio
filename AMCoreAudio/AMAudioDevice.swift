@@ -1,5 +1,5 @@
 //
-//  AMCoreAudioDevice.swift
+//  AMAudioDevice.swift
 //  AMCoreAudio
 //
 //  Created by Ruben on 7/7/15.
@@ -9,101 +9,71 @@
 import Foundation
 import AudioToolbox.AudioServices
 
-/// `AMCoreAudioDeviceDelegate` protocol
-public protocol AMCoreAudioDeviceDelegate: class {
-
+///// `AMAudioDeviceEvent` enum
+public enum AMAudioDeviceEvent: AMEvent {
     /**
         Called whenever the audio device's sample rate changes.
      */
-    func audioDeviceNominalSampleRateDidChange(audioDevice: AMCoreAudioDevice)
+    case NominalSampleRateDidChange(audioDevice: AMAudioDevice)
 
     /**
         Called whenever the audio device's list of nominal sample rates changes.
-        
+
         - Note: This will typically happen on *Aggregate* and *Multi-Output* devices when adding or removing other audio devices (either physical or virtual.)
      */
-    func audioDeviceAvailableNominalSampleRatesDidChange(audioDevice: AMCoreAudioDevice)
+    case AvailableNominalSampleRatesDidChange(audioDevice: AMAudioDevice)
 
     /**
         Called whenever the audio device's clock source changes for a given channel and direction.
      */
-    func audioDeviceClockSourceDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: Direction)
+    case ClockSourceDidChange(audioDevice: AMAudioDevice, channel: UInt32, direction: Direction)
 
     /**
         Called whenever the audio device's name changes.
      */
-    func audioDeviceNameDidChange(audioDevice: AMCoreAudioDevice)
+    case NameDidChange(audioDevice: AMAudioDevice)
 
     /**
         Called whenever the list of owned audio devices on this audio device changes.
 
         - Note: This will typically happen on *Aggregate* and *Multi-Output* devices when adding or removing other audio devices (either physical or virtual.)
      */
-    func audioDeviceListDidChange(audioDevice: AMCoreAudioDevice)
+    case ListDidChange(audioDevice: AMAudioDevice)
 
     /**
         Called whenever the audio device's volume for a given channel and direction changes.
      */
-    func audioDeviceVolumeDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: Direction)
+    case VolumeDidChange(audioDevice: AMAudioDevice, channel: UInt32, direction: Direction)
 
     /**
         Called whenever the audio device's mute state for a given channel and direction changes.
      */
-    func audioDeviceMuteDidChange(audioDevice: AMCoreAudioDevice, forChannel channel:UInt32, andDirection direction: Direction)
+    case MuteDidChange(audioDevice: AMAudioDevice, channel:UInt32, direction: Direction)
 
     /**
         Called whenever the audio device's *is alive* flag changes.
      */
-    func audioDeviceIsAliveDidChange(audioDevice: AMCoreAudioDevice)
+    case IsAliveDidChange(audioDevice: AMAudioDevice)
 
     /**
         Called whenever the audio device's *is running* flag changes.
      */
-    func audioDeviceIsRunningDidChange(audioDevice: AMCoreAudioDevice)
+    case IsRunningDidChange(audioDevice: AMAudioDevice)
 
     /**
         Called whenever the audio device's *is running somewhere* flag changes.
      */
-    func audioDeviceIsRunningSomewhereDidChange(audioDevice: AMCoreAudioDevice)
-}
-
-/// Optional `AMCoreAudioDeviceDelegate` protocol functions
-public extension AMCoreAudioDeviceDelegate {
-
-    func audioDeviceNominalSampleRateDidChange(audioDevice: AMCoreAudioDevice) {}
-    func audioDeviceAvailableNominalSampleRatesDidChange(audioDevice: AMCoreAudioDevice) {}
-    func audioDeviceClockSourceDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: Direction) {}
-    func audioDeviceNameDidChange(audioDevice: AMCoreAudioDevice) {}
-    func audioDeviceListDidChange(audioDevice: AMCoreAudioDevice) {}
-    func audioDeviceVolumeDidChange(audioDevice: AMCoreAudioDevice, forChannel channel: UInt32, andDirection direction: Direction) {}
-    func audioDeviceMuteDidChange(audioDevice: AMCoreAudioDevice, forChannel channel:UInt32, andDirection direction: Direction) {}
-    func audioDeviceIsAliveDidChange(audioDevice: AMCoreAudioDevice) {}
-    func audioDeviceIsRunningDidChange(audioDevice: AMCoreAudioDevice) {}
-    func audioDeviceIsRunningSomewhereDidChange(audioDevice: AMCoreAudioDevice) {}
+    case IsRunningSomewhereDidChange(audioDevice: AMAudioDevice)
 }
 
 /**
-    `AMCoreAudioDevice`
+    `AMAudioDevice`
 
     This class represents an audio device in the system and allows subscribing to audio device notifications.
 
     Devices may be physical or virtual. For a comprehensive list of supported types, please refer to `TransportType`.
  */
-final public class AMCoreAudioDevice: AMCoreAudioObject {
-
-    /**
-        A delegate conforming to the `AMCoreAudioDeviceDelegate` protocol.
-     */
-    public weak var delegate: AMCoreAudioDeviceDelegate? {
-        didSet {
-            if delegate != nil {
-                registerForNotifications()
-            } else {
-                unregisterForNotifications()
-            }
-        }
-    }
-
+final public class AMAudioDevice: AMAudioObject {
     /**
         The cached device name. This may be useful in some situations where the class instance
         is pointing to a device that is no longer available, so we can still access its name.
@@ -137,28 +107,41 @@ final public class AMCoreAudioDevice: AMCoreAudioObject {
     private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { (inNumberAddresses, inAddresses) -> Void in
         let address = inAddresses.memory
         let direction = self.scopeToDirection(address.mScope)
+        let notificationCenter = AMNotificationCenter.defaultCenter
 
         switch address.mSelector {
         case kAudioDevicePropertyNominalSampleRate:
-            self.delegate?.audioDeviceNominalSampleRateDidChange(self)
+            notificationCenter.publish(AMAudioDeviceEvent.NominalSampleRateDidChange(audioDevice: self))
         case kAudioDevicePropertyAvailableNominalSampleRates:
-            self.delegate?.audioDeviceAvailableNominalSampleRatesDidChange(self)
+            notificationCenter.publish(AMAudioDeviceEvent.AvailableNominalSampleRatesDidChange(audioDevice: self))
         case kAudioDevicePropertyClockSource:
-            self.delegate?.audioDeviceClockSourceDidChange(self, forChannel: address.mElement, andDirection: direction)
+            notificationCenter.publish(AMAudioDeviceEvent.ClockSourceDidChange(
+                audioDevice: self,
+                channel: address.mElement,
+                direction: direction
+            ))
         case kAudioObjectPropertyName:
-            self.delegate?.audioDeviceNameDidChange(self)
+            notificationCenter.publish(AMAudioDeviceEvent.NameDidChange(audioDevice: self))
         case kAudioObjectPropertyOwnedObjects:
-            self.delegate?.audioDeviceListDidChange(self)
+            notificationCenter.publish(AMAudioDeviceEvent.ListDidChange(audioDevice: self))
         case kAudioDevicePropertyVolumeScalar:
-            self.delegate?.audioDeviceVolumeDidChange(self, forChannel: address.mElement, andDirection: direction)
+            notificationCenter.publish(AMAudioDeviceEvent.VolumeDidChange(
+                audioDevice: self,
+                channel: address.mElement,
+                direction: direction
+            ))
         case kAudioDevicePropertyMute:
-            self.delegate?.audioDeviceMuteDidChange(self, forChannel: address.mElement, andDirection: direction)
+            notificationCenter.publish(AMAudioDeviceEvent.MuteDidChange(
+                audioDevice: self,
+                channel: address.mElement,
+                direction: direction
+            ))
         case kAudioDevicePropertyDeviceIsAlive:
-            self.delegate?.audioDeviceIsAliveDidChange(self)
+            notificationCenter.publish(AMAudioDeviceEvent.IsAliveDidChange(audioDevice: self))
         case kAudioDevicePropertyDeviceIsRunning:
-            self.delegate?.audioDeviceIsRunningDidChange(self)
+            notificationCenter.publish(AMAudioDeviceEvent.IsRunningDidChange(audioDevice: self))
         case kAudioDevicePropertyDeviceIsRunningSomewhere:
-            self.delegate?.audioDeviceIsRunningSomewhereDidChange(self)
+            notificationCenter.publish(AMAudioDeviceEvent.IsRunningSomewhereDidChange(audioDevice: self))
         // Unhandled cases beyond this point
         case kAudioDevicePropertyBufferFrameSize:
             fallthrough
@@ -171,22 +154,22 @@ final public class AMCoreAudioDevice: AMCoreAudioObject {
         }
     }
 
-    /**
-        Initializes an `AMCoreAudioDevice` by providing an audio device identifier.
-     
-        - Parameter deviceID: An audio device identifier that is valid and present in the system.
-     */
-    public init(deviceID: AudioObjectID) {
-        super.init(objectID: deviceID)
-        cachedDeviceName = getDeviceName()
+    static func lookupByID(ID: AudioObjectID) -> AMAudioDevice {
+        var instance = AMAudioObjectPool.instancePool.objectForKey(UInt(ID)) as? AMAudioDevice
+
+        if instance == nil {
+            instance = AMAudioDevice(deviceID: ID)
+        }
+
+        return instance!
     }
 
     /**
-        Initializes an `AMCoreAudioDevice` by providing a valid audio device unique identifier.
-     
+        Initializes an `AMAudioDevice` by providing a valid audio device unique identifier.
+
         - Note: If unique identifier is not valid, `nil` will be returned.
      */
-    public convenience init?(deviceUID: String) {
+    static func lookupByUID(deviceUID: String) -> AMAudioDevice? {
         var deviceID = AudioObjectID(0)
         let status = AMAudioHardwarePropertyDeviceForUID(deviceUID, &deviceID)
 
@@ -194,11 +177,24 @@ final public class AMCoreAudioDevice: AMCoreAudioObject {
             return nil
         }
 
-        self.init(deviceID: deviceID)
+        return lookupByID(deviceID)
+    }
+
+    /**
+        Initializes an `AMAudioDevice` by providing an audio device identifier.
+     
+        - Parameter deviceID: An audio device identifier that is valid and present in the system.
+     */
+    private init(deviceID: AudioObjectID) {
+        super.init(objectID: deviceID)
+        cachedDeviceName = getDeviceName()
+        registerForNotifications()
+        AMAudioObjectPool.instancePool.setObject(self, forKey: UInt(objectID))
     }
 
     deinit {
-        delegate = nil
+        unregisterForNotifications()
+        AMAudioObjectPool.instancePool.removeObjectForKey(UInt(objectID))
     }
 
     /**
@@ -226,20 +222,6 @@ final public class AMCoreAudioDevice: AMCoreAudioObject {
      */
     public func setAsDefaultSystemDevice() -> Bool {
         return setDefaultDevice(kAudioHardwarePropertyDefaultSystemOutputDevice)
-    }
-
-    /**
-        Promotes this device to become the default system output device, output device, or input device.
-
-        - Parameter deviceType:
-            - kAudioHardwarePropertyDefaultSystemOutputDevice
-            - kAudioHardwarePropertyDefaultOutputDevice
-            - kAudioHardwarePropertyDefaultInputDevice
-
-        - Returns: `true` on success, `false` otherwise.
-     */
-    @available(*, deprecated, message="this function will be removed in version 3.0. Please use the more specialized functions: `setAsDefaultInputDevice()`, `setAsDefaultOutputDevice()`, or `setAsDefaultSystemOutputDevice()`") public func setAsDefaultDevice(deviceType: AudioObjectPropertySelector) -> Bool {
-        return setDefaultDevice(deviceType)
     }
 
     // MARK: - Class Functions
@@ -270,13 +252,13 @@ final public class AMCoreAudioDevice: AMCoreAudioObject {
         
         - Note: This list may also include *Aggregate* and *Multi-Output* devices.
 
-        - Returns: An array of `AMCoreAudioDevice` objects.
+        - Returns: An array of `AMAudioDevice` objects.
      */
-    public class func allDevices() -> [AMCoreAudioDevice] {
+    public class func allDevices() -> [AMAudioDevice] {
         let deviceIDs = allDeviceIDs()
 
-        let devices = deviceIDs.map { (let deviceID) -> AMCoreAudioDevice in
-            return AMCoreAudioDevice(deviceID: deviceID)
+        let devices = deviceIDs.map { (let deviceID) -> AMAudioDevice in
+            return AMAudioDevice.lookupByID(deviceID)
         }
 
         return devices
@@ -287,9 +269,9 @@ final public class AMCoreAudioDevice: AMCoreAudioObject {
         
         - Note: This list may also include *Aggregate* devices.
 
-        - Returns: An array of `AMCoreAudioDevice` objects.
+        - Returns: An array of `AMAudioDevice` objects.
      */
-    public class func allInputDevices() -> [AMCoreAudioDevice] {
+    public class func allInputDevices() -> [AMAudioDevice] {
         let devices = allDevices()
 
         return devices.filter({ (let device) -> Bool in
@@ -302,9 +284,9 @@ final public class AMCoreAudioDevice: AMCoreAudioObject {
         
         - Note: The list may also include *Aggregate* and *Multi-Output* devices.
 
-        - Returns: An array of `AMCoreAudioDevice` objects.
+        - Returns: An array of `AMAudioDevice` objects.
      */
-    public class func allOutputDevices() -> [AMCoreAudioDevice] {
+    public class func allOutputDevices() -> [AMAudioDevice] {
         let devices = allDevices()
 
         return devices.filter({ (let device) -> Bool in
@@ -315,27 +297,27 @@ final public class AMCoreAudioDevice: AMCoreAudioObject {
     /**
         The default input device.
 
-        - Returns: *(optional)* An `AMCoreAudioDevice`.
+        - Returns: *(optional)* An `AMAudioDevice`.
      */
-    public class func defaultInputDevice() -> AMCoreAudioDevice? {
+    public class func defaultInputDevice() -> AMAudioDevice? {
         return defaultDeviceOfType(kAudioHardwarePropertyDefaultInputDevice)
     }
 
     /**
         The default output device.
 
-        - Returns: *(optional)* An `AMCoreAudioDevice`.
+        - Returns: *(optional)* An `AMAudioDevice`.
      */
-    public class func defaultOutputDevice() -> AMCoreAudioDevice? {
+    public class func defaultOutputDevice() -> AMAudioDevice? {
         return defaultDeviceOfType(kAudioHardwarePropertyDefaultOutputDevice)
     }
 
     /**
         The default system output device.
 
-        - Returns: *(optional)* An `AMCoreAudioDevice`.
+        - Returns: *(optional)* An `AMAudioDevice`.
      */
-    public class func defaultSystemOutputDevice() -> AMCoreAudioDevice? {
+    public class func defaultSystemOutputDevice() -> AMAudioDevice? {
         return defaultDeviceOfType(kAudioHardwarePropertyDefaultSystemOutputDevice)
     }
 
@@ -568,9 +550,9 @@ final public class AMCoreAudioDevice: AMCoreAudioObject {
     /**
         All the audio devices related to this audio device.
     
-        - Returns: *(optional)* An array of `AMCoreAudioDevice` objects.
+        - Returns: *(optional)* An array of `AMAudioDevice` objects.
      */
-    public func relatedDevices() -> [AMCoreAudioDevice]? {
+    public func relatedDevices() -> [AMAudioDevice]? {
         let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyRelatedDevices,
             mScope: kAudioObjectPropertyScopeGlobal,
@@ -581,23 +563,12 @@ final public class AMCoreAudioDevice: AMCoreAudioObject {
         let status = getPropertyDataArray(address, value: &relatedDevices, andDefaultValue: AudioDeviceID())
 
         if noErr == status {
-            return relatedDevices.map({ (deviceID) -> AMCoreAudioDevice in
-                return AMCoreAudioDevice(deviceID: deviceID)
+            return relatedDevices.map({ (deviceID) -> AMAudioDevice in
+                return AMAudioDevice.lookupByID(deviceID)
             })
         }
 
         return nil
-    }
-
-    /**
-        The `AudioClassID` that identifies the class of this audio device.
-    
-        - SeeAlso: `classID`
-
-        - Returns: *(optional)* An `AudioClassID`.
-     */
-     @available(*, deprecated, message="this function will be removed in version 3.0. Please use the property `classID` instead.") public func classID() -> AudioClassID? {
-        return classID
     }
 
     /**
@@ -1355,9 +1326,9 @@ final public class AMCoreAudioDevice: AMCoreAudioObject {
     /**
         Returns a list of streams for a given direction.
 
-        - Returns: *(optional)* An array of `AMCoreAudioStream` objects.
+        - Returns: *(optional)* An array of `AMAudioStream` objects.
      */
-    public func streamsForDirection(direction: Direction) -> [AMCoreAudioStream]? {
+    public func streamsForDirection(direction: Direction) -> [AMAudioStream]? {
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyStreams,
             mScope: directionToScope(direction),
@@ -1375,8 +1346,8 @@ final public class AMCoreAudioDevice: AMCoreAudioObject {
             return nil
         }
 
-        return streamIDs.map({ (streamID) -> AMCoreAudioStream in
-            AMCoreAudioStream(streamID: streamID)
+        return streamIDs.map({ (streamID) -> AMAudioStream in
+            AMAudioStream.lookupByID(streamID)
         })
     }
 
@@ -1431,17 +1402,17 @@ final public class AMCoreAudioDevice: AMCoreAudioObject {
         return noErr == status ? (name as String) : nil
     }
 
-    private class func defaultDeviceOfType(deviceType: AudioObjectPropertySelector) -> AMCoreAudioDevice? {
+    private class func defaultDeviceOfType(deviceType: AudioObjectPropertySelector) -> AMAudioDevice? {
         let address = AudioObjectPropertyAddress(
             mSelector: deviceType,
             mScope: kAudioObjectPropertyScopeGlobal,
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        var audioDeviceID = AudioDeviceID()
-        let status = getPropertyData(AudioObjectID(kAudioObjectSystemObject), address: address, andValue: &audioDeviceID)
+        var deviceID = AudioDeviceID()
+        let status = getPropertyData(AudioObjectID(kAudioObjectSystemObject), address: address, andValue: &deviceID)
 
-        return noErr == status ? AMCoreAudioDevice(deviceID: audioDeviceID) : nil
+        return noErr == status ? AMAudioDevice.lookupByID(deviceID) : nil
     }
 
     // MARK: - Notification Book-keeping
@@ -1450,6 +1421,8 @@ final public class AMCoreAudioDevice: AMCoreAudioObject {
         if isRegisteredForNotifications {
             unregisterForNotifications()
         }
+
+        print("Registering \(self) for notifications")
 
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioObjectPropertySelectorWildcard,
@@ -1467,6 +1440,8 @@ final public class AMCoreAudioDevice: AMCoreAudioObject {
     }
 
     private func unregisterForNotifications() {
+        print("Unregistering \(self) for notifications")
+
         if isAlive() && isRegisteredForNotifications {
             var address = AudioObjectPropertyAddress(
                 mSelector: kAudioObjectPropertySelectorWildcard,
@@ -1487,7 +1462,7 @@ final public class AMCoreAudioDevice: AMCoreAudioObject {
     }
 }
 
-extension AMCoreAudioDevice {
+extension AMAudioDevice {
 
     public override var hashValue: Int {
         return Int(deviceID)
@@ -1498,6 +1473,6 @@ extension AMCoreAudioDevice {
     }
 }
 
-func ==(lhs: AMCoreAudioDevice, rhs: AMCoreAudioDevice) -> Bool {
+func ==(lhs: AMAudioDevice, rhs: AMAudioDevice) -> Bool {
     return lhs.hashValue == rhs.hashValue
 }

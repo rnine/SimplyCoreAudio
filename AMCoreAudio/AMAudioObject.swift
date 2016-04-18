@@ -1,5 +1,5 @@
 //
-//  AMCoreAudioObject.swift
+//  AMAudioObject.swift
 //  AMCoreAudio
 //
 //  Created by Ruben Nine on 13/04/16.
@@ -9,7 +9,11 @@
 import Foundation
 import CoreAudio.AudioHardwareBase
 
-public class AMCoreAudioObject: NSObject {
+public class AMAudioObjectPool: NSObject {
+    public static var instancePool = NSMapTable(keyOptions: .WeakMemory, valueOptions: .WeakMemory)
+}
+
+public class AMAudioObject: NSObject {
     internal var objectID: AudioObjectID
 
     internal func directionToScope(direction: Direction) -> AudioObjectPropertyScope {
@@ -23,6 +27,10 @@ public class AMCoreAudioObject: NSObject {
     internal init(objectID: AudioObjectID) {
         self.objectID = objectID
         super.init()
+    }
+
+    deinit {
+        // NO-OP
     }
 
     /**
@@ -54,9 +62,9 @@ public class AMCoreAudioObject: NSObject {
     /**
         The audio object that owns this audio object.
 
-        - Returns: *(optional)* An `AMCoreAudioObject`.
+        - Returns: *(optional)* An `AMAudioObject`.
      */
-    public lazy var owningObject: AMCoreAudioObject? = {
+    public lazy var owningObject: AMAudioObject? = {
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioObjectPropertyOwner,
             mScope: kAudioObjectPropertyScopeGlobal,
@@ -74,18 +82,18 @@ public class AMCoreAudioObject: NSObject {
             return nil
         }
 
-        return AMCoreAudioObject(objectID: objectID)
+        return AMAudioObject(objectID: objectID)
     }()
 
     /**
         The audio device that owns this audio object.
 
-        - Returns: *(optional)* An `AMCoreAudioDevice`.
+        - Returns: *(optional)* An `AMAudioDevice`.
      */
-    public lazy var owningDevice: AMCoreAudioDevice? = {
+    public lazy var owningDevice: AMAudioDevice? = {
         if let object = self.owningObject {
             if object.classID == kAudioDeviceClassID {
-                return AMCoreAudioDevice(deviceID: object.objectID)
+                return AMAudioDevice.lookupByID(object.objectID)
             }
         }
 
@@ -93,7 +101,7 @@ public class AMCoreAudioObject: NSObject {
     }()
 }
 
-extension AMCoreAudioObject {
+extension AMAudioObject {
 
     // MARK: - Class Functions
 
