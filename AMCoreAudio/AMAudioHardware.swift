@@ -131,7 +131,7 @@ final public class AMAudioHardware: NSObject {
         - added or removed device
         - new default input device
         - new default output device
-        - new system output device
+        - new default system output device
 
         - SeeAlso: disableDeviceMonitoring()
      */
