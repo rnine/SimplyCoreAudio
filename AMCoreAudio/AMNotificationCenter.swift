@@ -14,31 +14,50 @@ public protocol AMEvent {}
 
 public protocol AMEventSubscriber {
     func eventReceiver(event: AMEvent)
+    var hashValue: Int { get }
+}
+
+func ==(lhs: AMEventSubscriber, rhs: AMEventSubscriber) -> Bool {
+    return lhs.hashValue == rhs.hashValue
 }
 
 // Notification Center
 
 final public class AMNotificationCenter : NSObject {
     public static let defaultCenter = AMNotificationCenter()
-    private var subscribers = [String: [AMEventSubscriber]]()
+    private var subscribersByEvent = [String: [AMEventSubscriber]]()
 
     private override init() {}
 
     public func subscribe(subscriber: AMEventSubscriber, eventType: AMEvent.Type) {
         let type = String(eventType)
 
-        if subscribers[type] == nil {
-            subscribers[type] = []
+        if subscribersByEvent[type] == nil {
+            subscribersByEvent[type] = []
         }
 
-        subscribers[type]!.append(subscriber)
+        subscribersByEvent[type]!.append(subscriber)
+    }
+
+    public func unsubscribe(subscriber: AMEventSubscriber, eventType: AMEvent.Type) {
+        let type = String(eventType)
+
+        if var subscribers = subscribersByEvent[type] {
+            if let idx = subscribers.indexOf({ (aSubscriber) -> Bool in aSubscriber == subscriber}) {
+                subscribers.removeAtIndex(idx)
+            }
+
+            if subscribers.count == 0 {
+                subscribersByEvent.removeValueForKey(type)
+            }
+        }
     }
 
     func publish(event: AMEvent) {
         let type = String(event.dynamicType)
 
-        if let subscribers = subscribers[type] {
-            for subscriber in subscribers {
+        if let eventType = subscribersByEvent[type] {
+            for subscriber in eventType {
                 subscriber.eventReceiver(event)
             }
         }

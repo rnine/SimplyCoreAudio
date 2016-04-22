@@ -18,9 +18,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private let audioHardware = AMAudioHardware.sharedInstance
 
     func applicationDidFinishLaunching(aNotification: NSNotification) {
-
         // Enable audio hardware events
-        audioHardware.enableEvents()
+        audioHardware.enableDeviceMonitoring()
 
         // Subscribe to events
         AMNotificationCenter.defaultCenter.subscribe(self, eventType: AMAudioHardwareEvent.self)
@@ -47,7 +46,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(aNotification: NSNotification) {
         // Disable audio hardware events
-        audioHardware.disableEvents()
+        audioHardware.disableDeviceMonitoring()
+
+        AMNotificationCenter.defaultCenter.unsubscribe(self, eventType: AMAudioHardwareEvent.self)
+        AMNotificationCenter.defaultCenter.unsubscribe(self, eventType: AMAudioDeviceEvent.self)
+        AMNotificationCenter.defaultCenter.unsubscribe(self, eventType: AMAudioStreamEvent.self)
     }
 
     private func printAudioDevice(audioDevice: AMAudioDevice) {

@@ -56,7 +56,7 @@ final public class AMAudioHardware: NSObject {
     private var isRegisteredForNotifications = false
 
     private lazy var notificationsQueue: dispatch_queue_t = {
-        return dispatch_queue_create("io.9labs.AMCoreAudio.HW-notifications", DISPATCH_QUEUE_CONCURRENT)
+        return dispatch_queue_create("io.9labs.AMCoreAudio.hardwareNotifications", DISPATCH_QUEUE_CONCURRENT)
     }()
 
     private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { (inNumberAddresses, inAddresses) -> Void in
@@ -125,11 +125,26 @@ final public class AMAudioHardware: NSObject {
         cleanup()
     }
 
-    public func enableEvents() {
+    /**
+        Enables device monitoring so events like the ones below are generated:
+     
+        - added or removed device
+        - new default input device
+        - new default output device
+        - new system output device
+
+        - SeeAlso: disableDeviceMonitoring()
+     */
+    public func enableDeviceMonitoring() {
         setup()
     }
 
-    public func disableEvents() {
+    /**
+        Disables device monitoring.
+     
+        - SeeAlso: enableDeviceMonitoring()
+     */
+    public func disableDeviceMonitoring() {
         cleanup()
     }
 
