@@ -154,7 +154,10 @@ final public class AMAudioDevice: AMAudioObject {
         }
     }
 
-    static func lookupByID(ID: AudioObjectID) -> AMAudioDevice {
+    /**
+        Returns an `AMAudioDevice` by providing a valid audio device identifier.
+     */
+    public static func lookupByID(ID: AudioObjectID) -> AMAudioDevice {
         var instance = AMAudioObjectPool.instancePool.objectForKey(UInt(ID)) as? AMAudioDevice
 
         if instance == nil {
@@ -165,11 +168,11 @@ final public class AMAudioDevice: AMAudioObject {
     }
 
     /**
-        Initializes an `AMAudioDevice` by providing a valid audio device unique identifier.
+        Returns an `AMAudioDevice` by providing a valid audio device unique identifier.
 
         - Note: If unique identifier is not valid, `nil` will be returned.
      */
-    static func lookupByUID(deviceUID: String) -> AMAudioDevice? {
+    public static func lookupByUID(deviceUID: String) -> AMAudioDevice? {
         var deviceID = AudioObjectID(0)
         let status = AMAudioHardwarePropertyDeviceForUID(deviceUID, &deviceID)
 
