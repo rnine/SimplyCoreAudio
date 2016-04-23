@@ -13,6 +13,13 @@ internal class AMAudioObjectPool: NSObject {
     static var instancePool = NSMapTable(keyOptions: .WeakMemory, valueOptions: .WeakMemory)
 }
 
+/**
+    `AMAudioObject`
+
+    This class represents a Core Audio object currently present in the system. In Core Audio, 
+    audio objects are referenced by its `AudioObjectID` and belong to a specific `AudioClassID`. 
+    For more information, please refer to Core Audio's documentation or source code.
+ */
 public class AMAudioObject: NSObject {
     internal var objectID: AudioObjectID
 
@@ -244,4 +251,20 @@ extension AMAudioObject {
     internal func setPropertyData<T>(address: AudioObjectPropertyAddress, inout andValue value: [T]) -> OSStatus {
         return setPropertyData(objectID, address: address, andValue: &value)
     }
+}
+
+
+extension AMAudioObject {
+
+    /**
+        The hash value.
+        - SeeAlso: The `Hashable` protocol.
+     */
+    public override var hashValue: Int {
+        return Int(objectID)
+    }
+}
+
+func ==(lhs: AMAudioObject, rhs: AMAudioObject) -> Bool {
+    return lhs.hashValue == rhs.hashValue
 }

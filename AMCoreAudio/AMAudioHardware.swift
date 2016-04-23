@@ -42,6 +42,9 @@ public enum AMAudioHardwareEvent: AMEvent {
  */
 final public class AMAudioHardware: NSObject {
 
+    /**
+        Returns a singleton `AMAudioHardware` instance.
+    */
     public static let sharedInstance = AMAudioHardware()
 
     /**

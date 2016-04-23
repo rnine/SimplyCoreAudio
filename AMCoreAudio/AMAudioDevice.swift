@@ -1464,15 +1464,10 @@ final public class AMAudioDevice: AMAudioObject {
 
 extension AMAudioDevice {
 
-    public override var hashValue: Int {
-        return Int(deviceID)
-    }
-
+    /**
+        Returns a string describing this audio device.
+     */
     public override var description: String {
-        return "\(deviceName()) (\(deviceID))"
+        return "\(deviceName()) (\(deviceID)) (\(super.description))"
     }
-}
-
-func ==(lhs: AMAudioDevice, rhs: AMAudioDevice) -> Bool {
-    return lhs.hashValue == rhs.hashValue
 }
