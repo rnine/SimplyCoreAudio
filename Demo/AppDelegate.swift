@@ -22,9 +22,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         audioHardware.enableDeviceMonitoring()
 
         // Subscribe to events
-        AMNotificationCenter.defaultCenter.subscribe(self, eventType: AMAudioHardwareEvent.self)
-        AMNotificationCenter.defaultCenter.subscribe(self, eventType: AMAudioDeviceEvent.self)
-        AMNotificationCenter.defaultCenter.subscribe(self, eventType: AMAudioStreamEvent.self)
+        AMNotificationCenter.defaultCenter.subscribe(self, eventType: AMAudioHardwareEvent.self, dispatchQueue: dispatch_get_main_queue())
+        AMNotificationCenter.defaultCenter.subscribe(self, eventType: AMAudioDeviceEvent.self, dispatchQueue: dispatch_get_main_queue())
+        AMNotificationCenter.defaultCenter.subscribe(self, eventType: AMAudioStreamEvent.self, dispatchQueue: dispatch_get_main_queue())
 
         print("+ All known devices: \(AMAudioDevice.allDevices())")
 

@@ -41,6 +41,10 @@ func ==(lhs: AMEventSubscriber, rhs: AMEventSubscriber) -> Bool {
     return lhs.hashValue == rhs.hashValue
 }
 
+private struct AMEventSubscriberAndQueue {
+    var subscriber: AMEventSubscriber
+    var queue: dispatch_queue_t?
+}
 
 // MARK: - AMNotificationCenter
 
@@ -48,7 +52,7 @@ func ==(lhs: AMEventSubscriber, rhs: AMEventSubscriber) -> Bool {
     `AMNotificationCenter` is AMCoreAudio's de facto pub-sub system.
  */
 final public class AMNotificationCenter : NSObject {
-    private var subscribersByEvent = [String: [AMEventSubscriber]]()
+    private var subscribersByEvent = [String: [AMEventSubscriberAndQueue]]()
 
     private override init() {}
 
@@ -63,15 +67,18 @@ final public class AMNotificationCenter : NSObject {
      
         - Parameter subscriber: Any object conforming to the `AMEventSubscriber` protocol.
         - Parameter eventType: A class, struct or enum type conforming to the `AMEvent` protocol.
+        - Parameter dispatchQueue: (optional) A dispatch queue to use for delivering the events.
      */
-    public func subscribe(subscriber: AMEventSubscriber, eventType: AMEvent.Type) {
+    public func subscribe(subscriber: AMEventSubscriber, eventType: AMEvent.Type, dispatchQueue: dispatch_queue_t? = nil) {
         let type = String(eventType)
 
         if subscribersByEvent[type] == nil {
             subscribersByEvent[type] = []
         }
 
-        subscribersByEvent[type]!.append(subscriber)
+        let subscriberAndQueue = AMEventSubscriberAndQueue(subscriber: subscriber, queue: dispatchQueue)
+
+        subscribersByEvent[type]!.append(subscriberAndQueue)
     }
 
     /**
@@ -84,7 +91,7 @@ final public class AMNotificationCenter : NSObject {
         let type = String(eventType)
 
         if var subscribers = subscribersByEvent[type] {
-            if let idx = subscribers.indexOf({ (aSubscriber) -> Bool in aSubscriber == subscriber}) {
+            if let idx = subscribers.indexOf({ (aSubscriber) -> Bool in aSubscriber.subscriber == subscriber}) {
                 subscribers.removeAtIndex(idx)
             }
 
@@ -103,8 +110,14 @@ final public class AMNotificationCenter : NSObject {
         let type = String(event.dynamicType)
 
         if let eventType = subscribersByEvent[type] {
-            for subscriber in eventType {
-                subscriber.eventReceiver(event)
+            for subscriberAndQueue in eventType {
+                if let queue = subscriberAndQueue.queue {
+                    dispatch_async(queue, { 
+                        subscriberAndQueue.subscriber.eventReceiver(event)
+                    })
+                } else {
+                    subscriberAndQueue.subscriber.eventReceiver(event)
+                }
             }
         }
     }
