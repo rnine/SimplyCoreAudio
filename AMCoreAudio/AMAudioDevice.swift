@@ -1113,11 +1113,11 @@ final public class AMAudioDevice: AMAudioObject {
     // MARK: - 𝍄 Clock Source Functions
 
     /**
-        The clock source name for the channel number and direction specified.
+        The clock source identifier for the channel number and direction specified.
 
-        - Returns: *(optional)* A `String` containing the clock source name.
+        - Returns: *(optional)* A `UInt32` containing the clock source identifier.
      */
-    public func clockSourceForChannel(channel: UInt32, andDirection direction: Direction) -> String? {
+    public func clockSourceIDForChannel(channel: UInt32, andDirection direction: Direction) -> UInt32? {
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyClockSource,
             mScope: directionToScope(direction),
@@ -1135,7 +1135,46 @@ final public class AMAudioDevice: AMAudioObject {
             return nil
         }
 
-        return clockSourceNameForClockSourceID(sourceID, forChannel: channel, andDirection: direction)
+        return sourceID
+    }
+
+    /**
+        The clock source name for the channel number and direction specified.
+
+        - Returns: *(optional)* A `String` containing the clock source name.
+     */
+    public func clockSourceForChannel(channel: UInt32, andDirection direction: Direction) -> String? {
+        if let sourceID = clockSourceIDForChannel(channel, andDirection: direction) {
+            return clockSourceNameForClockSourceID(sourceID, forChannel: channel, andDirection: direction)
+        }
+
+        return nil
+    }
+
+    /**
+        A list of clock source identifiers for the channel number and direction specified.
+
+        - Returns: *(optional)* A `UInt32` array containing all the clock source identifiers.
+     */
+    public func clockSourceIDsForChannel(channel: UInt32, andDirection direction: Direction) -> [UInt32]? {
+        var address = AudioObjectPropertyAddress(
+            mSelector: kAudioDevicePropertyClockSources,
+            mScope: directionToScope(direction),
+            mElement: channel
+        )
+
+        if !AudioObjectHasProperty(deviceID, &address) {
+            return nil
+        }
+
+        var clockSourceIDs = [UInt32]()
+        let status = getPropertyDataArray(address, value: &clockSourceIDs, andDefaultValue: 0)
+
+        if noErr != status {
+            return nil
+        }
+
+        return clockSourceIDs
     }
 
     /**
@@ -1154,18 +1193,42 @@ final public class AMAudioDevice: AMAudioObject {
             return nil
         }
 
-        var clockSourceIDs = [UInt32]()
-        let status = getPropertyDataArray(address, value: &clockSourceIDs, andDefaultValue: 0)
-
-        if noErr != status {
-            return nil
+        if let clockSourceIDs = clockSourceIDsForChannel(channel, andDirection: direction) {
+            return clockSourceIDs.map { (clockSourceID) -> String in
+                // We expect clockSourceNameForClockSourceID to never fail in this case, 
+                // but in the unlikely case it does, we provide a default value.
+                clockSourceNameForClockSourceID(clockSourceID, forChannel: channel, andDirection: direction) ?? "Clock source \(clockSourceID)"
+            }
         }
 
-        return clockSourceIDs.map { (clockSourceID) -> String in
-            // We expect clockSourceNameForClockSourceID to never fail in this case, 
-            // but in the unlikely case it does, we provide a default value.
-            return clockSourceNameForClockSourceID(clockSourceID, forChannel: channel, andDirection: direction) ?? "Clock source \(clockSourceID)"
-        }
+        return nil
+    }
+
+    /**
+        Returns the clock source name for a given clock source ID in a given channel and direction.
+     
+        - Returns: *(optional)* A `String` with the source clock name.
+     */
+    public func clockSourceNameForClockSourceID(clockSourceID: UInt32, forChannel channel: UInt32, andDirection direction: Direction) -> String? {
+        var name: CFString = ""
+        var theClockSourceID = clockSourceID
+
+        var translation = AudioValueTranslation(
+            mInputData: &theClockSourceID,
+            mInputDataSize: UInt32(sizeof(UInt32)),
+            mOutputData: &name,
+            mOutputDataSize: UInt32(sizeof(CFStringRef))
+        )
+
+        let address = AudioObjectPropertyAddress(
+            mSelector: kAudioDevicePropertyClockSourceNameForIDCFString,
+            mScope: directionToScope(direction),
+            mElement: channel
+        )
+
+        let status = getPropertyData(address, andValue: &translation)
+
+        return noErr == status ? (name as String) : nil
     }
 
     /**
@@ -1381,28 +1444,6 @@ final public class AMAudioDevice: AMAudioObject {
         let status = getPropertyData(address, andValue: &name)
 
         return noErr == status ? (name as String) : (cachedDeviceName ?? "<Unknown Device Name>")
-    }
-
-    private func clockSourceNameForClockSourceID(clockSourceID: UInt32, forChannel channel: UInt32, andDirection direction: Direction) -> String? {
-        var name: CFString = ""
-        var theClockSourceID = clockSourceID
-
-        var translation = AudioValueTranslation(
-            mInputData: &theClockSourceID,
-            mInputDataSize: UInt32(sizeof(UInt32)),
-            mOutputData: &name,
-            mOutputDataSize: UInt32(sizeof(CFStringRef))
-        )
-
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyClockSourceNameForIDCFString,
-            mScope: directionToScope(direction),
-            mElement: channel
-        )
-
-        let status = getPropertyData(address, andValue: &translation)
-
-        return noErr == status ? (name as String) : nil
     }
 
     private class func defaultDeviceOfType(deviceType: AudioObjectPropertySelector) -> AMAudioDevice? {
