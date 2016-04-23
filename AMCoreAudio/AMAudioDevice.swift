@@ -1422,8 +1422,6 @@ final public class AMAudioDevice: AMAudioObject {
             unregisterForNotifications()
         }
 
-        print("Registering \(self) for notifications")
-
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioObjectPropertySelectorWildcard,
             mScope: kAudioObjectPropertyScopeWildcard,
@@ -1440,8 +1438,6 @@ final public class AMAudioDevice: AMAudioObject {
     }
 
     private func unregisterForNotifications() {
-        print("Unregistering \(self) for notifications")
-
         if isAlive() && isRegisteredForNotifications {
             var address = AudioObjectPropertyAddress(
                 mSelector: kAudioObjectPropertySelectorWildcard,
