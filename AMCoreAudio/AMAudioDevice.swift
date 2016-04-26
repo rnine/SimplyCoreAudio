@@ -156,15 +156,17 @@ final public class AMAudioDevice: AMAudioObject {
 
     /**
         Returns an `AMAudioDevice` by providing a valid audio device identifier.
+
+         - Note: If identifier is not valid, `nil` will be returned.
      */
-    public static func lookupByID(ID: AudioObjectID) -> AMAudioDevice {
+    public static func lookupByID(ID: AudioObjectID) -> AMAudioDevice? {
         var instance = AMAudioObjectPool.instancePool.objectForKey(UInt(ID)) as? AMAudioDevice
 
         if instance == nil {
             instance = AMAudioDevice(deviceID: ID)
         }
 
-        return instance!
+        return instance
     }
 
     /**
@@ -188,8 +190,13 @@ final public class AMAudioDevice: AMAudioObject {
      
         - Parameter deviceID: An audio device identifier that is valid and present in the system.
      */
-    private init(deviceID: AudioObjectID) {
+    private init?(deviceID: AudioObjectID) {
         super.init(objectID: deviceID)
+
+        if isAlive() == false {
+            return nil
+        }
+
         cachedDeviceName = getDeviceName()
         registerForNotifications()
         AMAudioObjectPool.instancePool.setObject(self, forKey: UInt(objectID))
@@ -260,9 +267,9 @@ final public class AMAudioDevice: AMAudioObject {
     public class func allDevices() -> [AMAudioDevice] {
         let deviceIDs = allDeviceIDs()
 
-        let devices = deviceIDs.map { (let deviceID) -> AMAudioDevice in
-            return AMAudioDevice.lookupByID(deviceID)
-        }
+        let devices = deviceIDs.map { deviceID -> AMAudioDevice? in
+            AMAudioDevice.lookupByID(deviceID)
+        }.flatMap { $0 }
 
         return devices
     }
@@ -277,9 +284,9 @@ final public class AMAudioDevice: AMAudioObject {
     public class func allInputDevices() -> [AMAudioDevice] {
         let devices = allDevices()
 
-        return devices.filter({ (let device) -> Bool in
-            return device.channelsForDirection(.Recording) > 0
-        })
+        return devices.filter { device -> Bool in
+            device.channelsForDirection(.Recording) > 0
+        }
     }
 
     /**
@@ -292,9 +299,9 @@ final public class AMAudioDevice: AMAudioObject {
     public class func allOutputDevices() -> [AMAudioDevice] {
         let devices = allDevices()
 
-        return devices.filter({ (let device) -> Bool in
-            return device.channelsForDirection(.Playback) > 0
-        })
+        return devices.filter { device -> Bool in
+            device.channelsForDirection(.Playback) > 0
+        }
     }
 
     /**
@@ -566,9 +573,9 @@ final public class AMAudioDevice: AMAudioObject {
         let status = getPropertyDataArray(address, value: &relatedDevices, andDefaultValue: AudioDeviceID())
 
         if noErr == status {
-            return relatedDevices.map({ (deviceID) -> AMAudioDevice in
-                return AMAudioDevice.lookupByID(deviceID)
-            })
+            return relatedDevices.map { deviceID -> AMAudioDevice? in
+                AMAudioDevice.lookupByID(deviceID)
+            }.flatMap { $0 }
         }
 
         return nil
@@ -887,8 +894,8 @@ final public class AMAudioDevice: AMAudioObject {
         }
 
         if let preferredStereoChannels = preferredStereoChannelsForDirection(direction) {
-            let muteCount = preferredStereoChannels.filter { (channel) -> Bool in
-                return canMuteForChannel(channel, andDirection: direction) == true
+            let muteCount = preferredStereoChannels.filter { channel -> Bool in
+                canMuteForChannel(channel, andDirection: direction) == true
             }.count
 
             return muteCount == preferredStereoChannels.count
@@ -909,8 +916,8 @@ final public class AMAudioDevice: AMAudioObject {
 
         if let preferredStereoChannels = preferredStereoChannelsForDirection(direction) {
 
-            let canSetVolumeCount = preferredStereoChannels.filter { (channel) -> Bool in
-                return canSetVolumeForChannel(channel, andDirection: direction)
+            let canSetVolumeCount = preferredStereoChannels.filter { channel -> Bool in
+                canSetVolumeForChannel(channel, andDirection: direction)
             }.count
 
             return canSetVolumeCount == preferredStereoChannels.count
