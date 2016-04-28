@@ -106,6 +106,16 @@ public class AMAudioObject: NSObject {
 
         return nil
     }()
+
+    public override func isEqual(object: AnyObject?) -> Bool {
+        guard let rhs = object as? AMAudioObject else {
+            return false
+        }
+
+        let lhs = self
+
+        return lhs.hashValue == rhs.hashValue
+    }
 }
 
 extension AMAudioObject {
@@ -265,6 +275,9 @@ extension AMAudioObject {
     }
 }
 
+// Looks like Swift presently has a buggy implementation of the equal comparison when using NSObjects
+// See http://stackoverflow.com/questions/31099379/bug-with-equals-operator-and-nsobjects-in-swift-2-0 for more info.
+// In the meanwhile, we will use also isEqual(object: AnyObject?) -> Bool
 func ==(lhs: AMAudioObject, rhs: AMAudioObject) -> Bool {
     return lhs.hashValue == rhs.hashValue
 }
