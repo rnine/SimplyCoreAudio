@@ -62,7 +62,7 @@ final public class AMAudioHardware: NSObject {
         return dispatch_queue_create("io.9labs.AMCoreAudio.hardwareNotifications", DISPATCH_QUEUE_CONCURRENT)
     }()
 
-    private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { (inNumberAddresses, inAddresses) -> Void in
+    private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { [weak self] (inNumberAddresses, inAddresses) -> Void in
         let address = inAddresses.memory
         let notificationCenter = AMNotificationCenter.defaultCenter
 
@@ -72,14 +72,14 @@ final public class AMAudioHardware: NSObject {
             let latestDeviceList = AMAudioDevice.allDevices()
 
             let addedDevices = latestDeviceList.filter { (audioDevice) -> Bool in
-                let isContained = self.allKnownDevices.filter({ (oldAudioDevice) -> Bool in
+                let isContained = self?.allKnownDevices.filter({ (oldAudioDevice) -> Bool in
                     return oldAudioDevice == audioDevice
                 }).count > 0
 
                 return !isContained
             }
 
-            let removedDevices = self.allKnownDevices.filter { (audioDevice) -> Bool in
+            let removedDevices = self?.allKnownDevices.filter { (audioDevice) -> Bool in
                 let isContained = latestDeviceList.filter({ (oldAudioDevice) -> Bool in
                     return oldAudioDevice == audioDevice
                 }).count > 0
@@ -89,17 +89,17 @@ final public class AMAudioHardware: NSObject {
 
             // Add new devices
             addedDevices.forEach { (device) in
-                self.addDevice(device)
+                self?.addDevice(device)
             }
             
             // Remove old devices
-            removedDevices.forEach { (device) in
-                self.removeDevice(device)
+            removedDevices?.forEach { (device) in
+                self?.removeDevice(device)
             }
 
             notificationCenter.publish(AMAudioHardwareEvent.DeviceListChanged(
                 addedDevices: addedDevices,
-                removedDevices: removedDevices
+                removedDevices: removedDevices ?? []
             ))
         case kAudioHardwarePropertyDefaultInputDevice:
             if let audioDevice = AMAudioDevice.defaultInputDevice() {

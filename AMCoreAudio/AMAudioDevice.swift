@@ -104,44 +104,63 @@ final public class AMAudioDevice: AMAudioObject {
         return dispatch_queue_create("io.9labs.AMCoreAudio.notifications", DISPATCH_QUEUE_CONCURRENT)
     }()
 
-    private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { (inNumberAddresses, inAddresses) -> Void in
+    private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { [weak self] (inNumberAddresses, inAddresses) -> Void in
         let address = inAddresses.memory
-        let direction = self.scopeToDirection(address.mScope)
         let notificationCenter = AMNotificationCenter.defaultCenter
 
         switch address.mSelector {
         case kAudioDevicePropertyNominalSampleRate:
-            notificationCenter.publish(AMAudioDeviceEvent.NominalSampleRateDidChange(audioDevice: self))
+            if let strongSelf = self {
+                notificationCenter.publish(AMAudioDeviceEvent.NominalSampleRateDidChange(audioDevice: strongSelf))
+            }
         case kAudioDevicePropertyAvailableNominalSampleRates:
-            notificationCenter.publish(AMAudioDeviceEvent.AvailableNominalSampleRatesDidChange(audioDevice: self))
+            if let strongSelf = self {
+                notificationCenter.publish(AMAudioDeviceEvent.AvailableNominalSampleRatesDidChange(audioDevice: strongSelf))
+            }
         case kAudioDevicePropertyClockSource:
-            notificationCenter.publish(AMAudioDeviceEvent.ClockSourceDidChange(
-                audioDevice: self,
-                channel: address.mElement,
-                direction: direction
-            ))
+            if let strongSelf = self {
+                notificationCenter.publish(AMAudioDeviceEvent.ClockSourceDidChange(
+                    audioDevice: strongSelf,
+                    channel: address.mElement,
+                    direction: strongSelf.scopeToDirection(address.mScope)
+                ))
+            }
         case kAudioObjectPropertyName:
-            notificationCenter.publish(AMAudioDeviceEvent.NameDidChange(audioDevice: self))
+            if let strongSelf = self {
+                notificationCenter.publish(AMAudioDeviceEvent.NameDidChange(audioDevice: strongSelf))
+            }
         case kAudioObjectPropertyOwnedObjects:
-            notificationCenter.publish(AMAudioDeviceEvent.ListDidChange(audioDevice: self))
+            if let strongSelf = self {
+                notificationCenter.publish(AMAudioDeviceEvent.ListDidChange(audioDevice: strongSelf))
+            }
         case kAudioDevicePropertyVolumeScalar:
-            notificationCenter.publish(AMAudioDeviceEvent.VolumeDidChange(
-                audioDevice: self,
-                channel: address.mElement,
-                direction: direction
-            ))
+            if let strongSelf = self {
+                notificationCenter.publish(AMAudioDeviceEvent.VolumeDidChange(
+                    audioDevice: strongSelf,
+                    channel: address.mElement,
+                    direction: strongSelf.scopeToDirection(address.mScope)
+                ))
+            }
         case kAudioDevicePropertyMute:
-            notificationCenter.publish(AMAudioDeviceEvent.MuteDidChange(
-                audioDevice: self,
-                channel: address.mElement,
-                direction: direction
-            ))
+            if let strongSelf = self {
+                notificationCenter.publish(AMAudioDeviceEvent.MuteDidChange(
+                    audioDevice: strongSelf,
+                    channel: address.mElement,
+                    direction: strongSelf.scopeToDirection(address.mScope)
+                ))
+            }
         case kAudioDevicePropertyDeviceIsAlive:
-            notificationCenter.publish(AMAudioDeviceEvent.IsAliveDidChange(audioDevice: self))
+            if let strongSelf = self {
+                notificationCenter.publish(AMAudioDeviceEvent.IsAliveDidChange(audioDevice: strongSelf))
+            }
         case kAudioDevicePropertyDeviceIsRunning:
-            notificationCenter.publish(AMAudioDeviceEvent.IsRunningDidChange(audioDevice: self))
+            if let strongSelf = self {
+                notificationCenter.publish(AMAudioDeviceEvent.IsRunningDidChange(audioDevice: strongSelf))
+            }
         case kAudioDevicePropertyDeviceIsRunningSomewhere:
-            notificationCenter.publish(AMAudioDeviceEvent.IsRunningSomewhereDidChange(audioDevice: self))
+            if let strongSelf = self {
+                notificationCenter.publish(AMAudioDeviceEvent.IsRunningSomewhereDidChange(audioDevice: strongSelf))
+            }
         // Unhandled cases beyond this point
         case kAudioDevicePropertyBufferFrameSize:
             fallthrough
@@ -156,15 +175,17 @@ final public class AMAudioDevice: AMAudioObject {
 
     /**
         Returns an `AMAudioDevice` by providing a valid audio device identifier.
+
+         - Note: If identifier is not valid, `nil` will be returned.
      */
-    public static func lookupByID(ID: AudioObjectID) -> AMAudioDevice {
+    public static func lookupByID(ID: AudioObjectID) -> AMAudioDevice? {
         var instance = AMAudioObjectPool.instancePool.objectForKey(UInt(ID)) as? AMAudioDevice
 
         if instance == nil {
             instance = AMAudioDevice(deviceID: ID)
         }
 
-        return instance!
+        return instance
     }
 
     /**
@@ -188,8 +209,13 @@ final public class AMAudioDevice: AMAudioObject {
      
         - Parameter deviceID: An audio device identifier that is valid and present in the system.
      */
-    private init(deviceID: AudioObjectID) {
+    private init?(deviceID: AudioObjectID) {
         super.init(objectID: deviceID)
+
+        if isAlive() == false {
+            return nil
+        }
+
         cachedDeviceName = getDeviceName()
         registerForNotifications()
         AMAudioObjectPool.instancePool.setObject(self, forKey: UInt(objectID))
@@ -260,9 +286,9 @@ final public class AMAudioDevice: AMAudioObject {
     public class func allDevices() -> [AMAudioDevice] {
         let deviceIDs = allDeviceIDs()
 
-        let devices = deviceIDs.map { (let deviceID) -> AMAudioDevice in
-            return AMAudioDevice.lookupByID(deviceID)
-        }
+        let devices = deviceIDs.map { deviceID -> AMAudioDevice? in
+            AMAudioDevice.lookupByID(deviceID)
+        }.flatMap { $0 }
 
         return devices
     }
@@ -277,9 +303,9 @@ final public class AMAudioDevice: AMAudioObject {
     public class func allInputDevices() -> [AMAudioDevice] {
         let devices = allDevices()
 
-        return devices.filter({ (let device) -> Bool in
-            return device.channelsForDirection(.Recording) > 0
-        })
+        return devices.filter { device -> Bool in
+            device.channelsForDirection(.Recording) > 0
+        }
     }
 
     /**
@@ -292,9 +318,9 @@ final public class AMAudioDevice: AMAudioObject {
     public class func allOutputDevices() -> [AMAudioDevice] {
         let devices = allDevices()
 
-        return devices.filter({ (let device) -> Bool in
-            return device.channelsForDirection(.Playback) > 0
-        })
+        return devices.filter { device -> Bool in
+            device.channelsForDirection(.Playback) > 0
+        }
     }
 
     /**
@@ -566,9 +592,9 @@ final public class AMAudioDevice: AMAudioObject {
         let status = getPropertyDataArray(address, value: &relatedDevices, andDefaultValue: AudioDeviceID())
 
         if noErr == status {
-            return relatedDevices.map({ (deviceID) -> AMAudioDevice in
-                return AMAudioDevice.lookupByID(deviceID)
-            })
+            return relatedDevices.map { deviceID -> AMAudioDevice? in
+                AMAudioDevice.lookupByID(deviceID)
+            }.flatMap { $0 }
         }
 
         return nil
@@ -887,8 +913,8 @@ final public class AMAudioDevice: AMAudioObject {
         }
 
         if let preferredStereoChannels = preferredStereoChannelsForDirection(direction) {
-            let muteCount = preferredStereoChannels.filter { (channel) -> Bool in
-                return canMuteForChannel(channel, andDirection: direction) == true
+            let muteCount = preferredStereoChannels.filter { channel -> Bool in
+                canMuteForChannel(channel, andDirection: direction) == true
             }.count
 
             return muteCount == preferredStereoChannels.count
@@ -909,8 +935,8 @@ final public class AMAudioDevice: AMAudioObject {
 
         if let preferredStereoChannels = preferredStereoChannelsForDirection(direction) {
 
-            let canSetVolumeCount = preferredStereoChannels.filter { (channel) -> Bool in
-                return canSetVolumeForChannel(channel, andDirection: direction)
+            let canSetVolumeCount = preferredStereoChannels.filter { channel -> Bool in
+                canSetVolumeForChannel(channel, andDirection: direction)
             }.count
 
             return canSetVolumeCount == preferredStereoChannels.count
