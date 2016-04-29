@@ -16,6 +16,7 @@
 		454D24751B4BE4860043FA12 /* AMAudioDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454D24741B4BE4860043FA12 /* AMAudioDevice.swift */; };
 		454D24771B4BE6610043FA12 /* AMTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454D24761B4BE6610043FA12 /* AMTypes.swift */; };
 		45A7405A1B4EE37400C19842 /* AMAudioHardware.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A740591B4EE37400C19842 /* AMAudioHardware.swift */; };
+		45B919DC1CD3E3E100552C67 /* BundleInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B919DB1CD3E3E100552C67 /* BundleInfo.swift */; };
 		45BF8FB81CBDB29800B15908 /* AMAudioObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BF8FB71CBDB29800B15908 /* AMAudioObject.swift */; };
 /* End PBXBuildFile section */
 
@@ -43,6 +44,7 @@
 		454D24741B4BE4860043FA12 /* AMAudioDevice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AMAudioDevice.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		454D24761B4BE6610043FA12 /* AMTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AMTypes.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		45A740591B4EE37400C19842 /* AMAudioHardware.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMAudioHardware.swift; sourceTree = "<group>"; };
+		45B919DB1CD3E3E100552C67 /* BundleInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BundleInfo.swift; sourceTree = "<group>"; };
 		45BF8FB71CBDB29800B15908 /* AMAudioObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMAudioObject.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -104,6 +106,7 @@
 				4544F5A71CC41A42006DCD67 /* AMNotificationCenter.swift */,
 				454D24761B4BE6610043FA12 /* AMTypes.swift */,
 				450A4B321CBDB14E00EB7B34 /* AMUtils.swift */,
+				45B919DB1CD3E3E100552C67 /* BundleInfo.swift */,
 				450765241B4E92A8005E87C9 /* Extensions */,
 			);
 			path = AMCoreAudio;
@@ -148,6 +151,7 @@
 				454D24561B4BE40E0043FA12 /* Frameworks */,
 				454D24571B4BE40E0043FA12 /* Headers */,
 				454D24581B4BE40E0043FA12 /* Resources */,
+				45B919DE1CD3EAAE00552C67 /* Update Build Date */,
 			);
 			buildRules = (
 			);
@@ -211,6 +215,23 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		45B919DE1CD3EAAE00552C67 /* Update Build Date */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Update Build Date";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = $SRCROOT/bin/update_build_date.sh;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		453C2B931B7E1BFF00466C7D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -224,6 +245,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				450765261B4E92B8005E87C9 /* Bool+Extensions.swift in Sources */,
+				45B919DC1CD3E3E100552C67 /* BundleInfo.swift in Sources */,
 				454D24751B4BE4860043FA12 /* AMAudioDevice.swift in Sources */,
 				454D24771B4BE6610043FA12 /* AMTypes.swift in Sources */,
 				45A7405A1B4EE37400C19842 /* AMAudioHardware.swift in Sources */,
