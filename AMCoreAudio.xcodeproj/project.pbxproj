@@ -151,7 +151,7 @@
 				454D24561B4BE40E0043FA12 /* Frameworks */,
 				454D24571B4BE40E0043FA12 /* Headers */,
 				454D24581B4BE40E0043FA12 /* Resources */,
-				45B919DE1CD3EAAE00552C67 /* Update Build Date */,
+				45B919DE1CD3EAAE00552C67 /* Update Build Date & Build Number */,
 			);
 			buildRules = (
 			);
@@ -216,19 +216,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		45B919DE1CD3EAAE00552C67 /* Update Build Date */ = {
+		45B919DE1CD3EAAE00552C67 /* Update Build Date & Build Number */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Update Build Date";
+			name = "Update Build Date & Build Number";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = $SRCROOT/bin/update_build_date.sh;
+			shellScript = "$SRCROOT/bin/update_build_date.sh\n$SRCROOT/bin/autoincrement-buildnumber.sh";
 		};
 /* End PBXShellScriptBuildPhase section */
 
