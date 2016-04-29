@@ -1,12 +1,12 @@
 #!/bin/sh
 
 #  update_build_date.sh
-#  AudioMate
+#  AMCoreAudio
 #
 #  Created by Ruben Nine on 4/29/16.
 #  Copyright © 2016 Ruben Nine. All rights reserved.
 
-exec > ~/Desktop/post_build_log.txt 2>&1
+#exec > ~/Desktop/post_build_log.txt 2>&1
 
 infoplist="$BUILT_PRODUCTS_DIR/$INFOPLIST_PATH"
 builddate=`date`
