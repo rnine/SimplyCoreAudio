@@ -28,7 +28,7 @@ public protocol AMEventSubscriber {
     /**
         This is the event handler.
      */
-    func eventReceiver(event: AMEvent)
+    func eventReceiver(_ event: AMEvent)
 
     /**
         The hash value.
@@ -43,7 +43,7 @@ func ==(lhs: AMEventSubscriber, rhs: AMEventSubscriber) -> Bool {
 
 private struct AMEventSubscriberDescriptor {
     var subscriber: AMEventSubscriber
-    var queue: dispatch_queue_t?
+    var queue: DispatchQueue?
 }
 
 // MARK: - AMNotificationCenter
@@ -69,7 +69,7 @@ final public class AMNotificationCenter : NSObject {
         - Parameter eventType: A class, struct or enum type conforming to the `AMEvent` protocol.
         - Parameter dispatchQueue: (optional) A dispatch queue to use for delivering the events.
      */
-    public func subscribe(subscriber: AMEventSubscriber, eventType: AMEvent.Type, dispatchQueue: dispatch_queue_t? = nil) {
+    public func subscribe(_ subscriber: AMEventSubscriber, eventType: AMEvent.Type, dispatchQueue: DispatchQueue? = nil) {
         let type = String(eventType)
 
         if subscriberDescriptorsByEvent[type] == nil {
@@ -87,16 +87,16 @@ final public class AMNotificationCenter : NSObject {
         - Parameter subscriber: Any object conforming to the `AMEventSubscriber` protocol.
         - Parameter eventType: A class, struct or enum type conforming to the `AMEvent` protocol.
      */
-    public func unsubscribe(subscriber: AMEventSubscriber, eventType: AMEvent.Type) {
+    public func unsubscribe(_ subscriber: AMEventSubscriber, eventType: AMEvent.Type) {
         let type = String(eventType)
 
         if var subscribers = subscriberDescriptorsByEvent[type] {
-            if let idx = subscribers.indexOf({ (aSubscriber) -> Bool in aSubscriber.subscriber == subscriber}) {
-                subscribers.removeAtIndex(idx)
+            if let idx = subscribers.index(where: { (aSubscriber) -> Bool in aSubscriber.subscriber == subscriber}) {
+                subscribers.remove(at: idx)
             }
 
             if subscribers.count == 0 {
-                subscriberDescriptorsByEvent.removeValueForKey(type)
+                subscriberDescriptorsByEvent.removeValue(forKey: type)
             }
         }
     }
@@ -106,7 +106,7 @@ final public class AMNotificationCenter : NSObject {
 
         - Parameter event: The event conforming to the `AMEvent` protocol to publish.
      */
-    func publish(event: AMEvent) {
+    func publish(_ event: AMEvent) {
         let type = String(event.dynamicType)
 
         if let subscriberDescriptors = subscriberDescriptorsByEvent[type] {
@@ -115,7 +115,7 @@ final public class AMNotificationCenter : NSObject {
                 // otherwise, we will just dispatch the event in whatever happens to be the current
                 // queue.
                 if let queue = descriptor.queue {
-                    dispatch_async(queue, { 
+                    queue.async(execute: { 
                         descriptor.subscriber.eventReceiver(event)
                     })
                 } else {

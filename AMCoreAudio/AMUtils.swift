@@ -10,11 +10,11 @@ import Cocoa
 
 final internal class AMUtils: NSObject {
 
-    class func directionToScope(direction: Direction) -> AudioObjectPropertyScope {
+    class func directionToScope(_ direction: Direction) -> AudioObjectPropertyScope {
         return .Playback == direction ? kAudioObjectPropertyScopeOutput : kAudioObjectPropertyScopeInput
     }
 
-    class func scopeToDirection(scope: AudioObjectPropertyScope) -> Direction {
+    class func scopeToDirection(_ scope: AudioObjectPropertyScope) -> Direction {
         switch scope {
         case kAudioObjectPropertyScopeOutput:
             return .Playback

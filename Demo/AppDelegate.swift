@@ -17,14 +17,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     // Instantiate our audio hardware object
     private let audioHardware = AMAudioHardware.sharedInstance
 
-    func applicationDidFinishLaunching(aNotification: NSNotification) {
+    func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Enable audio hardware events
         audioHardware.enableDeviceMonitoring()
 
         // Subscribe to events
-        AMNotificationCenter.defaultCenter.subscribe(self, eventType: AMAudioHardwareEvent.self, dispatchQueue: dispatch_get_main_queue())
-        AMNotificationCenter.defaultCenter.subscribe(self, eventType: AMAudioDeviceEvent.self, dispatchQueue: dispatch_get_main_queue())
-        AMNotificationCenter.defaultCenter.subscribe(self, eventType: AMAudioStreamEvent.self, dispatchQueue: dispatch_get_main_queue())
+        AMNotificationCenter.defaultCenter.subscribe(self, eventType: AMAudioHardwareEvent.self, dispatchQueue: DispatchQueue.main)
+        AMNotificationCenter.defaultCenter.subscribe(self, eventType: AMAudioDeviceEvent.self, dispatchQueue: DispatchQueue.main)
+        AMNotificationCenter.defaultCenter.subscribe(self, eventType: AMAudioStreamEvent.self, dispatchQueue: DispatchQueue.main)
 
         print("+ All known devices: \(AMAudioDevice.allDevices())")
 
@@ -44,7 +44,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    func applicationWillTerminate(aNotification: NSNotification) {
+    func applicationWillTerminate(_ aNotification: Notification) {
         // Disable audio hardware events
         audioHardware.disableDeviceMonitoring()
 
@@ -53,7 +53,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         AMNotificationCenter.defaultCenter.unsubscribe(self, eventType: AMAudioStreamEvent.self)
     }
 
-    private func printAudioDevice(audioDevice: AMAudioDevice) {
+    private func printAudioDevice(_ audioDevice: AMAudioDevice) {
         let deviceID = audioDevice.deviceID
         print("|- ID: \(deviceID)")
 
@@ -276,58 +276,58 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 // MARK: - AMEventSubscriber Protocol Implementation
 extension AppDelegate : AMEventSubscriber {
 
-    func eventReceiver(event: AMEvent) {
+    func eventReceiver(_ event: AMEvent) {
         switch event {
         case let event as AMAudioDeviceEvent:
             switch event {
-            case .NominalSampleRateDidChange(let audioDevice):
+            case .nominalSampleRateDidChange(let audioDevice):
                 if let sampleRate = audioDevice.nominalSampleRate() {
                     print("\(audioDevice) sample rate changed to \(sampleRate)")
                 }
-            case .AvailableNominalSampleRatesDidChange(let audioDevice):
+            case .availableNominalSampleRatesDidChange(let audioDevice):
                 if let nominalSampleRates = audioDevice.nominalSampleRates() {
                     print("\(audioDevice) nominal sample rates changed to \(nominalSampleRates)")
                 }
-            case .ClockSourceDidChange(let audioDevice, let channel, let direction):
+            case .clockSourceDidChange(let audioDevice, let channel, let direction):
                 if let clockSourceName = audioDevice.clockSourceForChannel(channel, andDirection: direction) {
                     print("\(audioDevice) clock source changed to \(clockSourceName)")
                 }
-            case .NameDidChange(let audioDevice):
+            case .nameDidChange(let audioDevice):
                 print("\(audioDevice) name changed to \(audioDevice.deviceName())")
-            case .ListDidChange(let audioDevice):
+            case .listDidChange(let audioDevice):
                 print("\(audioDevice) owned devices list changed")
-            case .VolumeDidChange(let audioDevice, let channel, let direction):
+            case .volumeDidChange(let audioDevice, let channel, let direction):
                 if let newVolume = audioDevice.volumeInDecibelsForChannel(channel, andDirection: direction) {
                     print("\(audioDevice) volume for channel \(channel) and direction \(direction) changed to \(newVolume)dbFS")
                 }
-            case .MuteDidChange(let audioDevice, let channel, let direction):
+            case .muteDidChange(let audioDevice, let channel, let direction):
                 if let isMuted = audioDevice.isChannelMuted(channel, andDirection: direction) {
                     print("\(audioDevice) mute for channel \(channel) and direction \(direction) changed to \(isMuted)")
                 }
-            case .IsAliveDidChange(let audioDevice):
+            case .isAliveDidChange(let audioDevice):
                 print("\(audioDevice) 'is alive' changed to \(audioDevice.isAlive())")
-            case .IsRunningDidChange(let audioDevice):
+            case .isRunningDidChange(let audioDevice):
                 print("\(audioDevice) 'is running' changed to \(audioDevice.isRunning())")
-            case .IsRunningSomewhereDidChange(let audioDevice):
+            case .isRunningSomewhereDidChange(let audioDevice):
                 print("\(audioDevice) 'is running somewhere' changed to \(audioDevice.isRunningSomewhere())")
             }
         case let event as AMAudioHardwareEvent:
             switch event {
-            case .DeviceListChanged(let addedDevices, let removedDevices):
+            case .deviceListChanged(let addedDevices, let removedDevices):
                 print("Devices added: \(addedDevices)")
                 print("Devices removed: \(removedDevices)")
-            case .DefaultInputDeviceChanged(let audioDevice):
+            case .defaultInputDeviceChanged(let audioDevice):
                 print("Default input device changed to \(audioDevice)")
-            case .DefaultOutputDeviceChanged(let audioDevice):
+            case .defaultOutputDeviceChanged(let audioDevice):
                 print("Default output device changed to \(audioDevice)")
-            case .DefaultSystemOutputDeviceChanged(let audioDevice):
+            case .defaultSystemOutputDeviceChanged(let audioDevice):
                 print("Default system output device changed to \(audioDevice)")
             }
         case let event as AMAudioStreamEvent:
             switch event {
-            case .IsActiveDidChange(let audioStream):
+            case .isActiveDidChange(let audioStream):
                 print("is active did change in \(audioStream)")
-            case .PhysicalFormatDidChange(let audioStream):
+            case .physicalFormatDidChange(let audioStream):
                 print("physical format did change in \(audioStream.streamID), owner: \(audioStream.owningDevice), format: \(audioStream.physicalFormat)")
             }
         default:

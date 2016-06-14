@@ -13,12 +13,12 @@ public enum AMAudioStreamEvent: AMEvent {
     /**
         Called whenever the audio stream `isActive` flag changes state.
      */
-    case IsActiveDidChange(audioStream: AMAudioStream)
+    case isActiveDidChange(audioStream: AMAudioStream)
 
     /**
         Called whenever the audio stream physical format changes.
      */
-    case PhysicalFormatDidChange(audioStream: AMAudioStream)
+    case physicalFormatDidChange(audioStream: AMAudioStream)
 }
 
 /**
@@ -259,20 +259,20 @@ final public class AMAudioStream: AMAudioObject {
 
     private var isRegisteredForNotifications = false
 
-    private lazy var notificationsQueue: dispatch_queue_t = {
-        return dispatch_queue_create("io.9labs.AMCoreAudio.notifications", DISPATCH_QUEUE_CONCURRENT)
+    private lazy var notificationsQueue: DispatchQueue = {
+        return DispatchQueue(label: "io.9labs.AMCoreAudio.notifications", attributes: DispatchQueueAttributes.concurrent)
     }()
 
     private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { (inNumberAddresses, inAddresses) -> Void in
-        let address = inAddresses.memory
+        let address = inAddresses.pointee
         let direction = self.scopeToDirection(address.mScope)
         let notificationCenter = AMNotificationCenter.defaultCenter
 
         switch address.mSelector {
         case kAudioStreamPropertyIsActive:
-            notificationCenter.publish(AMAudioStreamEvent.IsActiveDidChange(audioStream: self))
+            notificationCenter.publish(AMAudioStreamEvent.isActiveDidChange(audioStream: self))
         case kAudioStreamPropertyPhysicalFormat:
-            notificationCenter.publish(AMAudioStreamEvent.PhysicalFormatDidChange(audioStream: self))
+            notificationCenter.publish(AMAudioStreamEvent.physicalFormatDidChange(audioStream: self))
         default:
             break
         }
@@ -280,8 +280,8 @@ final public class AMAudioStream: AMAudioObject {
 
     // MARK: - Public Functions
 
-    static func lookupByID(ID: AudioObjectID) -> AMAudioStream {
-        var instance = AMAudioObjectPool.instancePool.objectForKey(UInt(ID)) as? AMAudioStream
+    static func lookupByID(_ ID: AudioObjectID) -> AMAudioStream {
+        var instance = AMAudioObjectPool.instancePool.object(forKey: UInt(ID)) as? AMAudioStream
 
         if instance == nil {
             instance = AMAudioStream(streamID: ID)
@@ -301,7 +301,7 @@ final public class AMAudioStream: AMAudioObject {
 
     deinit {
         unregisterForNotifications()
-        AMAudioObjectPool.instancePool.removeObjectForKey(UInt(objectID))
+        AMAudioObjectPool.instancePool.removeObject(forKey: UInt(objectID))
     }
 
     /**
@@ -317,7 +317,7 @@ final public class AMAudioStream: AMAudioObject {
 
         - Returns: *(optional)* An array of `AudioStreamBasicDescription` structs.
      */
-    public final func availablePhysicalFormatsMatchingCurrentNominalSampleRate(includeNonMixable: Bool = true) -> [AudioStreamBasicDescription]? {
+    public final func availablePhysicalFormatsMatchingCurrentNominalSampleRate(_ includeNonMixable: Bool = true) -> [AudioStreamBasicDescription]? {
         guard let physicalFormats = availablePhysicalFormats,
               let physicalFormat = physicalFormat else {
             return nil
@@ -352,7 +352,7 @@ final public class AMAudioStream: AMAudioObject {
 
         - Returns: *(optional)* An array of `AudioStreamBasicDescription` structs.
      */
-    public final func availableVirtualFormatsMatchingCurrentNominalSampleRate(includeNonMixable: Bool = true) -> [AudioStreamBasicDescription]? {
+    public final func availableVirtualFormatsMatchingCurrentNominalSampleRate(_ includeNonMixable: Bool = true) -> [AudioStreamBasicDescription]? {
         guard let virtualFormats = availableVirtualFormats,
             let virtualFormat = virtualFormat else {
                 return nil
@@ -388,7 +388,7 @@ final public class AMAudioStream: AMAudioObject {
      
         - Returns: An `OSStatus` with `noErr` on success, or an error code other than `noErr` when it fails.
      */
-    private func getStreamPropertyData<T>(selector: AudioObjectPropertySelector, inout andValue value: T) -> OSStatus? {
+    private func getStreamPropertyData<T>(_ selector: AudioObjectPropertySelector, andValue value: inout T) -> OSStatus? {
         guard let direction = direction else {
             return nil
         }
@@ -418,7 +418,7 @@ final public class AMAudioStream: AMAudioObject {
      
         - Returns: An `OSStatus` with `noErr` on success, or an error code other than `noErr` when it fails.
      */
-    private func setStreamPropertyData<T>(selector: AudioObjectPropertySelector, inout andValue value: T) -> OSStatus? {
+    private func setStreamPropertyData<T>(_ selector: AudioObjectPropertySelector, andValue value: inout T) -> OSStatus? {
         guard let direction = direction else {
             return nil
         }

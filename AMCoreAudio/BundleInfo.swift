@@ -11,7 +11,7 @@ import Foundation
 public class BundleInfo {
     private init() {}
 
-    private static let thisBundle = NSBundle(forClass: BundleInfo.self)
+    private static let thisBundle = Bundle(for: BundleInfo.self)
 
     public static let buildDate: String? = thisBundle.infoDictionary?["BuildDate"] as? String
     public static let name: String? = thisBundle.infoDictionary?["CFBundleName"] as? String

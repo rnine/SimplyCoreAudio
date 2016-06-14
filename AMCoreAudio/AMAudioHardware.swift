@@ -15,22 +15,22 @@ public enum AMAudioHardwareEvent: AMEvent {
         Called whenever the list of hardware devices and device subdevices changes.
         (i.e., devices that are part of *Aggregate* or *Multi-Output* devices.)
      */
-    case DeviceListChanged(addedDevices: [AMAudioDevice], removedDevices: [AMAudioDevice])
+    case deviceListChanged(addedDevices: [AMAudioDevice], removedDevices: [AMAudioDevice])
 
     /**
         Called whenever the default input device changes.
      */
-    case DefaultInputDeviceChanged(audioDevice: AMAudioDevice)
+    case defaultInputDeviceChanged(audioDevice: AMAudioDevice)
 
     /**
         Called whenever the default output device changes.
      */
-    case DefaultOutputDeviceChanged(audioDevice: AMAudioDevice)
+    case defaultOutputDeviceChanged(audioDevice: AMAudioDevice)
 
     /**
         Called whenever the default system output device changes.
      */
-    case DefaultSystemOutputDeviceChanged(audioDevice: AMAudioDevice)
+    case defaultSystemOutputDeviceChanged(audioDevice: AMAudioDevice)
 }
 
 /**
@@ -58,12 +58,12 @@ final public class AMAudioHardware: NSObject {
 
     private var isRegisteredForNotifications = false
 
-    private lazy var notificationsQueue: dispatch_queue_t = {
-        return dispatch_queue_create("io.9labs.AMCoreAudio.hardwareNotifications", DISPATCH_QUEUE_CONCURRENT)
+    private lazy var notificationsQueue: DispatchQueue = {
+        return DispatchQueue(label: "io.9labs.AMCoreAudio.hardwareNotifications", attributes: DispatchQueueAttributes.concurrent)
     }()
 
     private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { [weak self] (inNumberAddresses, inAddresses) -> Void in
-        let address = inAddresses.memory
+        let address = inAddresses.pointee
         let notificationCenter = AMNotificationCenter.defaultCenter
 
         switch address.mSelector {
@@ -97,21 +97,21 @@ final public class AMAudioHardware: NSObject {
                 self?.removeDevice(device)
             }
 
-            notificationCenter.publish(AMAudioHardwareEvent.DeviceListChanged(
+            notificationCenter.publish(AMAudioHardwareEvent.deviceListChanged(
                 addedDevices: addedDevices,
                 removedDevices: removedDevices ?? []
             ))
         case kAudioHardwarePropertyDefaultInputDevice:
             if let audioDevice = AMAudioDevice.defaultInputDevice() {
-                notificationCenter.publish(AMAudioHardwareEvent.DefaultInputDeviceChanged(audioDevice: audioDevice))
+                notificationCenter.publish(AMAudioHardwareEvent.defaultInputDeviceChanged(audioDevice: audioDevice))
             }
         case kAudioHardwarePropertyDefaultOutputDevice:
             if let audioDevice = AMAudioDevice.defaultOutputDevice() {
-                notificationCenter.publish(AMAudioHardwareEvent.DefaultOutputDeviceChanged(audioDevice: audioDevice))
+                notificationCenter.publish(AMAudioHardwareEvent.defaultOutputDeviceChanged(audioDevice: audioDevice))
             }
         case kAudioHardwarePropertyDefaultSystemOutputDevice:
             if let audioDevice = AMAudioDevice.defaultSystemOutputDevice() {
-                notificationCenter.publish(AMAudioHardwareEvent.DefaultSystemOutputDeviceChanged(audioDevice: audioDevice))
+                notificationCenter.publish(AMAudioHardwareEvent.defaultSystemOutputDeviceChanged(audioDevice: audioDevice))
             }
         default:
             break
@@ -172,13 +172,13 @@ final public class AMAudioHardware: NSObject {
         unregisterForNotifications()
     }
 
-    private func addDevice(device: AMAudioDevice) {
+    private func addDevice(_ device: AMAudioDevice) {
         allKnownDevices.append(device)
     }
 
-    private func removeDevice(device: AMAudioDevice) {
-        if let idx = allKnownDevices.indexOf(device) {
-            allKnownDevices.removeAtIndex(idx)
+    private func removeDevice(_ device: AMAudioDevice) {
+        if let idx = allKnownDevices.index(of: device) {
+            allKnownDevices.remove(at: idx)
         }
     }
 
