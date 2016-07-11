@@ -141,7 +141,7 @@ extension AMAudioObject {
 
     internal class func getPropertyData<T>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, andValue value: inout T) -> OSStatus {
         var theAddress = address
-        var size = UInt32(sizeof(T))
+        var size = UInt32(sizeof(T.self))
         let status = AudioObjectGetPropertyData(objectID, &theAddress, UInt32(0), nil, &size, &value)
 
         return status
@@ -152,7 +152,7 @@ extension AMAudioObject {
         let sizeStatus = getPropertyDataSize(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, andSize: &size)
 
         if noErr == sizeStatus {
-            value = [T](repeating: defaultValue, count: Int(size) / sizeof(T))
+            value = [T](repeating: defaultValue, count: Int(size) / sizeof(T.self))
         } else {
             return sizeStatus
         }
@@ -168,7 +168,7 @@ extension AMAudioObject {
         let sizeStatus = getPropertyDataSize(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, andSize: &size)
 
         if noErr == sizeStatus {
-            value = [T](repeating: defaultValue, count: Int(size) / sizeof(T))
+            value = [T](repeating: defaultValue, count: Int(size) / sizeof(T.self))
         } else {
             return sizeStatus
         }
@@ -240,7 +240,7 @@ extension AMAudioObject {
 
     internal func setPropertyData<T>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, andValue value: inout T) -> OSStatus {
         var theAddress = address
-        let size = UInt32(sizeof(T))
+        let size = UInt32(sizeof(T.self))
         let status = AudioObjectSetPropertyData(objectID, &theAddress, UInt32(0), nil, size, &value)
 
         return status
@@ -248,7 +248,7 @@ extension AMAudioObject {
 
     internal func setPropertyData<T>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, andValue value: inout [T]) -> OSStatus {
         var theAddress = address
-        let size = UInt32(value.count * sizeof(T))
+        let size = UInt32(value.count * sizeof(T.self))
         let status = AudioObjectSetPropertyData(objectID, &theAddress, UInt32(0), nil, size, &value)
 
         return status

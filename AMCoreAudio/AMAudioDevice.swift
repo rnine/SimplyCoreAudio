@@ -550,7 +550,7 @@ final public class AMAudioDevice: AMAudioObject {
         )
 
         var qualifierData = [kAudioObjectClassID]
-        let qualifierDataSize = UInt32(sizeof(AudioClassID) * qualifierData.count)
+        let qualifierDataSize = UInt32(sizeof(AudioClassID.self) * qualifierData.count)
         var ownedObjects = [AudioObjectID]()
 
         let status = getPropertyDataArray(address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, value: &ownedObjects, andDefaultValue: AudioObjectID())
@@ -1241,9 +1241,9 @@ final public class AMAudioDevice: AMAudioObject {
 
         var translation = AudioValueTranslation(
             mInputData: &theClockSourceID,
-            mInputDataSize: UInt32(sizeof(UInt32)),
+            mInputDataSize: UInt32(sizeof(UInt32.self)),
             mOutputData: &name,
-            mOutputDataSize: UInt32(sizeof(CFString))
+            mOutputDataSize: UInt32(sizeof(CFString.self))
         )
 
         let address = AudioObjectPropertyAddress(
@@ -1360,7 +1360,7 @@ final public class AMAudioDevice: AMAudioObject {
         - Returns: `true` on success, `false` otherwise.
      */
     public func setHogModePidToCurrentProcess() -> Bool {
-        let currentPID = pid_t(ProcessInfo.processInfo().processIdentifier)
+        let currentPID = pid_t(ProcessInfo.processInfo.processIdentifier)
         return setHogModePID(currentPID)
     }
 
