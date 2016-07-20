@@ -1016,7 +1016,7 @@ final public class AMAudioDevice: AMAudioObject {
         }
 
         if let masterVolume = masterVolumeForDirection(direction),
-               decibels = scalarToDecibels(masterVolume, forChannel: referenceChannel, andDirection: direction) {
+            let decibels = scalarToDecibels(masterVolume, forChannel: referenceChannel, andDirection: direction) {
             volumeInDecibels = decibels
         } else {
             return nil
@@ -1122,7 +1122,7 @@ final public class AMAudioDevice: AMAudioObject {
                 // This could be a headset audio device (i.e., CS50/CS60-USB Headset)
                 // or a virtual audio driver (i.e., "System Audio Recorder" by WonderShare AllMyMusic)
                 if let startIndex = possibleRates.index(of: valueRange.mMinimum),
-                       endIndex = possibleRates.index(of: valueRange.mMaximum) {
+                    let endIndex = possibleRates.index(of: valueRange.mMaximum) {
                     sampleRates += possibleRates[startIndex..<endIndex + 1]
                 } else {
                     print("Failed to obtain list of supported sample rates ranging from \(valueRange.mMinimum) to \(valueRange.mMaximum). This is an error in AMCoreAudio and should be reported to the project maintainers.")
