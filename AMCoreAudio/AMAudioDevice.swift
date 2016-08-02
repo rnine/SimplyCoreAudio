@@ -101,7 +101,7 @@ final public class AMAudioDevice: AMAudioObject {
     private var isRegisteredForNotifications = false
 
     private lazy var notificationsQueue: DispatchQueue = {
-        return DispatchQueue(label: "io.9labs.AMCoreAudio.notifications", attributes: DispatchQueueAttributes.concurrent)
+        return DispatchQueue(label: "io.9labs.AMCoreAudio.notifications", attributes: .concurrent)
     }()
 
     private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { [weak self] (inNumberAddresses, inAddresses) -> Void in
@@ -720,7 +720,7 @@ final public class AMAudioDevice: AMAudioObject {
             var status = AudioObjectIsPropertySettable(deviceID, &address, &canSetVolumeBoolean)
 
             if noErr == status {
-                volumeInfo.canSetVolume = Bool(canSetVolumeBoolean)
+                volumeInfo.canSetVolume = canSetVolumeBoolean.boolValue
                 volumeInfo.hasVolume = true
 
                 var volume = Float32(0)
@@ -740,7 +740,7 @@ final public class AMAudioDevice: AMAudioObject {
             var status = AudioObjectIsPropertySettable(deviceID, &address, &canMuteBoolean)
 
             if noErr == status {
-                volumeInfo.canMute = Bool(canMuteBoolean)
+                volumeInfo.canMute = canMuteBoolean.boolValue
 
                 var isMutedValue = UInt32(0)
                 status = getPropertyData(address, andValue: &isMutedValue)
@@ -759,7 +759,7 @@ final public class AMAudioDevice: AMAudioObject {
             var status = AudioObjectIsPropertySettable(deviceID, &address, &canPlayThruBoolean)
 
             if noErr == status {
-                volumeInfo.canPlayThru = Bool(canPlayThruBoolean)
+                volumeInfo.canPlayThru = canPlayThruBoolean.boolValue
 
                 var isPlayThruSetValue = UInt32(0)
                 status = getPropertyData(address, andValue: &isPlayThruSetValue)

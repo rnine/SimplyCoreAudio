@@ -10,7 +10,7 @@ import Foundation
 import CoreAudio.AudioHardwareBase
 
 internal class AMAudioObjectPool: NSObject {
-    static var instancePool: MapTable<NSNumber, AMAudioObject> = MapTable.weakToWeakObjects()
+    static var instancePool: NSMapTable<NSNumber, AMAudioObject> = NSMapTable.weakToWeakObjects()
 }
 
 /**
@@ -135,7 +135,7 @@ extension AMAudioObject {
     }
 
     internal class func getPropertyDataSize(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, andSize size: inout UInt32) -> (OSStatus) {
-        var nilValue: NilLiteralConvertible?
+        var nilValue: ExpressibleByNilLiteral?
         return getPropertyDataSize(objectID, address: address, qualifierDataSize: nil, qualifierData: &nilValue, andSize: &size)
     }
 
@@ -180,7 +180,7 @@ extension AMAudioObject {
     }
 
     internal class func getPropertyDataArray<T>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, value: inout [T], andDefaultValue defaultValue: T) -> OSStatus {
-        var nilValue: NilLiteralConvertible?
+        var nilValue: ExpressibleByNilLiteral?
         return getPropertyDataArray(objectID, address: address, qualifierDataSize: nil, qualifierData: &nilValue, value: &value, andDefaultValue: defaultValue)
     }
 

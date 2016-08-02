@@ -260,7 +260,7 @@ final public class AMAudioStream: AMAudioObject {
     private var isRegisteredForNotifications = false
 
     private lazy var notificationsQueue: DispatchQueue = {
-        return DispatchQueue(label: "io.9labs.AMCoreAudio.notifications", attributes: DispatchQueueAttributes.concurrent)
+        return DispatchQueue(label: "io.9labs.AMCoreAudio.notifications", attributes: .concurrent)
     }()
 
     private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { (inNumberAddresses, inAddresses) -> Void in

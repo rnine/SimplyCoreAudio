@@ -59,7 +59,7 @@ final public class AMAudioHardware: NSObject {
     private var isRegisteredForNotifications = false
 
     private lazy var notificationsQueue: DispatchQueue = {
-        return DispatchQueue(label: "io.9labs.AMCoreAudio.hardwareNotifications", attributes: DispatchQueueAttributes.concurrent)
+        return DispatchQueue(label: "io.9labs.AMCoreAudio.hardwareNotifications", attributes: .concurrent)
     }()
 
     private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { [weak self] (inNumberAddresses, inAddresses) -> Void in
