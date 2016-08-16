@@ -70,7 +70,7 @@ final public class AMNotificationCenter : NSObject {
         - Parameter dispatchQueue: (optional) A dispatch queue to use for delivering the events.
      */
     public func subscribe(_ subscriber: AMEventSubscriber, eventType: AMEvent.Type, dispatchQueue: DispatchQueue? = nil) {
-        let type = String(eventType)
+        let type = String(describing: eventType)
 
         if subscriberDescriptorsByEvent[type] == nil {
             subscriberDescriptorsByEvent[type] = []
@@ -88,7 +88,7 @@ final public class AMNotificationCenter : NSObject {
         - Parameter eventType: A class, struct or enum type conforming to the `AMEvent` protocol.
      */
     public func unsubscribe(_ subscriber: AMEventSubscriber, eventType: AMEvent.Type) {
-        let type = String(eventType)
+        let type = String(describing: eventType)
 
         if var subscribers = subscriberDescriptorsByEvent[type] {
             if let idx = subscribers.index(where: { (aSubscriber) -> Bool in aSubscriber.subscriber == subscriber}) {
@@ -107,7 +107,7 @@ final public class AMNotificationCenter : NSObject {
         - Parameter event: The event conforming to the `AMEvent` protocol to publish.
      */
     func publish(_ event: AMEvent) {
-        let type = String(event.dynamicType)
+        let type = String(describing: type(of: event))
 
         if let subscriberDescriptors = subscriberDescriptorsByEvent[type] {
             for descriptor in subscriberDescriptors {

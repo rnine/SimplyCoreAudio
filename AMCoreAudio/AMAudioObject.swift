@@ -107,7 +107,7 @@ public class AMAudioObject: NSObject {
         return nil
     }()
 
-    public override func isEqual(_ object: AnyObject?) -> Bool {
+    public override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? AMAudioObject else {
             return false
         }
@@ -141,7 +141,7 @@ extension AMAudioObject {
 
     internal class func getPropertyData<T>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, andValue value: inout T) -> OSStatus {
         var theAddress = address
-        var size = UInt32(sizeof(T.self))
+        var size = UInt32(MemoryLayout<T>.size)
         let status = AudioObjectGetPropertyData(objectID, &theAddress, UInt32(0), nil, &size, &value)
 
         return status
@@ -152,7 +152,7 @@ extension AMAudioObject {
         let sizeStatus = getPropertyDataSize(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, andSize: &size)
 
         if noErr == sizeStatus {
-            value = [T](repeating: defaultValue, count: Int(size) / sizeof(T.self))
+            value = [T](repeating: defaultValue, count: Int(size) / MemoryLayout<T>.size)
         } else {
             return sizeStatus
         }
@@ -168,7 +168,7 @@ extension AMAudioObject {
         let sizeStatus = getPropertyDataSize(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, andSize: &size)
 
         if noErr == sizeStatus {
-            value = [T](repeating: defaultValue, count: Int(size) / sizeof(T.self))
+            value = [T](repeating: defaultValue, count: Int(size) / MemoryLayout<T>.size)
         } else {
             return sizeStatus
         }
@@ -187,35 +187,35 @@ extension AMAudioObject {
     // MARK: - Instance Functions
 
     internal func getPropertyDataSize<Q>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, qualifierDataSize: UInt32?, qualifierData: inout [Q], andSize size: inout UInt32) -> (OSStatus) {
-        return self.dynamicType.getPropertyDataSize(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, andSize: &size)
+        return type(of: self).getPropertyDataSize(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, andSize: &size)
     }
 
     internal func getPropertyDataSize<Q>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, qualifierDataSize: UInt32?, qualifierData: inout Q, andSize size: inout UInt32) -> (OSStatus) {
-        return self.dynamicType.getPropertyDataSize(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, andSize: &size)
+        return type(of: self).getPropertyDataSize(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, andSize: &size)
     }
 
     internal func getPropertyDataSize(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, andSize size: inout UInt32) -> OSStatus {
-        return self.dynamicType.getPropertyDataSize(objectID, address: address, andSize: &size)
+        return type(of: self).getPropertyDataSize(objectID, address: address, andSize: &size)
     }
 
     internal func getPropertyDataSize<Q>(_ address: AudioObjectPropertyAddress, qualifierDataSize: UInt32?, qualifierData: inout [Q], andSize size: inout UInt32) -> (OSStatus) {
-        return self.dynamicType.getPropertyDataSize(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, andSize: &size)
+        return type(of: self).getPropertyDataSize(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, andSize: &size)
     }
 
     internal func getPropertyDataSize<Q>(_ address: AudioObjectPropertyAddress, qualifierDataSize: UInt32?, qualifierData: inout Q, andSize size: inout UInt32) -> (OSStatus) {
-        return self.dynamicType.getPropertyDataSize(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, andSize: &size)
+        return type(of: self).getPropertyDataSize(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, andSize: &size)
     }
 
     internal func getPropertyDataSize(_ address: AudioObjectPropertyAddress, andSize size: inout UInt32) -> OSStatus {
-        return self.dynamicType.getPropertyDataSize(objectID, address: address, andSize: &size)
+        return type(of: self).getPropertyDataSize(objectID, address: address, andSize: &size)
     }
 
     internal func getPropertyData<T>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, andValue value: inout T) -> OSStatus {
-        return self.dynamicType.getPropertyData(objectID, address: address, andValue: &value)
+        return type(of: self).getPropertyData(objectID, address: address, andValue: &value)
     }
 
     internal func getPropertyDataArray<T,Q>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, qualifierDataSize: UInt32?, qualifierData: inout Q, value: inout [T], andDefaultValue defaultValue: T) -> OSStatus {
-        return self.dynamicType.getPropertyDataArray(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, value: &value, andDefaultValue: defaultValue)
+        return type(of: self).getPropertyDataArray(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, value: &value, andDefaultValue: defaultValue)
     }
 
     internal func getPropertyDataArray<T>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, value: inout [T], andDefaultValue defaultValue: T) -> OSStatus {
@@ -223,24 +223,24 @@ extension AMAudioObject {
     }
 
     internal func getPropertyData<T>(_ address: AudioObjectPropertyAddress, andValue value: inout T) -> OSStatus {
-        return self.dynamicType.getPropertyData(objectID, address: address, andValue: &value)
+        return type(of: self).getPropertyData(objectID, address: address, andValue: &value)
     }
 
     internal func getPropertyDataArray<T,Q>(_ address: AudioObjectPropertyAddress, qualifierDataSize: UInt32?, qualifierData: inout Q, value: inout [T], andDefaultValue defaultValue: T) -> OSStatus {
-        return self.dynamicType.getPropertyDataArray(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, value: &value, andDefaultValue: defaultValue)
+        return type(of: self).getPropertyDataArray(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, value: &value, andDefaultValue: defaultValue)
     }
 
     internal func getPropertyDataArray<T,Q>(_ address: AudioObjectPropertyAddress, qualifierDataSize: UInt32?, qualifierData: inout [Q], value: inout [T], andDefaultValue defaultValue: T) -> OSStatus {
-        return self.dynamicType.getPropertyDataArray(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, value: &value, andDefaultValue: defaultValue)
+        return type(of: self).getPropertyDataArray(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, value: &value, andDefaultValue: defaultValue)
     }
 
     internal func getPropertyDataArray<T>(_ address: AudioObjectPropertyAddress, value: inout [T], andDefaultValue defaultValue: T) -> OSStatus {
-        return self.dynamicType.getPropertyDataArray(objectID, address: address, value: &value, andDefaultValue: defaultValue)
+        return type(of: self).getPropertyDataArray(objectID, address: address, value: &value, andDefaultValue: defaultValue)
     }
 
     internal func setPropertyData<T>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, andValue value: inout T) -> OSStatus {
         var theAddress = address
-        let size = UInt32(sizeof(T.self))
+        let size = UInt32(MemoryLayout<T>.size)
         let status = AudioObjectSetPropertyData(objectID, &theAddress, UInt32(0), nil, size, &value)
 
         return status
@@ -248,7 +248,7 @@ extension AMAudioObject {
 
     internal func setPropertyData<T>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, andValue value: inout [T]) -> OSStatus {
         var theAddress = address
-        let size = UInt32(value.count * sizeof(T.self))
+        let size = UInt32(value.count * MemoryLayout<T>.size)
         let status = AudioObjectSetPropertyData(objectID, &theAddress, UInt32(0), nil, size, &value)
 
         return status

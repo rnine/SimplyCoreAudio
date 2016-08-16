@@ -281,7 +281,7 @@ final public class AMAudioStream: AMAudioObject {
     // MARK: - Public Functions
 
     static func lookupByID(_ ID: AudioObjectID) -> AMAudioStream {
-        var instance = AMAudioObjectPool.instancePool.object(forKey: UInt(ID)) as? AMAudioStream
+        var instance = AMAudioObjectPool.instancePool.object(forKey: NSNumber(value: UInt(ID))) as? AMAudioStream
 
         if instance == nil {
             instance = AMAudioStream(streamID: ID)
@@ -296,12 +296,12 @@ final public class AMAudioStream: AMAudioObject {
     private init(streamID: AudioObjectID) {
         super.init(objectID: streamID)
         registerForNotifications()
-        AMAudioObjectPool.instancePool.setObject(self, forKey: UInt(objectID))
+        AMAudioObjectPool.instancePool.setObject(self, forKey: NSNumber(value: UInt(objectID)))
     }
 
     deinit {
         unregisterForNotifications()
-        AMAudioObjectPool.instancePool.removeObject(forKey: UInt(objectID))
+        AMAudioObjectPool.instancePool.removeObject(forKey: NSNumber(value: UInt(objectID)))
     }
 
     /**

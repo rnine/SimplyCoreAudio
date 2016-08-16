@@ -179,7 +179,7 @@ final public class AMAudioDevice: AMAudioObject {
          - Note: If identifier is not valid, `nil` will be returned.
      */
     public static func lookupByID(_ ID: AudioObjectID) -> AMAudioDevice? {
-        var instance = AMAudioObjectPool.instancePool.object(forKey: UInt(ID)) as? AMAudioDevice
+        var instance = AMAudioObjectPool.instancePool.object(forKey: NSNumber(value: UInt(ID))) as? AMAudioDevice
 
         if instance == nil {
             instance = AMAudioDevice(deviceID: ID)
@@ -218,12 +218,12 @@ final public class AMAudioDevice: AMAudioObject {
 
         cachedDeviceName = getDeviceName()
         registerForNotifications()
-        AMAudioObjectPool.instancePool.setObject(self, forKey: UInt(objectID))
+        AMAudioObjectPool.instancePool.setObject(self, forKey: NSNumber(value: UInt(objectID)))
     }
 
     deinit {
         unregisterForNotifications()
-        AMAudioObjectPool.instancePool.removeObject(forKey: UInt(objectID))
+        AMAudioObjectPool.instancePool.removeObject(forKey: NSNumber(value: UInt(objectID)))
     }
 
     /**
@@ -304,7 +304,7 @@ final public class AMAudioDevice: AMAudioObject {
         let devices = allDevices()
 
         return devices.filter { device -> Bool in
-            device.channelsForDirection(.Recording) > 0
+            device.channelsForDirection(.Recording) ?? 0 > 0    
         }
     }
 
@@ -319,7 +319,7 @@ final public class AMAudioDevice: AMAudioObject {
         let devices = allDevices()
 
         return devices.filter { device -> Bool in
-            device.channelsForDirection(.Playback) > 0
+            device.channelsForDirection(.Playback) ?? 0 > 0
         }
     }
 
@@ -379,7 +379,7 @@ final public class AMAudioDevice: AMAudioObject {
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        var uid: CFString = ""
+        var uid: CFString = "" as CFString
         let status = getPropertyData(address, andValue: &uid)
 
         return noErr == status ? (uid as String) : nil
@@ -397,7 +397,7 @@ final public class AMAudioDevice: AMAudioObject {
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        var modelUID: CFString = ""
+        var modelUID: CFString = "" as CFString
         let status = getPropertyData(address, andValue: &modelUID)
 
         return noErr == status ? (modelUID as String) : nil
@@ -415,7 +415,7 @@ final public class AMAudioDevice: AMAudioObject {
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        var manufacturer: CFString = ""
+        var manufacturer: CFString = "" as CFString
         let status = getPropertyData(address, andValue: &manufacturer)
 
         return noErr == status ? (manufacturer as String) : nil
@@ -434,7 +434,7 @@ final public class AMAudioDevice: AMAudioObject {
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        var application: CFString = ""
+        var application: CFString = "" as CFString
         let status = getPropertyData(address, andValue: &application)
 
         return noErr == status ? (application as String) : nil
@@ -526,7 +526,7 @@ final public class AMAudioDevice: AMAudioObject {
             mElement: channel
         )
 
-        var name: CFString = ""
+        var name: CFString = "" as CFString
         let status = getPropertyData(address, andValue: &name)
 
         if noErr == status {
@@ -550,7 +550,7 @@ final public class AMAudioDevice: AMAudioObject {
         )
 
         var qualifierData = [kAudioObjectClassID]
-        let qualifierDataSize = UInt32(sizeof(AudioClassID.self) * qualifierData.count)
+        let qualifierDataSize = UInt32(MemoryLayout<AudioClassID>.size * qualifierData.count)
         var ownedObjects = [AudioObjectID]()
 
         let status = getPropertyDataArray(address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, value: &ownedObjects, andDefaultValue: AudioObjectID())
@@ -684,7 +684,7 @@ final public class AMAudioDevice: AMAudioObject {
         - Returns: `true` when the device is input only, `false` otherwise.
      */
     public func isInputOnlyDevice() -> Bool {
-        return channelsForDirection(.Playback) == 0 && channelsForDirection(.Recording) > 0
+        return channelsForDirection(.Playback) ?? 0 == 0 && channelsForDirection(.Recording) ?? 0 > 0
     }
 
     /**
@@ -693,7 +693,7 @@ final public class AMAudioDevice: AMAudioObject {
         - Returns: `true` when the device is output only, `false` otherwise.
      */
     public func isOutputOnlyDevice() -> Bool {
-        return channelsForDirection(.Recording) == 0 && channelsForDirection(.Playback) > 0
+        return channelsForDirection(.Recording) ?? 0 == 0 && channelsForDirection(.Playback) ?? 0 > 0
     }
 
     // MARK: - ⇉ Individual Channel Functions
@@ -1236,14 +1236,14 @@ final public class AMAudioDevice: AMAudioObject {
         - Returns: *(optional)* A `String` with the source clock name.
      */
     public func clockSourceNameForClockSourceID(_ clockSourceID: UInt32, forChannel channel: UInt32, andDirection direction: Direction) -> String? {
-        var name: CFString = ""
+        var name: CFString = "" as CFString
         var theClockSourceID = clockSourceID
 
         var translation = AudioValueTranslation(
             mInputData: &theClockSourceID,
-            mInputDataSize: UInt32(sizeof(UInt32.self)),
+            mInputDataSize: UInt32(MemoryLayout<UInt32>.size),
             mOutputData: &name,
-            mOutputDataSize: UInt32(sizeof(CFString.self))
+            mOutputDataSize: UInt32(MemoryLayout<CFString>.size)
         )
 
         let address = AudioObjectPropertyAddress(
@@ -1459,7 +1459,7 @@ final public class AMAudioDevice: AMAudioObject {
     }
 
     private func getDeviceName() -> String {
-        var name: CFString = ""
+        var name: CFString = "" as CFString
 
         let address = AudioObjectPropertyAddress(
             mSelector: kAudioObjectPropertyName,

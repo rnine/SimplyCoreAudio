@@ -72,9 +72,9 @@ final public class AMAudioHardware: NSObject {
             let latestDeviceList = AMAudioDevice.allDevices()
 
             let addedDevices = latestDeviceList.filter { (audioDevice) -> Bool in
-                let isContained = self?.allKnownDevices.filter({ (oldAudioDevice) -> Bool in
+                let isContained = (self?.allKnownDevices.filter({ (oldAudioDevice) -> Bool in
                     return oldAudioDevice == audioDevice
-                }).count > 0
+                }) ?? []).count > 0
 
                 return !isContained
             }
