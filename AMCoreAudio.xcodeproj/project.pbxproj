@@ -18,10 +18,6 @@
 		45A7405A1B4EE37400C19842 /* AMAudioHardware.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A740591B4EE37400C19842 /* AMAudioHardware.swift */; };
 		45B919DC1CD3E3E100552C67 /* BundleInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B919DB1CD3E3E100552C67 /* BundleInfo.swift */; };
 		45BF8FB81CBDB29800B15908 /* AMAudioObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BF8FB71CBDB29800B15908 /* AMAudioObject.swift */; };
-		45D3B7D11DA55FE30044C37B /* AMCoreAudio.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 45D3B7CD1DA55FE30044C37B /* AMCoreAudio.podspec */; };
-		45D3B7D21DA55FE30044C37B /* CHANGELOG.md in Sources */ = {isa = PBXBuildFile; fileRef = 45D3B7CE1DA55FE30044C37B /* CHANGELOG.md */; };
-		45D3B7D31DA55FE30044C37B /* LICENSE.md in Sources */ = {isa = PBXBuildFile; fileRef = 45D3B7CF1DA55FE30044C37B /* LICENSE.md */; };
-		45D3B7D41DA55FE30044C37B /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 45D3B7D01DA55FE30044C37B /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -223,7 +219,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				45D3B7D11DA55FE30044C37B /* AMCoreAudio.podspec in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,10 +255,7 @@
 			files = (
 				450765261B4E92B8005E87C9 /* Bool+Extensions.swift in Sources */,
 				45B919DC1CD3E3E100552C67 /* BundleInfo.swift in Sources */,
-				45D3B7D21DA55FE30044C37B /* CHANGELOG.md in Sources */,
 				454D24751B4BE4860043FA12 /* AMAudioDevice.swift in Sources */,
-				45D3B7D41DA55FE30044C37B /* README.md in Sources */,
-				45D3B7D31DA55FE30044C37B /* LICENSE.md in Sources */,
 				454D24771B4BE6610043FA12 /* AMTypes.swift in Sources */,
 				45A7405A1B4EE37400C19842 /* AMAudioHardware.swift in Sources */,
 				450A4B311CBDB09400EB7B34 /* AMAudioStream.swift in Sources */,
