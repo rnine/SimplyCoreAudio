@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'AMCoreAudio'
-  s.version      = '2.0.10'
+  s.version      = '3.0'
   s.summary      = 'AMCoreAudio is a Swift wrapper for Apple\'s CoreAudio framework'
 
   s.description  = <<-DESC
@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   s.homepage     = 'https://github.com/rnine/AMCoreAudio'
   s.license      = { :type => 'MIT', :file => 'LICENSE.md' }
   s.author       = { 'Ruben Nine' => 'ruben@9labs.io' }
-  s.social_media_url = 'http://twitter.com/sonicbee9'
+  s.social_media_url = 'https://twitter.com/sonicbee9'
 
   s.platform     = :osx, '10.9'
   s.osx.deployment_target = '10.9'

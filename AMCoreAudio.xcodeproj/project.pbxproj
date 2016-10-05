@@ -18,6 +18,10 @@
 		45A7405A1B4EE37400C19842 /* AMAudioHardware.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A740591B4EE37400C19842 /* AMAudioHardware.swift */; };
 		45B919DC1CD3E3E100552C67 /* BundleInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B919DB1CD3E3E100552C67 /* BundleInfo.swift */; };
 		45BF8FB81CBDB29800B15908 /* AMAudioObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BF8FB71CBDB29800B15908 /* AMAudioObject.swift */; };
+		45D3B7D11DA55FE30044C37B /* AMCoreAudio.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 45D3B7CD1DA55FE30044C37B /* AMCoreAudio.podspec */; };
+		45D3B7D21DA55FE30044C37B /* CHANGELOG.md in Sources */ = {isa = PBXBuildFile; fileRef = 45D3B7CE1DA55FE30044C37B /* CHANGELOG.md */; };
+		45D3B7D31DA55FE30044C37B /* LICENSE.md in Sources */ = {isa = PBXBuildFile; fileRef = 45D3B7CF1DA55FE30044C37B /* LICENSE.md */; };
+		45D3B7D41DA55FE30044C37B /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 45D3B7D01DA55FE30044C37B /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +50,10 @@
 		45A740591B4EE37400C19842 /* AMAudioHardware.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMAudioHardware.swift; sourceTree = "<group>"; };
 		45B919DB1CD3E3E100552C67 /* BundleInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BundleInfo.swift; sourceTree = "<group>"; };
 		45BF8FB71CBDB29800B15908 /* AMAudioObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMAudioObject.swift; sourceTree = "<group>"; };
+		45D3B7CD1DA55FE30044C37B /* AMCoreAudio.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AMCoreAudio.podspec; sourceTree = "<group>"; };
+		45D3B7CE1DA55FE30044C37B /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
+		45D3B7CF1DA55FE30044C37B /* LICENSE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
+		45D3B7D01DA55FE30044C37B /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +86,10 @@
 		454D24501B4BE40D0043FA12 = {
 			isa = PBXGroup;
 			children = (
+				45D3B7CE1DA55FE30044C37B /* CHANGELOG.md */,
+				45D3B7CF1DA55FE30044C37B /* LICENSE.md */,
+				45D3B7D01DA55FE30044C37B /* README.md */,
+				45D3B7CD1DA55FE30044C37B /* AMCoreAudio.podspec */,
 				454D245C1B4BE40E0043FA12 /* AMCoreAudio */,
 				454D245B1B4BE40E0043FA12 /* Products */,
 			);
@@ -169,7 +181,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = 9Labs;
 				TargetAttributes = {
 					453C2B961B7E1BFF00466C7D = {
@@ -211,6 +223,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45D3B7D11DA55FE30044C37B /* AMCoreAudio.podspec in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -247,7 +260,10 @@
 			files = (
 				450765261B4E92B8005E87C9 /* Bool+Extensions.swift in Sources */,
 				45B919DC1CD3E3E100552C67 /* BundleInfo.swift in Sources */,
+				45D3B7D21DA55FE30044C37B /* CHANGELOG.md in Sources */,
 				454D24751B4BE4860043FA12 /* AMAudioDevice.swift in Sources */,
+				45D3B7D41DA55FE30044C37B /* README.md in Sources */,
+				45D3B7D31DA55FE30044C37B /* LICENSE.md in Sources */,
 				454D24771B4BE6610043FA12 /* AMTypes.swift in Sources */,
 				45A7405A1B4EE37400C19842 /* AMAudioHardware.swift in Sources */,
 				450A4B311CBDB09400EB7B34 /* AMAudioStream.swift in Sources */,
@@ -304,8 +320,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
@@ -350,8 +368,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;

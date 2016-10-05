@@ -2,7 +2,7 @@
 
 | Version       | Description   | Date     |
 | -------------:|:------------- |:--------:|
-| 2.1        | Introducing `AMCoreAudioStream` and adding `streamsForDirection(_:)` to `AMCoreAudioDevice`. | TBA|
+| 3.0           | Adding Swift 3 support and new Pub/Sub notification system. | October 5th, 2016|
 | 2.0.10        | Fixing `AMCoreAudio` `scalarToDecibels` and `decibelsToScalar` conversions. | January 19th, 2016|
 | 2.0.9         | Adding `AMCoreAudioDevice+Formatters` extension. | January 18th, 2016|
 | 2.0.8         | Adding XCode 7 compatibility. | September 17th, 2015|

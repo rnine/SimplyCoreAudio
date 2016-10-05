@@ -19,7 +19,7 @@
 
 ### Requirements
 
-* Xcode 7 and Swift 2
+* Xcode 8 and Swift 3
 * OS X 10.9 or later
 
 **Note:** If you are targeting OS X 10.7 or 10.8 please use the [objc branch](https://github.com/rnine/AMCoreAudio/tree/objc).
