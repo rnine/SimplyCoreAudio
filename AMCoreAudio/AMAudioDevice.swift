@@ -1335,33 +1335,35 @@ final public class AMAudioDevice: AMAudioObject {
     }
 
     /**
-        Attempts to set the `pid` that currently owns exclusive access to the
-        audio device.
+        Toggles hog mode on/off
 
         - Returns: `true` on success, `false` otherwise.
      */
-    public func setHogModePID(_ pid: pid_t) -> Bool {
+    private func toggleHogMode() -> Bool {
         let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyHogMode,
             mScope: kAudioObjectPropertyScopeWildcard,
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        var thePID = pid
-        let status = setPropertyData(address, andValue: &thePID)
+        var zero = 0
+        let status = setPropertyData(address, andValue: &zero)
 
         return noErr == status
     }
 
     /**
         Attempts to set the `pid` that currently owns exclusive access to the
-        audio device to the current process.
+        audio device.
 
         - Returns: `true` on success, `false` otherwise.
      */
-    public func setHogModePidToCurrentProcess() -> Bool {
-        let currentPID = pid_t(ProcessInfo.processInfo.processIdentifier)
-        return setHogModePID(currentPID)
+    public func setHogMode() -> Bool {
+        if hogModePID() != pid_t(ProcessInfo.processInfo.processIdentifier) {
+            return toggleHogMode()
+        } else {
+            return false
+        }
     }
 
     /**
@@ -1371,7 +1373,11 @@ final public class AMAudioDevice: AMAudioObject {
         - Returns: `true` on success, `false` otherwise.
      */
     public func unsetHogMode() -> Bool {
-        return setHogModePID(pid_t(-1))
+        if hogModePID() == pid_t(ProcessInfo.processInfo.processIdentifier) {
+            return toggleHogMode()
+        } else {
+            return false
+        }
     }
 
     // MARK: - ♺ Volume Conversion Functions
