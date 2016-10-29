@@ -152,10 +152,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
 
-        if let playbackChannels = audioDevice.channelsForDirection(playbackDirection) {
+        let playbackChannels = audioDevice.channelsForDirection(playbackDirection)
+
+        if playbackChannels > 0 {
             print("|- \(playbackDirection) channel count is \(playbackChannels)")
 
-            for channel in 1...playbackChannels {
+            for channel in 0...playbackChannels {
                 if let volume = audioDevice.volumeInDecibelsForChannel(channel, andDirection: playbackDirection) {
                     let nameForChannel = audioDevice.nameForChannel(channel, andDirection: playbackDirection) ?? "<No named>"
                     print("|  - Channel \(channel) (\(nameForChannel)) volume is \(volume)dBFS")
@@ -167,10 +169,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
 
-        if let recordingChannels = audioDevice.channelsForDirection(recordingDirection) {
+        let recordingChannels = audioDevice.channelsForDirection(recordingDirection)
+
+        if recordingChannels > 0 {
             print("|- \(recordingDirection) channel count is \(recordingChannels)")
 
-            for channel in 1...recordingChannels {
+            for channel in 0...recordingChannels {
                 if let volume = audioDevice.volumeInDecibelsForChannel(channel, andDirection: recordingDirection) {
                     let nameForChannel = audioDevice.nameForChannel(channel, andDirection: recordingDirection) ?? "<No named>"
                     print("|  - Channel \(channel) (\(nameForChannel)) volume is \(volume)dBFS")

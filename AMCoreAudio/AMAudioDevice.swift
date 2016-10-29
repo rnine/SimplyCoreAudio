@@ -194,7 +194,7 @@ final public class AMAudioDevice: AMAudioObject {
         - Note: If unique identifier is not valid, `nil` will be returned.
      */
     public static func lookupByUID(_ deviceUID: String) -> AMAudioDevice? {
-        var deviceID = AudioObjectID(0)
+        var deviceID = kAudioObjectUnknown
         let status = AMAudioHardwarePropertyDeviceForUID(deviceUID, &deviceID)
 
         if noErr != status || deviceID == kAudioObjectUnknown {
@@ -304,7 +304,7 @@ final public class AMAudioDevice: AMAudioObject {
         let devices = allDevices()
 
         return devices.filter { device -> Bool in
-            device.channelsForDirection(.Recording) ?? 0 > 0    
+            device.channelsForDirection(.Recording) > 0    
         }
     }
 
@@ -319,7 +319,7 @@ final public class AMAudioDevice: AMAudioObject {
         let devices = allDevices()
 
         return devices.filter { device -> Bool in
-            device.channelsForDirection(.Playback) ?? 0 > 0
+            device.channelsForDirection(.Playback) > 0
         }
     }
 
@@ -657,11 +657,11 @@ final public class AMAudioDevice: AMAudioObject {
     // MARK: - ⇄ Input/Output Layout Functions
 
     /**
-        The number of channels for a given direction.
+        The number of layout channels for a given direction.
 
-        - Returns: *(optional)* A `UInt32` with the number of channels.
+        - Returns: *(optional)* A `UInt32` with the number of layout channels.
      */
-    public func channelsForDirection(_ direction: Direction) -> UInt32? {
+    public func layoutChannelsForDirection(_ direction: Direction) -> UInt32? {
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyPreferredChannelLayout,
             mScope: directionToScope(direction),
@@ -679,12 +679,27 @@ final public class AMAudioDevice: AMAudioObject {
     }
 
     /**
+        The number of channels for a given direction.
+
+        - Returns: A `UInt32` with the number of channels.
+     */
+    public func channelsForDirection(_ direction: Direction) -> UInt32 {
+        if let streams = streamsForDirection(direction) {
+            return streams.map({ (stream) -> UInt32 in
+                stream.physicalFormat?.mChannelsPerFrame ?? 0
+            }).reduce(0, +)
+        }
+
+        return 0
+    }
+
+    /**
         Whether the device has only inputs but no outputs.
 
         - Returns: `true` when the device is input only, `false` otherwise.
      */
     public func isInputOnlyDevice() -> Bool {
-        return channelsForDirection(.Playback) ?? 0 == 0 && channelsForDirection(.Recording) ?? 0 > 0
+        return channelsForDirection(.Playback) == 0 && channelsForDirection(.Recording) > 0
     }
 
     /**
@@ -693,7 +708,7 @@ final public class AMAudioDevice: AMAudioObject {
         - Returns: `true` when the device is output only, `false` otherwise.
      */
     public func isOutputOnlyDevice() -> Bool {
-        return channelsForDirection(.Recording) ?? 0 == 0 && channelsForDirection(.Playback) ?? 0 > 0
+        return channelsForDirection(.Recording) == 0 && channelsForDirection(.Playback) > 0
     }
 
     // MARK: - ⇉ Individual Channel Functions
