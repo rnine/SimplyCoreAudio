@@ -1061,7 +1061,11 @@ final public class AMAudioDevice: AMAudioObject {
         var sampleRate = Float64(0)
         let status = getPropertyData(address, andValue: &sampleRate)
 
-        return noErr == status ? sampleRate : nil
+        if noErr == status {
+            return sampleRate == 0 ? nil : sampleRate
+        } else {
+            return nil
+        }
     }
 
     /**
@@ -1079,7 +1083,11 @@ final public class AMAudioDevice: AMAudioObject {
         var sampleRate = Float64(0)
         let status = getPropertyData(address, andValue: &sampleRate)
 
-        return noErr == status ? sampleRate : nil
+        if noErr == status {
+            return sampleRate == 0 ? nil : sampleRate
+        } else {
+            return nil
+        }
     }
 
     /**
