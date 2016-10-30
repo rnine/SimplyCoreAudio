@@ -1,0 +1,396 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		4563CD2E1DC6617D006FD207 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4563CD2D1DC6617D006FD207 /* AppDelegate.swift */; };
+		4563CD301DC6617D006FD207 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4563CD2F1DC6617D006FD207 /* ViewController.swift */; };
+		4563CD321DC6617D006FD207 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4563CD311DC6617D006FD207 /* Assets.xcassets */; };
+		4563CD351DC6617D006FD207 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4563CD331DC6617D006FD207 /* Main.storyboard */; };
+		4563CD481DC661E1006FD207 /* AMCoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4563CD421DC661A4006FD207 /* AMCoreAudio.framework */; };
+		4563CD491DC661E1006FD207 /* AMCoreAudio.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4563CD421DC661A4006FD207 /* AMCoreAudio.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		4563CD411DC661A4006FD207 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4563CD3C1DC661A4006FD207 /* AMCoreAudio.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 454D245A1B4BE40E0043FA12;
+			remoteInfo = AMCoreAudio;
+		};
+		4563CD431DC661A4006FD207 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4563CD3C1DC661A4006FD207 /* AMCoreAudio.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 453C2B971B7E1BFF00466C7D;
+			remoteInfo = AMCoreAudioTests;
+		};
+		4563CD451DC661AD006FD207 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4563CD3C1DC661A4006FD207 /* AMCoreAudio.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 454D24591B4BE40E0043FA12;
+			remoteInfo = AMCoreAudio;
+		};
+		4563CD4A1DC661E1006FD207 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4563CD3C1DC661A4006FD207 /* AMCoreAudio.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 454D24591B4BE40E0043FA12;
+			remoteInfo = AMCoreAudio;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		4563CD4C1DC661E1006FD207 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				4563CD491DC661E1006FD207 /* AMCoreAudio.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		4563CD2A1DC6617D006FD207 /* AMCoreAudio Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AMCoreAudio Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4563CD2D1DC6617D006FD207 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		4563CD2F1DC6617D006FD207 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		4563CD311DC6617D006FD207 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		4563CD341DC6617D006FD207 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		4563CD361DC6617D006FD207 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4563CD3C1DC661A4006FD207 /* AMCoreAudio.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = AMCoreAudio.xcodeproj; path = ../AMCoreAudio.xcodeproj; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4563CD271DC6617D006FD207 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4563CD481DC661E1006FD207 /* AMCoreAudio.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		4563CD211DC6617D006FD207 = {
+			isa = PBXGroup;
+			children = (
+				4563CD3C1DC661A4006FD207 /* AMCoreAudio.xcodeproj */,
+				4563CD2C1DC6617D006FD207 /* AMCoreAudio Demo */,
+				4563CD2B1DC6617D006FD207 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4563CD2B1DC6617D006FD207 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4563CD2A1DC6617D006FD207 /* AMCoreAudio Demo.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4563CD2C1DC6617D006FD207 /* AMCoreAudio Demo */ = {
+			isa = PBXGroup;
+			children = (
+				4563CD2D1DC6617D006FD207 /* AppDelegate.swift */,
+				4563CD2F1DC6617D006FD207 /* ViewController.swift */,
+				4563CD311DC6617D006FD207 /* Assets.xcassets */,
+				4563CD331DC6617D006FD207 /* Main.storyboard */,
+				4563CD361DC6617D006FD207 /* Info.plist */,
+			);
+			path = "AMCoreAudio Demo";
+			sourceTree = "<group>";
+		};
+		4563CD3D1DC661A4006FD207 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4563CD421DC661A4006FD207 /* AMCoreAudio.framework */,
+				4563CD441DC661A4006FD207 /* AMCoreAudioTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4563CD291DC6617D006FD207 /* AMCoreAudio Demo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4563CD391DC6617D006FD207 /* Build configuration list for PBXNativeTarget "AMCoreAudio Demo" */;
+			buildPhases = (
+				4563CD261DC6617D006FD207 /* Sources */,
+				4563CD271DC6617D006FD207 /* Frameworks */,
+				4563CD281DC6617D006FD207 /* Resources */,
+				4563CD4C1DC661E1006FD207 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4563CD461DC661AD006FD207 /* PBXTargetDependency */,
+				4563CD4B1DC661E1006FD207 /* PBXTargetDependency */,
+			);
+			name = "AMCoreAudio Demo";
+			productName = "AMCoreAudio Demo";
+			productReference = 4563CD2A1DC6617D006FD207 /* AMCoreAudio Demo.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4563CD221DC6617D006FD207 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0810;
+				LastUpgradeCheck = 0810;
+				ORGANIZATIONNAME = 9Labs;
+				TargetAttributes = {
+					4563CD291DC6617D006FD207 = {
+						CreatedOnToolsVersion = 8.1;
+						DevelopmentTeam = ZBJR46PSPF;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 4563CD251DC6617D006FD207 /* Build configuration list for PBXProject "AMCoreAudio Demo" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 4563CD211DC6617D006FD207;
+			productRefGroup = 4563CD2B1DC6617D006FD207 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 4563CD3D1DC661A4006FD207 /* Products */;
+					ProjectRef = 4563CD3C1DC661A4006FD207 /* AMCoreAudio.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				4563CD291DC6617D006FD207 /* AMCoreAudio Demo */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		4563CD421DC661A4006FD207 /* AMCoreAudio.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = AMCoreAudio.framework;
+			remoteRef = 4563CD411DC661A4006FD207 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4563CD441DC661A4006FD207 /* AMCoreAudioTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = AMCoreAudioTests.xctest;
+			remoteRef = 4563CD431DC661A4006FD207 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4563CD281DC6617D006FD207 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4563CD321DC6617D006FD207 /* Assets.xcassets in Resources */,
+				4563CD351DC6617D006FD207 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4563CD261DC6617D006FD207 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4563CD301DC6617D006FD207 /* ViewController.swift in Sources */,
+				4563CD2E1DC6617D006FD207 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4563CD461DC661AD006FD207 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = AMCoreAudio;
+			targetProxy = 4563CD451DC661AD006FD207 /* PBXContainerItemProxy */;
+		};
+		4563CD4B1DC661E1006FD207 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = AMCoreAudio;
+			targetProxy = 4563CD4A1DC661E1006FD207 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		4563CD331DC6617D006FD207 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4563CD341DC6617D006FD207 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		4563CD371DC6617D006FD207 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		4563CD381DC6617D006FD207 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+			};
+			name = Release;
+		};
+		4563CD3A1DC6617D006FD207 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = ZBJR46PSPF;
+				INFOPLIST_FILE = "AMCoreAudio Demo/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.9labs.AMCoreAudio-Demo";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		4563CD3B1DC6617D006FD207 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = ZBJR46PSPF;
+				INFOPLIST_FILE = "AMCoreAudio Demo/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.9labs.AMCoreAudio-Demo";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4563CD251DC6617D006FD207 /* Build configuration list for PBXProject "AMCoreAudio Demo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4563CD371DC6617D006FD207 /* Debug */,
+				4563CD381DC6617D006FD207 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4563CD391DC6617D006FD207 /* Build configuration list for PBXNativeTarget "AMCoreAudio Demo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4563CD3A1DC6617D006FD207 /* Debug */,
+				4563CD3B1DC6617D006FD207 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 4563CD221DC6617D006FD207 /* Project object */;
+}
