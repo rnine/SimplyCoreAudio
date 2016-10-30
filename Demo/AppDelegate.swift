@@ -80,11 +80,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let deviceIsHidden = audioDevice.deviceIsHidden()
         print("|- Is hidden? \(deviceIsHidden)")
 
-        let playbackDirection = Direction.Playback
-        print("|- Preferred stereo channels for \(playbackDirection): \(audioDevice.preferredStereoChannelsForDirection(playbackDirection))")
+        print("|- Preferred stereo channels for \(Direction.Playback): \(audioDevice.preferredStereoChannelsForDirection(.Playback))")
 
-        let recordingDirection = Direction.Recording
-        print("|- Preferred stereo channels for \(recordingDirection): \(audioDevice.preferredStereoChannelsForDirection(recordingDirection))")
+        print("|- Preferred stereo channels for \(Direction.Recording): \(audioDevice.preferredStereoChannelsForDirection(.Recording))")
 
         if let nominalSampleRates = audioDevice.nominalSampleRates() {
             print("|- Nominal sample rates: \(nominalSampleRates)")
@@ -98,90 +96,93 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             print("|- Actual sample rate: \(actualSampleRate)")
         }
 
-        if let playbackClockSources = audioDevice.clockSourcesForChannel(0, andDirection: playbackDirection) {
-            print("|- Available clock sources for \(playbackDirection): \(playbackClockSources)")
+        if let playbackClockSources = audioDevice.clockSourcesForChannel(0, andDirection: .Playback) {
+            print("|- Available clock sources for \(Direction.Playback): \(playbackClockSources)")
         }
 
-        if let playbackClockSource = audioDevice.clockSourceForChannel(0, andDirection: playbackDirection) {
-            print("|- Active clock source for \(playbackDirection): \(playbackClockSource)")
+        if let playbackClockSource = audioDevice.clockSourceForChannel(0, andDirection: .Playback) {
+            print("|- Active clock source for \(Direction.Playback): \(playbackClockSource)")
         }
 
-        if let recordingClockSources = audioDevice.clockSourcesForChannel(0, andDirection: recordingDirection) {
-            print("|- Available clock sources for \(recordingDirection): \(recordingClockSources)")
+        if let recordingClockSources = audioDevice.clockSourcesForChannel(0, andDirection: .Recording) {
+            print("|- Available clock sources for \(Direction.Recording): \(recordingClockSources)")
         }
 
-        if let recordingClockSource = audioDevice.clockSourceForChannel(0, andDirection: recordingDirection) {
-            print("|- Active clock source for \(recordingDirection): \(recordingClockSource)")
+        if let recordingClockSource = audioDevice.clockSourceForChannel(0, andDirection: .Recording) {
+            print("|- Active clock source for \(Direction.Recording): \(recordingClockSource)")
         }
 
-        if let playbackLatency = audioDevice.deviceLatencyFramesForDirection(playbackDirection) {
-            print("|- \(playbackDirection) latency: \(playbackLatency) frames")
+        if let playbackLatency = audioDevice.deviceLatencyFramesForDirection(.Playback) {
+            print("|- \(Direction.Playback) latency: \(playbackLatency) frames")
         }
 
-        if let recordingLatency = audioDevice.deviceLatencyFramesForDirection(recordingDirection) {
-            print("|- \(recordingDirection) latency: \(recordingLatency) frames")
+        if let recordingLatency = audioDevice.deviceLatencyFramesForDirection(.Recording) {
+            print("|- \(Direction.Recording) latency: \(recordingLatency) frames")
         }
 
-        if let playbackSafetyOffset = audioDevice.deviceSafetyOffsetFramesForDirection(playbackDirection) {
-            print("|- \(playbackDirection) safety offset: \(playbackSafetyOffset) frames")
+        if let playbackSafetyOffset = audioDevice.deviceSafetyOffsetFramesForDirection(.Playback) {
+            print("|- \(Direction.Playback) safety offset: \(playbackSafetyOffset) frames")
         }
 
-        if let recordingSafetyOffset = audioDevice.deviceSafetyOffsetFramesForDirection(recordingDirection) {
-            print("|- \(recordingDirection) safety offset: \(recordingSafetyOffset) frames")
+        if let recordingSafetyOffset = audioDevice.deviceSafetyOffsetFramesForDirection(.Recording) {
+            print("|- \(Direction.Recording) safety offset: \(recordingSafetyOffset) frames")
         }
 
-        let canSetMasterPlaybackVolume = audioDevice.canSetMasterVolumeForDirection(playbackDirection)
-        print("|- Can set master \(playbackDirection) volume? \(canSetMasterPlaybackVolume)")
+        let canSetMasterPlaybackVolume = audioDevice.canSetMasterVolumeForDirection(.Playback)
+        print("|- Can set master \(Direction.Playback) volume? \(canSetMasterPlaybackVolume)")
 
-        let canSetMasterRecordingVolume = audioDevice.canSetMasterVolumeForDirection(recordingDirection)
-        print("|- Can set master \(recordingDirection) volume? \(canSetMasterRecordingVolume)")
+        let canSetMasterRecordingVolume = audioDevice.canSetMasterVolumeForDirection(.Playback)
+        print("|- Can set master \(Direction.Recording) volume? \(canSetMasterRecordingVolume)")
 
-        if let masterPlaybackVolume = audioDevice.masterVolumeInDecibelsForDirection(playbackDirection) {
-            print("|- \(playbackDirection) master volume: \(masterPlaybackVolume)dbFS")
+        if let masterPlaybackVolume = audioDevice.masterVolumeInDecibelsForDirection(.Playback) {
+            print("|- \(Direction.Playback) master volume: \(masterPlaybackVolume)dbFS")
 
-            if let masterPlaybackVolumeInfo = audioDevice.volumeInfoForChannel(UInt32(0), andDirection: playbackDirection) {
+            if let masterPlaybackVolumeInfo = audioDevice.volumeInfoForChannel(UInt32(0), andDirection: .Playback) {
                 print("|  - Volume info: \(masterPlaybackVolumeInfo)")
             }
         }
 
-        if let masterRecordingVolume = audioDevice.masterVolumeInDecibelsForDirection(recordingDirection) {
-            print("|- \(recordingDirection) master volume: \(masterRecordingVolume)dbFS")
+        if let masterRecordingVolume = audioDevice.masterVolumeInDecibelsForDirection(.Recording) {
+            print("|- \(Direction.Recording) master volume: \(masterRecordingVolume)dbFS")
 
-            if let masterRecordingVolumeInfo = audioDevice.volumeInfoForChannel(UInt32(0), andDirection: recordingDirection) {
+            if let masterRecordingVolumeInfo = audioDevice.volumeInfoForChannel(UInt32(0), andDirection: .Recording) {
                 print("|  - Volume info: \(masterRecordingVolumeInfo)")
             }
         }
 
-        let playbackChannels = audioDevice.channelsForDirection(playbackDirection)
+        let playbackChannels = audioDevice.channelsForDirection(.Playback)
 
         if playbackChannels > 0 {
-            print("|- \(playbackDirection) channel count is \(playbackChannels)")
+            print("|- \(Direction.Playback) channel count is \(playbackChannels)")
 
             for channel in 0...playbackChannels {
-                if let volume = audioDevice.volumeInDecibelsForChannel(channel, andDirection: playbackDirection) {
-                    let nameForChannel = audioDevice.nameForChannel(channel, andDirection: playbackDirection) ?? "<No named>"
-                    print("|  - Channel \(channel) (\(nameForChannel)) volume is \(volume)dBFS")
+                let nameForChannel = audioDevice.nameForChannel(channel, andDirection: .Playback) ?? (channel == 0 ? "Master" : "\(channel)")
+                print("|  - Channel \(channel) (\(nameForChannel))")
 
-                    if let volumeInfo = audioDevice.volumeInfoForChannel(channel, andDirection: playbackDirection) {
-                        print("|    - Volume info: \(volumeInfo)")
-                    }
+                if let volume = audioDevice.volumeInDecibelsForChannel(channel, andDirection: .Playback) {
+                    print("|    +- Volume: \(volume)")
+                }
+                if let volumeInfo = audioDevice.volumeInfoForChannel(channel, andDirection: .Playback) {
+                    print("|    +- Volume info: \(volumeInfo)")
                 }
             }
         }
 
-        let recordingChannels = audioDevice.channelsForDirection(recordingDirection)
+        let recordingChannels = audioDevice.channelsForDirection(.Recording)
 
         if recordingChannels > 0 {
-            print("|- \(recordingDirection) channel count is \(recordingChannels)")
+            print("|- \(Direction.Recording) channel count is \(recordingChannels)")
 
             for channel in 0...recordingChannels {
-                if let volume = audioDevice.volumeInDecibelsForChannel(channel, andDirection: recordingDirection) {
-                    let nameForChannel = audioDevice.nameForChannel(channel, andDirection: recordingDirection) ?? "<No named>"
-                    print("|  - Channel \(channel) (\(nameForChannel)) volume is \(volume)dBFS")
+                let nameForChannel = audioDevice.nameForChannel(channel, andDirection: .Playback) ?? (channel == 0 ? "Master" : "\(channel)")
 
-                    if let volumeInfo = audioDevice.volumeInfoForChannel(channel, andDirection: recordingDirection) {
-                        print("|    - Volume info: \(volumeInfo)")
-                    }
+                print("|  - Channel \(channel) (\(nameForChannel))")
+
+                if let volume = audioDevice.volumeInDecibelsForChannel(channel, andDirection: .Recording) {
+                    print("|    +- Volume: \(volume)")
+                }
+                if let volumeInfo = audioDevice.volumeInfoForChannel(channel, andDirection: .Recording) {
+                    print("|    +- Volume info: \(volumeInfo)")
                 }
             }
         }
