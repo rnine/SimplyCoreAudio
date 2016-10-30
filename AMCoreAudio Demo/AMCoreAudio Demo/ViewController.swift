@@ -21,7 +21,6 @@ class ViewController: NSViewController {
     @IBOutlet var deviceTransportTypeLabel: NSTextField!
     @IBOutlet var deviceConfigAppLabel: NSTextField!
     @IBOutlet var deviceNominalSampleRatesPopupButton: NSPopUpButton!
-    @IBOutlet var deviceNominalSampleRateLabel: NSTextField!
     @IBOutlet var deviceActualSampleRateLabel: NSTextField!
     @IBOutlet var devicePlaybackLatencyLabel: NSTextField!
     @IBOutlet var deviceRecordingLatencyLabel: NSTextField!
@@ -30,6 +29,17 @@ class ViewController: NSViewController {
     @IBOutlet var devicePlaybackMasterVolumeLabel: NSTextField!
     @IBOutlet var deviceRecordingMasterVolumeLabel: NSTextField!
     @IBOutlet var deviceHogPIDLabel: NSTextField!
+
+    fileprivate let unknownValue = "<Unknown>"
+
+    override var representedObject: Any? {
+        didSet {
+            // Update the view, if already loaded.
+            if let audioDevice = representedObject as? AMAudioDevice {
+                populateDeviceInformation(device: audioDevice)
+            }
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,12 +54,10 @@ class ViewController: NSViewController {
         // Populate device list
         populateDeviceList()
 
+        // Set view controller's represented object
         if let selectedItem = deviceListPopUpButton.selectedItem {
             let deviceID = AudioObjectID(selectedItem.tag)
-
-            if let device = AMAudioDevice.lookupByID(deviceID) {
-                populateDeviceInformation(device: device)
-            }
+            representedObject = AMAudioDevice.lookupByID(deviceID)
         }
     }
 
@@ -59,20 +67,23 @@ class ViewController: NSViewController {
         AMNotificationCenter.defaultCenter.unsubscribe(self, eventType: AMAudioStreamEvent.self)
     }
 
-    override var representedObject: Any? {
-        didSet {
-        // Update the view, if already loaded.
-        }
-    }
-
     // MARK: - Actions
 
     @IBAction func showDevice(_ sender: AnyObject) {
         if let popUpButton = sender as? NSPopUpButton, let item = popUpButton.selectedItem {
             let deviceID = AudioObjectID(item.tag)
+            representedObject = AMAudioDevice.lookupByID(deviceID)
+        }
+    }
 
-            if let device = AMAudioDevice.lookupByID(deviceID) {
-                populateDeviceInformation(device: device)
+    @IBAction func updateSampleRate(_ sender: AnyObject) {
+        if let popUpButton = sender as? NSPopUpButton, let item = popUpButton.selectedItem {
+            if let sampleRate = item.representedObject as? Float64 {
+                if let representedAudioDevice = representedObject as? AMAudioDevice {
+                    if representedAudioDevice.setNominalSampleRate(sampleRate) == false {
+                        print("Unable to set nominal sample rate.")
+                    }
+                }
             }
         }
     }
@@ -89,8 +100,6 @@ class ViewController: NSViewController {
     }
 
     fileprivate func populateDeviceInformation(device: AMAudioDevice) {
-        let unknownValue = "<Unknown>"
-
         deviceNameLabel.stringValue = device.deviceName()
         deviceManufacturerLabel.stringValue = device.deviceManufacturer() ?? unknownValue
         deviceIDLabel.stringValue = "\(device.deviceID)"
@@ -100,25 +109,7 @@ class ViewController: NSViewController {
         deviceTransportTypeLabel.stringValue = device.transportType()?.rawValue ?? unknownValue
         deviceConfigAppLabel.stringValue = device.deviceConfigurationApplication() ?? unknownValue
 
-        deviceNominalSampleRatesPopupButton.removeAllItems()
-
-        if let sampleRates = device.nominalSampleRates() {
-            deviceNominalSampleRatesPopupButton.isEnabled = true
-            for sampleRate in sampleRates {
-                deviceNominalSampleRatesPopupButton.addItem(withTitle: format(sampleRate: sampleRate))
-            }
-        }
-
-        if deviceNominalSampleRatesPopupButton.itemArray.count == 0 {
-            deviceNominalSampleRatesPopupButton.addItem(withTitle: "None supported")
-            deviceNominalSampleRatesPopupButton.isEnabled = false
-        }
-
-        if let nominalSampleRate = device.nominalSampleRate() {
-            deviceNominalSampleRateLabel.stringValue = format(sampleRate: nominalSampleRate)
-        } else {
-            deviceActualSampleRateLabel.stringValue = unknownValue
-        }
+        populateNominalSampleRatesPopUpButton(device: device)
 
         if let actualSampleRate = device.actualSampleRate() {
             deviceActualSampleRateLabel.stringValue = format(sampleRate: actualSampleRate)
@@ -150,19 +141,8 @@ class ViewController: NSViewController {
             deviceRecordingSafetyOffsetLabel.stringValue = unknownValue
         }
 
-        if let playbackMasterVolume = device.masterVolumeInDecibelsForDirection(.Playback) {
-            devicePlaybackMasterVolumeLabel.isEnabled = true
-            devicePlaybackMasterVolumeLabel.stringValue = "\(playbackMasterVolume) dBfs"
-        } else {
-            devicePlaybackMasterVolumeLabel.isEnabled = false
-        }
-
-        if let recordingMasterVolume = device.masterVolumeInDecibelsForDirection(.Recording) {
-            deviceRecordingMasterVolumeLabel.isEnabled = true
-            deviceRecordingMasterVolumeLabel.stringValue = "\(recordingMasterVolume) dBfs"
-        } else {
-            deviceRecordingMasterVolumeLabel.isEnabled = false
-        }
+        populatePlaybackMasterVolume(device: device)
+        populateRecordingMasterVolume(device: device)
 
         if let hogPID = device.hogModePID() {
             deviceHogPIDLabel.stringValue = "\(hogPID)"
@@ -171,11 +151,52 @@ class ViewController: NSViewController {
         }
     }
 
-    private func booleanToString(bool: Bool) -> String {
+    fileprivate func populateNominalSampleRatesPopUpButton(device: AMAudioDevice) {
+        deviceNominalSampleRatesPopupButton.removeAllItems()
+
+        if let sampleRates = device.nominalSampleRates() {
+            deviceNominalSampleRatesPopupButton.isEnabled = true
+            for sampleRate in sampleRates {
+                deviceNominalSampleRatesPopupButton.addItem(withTitle: format(sampleRate: sampleRate))
+                deviceNominalSampleRatesPopupButton.lastItem?.representedObject = sampleRate
+            }
+
+            if let nominalSampleRate = device.nominalSampleRate() {
+                deviceNominalSampleRatesPopupButton.selectItem(withRepresentedObject: nominalSampleRate)
+            }
+        }
+
+        if deviceNominalSampleRatesPopupButton.itemArray.count == 0 {
+            deviceNominalSampleRatesPopupButton.addItem(withTitle: "None supported")
+            deviceNominalSampleRatesPopupButton.isEnabled = false
+        }
+    }
+
+    fileprivate func populatePlaybackMasterVolume(device: AMAudioDevice) {
+        if let playbackMasterVolume = device.masterVolumeInDecibelsForDirection(.Playback) {
+            let isMuted = (device.isMasterVolumeMutedForDirection(.Playback) ?? false)
+            devicePlaybackMasterVolumeLabel.isEnabled = true
+            devicePlaybackMasterVolumeLabel.stringValue = isMuted ? "Muted" : "\(playbackMasterVolume) dBfs"
+        } else {
+            devicePlaybackMasterVolumeLabel.isEnabled = false
+        }
+    }
+
+    fileprivate func populateRecordingMasterVolume(device: AMAudioDevice) {
+        if let recordingMasterVolume = device.masterVolumeInDecibelsForDirection(.Recording) {
+            let isMuted = (device.isMasterVolumeMutedForDirection(.Recording) ?? false)
+            deviceRecordingMasterVolumeLabel.isEnabled = true
+            deviceRecordingMasterVolumeLabel.stringValue = isMuted ? "Muted" : "\(recordingMasterVolume) dBfs"
+        } else {
+            deviceRecordingMasterVolumeLabel.isEnabled = false
+        }
+    }
+
+    fileprivate func booleanToString(bool: Bool) -> String {
         return bool == true ? "Yes" : "No"
     }
 
-    private func format(sampleRate: Float64) -> String {
+    fileprivate func format(sampleRate: Float64) -> String {
         return String.init(format: "%.1f kHz", sampleRate / 1000)
     }
 }
@@ -187,28 +208,58 @@ extension ViewController : AMEventSubscriber {
         case let event as AMAudioDeviceEvent:
             switch event {
             case .nominalSampleRateDidChange(let audioDevice):
-                if let sampleRate = audioDevice.nominalSampleRate() {
-                    print("\(audioDevice) sample rate changed to \(sampleRate)")
+                if representedObject as? AMAudioDevice == audioDevice {
+                    if let sampleRate = audioDevice.nominalSampleRate() {
+                        deviceNominalSampleRatesPopupButton.selectItem(withRepresentedObject: sampleRate)
+
+                        if let actualSampleRate = audioDevice.actualSampleRate() {
+                            deviceActualSampleRateLabel.stringValue = format(sampleRate: actualSampleRate)
+                        } else {
+                            deviceActualSampleRateLabel.stringValue = unknownValue
+                        }
+                    }
                 }
             case .availableNominalSampleRatesDidChange(let audioDevice):
-                if let nominalSampleRates = audioDevice.nominalSampleRates() {
-                    print("\(audioDevice) nominal sample rates changed to \(nominalSampleRates)")
+                if representedObject as? AMAudioDevice == audioDevice {
+                    populateNominalSampleRatesPopUpButton(device: audioDevice)
                 }
             case .clockSourceDidChange(let audioDevice, let channel, let direction):
                 if let clockSourceName = audioDevice.clockSourceForChannel(channel, andDirection: direction) {
                     print("\(audioDevice) clock source changed to \(clockSourceName)")
                 }
             case .nameDidChange(let audioDevice):
-                print("\(audioDevice) name changed to \(audioDevice.deviceName())")
-            case .listDidChange(let audioDevice):
-                print("\(audioDevice) owned devices list changed")
-            case .volumeDidChange(let audioDevice, let channel, let direction):
-                if let newVolume = audioDevice.volumeInDecibelsForChannel(channel, andDirection: direction) {
-                    print("\(audioDevice) volume for channel \(channel) and direction \(direction) changed to \(newVolume)dbFS")
+                if representedObject as? AMAudioDevice == audioDevice {
+                    deviceNameLabel.stringValue = audioDevice.deviceName()
+
+                    if let item = deviceListPopUpButton.item(withTag: Int(audioDevice.deviceID)) {
+                        item.title = audioDevice.deviceName()
+                    }
                 }
-            case .muteDidChange(let audioDevice, let channel, let direction):
-                if let isMuted = audioDevice.isChannelMuted(channel, andDirection: direction) {
-                    print("\(audioDevice) mute for channel \(channel) and direction \(direction) changed to \(isMuted)")
+            case .listDidChange(let audioDevice):
+                if representedObject as? AMAudioDevice == audioDevice {
+                    populateDeviceInformation(device: audioDevice)
+                }
+            case .volumeDidChange(let audioDevice, _, let direction):
+                if representedObject as? AMAudioDevice == audioDevice {
+                    switch direction {
+                    case .Playback:
+                        populatePlaybackMasterVolume(device: audioDevice)
+                    case .Recording:
+                        populateRecordingMasterVolume(device: audioDevice)
+                    case .Invalid:
+                        break
+                    }
+                }
+            case .muteDidChange(let audioDevice, _, let direction):
+                if representedObject as? AMAudioDevice == audioDevice {
+                    switch direction {
+                    case .Playback:
+                        populatePlaybackMasterVolume(device: audioDevice)
+                    case .Recording:
+                        populateRecordingMasterVolume(device: audioDevice)
+                    case .Invalid:
+                        break
+                    }
                 }
             case .isAliveDidChange(let audioDevice):
                 print("\(audioDevice) 'is alive' changed to \(audioDevice.isAlive())")
@@ -219,9 +270,7 @@ extension ViewController : AMEventSubscriber {
             }
         case let event as AMAudioHardwareEvent:
             switch event {
-            case .deviceListChanged(let addedDevices, let removedDevices):
-                print("Devices added: \(addedDevices)")
-                print("Devices removed: \(removedDevices)")
+            case .deviceListChanged(_, _):
                 self.populateDeviceList()
             case .defaultInputDeviceChanged(let audioDevice):
                 print("Default input device changed to \(audioDevice)")
