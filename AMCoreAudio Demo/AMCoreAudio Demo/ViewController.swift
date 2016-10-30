@@ -97,6 +97,10 @@ class ViewController: NSViewController {
             deviceListPopUpButton.addItem(withTitle: device.deviceName())
             deviceListPopUpButton.lastItem?.tag = Int(device.deviceID)
         }
+
+        if let representedAudioDevice = representedObject as? AMAudioDevice {
+            self.deviceListPopUpButton.selectItem(withTag: Int(representedAudioDevice.deviceID))
+        }
     }
 
     fileprivate func populateDeviceInformation(device: AMAudioDevice) {
@@ -230,10 +234,10 @@ extension ViewController : AMEventSubscriber {
             case .nameDidChange(let audioDevice):
                 if representedObject as? AMAudioDevice == audioDevice {
                     deviceNameLabel.stringValue = audioDevice.deviceName()
+                }
 
-                    if let item = deviceListPopUpButton.item(withTag: Int(audioDevice.deviceID)) {
-                        item.title = audioDevice.deviceName()
-                    }
+                if let item = deviceListPopUpButton.item(withTag: Int(audioDevice.deviceID)) {
+                    item.title = audioDevice.deviceName()
                 }
             case .listDidChange(let audioDevice):
                 if representedObject as? AMAudioDevice == audioDevice {
