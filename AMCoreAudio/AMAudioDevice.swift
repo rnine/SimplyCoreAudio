@@ -721,6 +721,7 @@ final public class AMAudioDevice: AMAudioObject {
     public func volumeInfoForChannel(_ channel: UInt32, andDirection direction: Direction) -> VolumeInfo? {
         // obtain volume info
         var address: AudioObjectPropertyAddress
+        var hasAnyProperty = false
 
         address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyVolumeScalar,
@@ -743,6 +744,7 @@ final public class AMAudioDevice: AMAudioObject {
 
                 if noErr == status {
                     volumeInfo.volume = volume
+                    hasAnyProperty = true
                 }
             }
         }
@@ -762,6 +764,7 @@ final public class AMAudioDevice: AMAudioObject {
 
                 if noErr == status {
                     volumeInfo.isMuted = Bool(isMutedValue)
+                    hasAnyProperty = true
                 }
             }
         }
@@ -781,11 +784,12 @@ final public class AMAudioDevice: AMAudioObject {
 
                 if noErr == status {
                     volumeInfo.isPlayThruSet = Bool(isPlayThruSetValue)
+                    hasAnyProperty = true
                 }
             }
         }
 
-        return volumeInfo
+        return hasAnyProperty ? volumeInfo : nil
     }
 
     /**
