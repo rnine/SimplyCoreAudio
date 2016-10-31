@@ -287,6 +287,12 @@ class ViewController: NSViewController {
             playbackStreamPhysicalFormatPopUpButton.removeAllItems()
             playbackStreamPhysicalFormatPopUpButton.isEnabled = false
         }
+
+        playbackStreamVirtualFormatPopUpButton.target = self
+        playbackStreamVirtualFormatPopUpButton.action = #selector(notSupportedAction(_:))
+
+        playbackStreamPhysicalFormatPopUpButton.target = self
+        playbackStreamPhysicalFormatPopUpButton.action = #selector(notSupportedAction(_:))
     }
 
     fileprivate func populateRecordingStreamInfo(stream: AMAudioStream?) {
@@ -339,10 +345,42 @@ class ViewController: NSViewController {
         recordingStreamPhysicalFormatPopUpButton.action = #selector(notSupportedAction(_:))
     }
 
+    fileprivate func populatePlaybackMasterVolume(device: AMAudioDevice) {
+        if let playbackMasterVolume = device.masterVolumeInDecibelsForDirection(.Playback) {
+            let isMuted = (device.isMasterVolumeMutedForDirection(.Playback) ?? false)
+            devicePlaybackMasterVolumeLabel.isEnabled = true
+            devicePlaybackMasterVolumeLabel.stringValue = isMuted ? "Muted" : "\(playbackMasterVolume) dBfs"
+        } else {
+            devicePlaybackMasterVolumeLabel.stringValue = unknownValue
+            devicePlaybackMasterVolumeLabel.isEnabled = false
+        }
+    }
+
+    fileprivate func populateRecordingMasterVolume(device: AMAudioDevice) {
+        if let recordingMasterVolume = device.masterVolumeInDecibelsForDirection(.Recording) {
+            let isMuted = (device.isMasterVolumeMutedForDirection(.Recording) ?? false)
+            deviceRecordingMasterVolumeLabel.isEnabled = true
+            deviceRecordingMasterVolumeLabel.stringValue = isMuted ? "Muted" : "\(recordingMasterVolume) dBfs"
+        } else {
+            deviceRecordingMasterVolumeLabel.stringValue = unknownValue
+            deviceRecordingMasterVolumeLabel.isEnabled = false
+        }
+    }
+
+    fileprivate func booleanToString(bool: Bool) -> String {
+        return bool == true ? "Yes" : "No"
+    }
+
+    fileprivate func format(sampleRate: Float64) -> String {
+        return String(format: "%.1f kHz", sampleRate / 1000)
+    }
+
+    fileprivate func format(id: AudioObjectID) -> String {
+        return String(format: "0x%x", Int(id))
+    }
+
     fileprivate func humanReadableStreamBasicDescription(asbd: AudioStreamBasicDescription) -> String {
         var descriptionElements: [String] = [String]()
-
-        print("asbd = \(asbd)")
 
         // Mixable vs non-mixable
         if asbd.mFormatFlags & kAudioFormatFlagIsNonMixable == 0 {
@@ -374,41 +412,6 @@ class ViewController: NSViewController {
         }
 
         return descriptionElements.joined(separator: " ")
-    }
-
-
-    fileprivate func populatePlaybackMasterVolume(device: AMAudioDevice) {
-        if let playbackMasterVolume = device.masterVolumeInDecibelsForDirection(.Playback) {
-            let isMuted = (device.isMasterVolumeMutedForDirection(.Playback) ?? false)
-            devicePlaybackMasterVolumeLabel.isEnabled = true
-            devicePlaybackMasterVolumeLabel.stringValue = isMuted ? "Muted" : "\(playbackMasterVolume) dBfs"
-        } else {
-            devicePlaybackMasterVolumeLabel.stringValue = unknownValue
-            devicePlaybackMasterVolumeLabel.isEnabled = false
-        }
-    }
-
-    fileprivate func populateRecordingMasterVolume(device: AMAudioDevice) {
-        if let recordingMasterVolume = device.masterVolumeInDecibelsForDirection(.Recording) {
-            let isMuted = (device.isMasterVolumeMutedForDirection(.Recording) ?? false)
-            deviceRecordingMasterVolumeLabel.isEnabled = true
-            deviceRecordingMasterVolumeLabel.stringValue = isMuted ? "Muted" : "\(recordingMasterVolume) dBfs"
-        } else {
-            deviceRecordingMasterVolumeLabel.stringValue = unknownValue
-            deviceRecordingMasterVolumeLabel.isEnabled = false
-        }
-    }
-
-    fileprivate func booleanToString(bool: Bool) -> String {
-        return bool == true ? "Yes" : "No"
-    }
-
-    fileprivate func format(sampleRate: Float64) -> String {
-        return String.init(format: "%.1f kHz", sampleRate / 1000)
-    }
-
-    fileprivate func format(id: AudioObjectID) -> String {
-        return String.init(format: "0x%x", Int(id))
     }
 }
 
