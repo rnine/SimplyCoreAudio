@@ -28,15 +28,31 @@ class ViewController: NSViewController {
     @IBOutlet var deviceRecordingSafetyOffsetLabel: NSTextField!
     @IBOutlet var devicePlaybackMasterVolumeLabel: NSTextField!
     @IBOutlet var deviceRecordingMasterVolumeLabel: NSTextField!
-    @IBOutlet var deviceHogPIDLabel: NSTextField!
+    @IBOutlet var deviceHogModeLabel: NSTextField!
+    @IBOutlet var deviceIsAliveLabel: NSTextField!
+    @IBOutlet var deviceIsRunningLabel: NSTextField!
+    @IBOutlet var deviceIsRunningSomewhereLabel: NSTextField!
+
+    @IBOutlet var playbackStreamPopUpButton: NSPopUpButton!
+    @IBOutlet var playbackStreamIDLabel: NSTextField!
+    @IBOutlet var playbackStreamVirtualFormatPopUpButton: NSPopUpButton!
+    @IBOutlet var playbackStreamPhysicalFormatPopUpButton: NSPopUpButton!
+
+    @IBOutlet var recordingStreamPopUpButton: NSPopUpButton!
+    @IBOutlet var recordingStreamIDLabel: NSTextField!
+    @IBOutlet var recordingStreamVirtualFormatPopUpButton: NSPopUpButton!
+    @IBOutlet var recordingStreamPhysicalFormatPopUpButton: NSPopUpButton!
 
     fileprivate let unknownValue = "<Unknown>"
+    fileprivate let unsupportedValue = "<Unsupported>"
 
     override var representedObject: Any? {
         didSet {
             // Update the view, if already loaded.
             if let audioDevice = representedObject as? AMAudioDevice {
                 populateDeviceInformation(device: audioDevice)
+                populatePlaybackStreamPopUpButton(device: audioDevice)
+                populateRecordingStreamPopUpButton(device: audioDevice)
             }
         }
     }
@@ -86,6 +102,17 @@ class ViewController: NSViewController {
                 }
             }
         }
+    }
+
+    @IBAction func notSupportedAction(_ sender: AnyObject?) {
+        let alert = NSAlert()
+
+        let messages = ["Oops!", "Rats!", "Yikes!", "Uh-oh!", "Eek!"]
+
+        alert.messageText = messages[Int(arc4random() % UInt32(messages.count))]
+        alert.informativeText = "This functionality is currently unimplemented."
+
+        alert.runModal()
     }
 
     // MARK: - Private
@@ -149,16 +176,20 @@ class ViewController: NSViewController {
         populateRecordingMasterVolume(device: device)
 
         if let hogPID = device.hogModePID() {
-            deviceHogPIDLabel.stringValue = "\(hogPID)"
+            deviceHogModeLabel.stringValue = "\(hogPID)"
         } else {
-            deviceHogPIDLabel.stringValue = unknownValue
+            deviceHogModeLabel.stringValue = unknownValue
         }
+
+        deviceIsAliveLabel.stringValue = booleanToString(bool: device.isAlive())
+        deviceIsRunningLabel.stringValue = booleanToString(bool: device.isRunning())
+        deviceIsRunningSomewhereLabel.stringValue = booleanToString(bool: device.isRunningSomewhere())
     }
 
     fileprivate func populateNominalSampleRatesPopUpButton(device: AMAudioDevice) {
         deviceNominalSampleRatesPopupButton.removeAllItems()
 
-        if let sampleRates = device.nominalSampleRates() {
+        if let sampleRates = device.nominalSampleRates(), sampleRates.count > 0 {
             deviceNominalSampleRatesPopupButton.isEnabled = true
             for sampleRate in sampleRates {
                 deviceNominalSampleRatesPopupButton.addItem(withTitle: format(sampleRate: sampleRate))
@@ -168,13 +199,183 @@ class ViewController: NSViewController {
             if let nominalSampleRate = device.nominalSampleRate() {
                 deviceNominalSampleRatesPopupButton.selectItem(withRepresentedObject: nominalSampleRate)
             }
-        }
-
-        if deviceNominalSampleRatesPopupButton.itemArray.count == 0 {
-            deviceNominalSampleRatesPopupButton.addItem(withTitle: "None supported")
+        } else {
+            deviceNominalSampleRatesPopupButton.addItem(withTitle: unsupportedValue)
             deviceNominalSampleRatesPopupButton.isEnabled = false
         }
     }
+
+    fileprivate func populatePlaybackStreamPopUpButton(device: AMAudioDevice) {
+        playbackStreamPopUpButton.removeAllItems()
+
+        if let playbackStreams = device.streamsForDirection(.Playback), playbackStreams.count > 0 {
+            playbackStreamPopUpButton.isEnabled = true
+            for stream in playbackStreams {
+                playbackStreamPopUpButton.addItem(withTitle: "Output Stream \(format(id: stream.streamID))")
+                playbackStreamPopUpButton.lastItem?.tag = Int(stream.streamID)
+            }
+
+            if let firstStream = playbackStreams.first {
+                populatePlaybackStreamInfo(stream: firstStream)
+            }
+        } else {
+            playbackStreamPopUpButton.addItem(withTitle: unsupportedValue)
+            playbackStreamPopUpButton.isEnabled = false
+            populatePlaybackStreamInfo(stream: nil)
+        }
+    }
+
+    fileprivate func populateRecordingStreamPopUpButton(device: AMAudioDevice) {
+        recordingStreamPopUpButton.removeAllItems()
+
+        if let recordingStreams = device.streamsForDirection(.Recording), recordingStreams.count > 0 {
+            recordingStreamPopUpButton.isEnabled = true
+            for stream in recordingStreams {
+                recordingStreamPopUpButton.addItem(withTitle: "Input Stream \(format(id: stream.streamID))")
+                recordingStreamPopUpButton.lastItem?.tag = Int(stream.streamID)
+            }
+
+            if let firstStream = recordingStreams.first {
+                populateRecordingStreamInfo(stream: firstStream)
+            }
+        } else {
+            recordingStreamPopUpButton.addItem(withTitle: unsupportedValue)
+            recordingStreamPopUpButton.isEnabled = false
+            populateRecordingStreamInfo(stream: nil)
+        }
+    }
+
+    fileprivate func populatePlaybackStreamInfo(stream: AMAudioStream?) {
+        playbackStreamVirtualFormatPopUpButton.removeAllItems()
+        playbackStreamPhysicalFormatPopUpButton.removeAllItems()
+
+        if let stream = stream {
+            playbackStreamIDLabel.stringValue = format(id: stream.streamID)
+            if let virtualFormats = stream.availableVirtualFormatsMatchingCurrentNominalSampleRate(), virtualFormats.count > 0 {
+                playbackStreamVirtualFormatPopUpButton.isEnabled = true
+                for format in virtualFormats {
+                    playbackStreamVirtualFormatPopUpButton.addItem(withTitle: "\(humanReadableStreamBasicDescription(asbd: format))")
+                }
+
+                if let currentVirtualFormat = stream.virtualFormat {
+                    let title = humanReadableStreamBasicDescription(asbd: currentVirtualFormat)
+                    playbackStreamVirtualFormatPopUpButton.selectItem(withTitle: title)
+                }
+            } else {
+                playbackStreamVirtualFormatPopUpButton.isEnabled = false
+                playbackStreamVirtualFormatPopUpButton.removeAllItems()
+            }
+
+            if let physicalFormats = stream.availablePhysicalFormatsMatchingCurrentNominalSampleRate(), physicalFormats.count > 0 {
+                playbackStreamPhysicalFormatPopUpButton.isEnabled = true
+                for format in physicalFormats {
+                    playbackStreamPhysicalFormatPopUpButton.addItem(withTitle: "\(humanReadableStreamBasicDescription(asbd: format))")
+                }
+
+                if let currentPhysicalFormat = stream.physicalFormat {
+                    let title = humanReadableStreamBasicDescription(asbd: currentPhysicalFormat)
+                    playbackStreamPhysicalFormatPopUpButton.selectItem(withTitle: title)
+                }
+            } else {
+                playbackStreamPhysicalFormatPopUpButton.isEnabled = false
+                playbackStreamPhysicalFormatPopUpButton.removeAllItems()
+            }
+        } else {
+            playbackStreamIDLabel.stringValue = unsupportedValue
+            playbackStreamVirtualFormatPopUpButton.removeAllItems()
+            playbackStreamVirtualFormatPopUpButton.isEnabled = false
+            playbackStreamPhysicalFormatPopUpButton.removeAllItems()
+            playbackStreamPhysicalFormatPopUpButton.isEnabled = false
+        }
+    }
+
+    fileprivate func populateRecordingStreamInfo(stream: AMAudioStream?) {
+        recordingStreamVirtualFormatPopUpButton.removeAllItems()
+        recordingStreamPhysicalFormatPopUpButton.removeAllItems()
+
+        if let stream = stream {
+            recordingStreamIDLabel.stringValue = format(id: stream.streamID)
+            if let virtualFormats = stream.availableVirtualFormatsMatchingCurrentNominalSampleRate(), virtualFormats.count > 0 {
+                recordingStreamVirtualFormatPopUpButton.isEnabled = true
+                for format in virtualFormats {
+                    recordingStreamVirtualFormatPopUpButton.addItem(withTitle: "\(humanReadableStreamBasicDescription(asbd: format))")
+                }
+
+                if let currentVirtualFormat = stream.virtualFormat {
+                    let title = humanReadableStreamBasicDescription(asbd: currentVirtualFormat)
+                    recordingStreamVirtualFormatPopUpButton.selectItem(withTitle: title)
+                }
+            } else {
+                recordingStreamVirtualFormatPopUpButton.isEnabled = false
+                recordingStreamVirtualFormatPopUpButton.removeAllItems()
+            }
+
+            if let physicalFormats = stream.availablePhysicalFormatsMatchingCurrentNominalSampleRate(), physicalFormats.count > 0 {
+                recordingStreamPhysicalFormatPopUpButton.isEnabled = true
+                for format in physicalFormats {
+                    recordingStreamPhysicalFormatPopUpButton.addItem(withTitle: "\(humanReadableStreamBasicDescription(asbd: format))")
+                }
+
+                if let currentPhysicalFormat = stream.physicalFormat {
+                    let title = humanReadableStreamBasicDescription(asbd: currentPhysicalFormat)
+                    recordingStreamPhysicalFormatPopUpButton.selectItem(withTitle: title)
+                }
+            } else {
+                recordingStreamPhysicalFormatPopUpButton.isEnabled = false
+                recordingStreamPhysicalFormatPopUpButton.removeAllItems()
+            }
+        } else {
+            recordingStreamIDLabel.stringValue = unsupportedValue
+            recordingStreamVirtualFormatPopUpButton.removeAllItems()
+            recordingStreamVirtualFormatPopUpButton.isEnabled = false
+            recordingStreamPhysicalFormatPopUpButton.removeAllItems()
+            recordingStreamPhysicalFormatPopUpButton.isEnabled = false
+        }
+
+        recordingStreamVirtualFormatPopUpButton.target = self
+        recordingStreamVirtualFormatPopUpButton.action = #selector(notSupportedAction(_:))
+
+        recordingStreamPhysicalFormatPopUpButton.target = self
+        recordingStreamPhysicalFormatPopUpButton.action = #selector(notSupportedAction(_:))
+    }
+
+    fileprivate func humanReadableStreamBasicDescription(asbd: AudioStreamBasicDescription) -> String {
+        var descriptionElements: [String] = [String]()
+
+        print("asbd = \(asbd)")
+
+        // Mixable vs non-mixable
+        if asbd.mFormatFlags & kAudioFormatFlagIsNonMixable == 0 {
+            descriptionElements.append("Mixable")
+        } else {
+            descriptionElements.append("Non Mixable")
+        }
+
+        // Amount of channels
+        descriptionElements.append(String(format: "%d Channel", asbd.mChannelsPerFrame))
+
+        // Bit depth
+        descriptionElements.append(String(format: "%d Bit", asbd.mBitsPerChannel))
+
+        // Signed integer vs floating point
+        if asbd.mFormatFlags & kAudioFormatFlagIsSignedInteger == kAudioFormatFlagIsSignedInteger {
+            descriptionElements.append("Signed Integer")
+        } else if asbd.mFormatFlags & kAudioFormatFlagIsFloat == kAudioFormatFlagIsFloat {
+            descriptionElements.append("Floating Point")
+        }
+
+        // Bit aligment
+        if asbd.mFormatFlags & kLinearPCMFormatFlagIsPacked == 0 {
+            if asbd.mFormatFlags & kAudioFormatFlagIsAlignedHigh == kAudioFormatFlagIsAlignedHigh {
+                // Don't add to description
+            } else {
+                descriptionElements.append("Aligned Low in 32 Bits")
+            }
+        }
+
+        return descriptionElements.joined(separator: " ")
+    }
+
 
     fileprivate func populatePlaybackMasterVolume(device: AMAudioDevice) {
         if let playbackMasterVolume = device.masterVolumeInDecibelsForDirection(.Playback) {
@@ -182,6 +383,7 @@ class ViewController: NSViewController {
             devicePlaybackMasterVolumeLabel.isEnabled = true
             devicePlaybackMasterVolumeLabel.stringValue = isMuted ? "Muted" : "\(playbackMasterVolume) dBfs"
         } else {
+            devicePlaybackMasterVolumeLabel.stringValue = unknownValue
             devicePlaybackMasterVolumeLabel.isEnabled = false
         }
     }
@@ -192,6 +394,7 @@ class ViewController: NSViewController {
             deviceRecordingMasterVolumeLabel.isEnabled = true
             deviceRecordingMasterVolumeLabel.stringValue = isMuted ? "Muted" : "\(recordingMasterVolume) dBfs"
         } else {
+            deviceRecordingMasterVolumeLabel.stringValue = unknownValue
             deviceRecordingMasterVolumeLabel.isEnabled = false
         }
     }
@@ -202,6 +405,10 @@ class ViewController: NSViewController {
 
     fileprivate func format(sampleRate: Float64) -> String {
         return String.init(format: "%.1f kHz", sampleRate / 1000)
+    }
+
+    fileprivate func format(id: AudioObjectID) -> String {
+        return String.init(format: "0x%x", Int(id))
     }
 }
 
@@ -222,10 +429,15 @@ extension ViewController : AMEventSubscriber {
                             deviceActualSampleRateLabel.stringValue = unknownValue
                         }
                     }
+
+                    populateRecordingStreamPopUpButton(device: audioDevice)
+                    populatePlaybackStreamPopUpButton(device: audioDevice)
                 }
             case .availableNominalSampleRatesDidChange(let audioDevice):
                 if representedObject as? AMAudioDevice == audioDevice {
                     populateNominalSampleRatesPopUpButton(device: audioDevice)
+                    populateRecordingStreamPopUpButton(device: audioDevice)
+                    populatePlaybackStreamPopUpButton(device: audioDevice)
                 }
             case .clockSourceDidChange(let audioDevice, let channel, let direction):
                 if let clockSourceName = audioDevice.clockSourceForChannel(channel, andDirection: direction) {
@@ -266,11 +478,17 @@ extension ViewController : AMEventSubscriber {
                     }
                 }
             case .isAliveDidChange(let audioDevice):
-                print("\(audioDevice) 'is alive' changed to \(audioDevice.isAlive())")
+                if representedObject as? AMAudioDevice == audioDevice {
+                    deviceIsAliveLabel.stringValue = booleanToString(bool: audioDevice.isAlive())
+                }
             case .isRunningDidChange(let audioDevice):
-                print("\(audioDevice) 'is running' changed to \(audioDevice.isRunning())")
+                if representedObject as? AMAudioDevice == audioDevice {
+                    deviceIsRunningLabel.stringValue = booleanToString(bool: audioDevice.isRunning())
+                }
             case .isRunningSomewhereDidChange(let audioDevice):
-                print("\(audioDevice) 'is running somewhere' changed to \(audioDevice.isRunningSomewhere())")
+                if representedObject as? AMAudioDevice == audioDevice {
+                    deviceIsRunningSomewhereLabel.stringValue = booleanToString(bool: audioDevice.isRunningSomewhere())
+                }
             }
         case let event as AMAudioHardwareEvent:
             switch event {
@@ -286,9 +504,18 @@ extension ViewController : AMEventSubscriber {
         case let event as AMAudioStreamEvent:
             switch event {
             case .isActiveDidChange(let audioStream):
-                print("is active did change in \(audioStream)")
+                print("Audio stream \(audioStream) active status changed to \(audioStream.active)")
             case .physicalFormatDidChange(let audioStream):
-                print("physical format did change in \(audioStream.streamID), owner: \(audioStream.owningDevice), format: \(audioStream.physicalFormat)")
+                if audioStream.owningDevice == representedObject as? AMAudioDevice {
+                    switch audioStream.direction {
+                    case .some(.Playback):
+                        populatePlaybackStreamInfo(stream: audioStream)
+                    case .some(.Recording):
+                        populateRecordingStreamInfo(stream: audioStream)
+                    default:
+                        break
+                    }
+                }
             }
         default:
             break
