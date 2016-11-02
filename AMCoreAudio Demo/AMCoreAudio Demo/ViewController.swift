@@ -263,7 +263,7 @@ class ViewController: NSViewController {
         if let playbackStreams = device.streamsForDirection(.Playback), playbackStreams.count > 0 {
             playbackStreamPopUpButton.isEnabled = true
             for stream in playbackStreams {
-                playbackStreamPopUpButton.addItem(withTitle: "Output Stream \(format(id: stream.streamID))")
+                playbackStreamPopUpButton.addItem(withTitle: stream.streamName() ?? "Output Stream \(format(id: stream.streamID))")
                 playbackStreamPopUpButton.lastItem?.tag = Int(stream.streamID)
             }
 
@@ -283,7 +283,7 @@ class ViewController: NSViewController {
         if let recordingStreams = device.streamsForDirection(.Recording), recordingStreams.count > 0 {
             recordingStreamPopUpButton.isEnabled = true
             for stream in recordingStreams {
-                recordingStreamPopUpButton.addItem(withTitle: "Input Stream \(format(id: stream.streamID))")
+                recordingStreamPopUpButton.addItem(withTitle: stream.streamName() ?? "Input Stream \(format(id: stream.streamID))")
                 recordingStreamPopUpButton.lastItem?.tag = Int(stream.streamID)
             }
 

@@ -1492,17 +1492,7 @@ final public class AMAudioDevice: AMAudioObject {
     }
 
     private func getDeviceName() -> String {
-        var name: CFString = "" as CFString
-
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioObjectPropertyName,
-            mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMaster
-        )
-
-        let status = getPropertyData(address, andValue: &name)
-
-        return noErr == status ? (name as String) : (cachedDeviceName ?? "<Unknown Device Name>")
+        return name() ?? (cachedDeviceName ?? "<Unknown Device Name>")
     }
 
     private class func defaultDeviceOfType(_ deviceType: AudioObjectPropertySelector) -> AMAudioDevice? {

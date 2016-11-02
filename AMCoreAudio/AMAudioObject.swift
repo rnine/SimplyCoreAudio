@@ -107,6 +107,25 @@ public class AMAudioObject: NSObject {
         return nil
     }()
 
+    /**
+        The audio object's name as reported by the system.
+
+        - Returns: *(optional)* An audio object's name.
+     */
+    internal func name() -> String? {
+        var name: CFString = "" as CFString
+
+        let address = AudioObjectPropertyAddress(
+            mSelector: kAudioObjectPropertyName,
+            mScope: kAudioObjectPropertyScopeGlobal,
+            mElement: kAudioObjectPropertyElementMaster
+        )
+
+        let status = getPropertyData(address, andValue: &name)
+
+        return noErr == status ? (name as String) : nil
+    }
+
     public override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? AMAudioObject else {
             return false

@@ -340,6 +340,15 @@ final public class AMAudioStream: AMAudioObject {
     }
 
     /**
+        The audio stream's name as reported by the system.
+
+        - Returns: *(optional)* An audio stream's name.
+     */
+    public func streamName() -> String? {
+        return name()
+    }
+
+    /**
         All the available virtual formats for this audio stream matching the current virtual format's sample rate.
 
         - Note: By default, both mixable and non-mixable streams are returned, however,  non-mixable 
