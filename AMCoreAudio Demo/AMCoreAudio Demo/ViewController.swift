@@ -376,7 +376,7 @@ class ViewController: NSViewController {
     }
 
     fileprivate func format(id: AudioObjectID) -> String {
-        return String(format: "0x%x", Int(id))
+        return String(format: "0x%X", Int(id))
     }
 
     fileprivate func humanReadableStreamBasicDescription(asbd: AudioStreamBasicDescription) -> String {
@@ -386,7 +386,7 @@ class ViewController: NSViewController {
         if asbd.mFormatFlags & kAudioFormatFlagIsNonMixable == 0 {
             descriptionElements.append("Mixable")
         } else {
-            descriptionElements.append("Non Mixable")
+            descriptionElements.append("Unmixable")
         }
 
         // Amount of channels
