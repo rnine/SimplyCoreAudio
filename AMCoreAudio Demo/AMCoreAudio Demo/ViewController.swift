@@ -491,8 +491,10 @@ extension ViewController : AMEventSubscriber {
                     populatePlaybackStreamPopUpButton(device: audioDevice)
                 }
             case .clockSourceDidChange(let audioDevice, let channel, let direction):
-                if let clockSourceName = audioDevice.clockSourceForChannel(channel, andDirection: direction) {
-                    print("\(audioDevice) clock source changed to \(clockSourceName)")
+                if representedObject as? AMAudioDevice == audioDevice {
+                    if let clockSourceID = audioDevice.clockSourceIDForChannel(channel, andDirection: direction) {
+                        deviceClockSourcesPopupButton.selectItem(withTag: Int(clockSourceID))
+                    }
                 }
             case .nameDidChange(let audioDevice):
                 if representedObject as? AMAudioDevice == audioDevice {
