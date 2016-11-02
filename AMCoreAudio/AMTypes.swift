@@ -89,6 +89,66 @@ public enum TransportType: String {
 }
 
 /**
+    Indicates the terminal type used by an `AMAudioStream`.
+ */
+public enum TerminalType: String {
+    /**
+        Unknown
+     */
+    case Unknown
+    /**
+        The ID for a terminal type of a line level stream. 
+        Note that this applies to both input streams and output streams.
+     */
+    case Line
+    /**
+        A stream from/to a digital audio interface as defined by ISO 60958 (aka SPDIF or AES/EBU).
+        Note that this applies to both input streams and output streams.
+     */
+    case DigitalAudioInterface
+    /**
+        Speaker
+     */
+    case Speaker
+    /**
+        Headphones
+     */
+    case Headphones
+    /**
+        Speaker for low frequency effects
+     */
+    case LFESpeaker
+    /**
+        A speaker on a telephone handset receiver
+     */
+    case ReceiverSpeaker
+    /**
+        A microphone
+     */
+    case Microphone
+    /**
+        A microphone attached to an headset
+     */
+    case HeadsetMicrophone
+    /**
+        A microphone on a telephone handset receiver
+     */
+    case ReceiverMicrophone
+    /**
+        A device providing a TTY signl
+     */
+    case TTY
+    /**
+        A stream from/to an HDMI port
+     */
+    case HDMI
+    /**
+        A stream from/to an DisplayPort port
+     */
+    case DisplayPort
+}
+
+/**
     This struct holds volume, mute, and playthru information about a given channel and direction of an `AMAudioDevice`.
  */
 public struct VolumeInfo {

@@ -94,8 +94,63 @@ final public class AMAudioStream: AMAudioObject {
     }()
 
     /**
+        Describes the general kind of functionality attached to this stream.
+     
+        - Return: A `TerminalType`.
+    */
+    public lazy var terminalType: TerminalType = {
+        var address = AudioObjectPropertyAddress(
+            mSelector: kAudioStreamPropertyTerminalType,
+            mScope: kAudioObjectPropertyScopeGlobal,
+            mElement: kAudioObjectPropertyElementMaster
+        )
+
+        if !AudioObjectHasProperty(self.streamID, &address) {
+            return .Unknown
+        }
+
+        var terminalType: UInt32 = 0
+        let status = self.getPropertyData(address, andValue: &terminalType)
+
+        if noErr != status {
+            return .Unknown
+        }
+
+        switch terminalType {
+        case kAudioStreamTerminalTypeLine:
+            return .Line
+        case kAudioStreamTerminalTypeDigitalAudioInterface:
+            return .DigitalAudioInterface
+        case kAudioStreamTerminalTypeSpeaker:
+            return .Speaker
+        case kAudioStreamTerminalTypeHeadphones:
+            return .Headphones
+        case kAudioStreamTerminalTypeLFESpeaker:
+            return .LFESpeaker
+        case kAudioStreamTerminalTypeReceiverSpeaker:
+            return .ReceiverSpeaker
+        case kAudioStreamTerminalTypeMicrophone:
+            return .Microphone
+        case kAudioStreamTerminalTypeHeadsetMicrophone:
+            return .HeadsetMicrophone
+        case kAudioStreamTerminalTypeReceiverMicrophone:
+            return .ReceiverMicrophone
+        case kAudioStreamTerminalTypeTTY:
+            return .TTY
+        case kAudioStreamTerminalTypeHDMI:
+            return .HDMI
+        case kAudioStreamTerminalTypeDisplayPort:
+            return .DisplayPort
+        case kAudioStreamTerminalTypeUnknown:
+            fallthrough
+        default:
+            return .Unknown
+        }
+    }()
+
+    /**
         The audio stream's direction.
-        
+
         For output streams, and to continue using the same `Direction` concept used by `AMAudioDevice`,
         this will be `Direction.Playback`, likewise, for input streams, `Direction.Recording` will be returned.
 
