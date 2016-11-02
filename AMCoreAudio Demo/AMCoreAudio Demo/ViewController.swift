@@ -22,6 +22,7 @@ class ViewController: NSViewController {
     @IBOutlet var deviceConfigAppLabel: NSTextField!
     @IBOutlet var deviceNominalSampleRatesPopupButton: NSPopUpButton!
     @IBOutlet var deviceActualSampleRateLabel: NSTextField!
+    @IBOutlet var deviceClockSourcesPopupButton: NSPopUpButton!
     @IBOutlet var devicePlaybackLatencyLabel: NSTextField!
     @IBOutlet var deviceRecordingLatencyLabel: NSTextField!
     @IBOutlet var devicePlaybackSafetyOffsetLabel: NSTextField!
@@ -104,15 +105,33 @@ class ViewController: NSViewController {
         }
     }
 
-    @IBAction func notSupportedAction(_ sender: AnyObject?) {
-        let alert = NSAlert()
+    @IBAction func updateClockSource(_ sender: AnyObject) {
+        if let popUpButton = sender as? NSPopUpButton, let item = popUpButton.selectedItem {
+            if let representedAudioDevice = representedObject as? AMAudioDevice {
+                let clockSourceID = UInt32(item.tag)
+                if representedAudioDevice.setClockSourceID(clockSourceID, forChannel: 0, andDirection: .Playback) == false {
+                    print("Unable to set clock source to \(clockSourceID) on audio device \(representedAudioDevice)")
+                }
+            }
+        }
+    }
 
-        let messages = ["Oops!", "Rats!", "Yikes!", "Uh-oh!", "Eek!"]
+    @IBAction func updateStreamVirtualFormat(_ sender: AnyObject) {
+        if let popUpButton = sender as? NSPopUpButton, let item = popUpButton.selectedItem {
+            if let stream = AMAudioStream.lookupByID(AudioObjectID(item.tag)),
+               let format = item.representedObject as? AudioStreamBasicDescription {
+                stream.virtualFormat = format
+            }
+        }
+    }
 
-        alert.messageText = messages[Int(arc4random() % UInt32(messages.count))]
-        alert.informativeText = "This functionality is currently unimplemented."
-
-        alert.runModal()
+    @IBAction func updateStreamPhysicalFormat(_ sender: AnyObject) {
+        if let popUpButton = sender as? NSPopUpButton, let item = popUpButton.selectedItem {
+            if let stream = AMAudioStream.lookupByID(AudioObjectID(item.tag)),
+                let format = item.representedObject as? AudioStreamBasicDescription {
+                stream.physicalFormat = format
+            }
+        }
     }
 
     // MARK: - Private
@@ -147,6 +166,8 @@ class ViewController: NSViewController {
         } else {
             deviceActualSampleRateLabel.stringValue = unknownValue
         }
+
+        populateClockSourcesPopUpButton(device: device)
 
         if let playbackLatency = device.deviceLatencyFramesForDirection(.Playback) {
             devicePlaybackLatencyLabel.stringValue = "\(playbackLatency) frames"
@@ -205,6 +226,37 @@ class ViewController: NSViewController {
         }
     }
 
+    fileprivate func populateClockSourcesPopUpButton(device: AMAudioDevice) {
+        deviceClockSourcesPopupButton.removeAllItems()
+
+        let direction: AMCoreAudio.Direction!
+
+        switch (device.channelsForDirection(.Playback), device.channelsForDirection(.Recording)) {
+        case let (p, _) where (p > 0):
+            direction = .Playback
+        case let (p, r) where (p == 0 && r > 0):
+            direction = .Recording
+        default:
+            return // not supported
+        }
+
+        if let clockSourceIDs = device.clockSourceIDsForChannel(0, andDirection: direction), clockSourceIDs.count > 0 {
+            deviceClockSourcesPopupButton.isEnabled = true
+            for clockSourceID in clockSourceIDs {
+                let clockSourceName = device.clockSourceNameForClockSourceID(clockSourceID, forChannel: 0, andDirection: direction) ?? "Internal"
+                deviceClockSourcesPopupButton.addItem(withTitle: clockSourceName)
+                deviceClockSourcesPopupButton.lastItem?.tag = Int(clockSourceID)
+            }
+
+            if let clockSourceID = device.clockSourceIDForChannel(0, andDirection: direction) {
+                deviceClockSourcesPopupButton.selectItem(withTag: Int(clockSourceID))
+            }
+        } else {
+            deviceClockSourcesPopupButton.addItem(withTitle: unsupportedValue)
+            deviceClockSourcesPopupButton.isEnabled = false
+        }
+    }
+
     fileprivate func populatePlaybackStreamPopUpButton(device: AMAudioDevice) {
         playbackStreamPopUpButton.removeAllItems()
 
@@ -255,6 +307,8 @@ class ViewController: NSViewController {
                 playbackStreamVirtualFormatPopUpButton.isEnabled = true
                 for format in virtualFormats {
                     playbackStreamVirtualFormatPopUpButton.addItem(withTitle: "\(humanReadableStreamBasicDescription(asbd: format))")
+                    playbackStreamVirtualFormatPopUpButton.lastItem?.tag = Int(stream.streamID)
+                    playbackStreamVirtualFormatPopUpButton.lastItem?.representedObject = format
                 }
 
                 if let currentVirtualFormat = stream.virtualFormat {
@@ -270,6 +324,8 @@ class ViewController: NSViewController {
                 playbackStreamPhysicalFormatPopUpButton.isEnabled = true
                 for format in physicalFormats {
                     playbackStreamPhysicalFormatPopUpButton.addItem(withTitle: "\(humanReadableStreamBasicDescription(asbd: format))")
+                    playbackStreamPhysicalFormatPopUpButton.lastItem?.tag = Int(stream.streamID)
+                    playbackStreamPhysicalFormatPopUpButton.lastItem?.representedObject = format
                 }
 
                 if let currentPhysicalFormat = stream.physicalFormat {
@@ -287,12 +343,6 @@ class ViewController: NSViewController {
             playbackStreamPhysicalFormatPopUpButton.removeAllItems()
             playbackStreamPhysicalFormatPopUpButton.isEnabled = false
         }
-
-        playbackStreamVirtualFormatPopUpButton.target = self
-        playbackStreamVirtualFormatPopUpButton.action = #selector(notSupportedAction(_:))
-
-        playbackStreamPhysicalFormatPopUpButton.target = self
-        playbackStreamPhysicalFormatPopUpButton.action = #selector(notSupportedAction(_:))
     }
 
     fileprivate func populateRecordingStreamInfo(stream: AMAudioStream?) {
@@ -305,6 +355,8 @@ class ViewController: NSViewController {
                 recordingStreamVirtualFormatPopUpButton.isEnabled = true
                 for format in virtualFormats {
                     recordingStreamVirtualFormatPopUpButton.addItem(withTitle: "\(humanReadableStreamBasicDescription(asbd: format))")
+                    recordingStreamVirtualFormatPopUpButton.lastItem?.tag = Int(stream.streamID)
+                    recordingStreamVirtualFormatPopUpButton.lastItem?.representedObject = format
                 }
 
                 if let currentVirtualFormat = stream.virtualFormat {
@@ -320,6 +372,8 @@ class ViewController: NSViewController {
                 recordingStreamPhysicalFormatPopUpButton.isEnabled = true
                 for format in physicalFormats {
                     recordingStreamPhysicalFormatPopUpButton.addItem(withTitle: "\(humanReadableStreamBasicDescription(asbd: format))")
+                    recordingStreamPhysicalFormatPopUpButton.lastItem?.tag = Int(stream.streamID)
+                    recordingStreamPhysicalFormatPopUpButton.lastItem?.representedObject = format
                 }
 
                 if let currentPhysicalFormat = stream.physicalFormat {
@@ -337,12 +391,6 @@ class ViewController: NSViewController {
             recordingStreamPhysicalFormatPopUpButton.removeAllItems()
             recordingStreamPhysicalFormatPopUpButton.isEnabled = false
         }
-
-        recordingStreamVirtualFormatPopUpButton.target = self
-        recordingStreamVirtualFormatPopUpButton.action = #selector(notSupportedAction(_:))
-
-        recordingStreamPhysicalFormatPopUpButton.target = self
-        recordingStreamPhysicalFormatPopUpButton.action = #selector(notSupportedAction(_:))
     }
 
     fileprivate func populatePlaybackMasterVolume(device: AMAudioDevice) {
