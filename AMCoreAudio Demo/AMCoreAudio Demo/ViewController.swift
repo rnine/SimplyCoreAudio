@@ -36,11 +36,15 @@ class ViewController: NSViewController {
 
     @IBOutlet var playbackStreamPopUpButton: NSPopUpButton!
     @IBOutlet var playbackStreamIDLabel: NSTextField!
+    @IBOutlet var playbackStreamStartingChannelLabel: NSTextField!
+    @IBOutlet var playbackStreamTerminalTypeLabel: NSTextField!
     @IBOutlet var playbackStreamVirtualFormatPopUpButton: NSPopUpButton!
     @IBOutlet var playbackStreamPhysicalFormatPopUpButton: NSPopUpButton!
 
     @IBOutlet var recordingStreamPopUpButton: NSPopUpButton!
     @IBOutlet var recordingStreamIDLabel: NSTextField!
+    @IBOutlet var recordingStreamStartingChannelLabel: NSTextField!
+    @IBOutlet var recordingStreamTerminalTypeLabel: NSTextField!
     @IBOutlet var recordingStreamVirtualFormatPopUpButton: NSPopUpButton!
     @IBOutlet var recordingStreamPhysicalFormatPopUpButton: NSPopUpButton!
 
@@ -130,6 +134,22 @@ class ViewController: NSViewController {
             if let stream = AMAudioStream.lookupByID(AudioObjectID(item.tag)),
                 let format = item.representedObject as? AudioStreamBasicDescription {
                 stream.physicalFormat = format
+            }
+        }
+    }
+
+    @IBAction func selectPlaybackStream(_ sender: AnyObject) {
+        if let popUpButton = sender as? NSPopUpButton, let item = popUpButton.selectedItem {
+            if let stream = AMAudioStream.lookupByID(AudioObjectID(item.tag)) {
+                populatePlaybackStreamInfo(stream: stream)
+            }
+        }
+    }
+
+    @IBAction func selectRecordingStream(_ sender: AnyObject) {
+        if let popUpButton = sender as? NSPopUpButton, let item = popUpButton.selectedItem {
+            if let stream = AMAudioStream.lookupByID(AudioObjectID(item.tag)) {
+                populateRecordingStreamInfo(stream: stream)
             }
         }
     }
@@ -303,6 +323,9 @@ class ViewController: NSViewController {
 
         if let stream = stream {
             playbackStreamIDLabel.stringValue = format(id: stream.streamID)
+            playbackStreamStartingChannelLabel.stringValue = "\(stream.startingChannel ?? 0)"
+            playbackStreamTerminalTypeLabel.stringValue = "\(stream.terminalType)"
+
             if let virtualFormats = stream.availableVirtualFormatsMatchingCurrentNominalSampleRate(), virtualFormats.count > 0 {
                 playbackStreamVirtualFormatPopUpButton.isEnabled = true
                 for format in virtualFormats {
@@ -351,6 +374,9 @@ class ViewController: NSViewController {
 
         if let stream = stream {
             recordingStreamIDLabel.stringValue = format(id: stream.streamID)
+            recordingStreamStartingChannelLabel.stringValue = "\(stream.startingChannel ?? 0)"
+            recordingStreamTerminalTypeLabel.stringValue = "\(stream.terminalType)"
+
             if let virtualFormats = stream.availableVirtualFormatsMatchingCurrentNominalSampleRate(), virtualFormats.count > 0 {
                 recordingStreamVirtualFormatPopUpButton.isEnabled = true
                 for format in virtualFormats {
