@@ -1472,7 +1472,7 @@ final public class AMAudioDevice: AMAudioObject {
         }
 
         return streamIDs.map({ (streamID) -> AMAudioStream in
-            AMAudioStream.lookupByID(streamID)
+            AMAudioStream.lookupByID(streamID)!
         })
     }
 

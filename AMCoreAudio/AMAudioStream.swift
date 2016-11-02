@@ -280,14 +280,14 @@ final public class AMAudioStream: AMAudioObject {
 
     // MARK: - Public Functions
 
-    static func lookupByID(_ ID: AudioObjectID) -> AMAudioStream {
+    public static func lookupByID(_ ID: AudioObjectID) -> AMAudioStream? {
         var instance = AMAudioObjectPool.instancePool.object(forKey: NSNumber(value: UInt(ID))) as? AMAudioStream
 
         if instance == nil {
             instance = AMAudioStream(streamID: ID)
         }
 
-        return instance!
+        return instance
     }
 
     /**
