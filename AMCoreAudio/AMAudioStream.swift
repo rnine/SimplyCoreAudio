@@ -546,10 +546,12 @@ final public class AMAudioStream: AMAudioObject {
 // MARK: - Deprecated
 
 extension AMAudioStream {
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use name instead") public func streamName() -> String? {
         return name
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use id instead") public var streamID: AudioObjectID {
         return id
     }

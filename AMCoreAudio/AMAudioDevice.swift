@@ -1564,98 +1564,122 @@ extension AMAudioDevice {
 // MARK: - Deprecated
 
 extension AMAudioDevice {
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use id instead") public var deviceID: AudioObjectID {
         return id
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use name instead") public func deviceName() -> String {
         return name
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use uid instead") public func deviceUID() -> String? {
         return uid
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use modelUID instead") public func deviceModelUID() -> String? {
         return modelUID
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use configurationApplication instead") public func deviceConfigurationApplication() -> String? {
         return configurationApplication
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use manufacturer instead") public func deviceManufacturer() -> String? {
         return manufacturer
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use isHidden() instead") public func deviceIsHidden() -> Bool {
         return isHidden()
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use streams(direction:) instead") public func streamsForDirection(_ direction: Direction) -> [AMAudioStream]? {
         return streams(direction: direction)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use channels(direction:) instead") public func channelsForDirection(_ direction: Direction) -> UInt32 {
         return channels(direction: direction)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use volumeInfo(channel:direction:) instead") public func volumeInfoForChannel(_ channel: UInt32, andDirection direction: Direction) -> VolumeInfo? {
         return volumeInfo(channel: channel, direction: direction)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use canMute(channel:direction:) instead") public func canMuteForChannel(_ channel: UInt32, andDirection direction: Direction) -> Bool {
         return canMute(channel: channel, direction: direction)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use canSetvolume(channel:direction:) instead") public func canSetVolumeForChannel(_ channel: UInt32, andDirection direction: Direction) -> Bool {
         return canSetVolume(channel: channel, direction: direction)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use virtualMasterVolume(direction:) instead") public func masterVolumeForDirection(_ direction: Direction) -> Float32? {
         return virtualMasterVolume(direction: direction)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use setVirtualMasterVolume(_:direction:) instead") public func setMasterVolume(_ volume: Float32, forDirection direction: Direction) -> Bool {
         return setVirtualMasterVolume(volume, direction: direction)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use virtualMasterVolumeInDecibels(direction:) instead")public func masterVolumeInDecibelsForDirection(_ direction: Direction) -> Float32? {
         return virtualMasterVolumeInDecibels(direction: direction)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use name(channel:direction:) instead") public func nameForChannel(_ channel: UInt32, andDirection direction: Direction) -> String? {
         return name(channel: channel, direction: direction)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use layoutChannels(direction:) instead") public func layoutChannelsForDirection(_ direction: Direction) -> UInt32? {
         return layoutChannels(direction: direction)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use volume(channel:direction:) instead") public func volumeForChannel(_ channel: UInt32, andDirection direction: Direction) -> Float32? {
         return volume(channel: channel, direction: direction)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use volumeInDecibels(channel:direction:) instead") public func volumeInDecibelsForChannel(_ channel: UInt32, andDirection direction: Direction) -> Float32? {
         return volumeInDecibels(channel: channel, direction: direction)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use setVolume(_:channel:direction:) instead") public func setVolume(_ volume: Float32, forChannel channel: UInt32, andDirection direction: Direction) -> Bool {
         return setVolume(volume, channel: channel, direction: direction)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use setMute(_:channel:direction:) instead") public func setMute(_ shouldMute: Bool, forChannel channel: UInt32, andDirection direction: Direction) -> Bool {
         return setMute(shouldMute, channel: channel, direction: direction)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use isMuted(channel:direction:) instead") public func isChannelMuted(_ channel: UInt32, andDirection direction: Direction) -> Bool? {
         return isMuted(channel: channel, direction: direction)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use isMasterChannelMuted(direction:) instead") public func isMasterVolumeMutedForDirection(_ direction: Direction) -> Bool? {
         return isMasterChannelMuted(direction: direction)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use preferredChannelsForStereo(direction:) instead") public func preferredStereoChannelsForDirection(_ direction: Direction) -> [UInt32]? {
         if let preferredChannelsForStereo = preferredChannelsForStereo(direction: direction) {
             return [preferredChannelsForStereo.0, preferredChannelsForStereo.1]
@@ -1664,50 +1688,62 @@ extension AMAudioDevice {
         }
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use canMuteVirtualMasterChannel(direction:) instead") public func canMuteMasterVolumeForDirection(_ direction: Direction) -> Bool {
         return canMuteVirtualMasterChannel(direction: direction)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use canSetVirtualMasterVolume(direction:) instead") public func canSetMastervolumeForDirection(_ direction: Direction) -> Bool {
         return canSetVirtualMasterVolume(direction: direction)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use scalarToDecibels(volume:channel:direction:) instead") public func scalarToDecibels(_ volume: Float32, forChannel channel: UInt32, andDirection direction: Direction) -> Float32? {
         return scalarToDecibels(volume: volume, channel: channel, direction: direction)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use decibelsToScalar(volume:channel:direction:) instead") public func decibelsToScalar(_ volume: Float32, forChannel channel: UInt32, andDirection direction: Direction) -> Float32? {
         return decibelsToScalar(volume: volume, channel: channel, direction: direction)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use deviceLatencyFrames(direction:) instead") public func deviceLatencyFramesForDirection(_ direction: Direction) -> UInt32? {
         return deviceLatencyFrames(direction: direction)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use deviceSafetyOffsetFrames(direction:) instead") public func deviceSafetyOffsetFramesForDirection(_ direction: Direction) -> UInt32? {
         return deviceSafetyOffsetFrames(direction: direction)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use clockSourceID(channel:direction:) instead") public func clockSourceIDForChannel(_ channel: UInt32, andDirection direction: Direction) -> UInt32? {
         return clockSourceID(channel: channel, direction: direction)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use clockSourceName(channel:direction:) instead") public func clockSourceForChannel(_ channel: UInt32, andDirection direction: Direction) -> String? {
         return clockSourceName(channel: channel, direction: direction)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use clockSourceIDs(channel:direction:) instead") public func clockSourceIDsForChannel(_ channel: UInt32, andDirection direction: Direction) -> [UInt32]? {
         return clockSourceIDs(channel: channel, direction: direction)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use clockSourceNames(channel:direction:) instead") public func clockSourcesForChannel(_ channel: UInt32, andDirection direction: Direction) -> [String]? {
         return clockSourceNames(channel: channel, direction: direction)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use clockSourceName(clockSourceID:) instead") public func clockSourceNameForClockSourceID(_ clockSourceID: UInt32, forChannel _: UInt32, andDirection _: Direction) -> String? {
         return clockSourceName(clockSourceID: clockSourceID)
     }
 
+    /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use setClockSourceID(_:channel:direction:) instead") public func setClockSourceID(_ clockSourceID: UInt32, forChannel channel: UInt32, andDirection direction: Direction) -> Bool {
         return setClockSourceID(clockSourceID, channel: channel, direction: direction)
     }
