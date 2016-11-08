@@ -1,5 +1,5 @@
 //
-//  AMAudioHardware.swift
+//  AudioHardware.swift
 //  AMCoreAudio
 //
 //  Created by Ruben on 7/9/15.
@@ -9,52 +9,59 @@
 import Foundation
 import AudioToolbox.AudioServices
 
-///// `AMAudioHardwareEvent` enum
-public enum AMAudioHardwareEvent: AMEvent {
+/// :nodoc:
+@available(*, deprecated, message: "Marked for removal in 3.2. Use AudioHardwareEvent instead") public typealias AMAudioHardwareEvent = AudioHardwareEvent
+
+/// :nodoc:
+@available(*, deprecated, message: "Marked for removal in 3.2. Use AudioHardware instead") public typealias AMAudioHardware = AudioHardware
+
+
+///// `AudioHardwareEvent` enum
+public enum AudioHardwareEvent: Event {
     /**
         Called whenever the list of hardware devices and device subdevices changes.
         (i.e., devices that are part of *Aggregate* or *Multi-Output* devices.)
      */
-    case deviceListChanged(addedDevices: [AMAudioDevice], removedDevices: [AMAudioDevice])
+    case deviceListChanged(addedDevices: [AudioDevice], removedDevices: [AudioDevice])
 
     /**
         Called whenever the default input device changes.
      */
-    case defaultInputDeviceChanged(audioDevice: AMAudioDevice)
+    case defaultInputDeviceChanged(audioDevice: AudioDevice)
 
     /**
         Called whenever the default output device changes.
      */
-    case defaultOutputDeviceChanged(audioDevice: AMAudioDevice)
+    case defaultOutputDeviceChanged(audioDevice: AudioDevice)
 
     /**
         Called whenever the default system output device changes.
      */
-    case defaultSystemOutputDeviceChanged(audioDevice: AMAudioDevice)
+    case defaultSystemOutputDeviceChanged(audioDevice: AudioDevice)
 }
 
 /**
-    `AMAudioHardware`
+    `AudioHardware`
 
     This class allows subscribing to hardware-related audio notifications.
 
-    For a comprehensive list of supported notifications, see `AMAudioHardwareDelegate`.
+    For a comprehensive list of supported notifications, see `AudioHardwareDelegate`.
  */
-final public class AMAudioHardware: NSObject {
+final public class AudioHardware {
 
     /**
-        Returns a singleton `AMAudioHardware` instance.
+        Returns a singleton `AudioHardware` instance.
     */
-    public static let sharedInstance = AMAudioHardware()
+    public static let sharedInstance = AudioHardware()
 
     /**
         An auto-maintained array of all the audio devices currently available in the system.
 
         - Note: This list may also include *Aggregate* and *Multi-Output* devices.
 
-        - Returns: An array of `AMAudioDevice` objects.
+        - Returns: An array of `AudioDevice` objects.
      */
-    private var allKnownDevices = [AMAudioDevice]()
+    private var allKnownDevices = [AudioDevice]()
 
     private var isRegisteredForNotifications = false
 
@@ -64,12 +71,12 @@ final public class AMAudioHardware: NSObject {
 
     private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { [weak self] (inNumberAddresses, inAddresses) -> Void in
         let address = inAddresses.pointee
-        let notificationCenter = AMNotificationCenter.defaultCenter
+        let notificationCenter = NotificationCenter.defaultCenter
 
         switch address.mSelector {
         case kAudioObjectPropertyOwnedObjects:
             // Get the latest device list
-            let latestDeviceList = AMAudioDevice.allDevices()
+            let latestDeviceList = AudioDevice.allDevices()
 
             let addedDevices = latestDeviceList.filter { (audioDevice) -> Bool in
                 let isContained = (self?.allKnownDevices.filter({ (oldAudioDevice) -> Bool in
@@ -97,21 +104,21 @@ final public class AMAudioHardware: NSObject {
                 self?.removeDevice(device)
             }
 
-            notificationCenter.publish(AMAudioHardwareEvent.deviceListChanged(
+            notificationCenter.publish(AudioHardwareEvent.deviceListChanged(
                 addedDevices: addedDevices,
                 removedDevices: removedDevices ?? []
             ))
         case kAudioHardwarePropertyDefaultInputDevice:
-            if let audioDevice = AMAudioDevice.defaultInputDevice() {
-                notificationCenter.publish(AMAudioHardwareEvent.defaultInputDeviceChanged(audioDevice: audioDevice))
+            if let audioDevice = AudioDevice.defaultInputDevice() {
+                notificationCenter.publish(AudioHardwareEvent.defaultInputDeviceChanged(audioDevice: audioDevice))
             }
         case kAudioHardwarePropertyDefaultOutputDevice:
-            if let audioDevice = AMAudioDevice.defaultOutputDevice() {
-                notificationCenter.publish(AMAudioHardwareEvent.defaultOutputDeviceChanged(audioDevice: audioDevice))
+            if let audioDevice = AudioDevice.defaultOutputDevice() {
+                notificationCenter.publish(AudioHardwareEvent.defaultOutputDeviceChanged(audioDevice: audioDevice))
             }
         case kAudioHardwarePropertyDefaultSystemOutputDevice:
-            if let audioDevice = AMAudioDevice.defaultSystemOutputDevice() {
-                notificationCenter.publish(AMAudioHardwareEvent.defaultSystemOutputDeviceChanged(audioDevice: audioDevice))
+            if let audioDevice = AudioDevice.defaultSystemOutputDevice() {
+                notificationCenter.publish(AudioHardwareEvent.defaultSystemOutputDeviceChanged(audioDevice: audioDevice))
             }
         default:
             break
@@ -119,10 +126,6 @@ final public class AMAudioHardware: NSObject {
     }
 
     // MARK: - Public Functions
-
-    internal override init() {
-        super.init()
-    }
 
     deinit {
         disableDeviceMonitoring()
@@ -141,7 +144,7 @@ final public class AMAudioHardware: NSObject {
     internal func enableDeviceMonitoring() {
         registerForNotifications()
 
-        let allDevices = AMAudioDevice.allDevices()
+        let allDevices = AudioDevice.allDevices()
 
         allDevices.forEach { (device) in
             addDevice(device)
@@ -163,11 +166,11 @@ final public class AMAudioHardware: NSObject {
 
     // MARK: - Private Functions
 
-    private func addDevice(_ device: AMAudioDevice) {
+    private func addDevice(_ device: AudioDevice) {
         allKnownDevices.append(device)
     }
 
-    private func removeDevice(_ device: AMAudioDevice) {
+    private func removeDevice(_ device: AudioDevice) {
         if let idx = allKnownDevices.index(of: device) {
             allKnownDevices.remove(at: idx)
         }

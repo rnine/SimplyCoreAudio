@@ -1,15 +1,16 @@
 //
-//  AMUtils.swift
+//  Utils.swift
 //  AMCoreAudio
 //
 //  Created by Ruben Nine on 13/04/16.
 //  Copyright © 2016 9Labs. All rights reserved.
 //
 
-import Cocoa
+import Foundation
 
-final internal class AMUtils: NSObject {
-
+final internal class Utils {
+    private init() {}
+    
     class func directionToScope(_ direction: Direction) -> AudioObjectPropertyScope {
         return .Playback == direction ? kAudioObjectPropertyScopeOutput : kAudioObjectPropertyScopeInput
     }

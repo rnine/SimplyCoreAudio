@@ -26,7 +26,7 @@ class ExtraViewController: NSViewController {
     override var representedObject: Any? {
         didSet {
             // Update the view, if already loaded.
-            if let audioDevice = representedObject as? AMAudioDevice {
+            if let audioDevice = representedObject as? AudioDevice {
                 populateInfoFields(device: audioDevice)
             }
         }
@@ -36,7 +36,7 @@ class ExtraViewController: NSViewController {
         super.viewDidLoad()
         // Do view setup here.
 
-        AMNotificationCenter.defaultCenter.subscribe(self, eventType: AMAudioDeviceEvent.self, dispatchQueue: DispatchQueue.main)
+        NotificationCenter.defaultCenter.subscribe(self, eventType: AudioDeviceEvent.self, dispatchQueue: DispatchQueue.main)
     }
 
     
@@ -50,7 +50,7 @@ class ExtraViewController: NSViewController {
 
 
     deinit {
-        AMNotificationCenter.defaultCenter.unsubscribe(self, eventType: AMAudioDeviceEvent.self)
+        NotificationCenter.defaultCenter.unsubscribe(self, eventType: AudioDeviceEvent.self)
     }
 
     // MARK: - Actions
@@ -58,7 +58,7 @@ class ExtraViewController: NSViewController {
     @IBAction func setShouldOwniSub(_ sender: AnyObject) {
         guard let button = sender as? NSButton else { return }
 
-        if let audioDevice = representedObject as? AMAudioDevice {
+        if let audioDevice = representedObject as? AudioDevice {
             audioDevice.shouldOwniSub = button.state == NSOnState
         }
     }
@@ -66,7 +66,7 @@ class ExtraViewController: NSViewController {
     @IBAction func setLFEVolume(_ sender: AnyObject) {
         guard let slider = sender as? NSSlider else { return }
 
-        if let audioDevice = representedObject as? AMAudioDevice {
+        if let audioDevice = representedObject as? AudioDevice {
             audioDevice.LFEVolume = slider.floatValue
         }
     }
@@ -74,7 +74,7 @@ class ExtraViewController: NSViewController {
     @IBAction func setLFEMute(_ sender: AnyObject) {
         guard let button = sender as? NSButton else { return }
 
-        if let audioDevice = representedObject as? AMAudioDevice {
+        if let audioDevice = representedObject as? AudioDevice {
             audioDevice.LFEMute = button.state == NSOnState
         }
     }
@@ -82,7 +82,7 @@ class ExtraViewController: NSViewController {
     @IBAction func setVirtualMasterVolume(_ sender: AnyObject) {
         guard let slider = sender as? NSSlider else { return }
 
-        if let audioDevice = representedObject as? AMAudioDevice, let direction = representedDirection {
+        if let audioDevice = representedObject as? AudioDevice, let direction = representedDirection {
             if audioDevice.setVirtualMasterVolume(slider.floatValue, direction: direction) == false {
                 print("Unable to set virtual master volume to \(slider.floatValue) for direction \(direction)")
             }
@@ -92,7 +92,7 @@ class ExtraViewController: NSViewController {
     @IBAction func setVirtualMasterBalance(_ sender: AnyObject) {
         guard let slider = sender as? NSSlider else { return }
 
-        if let audioDevice = representedObject as? AMAudioDevice, let direction = representedDirection {
+        if let audioDevice = representedObject as? AudioDevice, let direction = representedDirection {
             if audioDevice.setVirtualMasterBalance(slider.floatValue, direction: direction) == false {
                 print("Unable to set virtual master balance to \(slider.floatValue) for direction \(direction)")
             }
@@ -104,7 +104,7 @@ class ExtraViewController: NSViewController {
             return
         }
 
-        if let audioDevice = representedObject as? AMAudioDevice, let direction = representedDirection {
+        if let audioDevice = representedObject as? AudioDevice, let direction = representedDirection {
             if let preferredChannelsForStereo = audioDevice.preferredChannelsForStereo(direction: direction) {
                 var newPair = preferredChannelsForStereo
                 newPair.left = UInt32(item.tag)
@@ -121,7 +121,7 @@ class ExtraViewController: NSViewController {
             return
         }
 
-        if let audioDevice = representedObject as? AMAudioDevice, let direction = representedDirection {
+        if let audioDevice = representedObject as? AudioDevice, let direction = representedDirection {
             if let preferredChannelsForStereo = audioDevice.preferredChannelsForStereo(direction: direction) {
                 var newPair = preferredChannelsForStereo
                 newPair.right = UInt32(item.tag)
@@ -135,7 +135,7 @@ class ExtraViewController: NSViewController {
 
     // MARK: - Private
 
-    fileprivate func populateInfoFields(device: AMAudioDevice) {
+    fileprivate func populateInfoFields(device: AudioDevice) {
         guard let direction = representedDirection else { return }
 
         populatePreferredStereoPair(device: device)
@@ -198,7 +198,7 @@ class ExtraViewController: NSViewController {
         }
     }
 
-    fileprivate func populatePreferredStereoPair(device: AMAudioDevice) {
+    fileprivate func populatePreferredStereoPair(device: AudioDevice) {
         guard let direction = representedDirection else { return }
 
         preferredStereoPairLPopUpButton.removeAllItems()
@@ -227,30 +227,30 @@ class ExtraViewController: NSViewController {
     }
 }
 
-extension ExtraViewController : AMEventSubscriber {
+extension ExtraViewController : EventSubscriber {
 
-    func eventReceiver(_ event: AMEvent) {
+    func eventReceiver(_ event: Event) {
         switch event {
-        case let event as AMAudioDeviceEvent:
+        case let event as AudioDeviceEvent:
             switch event {
             case .isJackConnectedDidChange(let audioDevice):
-                if representedObject as? AMAudioDevice == audioDevice {
+                if representedObject as? AudioDevice == audioDevice {
                     populateInfoFields(device: audioDevice)
                 }
             case .volumeDidChange(let audioDevice, _, _):
-                if representedObject as? AMAudioDevice == audioDevice {
+                if representedObject as? AudioDevice == audioDevice {
                     populateInfoFields(device: audioDevice)
                 }
             case .muteDidChange(let audioDevice, _, _):
-                if representedObject as? AMAudioDevice == audioDevice {
+                if representedObject as? AudioDevice == audioDevice {
                     populateInfoFields(device: audioDevice)
                 }
             case .preferredChannelsForStereoDidChange(let audioDevice):
-                if representedObject as? AMAudioDevice == audioDevice {
+                if representedObject as? AudioDevice == audioDevice {
                     populatePreferredStereoPair(device: audioDevice)
                 }
             case .listDidChange(let audioDevice):
-                if representedObject as? AMAudioDevice == audioDevice {
+                if representedObject as? AudioDevice == audioDevice {
                     populatePreferredStereoPair(device: audioDevice)
                 }
             default:

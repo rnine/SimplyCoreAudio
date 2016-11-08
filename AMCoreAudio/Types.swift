@@ -1,5 +1,5 @@
 //
-//  AMCoreAudioTypes.swift
+//  Types.swift
 //  AMCoreAudio
 //
 //  Created by Ruben on 7/7/15.
@@ -14,7 +14,7 @@ import Foundation
 public typealias StereoPair = (left: UInt32, right: UInt32)
 
 /**
-    Indicates the direction used by an `AMAudioDevice` or `AMAudioStream`.
+    Indicates the direction used by an `AudioDevice` or `AudioStream`.
  */
 public enum Direction: String {
     /**
@@ -32,7 +32,7 @@ public enum Direction: String {
 }
 
 /**
-    Indicates the transport type used by an `AMAudioDevice`.
+    Indicates the transport type used by an `AudioDevice`.
  */
 public enum TransportType: String {
     /**
@@ -94,7 +94,7 @@ public enum TransportType: String {
 }
 
 /**
-    Indicates the terminal type used by an `AMAudioStream`.
+    Indicates the terminal type used by an `AudioStream`.
  */
 public enum TerminalType: String {
     /**
@@ -154,7 +154,7 @@ public enum TerminalType: String {
 }
 
 /**
-    This struct holds volume, mute, and playthru information about a given channel and direction of an `AMAudioDevice`.
+    This struct holds volume, mute, and playthru information about a given channel and direction of an `AudioDevice`.
  */
 public struct VolumeInfo {
     var volume: Float32?

@@ -1,5 +1,5 @@
 //
-//  AMAudioObject.swift
+//  AudioObject.swift
 //  AMCoreAudio
 //
 //  Created by Ruben Nine on 13/04/16.
@@ -9,8 +9,11 @@
 import Foundation
 import CoreAudio.AudioHardwareBase
 
-internal class AMAudioObjectPool: NSObject {
-    static var instancePool: NSMapTable<NSNumber, AMAudioObject> = NSMapTable.weakToWeakObjects()
+/// :nodoc:
+@available(*, deprecated, message: "Marked for removal in 3.2. Use AudioObject instead") public typealias AMAudioObject = AudioObject
+
+internal class AudioObjectPool: NSObject {
+    static var instancePool: NSMapTable<NSNumber, AudioObject> = NSMapTable.weakToWeakObjects()
 }
 
 fileprivate func log(_ string: String) {
@@ -18,21 +21,21 @@ fileprivate func log(_ string: String) {
 }
 
 /**
-    `AMAudioObject`
+    `AudioObject`
 
     This class represents a Core Audio object currently present in the system. In Core Audio, 
     audio objects are referenced by its `AudioObjectID` and belong to a specific `AudioClassID`. 
     For more information, please refer to Core Audio's documentation or source code.
  */
-public class AMAudioObject {
+public class AudioObject {
     internal var objectID: AudioObjectID
 
     internal func directionToScope(_ direction: Direction) -> AudioObjectPropertyScope {
-        return AMUtils.directionToScope(direction)
+        return Utils.directionToScope(direction)
     }
 
     internal func scopeToDirection(_ scope: AudioObjectPropertyScope) -> Direction {
-        return AMUtils.scopeToDirection(scope)
+        return Utils.scopeToDirection(scope)
     }
 
     internal init(objectID: AudioObjectID) {
@@ -72,9 +75,9 @@ public class AMAudioObject {
     /**
         The audio object that owns this audio object.
 
-        - Returns: *(optional)* An `AMAudioObject`.
+        - Returns: *(optional)* An `AudioObject`.
      */
-    public lazy var owningObject: AMAudioObject? = {
+    public lazy var owningObject: AudioObject? = {
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioObjectPropertyOwner,
             mScope: kAudioObjectPropertyScopeGlobal,
@@ -92,18 +95,18 @@ public class AMAudioObject {
             return nil
         }
 
-        return AMAudioObject(objectID: objectID)
+        return AudioObject(objectID: objectID)
     }()
 
     /**
         The audio device that owns this audio object.
 
-        - Returns: *(optional)* An `AMAudioDevice`.
+        - Returns: *(optional)* An `AudioDevice`.
      */
-    public lazy var owningDevice: AMAudioDevice? = {
+    public lazy var owningDevice: AudioDevice? = {
         if let object = self.owningObject {
             if object.classID == kAudioDeviceClassID {
-                return AMAudioDevice.lookupByID(object.objectID)
+                return AudioDevice.lookupByID(object.objectID)
             }
         }
 
@@ -130,7 +133,7 @@ public class AMAudioObject {
     }
 }
 
-extension AMAudioObject {
+extension AudioObject {
 
     // MARK: - Class Functions
 
@@ -373,7 +376,7 @@ extension AMAudioObject {
 }
 
 
-extension AMAudioObject: Hashable {
+extension AudioObject: Hashable {
 
     /**
         The hash value.
@@ -384,6 +387,6 @@ extension AMAudioObject: Hashable {
 }
 
 /// :nodoc:
-public func ==(lhs: AMAudioObject, rhs: AMAudioObject) -> Bool {
+public func ==(lhs: AudioObject, rhs: AudioObject) -> Bool {
     return lhs.hashValue == rhs.hashValue
 }

@@ -57,7 +57,7 @@ class ViewController: NSViewController {
     override var representedObject: Any? {
         didSet {
             // Update the view, if already loaded.
-            if let audioDevice = representedObject as? AMAudioDevice {
+            if let audioDevice = representedObject as? AudioDevice {
                 populateDeviceInformation(device: audioDevice)
                 populatePlaybackStreamPopUpButton(device: audioDevice)
                 populateRecordingStreamPopUpButton(device: audioDevice)
@@ -75,9 +75,9 @@ class ViewController: NSViewController {
         // Do any additional setup after loading the view.
         // Subscribe to events
 
-        AMNotificationCenter.defaultCenter.subscribe(self, eventType: AMAudioHardwareEvent.self, dispatchQueue: DispatchQueue.main)
-        AMNotificationCenter.defaultCenter.subscribe(self, eventType: AMAudioDeviceEvent.self, dispatchQueue: DispatchQueue.main)
-        AMNotificationCenter.defaultCenter.subscribe(self, eventType: AMAudioStreamEvent.self, dispatchQueue: DispatchQueue.main)
+        NotificationCenter.defaultCenter.subscribe(self, eventType: AudioHardwareEvent.self, dispatchQueue: DispatchQueue.main)
+        NotificationCenter.defaultCenter.subscribe(self, eventType: AudioDeviceEvent.self, dispatchQueue: DispatchQueue.main)
+        NotificationCenter.defaultCenter.subscribe(self, eventType: AudioStreamEvent.self, dispatchQueue: DispatchQueue.main)
 
         // Populate device list
         populateDeviceList()
@@ -85,14 +85,14 @@ class ViewController: NSViewController {
         // Set view controller's represented object
         if let selectedItem = deviceListPopUpButton.selectedItem {
             let deviceID = AudioObjectID(selectedItem.tag)
-            representedObject = AMAudioDevice.lookupByID(deviceID)
+            representedObject = AudioDevice.lookupByID(deviceID)
         }
     }
 
     deinit {
-        AMNotificationCenter.defaultCenter.unsubscribe(self, eventType: AMAudioHardwareEvent.self)
-        AMNotificationCenter.defaultCenter.unsubscribe(self, eventType: AMAudioDeviceEvent.self)
-        AMNotificationCenter.defaultCenter.unsubscribe(self, eventType: AMAudioStreamEvent.self)
+        NotificationCenter.defaultCenter.unsubscribe(self, eventType: AudioHardwareEvent.self)
+        NotificationCenter.defaultCenter.unsubscribe(self, eventType: AudioDeviceEvent.self)
+        NotificationCenter.defaultCenter.unsubscribe(self, eventType: AudioStreamEvent.self)
     }
 
     override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
@@ -117,14 +117,14 @@ class ViewController: NSViewController {
     @IBAction func showDevice(_ sender: AnyObject) {
         if let popUpButton = sender as? NSPopUpButton, let item = popUpButton.selectedItem {
             let deviceID = AudioObjectID(item.tag)
-            representedObject = AMAudioDevice.lookupByID(deviceID)
+            representedObject = AudioDevice.lookupByID(deviceID)
         }
     }
 
     @IBAction func updateSampleRate(_ sender: AnyObject) {
         if let popUpButton = sender as? NSPopUpButton, let item = popUpButton.selectedItem {
             if let sampleRate = item.representedObject as? Float64 {
-                if let representedAudioDevice = representedObject as? AMAudioDevice {
+                if let representedAudioDevice = representedObject as? AudioDevice {
                     if representedAudioDevice.setNominalSampleRate(sampleRate) == false {
                         print("Unable to set nominal sample rate.")
                     }
@@ -135,7 +135,7 @@ class ViewController: NSViewController {
 
     @IBAction func updateClockSource(_ sender: AnyObject) {
         if let popUpButton = sender as? NSPopUpButton, let item = popUpButton.selectedItem {
-            if let representedAudioDevice = representedObject as? AMAudioDevice {
+            if let representedAudioDevice = representedObject as? AudioDevice {
                 let clockSourceID = UInt32(item.tag)
                 if representedAudioDevice.setClockSourceID(clockSourceID, channel: 0, direction: .Playback) == false {
                     print("Unable to set clock source to \(clockSourceID) on audio device \(representedAudioDevice)")
@@ -146,7 +146,7 @@ class ViewController: NSViewController {
 
     @IBAction func updateStreamVirtualFormat(_ sender: AnyObject) {
         if let popUpButton = sender as? NSPopUpButton, let item = popUpButton.selectedItem {
-            if let stream = AMAudioStream.lookupByID(AudioObjectID(item.tag)),
+            if let stream = AudioStream.lookupByID(AudioObjectID(item.tag)),
                let format = item.representedObject as? AudioStreamBasicDescription {
                 stream.virtualFormat = format
             }
@@ -155,7 +155,7 @@ class ViewController: NSViewController {
 
     @IBAction func updateStreamPhysicalFormat(_ sender: AnyObject) {
         if let popUpButton = sender as? NSPopUpButton, let item = popUpButton.selectedItem {
-            if let stream = AMAudioStream.lookupByID(AudioObjectID(item.tag)),
+            if let stream = AudioStream.lookupByID(AudioObjectID(item.tag)),
                 let format = item.representedObject as? AudioStreamBasicDescription {
                 stream.physicalFormat = format
             }
@@ -164,7 +164,7 @@ class ViewController: NSViewController {
 
     @IBAction func selectPlaybackStream(_ sender: AnyObject) {
         if let popUpButton = sender as? NSPopUpButton, let item = popUpButton.selectedItem {
-            if let stream = AMAudioStream.lookupByID(AudioObjectID(item.tag)) {
+            if let stream = AudioStream.lookupByID(AudioObjectID(item.tag)) {
                 populatePlaybackStreamInfo(stream: stream)
             }
         }
@@ -172,7 +172,7 @@ class ViewController: NSViewController {
 
     @IBAction func selectRecordingStream(_ sender: AnyObject) {
         if let popUpButton = sender as? NSPopUpButton, let item = popUpButton.selectedItem {
-            if let stream = AMAudioStream.lookupByID(AudioObjectID(item.tag)) {
+            if let stream = AudioStream.lookupByID(AudioObjectID(item.tag)) {
                 populateRecordingStreamInfo(stream: stream)
             }
         }
@@ -183,17 +183,17 @@ class ViewController: NSViewController {
     fileprivate func populateDeviceList() {
         deviceListPopUpButton.removeAllItems()
 
-        for device in AMAudioDevice.allDevices() {
+        for device in AudioDevice.allDevices() {
             deviceListPopUpButton.addItem(withTitle: device.name)
             deviceListPopUpButton.lastItem?.tag = Int(device.id)
         }
 
-        if let representedAudioDevice = representedObject as? AMAudioDevice {
+        if let representedAudioDevice = representedObject as? AudioDevice {
             self.deviceListPopUpButton.selectItem(withTag: Int(representedAudioDevice.id))
         }
     }
 
-    fileprivate func populateDeviceInformation(device: AMAudioDevice) {
+    fileprivate func populateDeviceInformation(device: AudioDevice) {
         deviceNameLabel.stringValue = device.name
         deviceManufacturerLabel.stringValue = device.manufacturer ?? unknownValue
         deviceIDLabel.stringValue = "\(device.id)"
@@ -251,7 +251,7 @@ class ViewController: NSViewController {
         deviceIsRunningSomewhereLabel.stringValue = booleanToString(bool: device.isRunningSomewhere())
     }
 
-    fileprivate func populateNominalSampleRatesPopUpButton(device: AMAudioDevice) {
+    fileprivate func populateNominalSampleRatesPopUpButton(device: AudioDevice) {
         deviceNominalSampleRatesPopupButton.removeAllItems()
 
         if let sampleRates = device.nominalSampleRates(), sampleRates.count > 0 {
@@ -270,7 +270,7 @@ class ViewController: NSViewController {
         }
     }
 
-    fileprivate func populateClockSourcesPopUpButton(device: AMAudioDevice) {
+    fileprivate func populateClockSourcesPopUpButton(device: AudioDevice) {
         deviceClockSourcesPopupButton.removeAllItems()
 
         let direction: AMCoreAudio.Direction!
@@ -301,7 +301,7 @@ class ViewController: NSViewController {
         }
     }
 
-    fileprivate func populatePlaybackStreamPopUpButton(device: AMAudioDevice) {
+    fileprivate func populatePlaybackStreamPopUpButton(device: AudioDevice) {
         playbackStreamPopUpButton.removeAllItems()
 
         if let playbackStreams = device.streams(direction: .Playback), playbackStreams.count > 0 {
@@ -321,7 +321,7 @@ class ViewController: NSViewController {
         }
     }
 
-    fileprivate func populateRecordingStreamPopUpButton(device: AMAudioDevice) {
+    fileprivate func populateRecordingStreamPopUpButton(device: AudioDevice) {
         recordingStreamPopUpButton.removeAllItems()
 
         if let recordingStreams = device.streams(direction: .Recording), recordingStreams.count > 0 {
@@ -341,7 +341,7 @@ class ViewController: NSViewController {
         }
     }
 
-    fileprivate func populatePlaybackStreamInfo(stream: AMAudioStream?) {
+    fileprivate func populatePlaybackStreamInfo(stream: AudioStream?) {
         playbackStreamVirtualFormatPopUpButton.removeAllItems()
         playbackStreamPhysicalFormatPopUpButton.removeAllItems()
 
@@ -392,7 +392,7 @@ class ViewController: NSViewController {
         }
     }
 
-    fileprivate func populateRecordingStreamInfo(stream: AMAudioStream?) {
+    fileprivate func populateRecordingStreamInfo(stream: AudioStream?) {
         recordingStreamVirtualFormatPopUpButton.removeAllItems()
         recordingStreamPhysicalFormatPopUpButton.removeAllItems()
 
@@ -443,7 +443,7 @@ class ViewController: NSViewController {
         }
     }
 
-    fileprivate func populatePlaybackMasterVolume(device: AMAudioDevice) {
+    fileprivate func populatePlaybackMasterVolume(device: AudioDevice) {
         if let playbackMasterVolume = device.virtualMasterVolumeInDecibels(direction: .Playback) {
             let isMuted = (device.isMasterChannelMuted(direction: .Playback) ?? false)
             devicePlaybackMasterVolumeLabel.isEnabled = true
@@ -454,7 +454,7 @@ class ViewController: NSViewController {
         }
     }
 
-    fileprivate func populateRecordingMasterVolume(device: AMAudioDevice) {
+    fileprivate func populateRecordingMasterVolume(device: AudioDevice) {
         if let recordingMasterVolume = device.virtualMasterVolumeInDecibels(direction: .Recording) {
             let isMuted = (device.isMasterChannelMuted(direction: .Recording) ?? false)
             deviceRecordingMasterVolumeLabel.isEnabled = true
@@ -513,14 +513,14 @@ class ViewController: NSViewController {
     }
 }
 
-extension ViewController : AMEventSubscriber {
+extension ViewController : EventSubscriber {
 
-    func eventReceiver(_ event: AMEvent) {
+    func eventReceiver(_ event: Event) {
         switch event {
-        case let event as AMAudioDeviceEvent:
+        case let event as AudioDeviceEvent:
             switch event {
             case .nominalSampleRateDidChange(let audioDevice):
-                if representedObject as? AMAudioDevice == audioDevice {
+                if representedObject as? AudioDevice == audioDevice {
                     if let sampleRate = audioDevice.nominalSampleRate() {
                         deviceNominalSampleRatesPopupButton.selectItem(withRepresentedObject: sampleRate)
 
@@ -535,19 +535,19 @@ extension ViewController : AMEventSubscriber {
                     populatePlaybackStreamPopUpButton(device: audioDevice)
                 }
             case .availableNominalSampleRatesDidChange(let audioDevice):
-                if representedObject as? AMAudioDevice == audioDevice {
+                if representedObject as? AudioDevice == audioDevice {
                     populateNominalSampleRatesPopUpButton(device: audioDevice)
                     populateRecordingStreamPopUpButton(device: audioDevice)
                     populatePlaybackStreamPopUpButton(device: audioDevice)
                 }
             case .clockSourceDidChange(let audioDevice, let channel, let direction):
-                if representedObject as? AMAudioDevice == audioDevice {
+                if representedObject as? AudioDevice == audioDevice {
                     if let clockSourceID = audioDevice.clockSourceID(channel: channel, direction: direction) {
                         deviceClockSourcesPopupButton.selectItem(withTag: Int(clockSourceID))
                     }
                 }
             case .nameDidChange(let audioDevice):
-                if representedObject as? AMAudioDevice == audioDevice {
+                if representedObject as? AudioDevice == audioDevice {
                     deviceNameLabel.stringValue = audioDevice.name
                 }
 
@@ -555,11 +555,11 @@ extension ViewController : AMEventSubscriber {
                     item.title = audioDevice.name
                 }
             case .listDidChange(let audioDevice):
-                if representedObject as? AMAudioDevice == audioDevice {
+                if representedObject as? AudioDevice == audioDevice {
                     populateDeviceInformation(device: audioDevice)
                 }
             case .volumeDidChange(let audioDevice, _, let direction):
-                if representedObject as? AMAudioDevice == audioDevice {
+                if representedObject as? AudioDevice == audioDevice {
                     switch direction {
                     case .Playback:
                         populatePlaybackMasterVolume(device: audioDevice)
@@ -570,7 +570,7 @@ extension ViewController : AMEventSubscriber {
                     }
                 }
             case .muteDidChange(let audioDevice, _, let direction):
-                if representedObject as? AMAudioDevice == audioDevice {
+                if representedObject as? AudioDevice == audioDevice {
                     switch direction {
                     case .Playback:
                         populatePlaybackMasterVolume(device: audioDevice)
@@ -581,21 +581,21 @@ extension ViewController : AMEventSubscriber {
                     }
                 }
             case .isAliveDidChange(let audioDevice):
-                if representedObject as? AMAudioDevice == audioDevice {
+                if representedObject as? AudioDevice == audioDevice {
                     deviceIsAliveLabel.stringValue = booleanToString(bool: audioDevice.isAlive())
                 }
             case .isRunningDidChange(let audioDevice):
-                if representedObject as? AMAudioDevice == audioDevice {
+                if representedObject as? AudioDevice == audioDevice {
                     deviceIsRunningLabel.stringValue = booleanToString(bool: audioDevice.isRunning())
                 }
             case .isRunningSomewhereDidChange(let audioDevice):
-                if representedObject as? AMAudioDevice == audioDevice {
+                if representedObject as? AudioDevice == audioDevice {
                     deviceIsRunningSomewhereLabel.stringValue = booleanToString(bool: audioDevice.isRunningSomewhere())
                 }
             default:
                 break
             }
-        case let event as AMAudioHardwareEvent:
+        case let event as AudioHardwareEvent:
             switch event {
             case .deviceListChanged(_, _):
                 self.populateDeviceList()
@@ -606,12 +606,12 @@ extension ViewController : AMEventSubscriber {
             case .defaultSystemOutputDeviceChanged(let audioDevice):
                 print("Default system output device changed to \(audioDevice)")
             }
-        case let event as AMAudioStreamEvent:
+        case let event as AudioStreamEvent:
             switch event {
             case .isActiveDidChange(let audioStream):
                 print("Audio stream \(audioStream) active status changed to \(audioStream.active)")
             case .physicalFormatDidChange(let audioStream):
-                if audioStream.owningDevice == representedObject as? AMAudioDevice {
+                if audioStream.owningDevice == representedObject as? AudioDevice {
                     switch audioStream.direction {
                     case .some(.Playback):
                         populatePlaybackStreamInfo(stream: audioStream)

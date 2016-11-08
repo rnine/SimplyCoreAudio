@@ -1,5 +1,5 @@
 //
-//  AMAudioStream.swift
+//  AudioStream.swift
 //  AMCoreAudio
 //
 //  Created by Ruben Nine on 13/04/16.
@@ -8,25 +8,32 @@
 
 import Foundation
 
-///// `AMAudioStreamEvent` enum
-public enum AMAudioStreamEvent: AMEvent {
+/// :nodoc:
+@available(*, deprecated, message: "Marked for removal in 3.2. Use AudioStream instead") public typealias AMAudioStream = AudioStream
+
+/// :nodoc:
+@available(*, deprecated, message: "Marked for removal in 3.2. Use AudioStreamEvent instead") public typealias AMAudioStreamEvent = AudioStreamEvent
+
+
+///// `AudioStreamEvent` enum
+public enum AudioStreamEvent: Event {
     /**
         Called whenever the audio stream `isActive` flag changes state.
      */
-    case isActiveDidChange(audioStream: AMAudioStream)
+    case isActiveDidChange(audioStream: AudioStream)
 
     /**
         Called whenever the audio stream physical format changes.
      */
-    case physicalFormatDidChange(audioStream: AMAudioStream)
+    case physicalFormatDidChange(audioStream: AudioStream)
 }
 
 /**
-    `AMAudioStream`
+    `AudioStream`
  
     This class represents an audio stream belonging to an audio object.
  */
-final public class AMAudioStream: AMAudioObject {
+final public class AudioStream: AudioObject {
 
     // MARK: - Public Properties
 
@@ -151,7 +158,7 @@ final public class AMAudioStream: AMAudioObject {
     /**
         The audio stream's direction.
 
-        For output streams, and to continue using the same `Direction` concept used by `AMAudioDevice`,
+        For output streams, and to continue using the same `Direction` concept used by `AudioDevice`,
         this will be `Direction.Playback`, likewise, for input streams, `Direction.Recording` will be returned.
 
         - Returns: *(optional)* A `Direction`.
@@ -321,13 +328,13 @@ final public class AMAudioStream: AMAudioObject {
     private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { (inNumberAddresses, inAddresses) -> Void in
         let address = inAddresses.pointee
         let direction = self.scopeToDirection(address.mScope)
-        let notificationCenter = AMNotificationCenter.defaultCenter
+        let notificationCenter = NotificationCenter.defaultCenter
 
         switch address.mSelector {
         case kAudioStreamPropertyIsActive:
-            notificationCenter.publish(AMAudioStreamEvent.isActiveDidChange(audioStream: self))
+            notificationCenter.publish(AudioStreamEvent.isActiveDidChange(audioStream: self))
         case kAudioStreamPropertyPhysicalFormat:
-            notificationCenter.publish(AMAudioStreamEvent.physicalFormatDidChange(audioStream: self))
+            notificationCenter.publish(AudioStreamEvent.physicalFormatDidChange(audioStream: self))
         default:
             break
         }
@@ -335,28 +342,28 @@ final public class AMAudioStream: AMAudioObject {
 
     // MARK: - Public Functions
 
-    public static func lookupByID(_ id: AudioObjectID) -> AMAudioStream? {
-        var instance = AMAudioObjectPool.instancePool.object(forKey: NSNumber(value: UInt(id))) as? AMAudioStream
+    public static func lookupByID(_ id: AudioObjectID) -> AudioStream? {
+        var instance = AudioObjectPool.instancePool.object(forKey: NSNumber(value: UInt(id))) as? AudioStream
 
         if instance == nil {
-            instance = AMAudioStream(id: id)
+            instance = AudioStream(id: id)
         }
 
         return instance
     }
 
     /**
-        Initializes an `AMAudioStream` by providing a valid `AudioObjectID` referencing an existing audio stream.
+        Initializes an `AudioStream` by providing a valid `AudioObjectID` referencing an existing audio stream.
      */
     private init(id: AudioObjectID) {
         super.init(objectID: id)
         registerForNotifications()
-        AMAudioObjectPool.instancePool.setObject(self, forKey: NSNumber(value: UInt(objectID)))
+        AudioObjectPool.instancePool.setObject(self, forKey: NSNumber(value: UInt(objectID)))
     }
 
     deinit {
         unregisterForNotifications()
-        AMAudioObjectPool.instancePool.removeObject(forKey: NSNumber(value: UInt(objectID)))
+        AudioObjectPool.instancePool.removeObject(forKey: NSNumber(value: UInt(objectID)))
     }
 
     /**
@@ -543,7 +550,7 @@ final public class AMAudioStream: AMAudioObject {
     }
 }
 
-extension AMAudioStream: CustomStringConvertible {
+extension AudioStream: CustomStringConvertible {
     /**
         Returns a string describing this audio stream.
      */
@@ -554,7 +561,7 @@ extension AMAudioStream: CustomStringConvertible {
 
 // MARK: - Deprecated
 
-extension AMAudioStream {
+extension AudioStream {
     /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use name instead") public func streamName() -> String? {
         return name

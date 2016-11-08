@@ -1,5 +1,5 @@
 //
-//  AMNotificationCenter.swift
+//  NotificationCenter.swift
 //  AMCoreAudio
 //
 //  Created by Ruben Nine on 17/04/16.
@@ -8,7 +8,17 @@
 
 import Foundation
 
-// MARK: - AMNotificationCenter Protocols
+/// :nodoc:
+@available(*, deprecated, message: "Marked for removal in 3.2. Use Event instead") public typealias AMEvent = Event
+
+/// :nodoc:
+@available(*, deprecated, message: "Marked for removal in 3.2. Use NotificationCenter instead") public typealias AMNotificationCenter = NotificationCenter
+
+/// :nodoc:
+@available(*, deprecated, message: "Marked for removal in 3.2. Use EventSubscriber instead") public typealias AMEventSubscriber = EventSubscriber
+
+
+// MARK: - NotificationCenter Protocols
 
 /**
     The protocol that any events must implement.
@@ -17,18 +27,18 @@ import Foundation
     we will be relying on enums, since they are very lightweight yet expressive enough (we can
     pass arguments to them.)
  */
-public protocol AMEvent {}
+public protocol Event {}
 
 /**
     The protocol any event subscriber must implement.
  
     Typically, this will be a class that also happens to conform to the `Hashable` protocol.
  */
-public protocol AMEventSubscriber {
+public protocol EventSubscriber {
     /**
         This is the event handler.
      */
-    func eventReceiver(_ event: AMEvent)
+    func eventReceiver(_ event: Event)
 
     /**
         The hash value.
@@ -37,50 +47,50 @@ public protocol AMEventSubscriber {
     var hashValue: Int { get }
 }
 
-func ==(lhs: AMEventSubscriber, rhs: AMEventSubscriber) -> Bool {
+func ==(lhs: EventSubscriber, rhs: EventSubscriber) -> Bool {
     return lhs.hashValue == rhs.hashValue
 }
 
-private struct AMEventSubscriberDescriptor {
-    var subscriber: AMEventSubscriber
+private struct EventSubscriberDescriptor {
+    var subscriber: EventSubscriber
     var queue: DispatchQueue?
 }
 
 // MARK: - AMNotificationCenter
 
 /**
-    `AMNotificationCenter` is AMCoreAudio's de facto pub-sub system.
+    `NotificationCenter` is AMCoreAudio's de facto pub-sub system.
  */
-final public class AMNotificationCenter {
-    private var subscriberDescriptorsByEvent = [String: [AMEventSubscriberDescriptor]]()
+final public class NotificationCenter {
+    private var subscriberDescriptorsByEvent = [String: [EventSubscriberDescriptor]]()
 
     private init() {}
 
     /**
-        Returns a singleton `AMNotificationCenter` instance.
+        Returns a singleton `NotificationCenter` instance.
      */
-    public static let defaultCenter = AMNotificationCenter()
+    public static let defaultCenter = NotificationCenter()
 
     /**
-        Allows a subscriber conforming to the `AMEventSubscriber` protocol to receive events of
+        Allows a subscriber conforming to the `EventSubscriber` protocol to receive events of
         the type specified by `eventType`.
      
-        - Parameter subscriber: Any object conforming to the `AMEventSubscriber` protocol.
-        - Parameter eventType: A class, struct or enum type conforming to the `AMEvent` protocol.
+        - Parameter subscriber: Any object conforming to the `EventSubscriber` protocol.
+        - Parameter eventType: A class, struct or enum type conforming to the `Event` protocol.
         - Parameter dispatchQueue: (optional) A dispatch queue to use for delivering the events.
      */
-    public func subscribe(_ subscriber: AMEventSubscriber, eventType: AMEvent.Type, dispatchQueue: DispatchQueue? = nil) {
+    public func subscribe(_ subscriber: EventSubscriber, eventType: Event.Type, dispatchQueue: DispatchQueue? = nil) {
         let type = String(describing: eventType)
 
         if subscriberDescriptorsByEvent[type] == nil {
             subscriberDescriptorsByEvent[type] = []
 
-            if eventType is AMAudioHardwareEvent.Type {
-                AMAudioHardware.sharedInstance.enableDeviceMonitoring()
+            if eventType is AudioHardwareEvent.Type {
+                AudioHardware.sharedInstance.enableDeviceMonitoring()
             }
         }
 
-        let descriptor = AMEventSubscriberDescriptor(subscriber: subscriber, queue: dispatchQueue)
+        let descriptor = EventSubscriberDescriptor(subscriber: subscriber, queue: dispatchQueue)
 
         subscriberDescriptorsByEvent[type]!.append(descriptor)
     }
@@ -88,10 +98,10 @@ final public class AMNotificationCenter {
     /**
         Removes a subscriber from the subscription to events of a specified `eventType`.
 
-        - Parameter subscriber: Any object conforming to the `AMEventSubscriber` protocol.
-        - Parameter eventType: A class, struct or enum type conforming to the `AMEvent` protocol.
+        - Parameter subscriber: Any object conforming to the `EventSubscriber` protocol.
+        - Parameter eventType: A class, struct or enum type conforming to the `Event` protocol.
      */
-    public func unsubscribe(_ subscriber: AMEventSubscriber, eventType: AMEvent.Type) {
+    public func unsubscribe(_ subscriber: EventSubscriber, eventType: Event.Type) {
         let type = String(describing: eventType)
 
         if var subscribers = subscriberDescriptorsByEvent[type] {
@@ -102,8 +112,8 @@ final public class AMNotificationCenter {
             if subscribers.count == 0 {
                 subscriberDescriptorsByEvent.removeValue(forKey: type)
 
-                if eventType is AMAudioHardwareEvent.Type {
-                    AMAudioHardware.sharedInstance.disableDeviceMonitoring()
+                if eventType is AudioHardwareEvent.Type {
+                    AudioHardware.sharedInstance.disableDeviceMonitoring()
                 }
             }
         }
@@ -112,9 +122,9 @@ final public class AMNotificationCenter {
     /**
         Publishes an event. The event is delivered to all its subscribers.
 
-        - Parameter event: The event conforming to the `AMEvent` protocol to publish.
+        - Parameter event: The event conforming to the `Event` protocol to publish.
      */
-    func publish(_ event: AMEvent) {
+    func publish(_ event: Event) {
         let type = String(describing: type(of: event))
 
         if let subscriberDescriptors = subscriberDescriptorsByEvent[type] {
