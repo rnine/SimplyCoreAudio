@@ -543,6 +543,15 @@ final public class AMAudioStream: AMAudioObject {
     }
 }
 
+extension AMAudioStream: CustomStringConvertible {
+    /**
+        Returns a string describing this audio stream.
+     */
+    public var description: String {
+        return "\(name ?? "Stream \(id)") (\(id))"
+    }
+}
+
 // MARK: - Deprecated
 
 extension AMAudioStream {

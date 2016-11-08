@@ -51,10 +51,10 @@ private struct AMEventSubscriberDescriptor {
 /**
     `AMNotificationCenter` is AMCoreAudio's de facto pub-sub system.
  */
-final public class AMNotificationCenter : NSObject {
+final public class AMNotificationCenter {
     private var subscriberDescriptorsByEvent = [String: [AMEventSubscriberDescriptor]]()
 
-    private override init() {}
+    private init() {}
 
     /**
         Returns a singleton `AMNotificationCenter` instance.

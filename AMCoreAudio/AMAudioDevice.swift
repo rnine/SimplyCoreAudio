@@ -1551,13 +1551,12 @@ final public class AMAudioDevice: AMAudioObject {
     }
 }
 
-extension AMAudioDevice {
-
+extension AMAudioDevice: CustomStringConvertible {
     /**
         Returns a string describing this audio device.
      */
-    public override var description: String {
-        return "\(name) (\(id)) \(super.description)"
+    public var description: String {
+        return "\(name) (\(id))"
     }
 }
 

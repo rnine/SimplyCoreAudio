@@ -24,7 +24,7 @@ fileprivate func log(_ string: String) {
     audio objects are referenced by its `AudioObjectID` and belong to a specific `AudioClassID`. 
     For more information, please refer to Core Audio's documentation or source code.
  */
-public class AMAudioObject: NSObject {
+public class AMAudioObject {
     internal var objectID: AudioObjectID
 
     internal func directionToScope(_ direction: Direction) -> AudioObjectPropertyScope {
@@ -37,7 +37,6 @@ public class AMAudioObject: NSObject {
 
     internal init(objectID: AudioObjectID) {
         self.objectID = objectID
-        super.init()
     }
 
     deinit {
@@ -128,16 +127,6 @@ public class AMAudioObject: NSObject {
         let status = getPropertyData(address, andValue: &name)
 
         return noErr == status ? (name as String) : nil
-    }
-
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? AMAudioObject else {
-            return false
-        }
-
-        let lhs = self
-
-        return lhs.hashValue == rhs.hashValue
     }
 }
 
@@ -384,20 +373,16 @@ extension AMAudioObject {
 }
 
 
-extension AMAudioObject {
+extension AMAudioObject: Hashable {
 
     /**
         The hash value.
-        - SeeAlso: The `Hashable` protocol.
      */
-    public override var hashValue: Int {
+    public var hashValue: Int {
         return Int(objectID)
     }
 }
 
-// Looks like Swift presently has a buggy implementation of the equal comparison when using NSObjects
-// See http://stackoverflow.com/questions/31099379/bug-with-equals-operator-and-nsobjects-in-swift-2-0 for more info.
-// In the meanwhile, we will use also isEqual(object: AnyObject?) -> Bool
-func ==(lhs: AMAudioObject, rhs: AMAudioObject) -> Bool {
+public func ==(lhs: AMAudioObject, rhs: AMAudioObject) -> Bool {
     return lhs.hashValue == rhs.hashValue
 }
