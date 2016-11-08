@@ -9,6 +9,11 @@
 import Foundation
 
 /**
+    Represents a pair of stereo channel numbers.
+ */
+public typealias StereoPair = (left: UInt32, right: UInt32)
+
+/**
     Indicates the direction used by an `AMAudioDevice` or `AMAudioStream`.
  */
 public enum Direction: String {

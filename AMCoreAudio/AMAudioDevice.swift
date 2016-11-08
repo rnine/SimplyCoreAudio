@@ -51,19 +51,29 @@ public enum AMAudioDeviceEvent: AMEvent {
     case muteDidChange(audioDevice: AMAudioDevice, channel:UInt32, direction: Direction)
 
     /**
-        Called whenever the audio device's *is alive* flag changes.
+        Called whenever the audio device's *is alive* property changes.
      */
     case isAliveDidChange(audioDevice: AMAudioDevice)
 
     /**
-        Called whenever the audio device's *is running* flag changes.
+        Called whenever the audio device's *is running* property changes.
      */
     case isRunningDidChange(audioDevice: AMAudioDevice)
 
     /**
-        Called whenever the audio device's *is running somewhere* flag changes.
+        Called whenever the audio device's *is running somewhere* property changes.
      */
     case isRunningSomewhereDidChange(audioDevice: AMAudioDevice)
+
+    /**
+        Called whenever the audio device's *is jack connected* property changes.
+     */
+    case isJackConnectedDidChange(audioDevice: AMAudioDevice)
+
+    /**
+        Called whenever the audio device's *preferred channels for stereo* property changes.
+     */
+    case preferredChannelsForStereoDidChange(audioDevice: AMAudioDevice)
 }
 
 /**
@@ -92,7 +102,7 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: An audio device identifier.
      */
-    public var deviceID: AudioObjectID {
+    public var id: AudioObjectID {
         get {
             return objectID
         }
@@ -160,6 +170,14 @@ final public class AMAudioDevice: AMAudioObject {
         case kAudioDevicePropertyDeviceIsRunningSomewhere:
             if let strongSelf = self {
                 notificationCenter.publish(AMAudioDeviceEvent.isRunningSomewhereDidChange(audioDevice: strongSelf))
+            }
+        case kAudioDevicePropertyJackIsConnected:
+            if let strongSelf = self {
+                notificationCenter.publish(AMAudioDeviceEvent.isJackConnectedDidChange(audioDevice: strongSelf))
+            }
+        case kAudioDevicePropertyPreferredChannelsForStereo:
+            if let strongSelf = self {
+                notificationCenter.publish(AMAudioDeviceEvent.preferredChannelsForStereoDidChange(audioDevice: strongSelf))
             }
         // Unhandled cases beyond this point
         case kAudioDevicePropertyBufferFrameSize:
@@ -304,7 +322,7 @@ final public class AMAudioDevice: AMAudioObject {
         let devices = allDevices()
 
         return devices.filter { device -> Bool in
-            device.channelsForDirection(.Recording) > 0    
+            device.channels(direction: .Recording) > 0
         }
     }
 
@@ -319,7 +337,7 @@ final public class AMAudioDevice: AMAudioObject {
         let devices = allDevices()
 
         return devices.filter { device -> Bool in
-            device.channelsForDirection(.Playback) > 0
+            device.channels(direction: .Playback) > 0
         }
     }
 
@@ -357,7 +375,7 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: An audio device's name.
      */
-    public func deviceName() -> String {
+    public override var name: String {
         return getDeviceName()
     }
 
@@ -368,21 +386,16 @@ final public class AMAudioDevice: AMAudioObject {
         and will not change even after restarts. Two (or more) identical audio devices
         are also guaranteed to have unique identifiers.
 
-        - SeeAlso: `deviceID`
+        - SeeAlso: `id`
 
         - Returns: *(optional)* A `String` with the audio device `UID`.
      */
-    public func deviceUID() -> String? {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyDeviceUID,
-            mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMaster
-        )
-
-        var uid: CFString = "" as CFString
-        let status = getPropertyData(address, andValue: &uid)
-
-        return noErr == status ? (uid as String) : nil
+    public var uid: String? {
+        if let address = validAddress(selector: kAudioDevicePropertyDeviceUID) {
+            return getProperty(address: address)
+        } else {
+            return nil
+        }
     }
 
     /**
@@ -390,17 +403,12 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: *(optional)* A `String` with the audio device's model unique identifier.
      */
-    public func deviceModelUID() -> String? {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyModelUID,
-            mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMaster
-        )
-
-        var modelUID: CFString = "" as CFString
-        let status = getPropertyData(address, andValue: &modelUID)
-
-        return noErr == status ? (modelUID as String) : nil
+    public var modelUID: String? {
+        if let address = validAddress(selector: kAudioDevicePropertyModelUID) {
+            return getProperty(address: address)
+        } else {
+            return nil
+        }
     }
     
     /**
@@ -408,17 +416,12 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: *(optional)* A `String` with the audio device's manufacturer name.
      */
-    public func deviceManufacturer() -> String? {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioObjectPropertyManufacturer,
-            mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMaster
-        )
-
-        var manufacturer: CFString = "" as CFString
-        let status = getPropertyData(address, andValue: &manufacturer)
-
-        return noErr == status ? (manufacturer as String) : nil
+    public var manufacturer: String? {
+        if let address = validAddress(selector: kAudioObjectPropertyManufacturer) {
+            return getProperty(address: address)
+        } else {
+            return nil
+        }
     }
 
     /**
@@ -427,38 +430,12 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: *(optional)* A `String` pointing to the bundle identifier
      */
-    public func deviceConfigurationApplication() -> String? {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyConfigurationApplication,
-            mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMaster
-        )
-
-        var application: CFString = "" as CFString
-        let status = getPropertyData(address, andValue: &application)
-
-        return noErr == status ? (application as String) : nil
-    }
-
-    /**
-        Whether the audio device is included in the normal list of devices.
-        
-        - Note: Hidden devices can only be discovered by knowing their `UID` and
-        using `kAudioHardwarePropertyDeviceForUID`.
-
-        - Returns: `true` when device is hidden, `false` otherwise.
-     */
-    public func deviceIsHidden() -> Bool {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyIsHidden,
-            mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMaster
-        )
-
-        var isHiddenValue = UInt32(0)
-        let status = getPropertyData(address, andValue: &isHiddenValue)
-
-        return noErr == status ? isHiddenValue != 0 : false
+    public var configurationApplication: String? {
+        if let address = validAddress(selector: kAudioDevicePropertyConfigurationApplication) {
+            return getProperty(address: address)
+        } else {
+            return nil
+        }
     }
 
     /**
@@ -466,7 +443,7 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: *(optional)* A `TransportType`.
      */
-    public func transportType() -> TransportType? {
+    public var transportType: TransportType? {
         let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyTransportType,
             mScope: kAudioObjectPropertyScopeGlobal,
@@ -515,26 +492,91 @@ final public class AMAudioDevice: AMAudioObject {
     }
 
     /**
+        Whether the audio device is included in the normal list of devices.
+        
+        - Note: Hidden devices can only be discovered by knowing their `UID` and
+        using `kAudioHardwarePropertyDeviceForUID`.
+
+        - Returns: `true` when device is hidden, `false` otherwise.
+     */
+    public func isHidden() -> Bool {
+        if let address = validAddress(selector: kAudioDevicePropertyIsHidden) {
+            return getProperty(address: address) ?? false
+        } else {
+            return false
+        }
+    }
+
+    /**
+         Whether the audio device's jack is connected for a given direction.
+
+         - Returns: `true` when jack is connected, `false` otherwise.
+     */
+    public func isJackConnected(direction: Direction) -> Bool? {
+        if let address = validAddress(selector: kAudioDevicePropertyJackIsConnected,
+                                      scope: directionToScope(direction)) {
+            return getProperty(address: address)
+        } else {
+            return nil
+        }
+    }
+
+    /**
+        Whether the device is alive.
+
+        - Returns: `true` when the device is alive, `false` otherwise.
+     */
+    public func isAlive() -> Bool {
+        if let address = validAddress(selector: kAudioDevicePropertyDeviceIsAlive) {
+            return getProperty(address: address) ?? false
+        } else {
+            return false
+        }
+    }
+
+    /**
+        Whether the device is running.
+
+        - Returns: `true` when the device is running, `false` otherwise.
+     */
+    public func isRunning() -> Bool {
+        if let address = validAddress(selector: kAudioDevicePropertyDeviceIsRunning) {
+            return getProperty(address: address) ?? false
+        } else {
+            return false
+        }
+    }
+
+    /**
+        Whether the device is running somewhere.
+
+        - Returns: `true` when the device is running somewhere, `false` otherwise.
+     */
+    public func isRunningSomewhere() -> Bool {
+        if let address = validAddress(selector: kAudioDevicePropertyDeviceIsRunningSomewhere) {
+            return getProperty(address: address) ?? false
+        } else {
+            return false
+        }
+    }
+
+    /**
         A human readable name for the channel number and direction specified.
 
         - Returns: *(optional)* A `String` with the name of the channel.
      */
-    public func nameForChannel(_ channel: UInt32, andDirection direction: Direction) -> String? {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioObjectPropertyElementName,
-            mScope: directionToScope(direction),
-            mElement: channel
-        )
-
-        var name: CFString = "" as CFString
-        let status = getPropertyData(address, andValue: &name)
-
-        if noErr == status {
-            let theName = (name as String)
-            return theName.isEmpty ? nil : theName
+    public func name(channel: UInt32, direction: Direction) -> String? {
+        if let address = validAddress(selector: kAudioObjectPropertyElementName,
+                                      scope: directionToScope(direction),
+                                      element: channel) {
+            if let name: String = getProperty(address: address) {
+                return name.isEmpty ? nil : name
+            } else {
+                return nil
+            }
+        } else {
+            return nil
         }
-
-        return nil
     }
 
     /**
@@ -600,58 +642,98 @@ final public class AMAudioDevice: AMAudioObject {
         return nil
     }
 
+    // MARK: - 💣 LFE (Low Frequency Effects) Functions
+
     /**
-        Whether the device is alive.
+        Whether the audio device should claim ownership of any attached iSub or not.
 
-        - Returns: `true` when the device is alive, `false` otherwise.
+        - Return: *(optional)* `true` when device should claim ownership, `false` otherwise.
      */
-    public func isAlive() -> Bool {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyDeviceIsAlive,
-            mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMaster
-        )
+    public var shouldOwniSub: Bool? {
+        get {
+            if let address = validAddress(selector: kAudioDevicePropertyDriverShouldOwniSub) {
+                return getProperty(address: address)
+            } else {
+                return nil
+            }
+        }
 
-        var valIsAlive = UInt32(0)
-        let status = getPropertyData(address, andValue: &valIsAlive)
-
-        return noErr == status ? Bool(valIsAlive) : false
+        set {
+            if let address = validAddress(selector: kAudioDevicePropertyDriverShouldOwniSub) {
+                if let value = newValue {
+                    let _ = setProperty(address: address, value: value)
+                }
+            }
+        }
     }
 
     /**
-        Whether the device is running.
+        Whether the audio device's LFE (Low Frequency Effects) output is muted or not.
 
-        - Returns: `true` when the device is running, `false` otherwise.
+        - Return: *(optional)* `true` when LFE output is muted, `false` otherwise.
      */
-    public func isRunning() -> Bool {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyDeviceIsRunning,
-            mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMaster
-        )
+    public var LFEMute: Bool? {
+        get {
+            if let address = validAddress(selector: kAudioDevicePropertySubMute) {
+                return getProperty(address: address)
+            } else {
+                return nil
+            }
+        }
 
-        var valIsRunning = UInt32(0)
-        let status = getPropertyData(address, andValue: &valIsRunning)
-
-        return noErr == status ? Bool(valIsRunning) : false
+        set {
+            if let address = validAddress(selector: kAudioDevicePropertySubMute) {
+                if let value = newValue {
+                    let _ = setProperty(address: address, value: value)
+                }
+            }
+        }
     }
 
     /**
-        Whether the device is running somewhere.
+        The audio device's LFE (Low Frequency Effects) scalar output volume.
 
-        - Returns: `true` when the device is running somewhere, `false` otherwise.
+        - Return: *(optional)* A `Float32` with the volume.
      */
-    public func isRunningSomewhere() -> Bool {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyDeviceIsRunningSomewhere,
-            mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMaster
-        )
+    public var LFEVolume: Float32? {
+        get {
+            if let address = validAddress(selector: kAudioDevicePropertySubVolumeScalar) {
+                return getProperty(address: address)
+            } else {
+                return nil
+            }
+        }
 
-        var valIsRunningSomewhere = UInt32(0)
-        let status = getPropertyData(address, andValue: &valIsRunningSomewhere)
+        set {
+            if let address = validAddress(selector: kAudioDevicePropertySubVolumeScalar) {
+                if let value = newValue {
+                    let _ = setProperty(address: address, value: value)
+                }
+            }
+        }
+    }
 
-        return noErr == status ? Bool(valIsRunningSomewhere) : false
+    /**
+        The audio device's LFE (Low Frequency Effects) output volume in decibels.
+
+        - Return: *(optional)* A `Float32` with the volume.
+     */
+    public var LFEVolumeDecibels: Float32? {
+        get {
+            if let address = validAddress(selector: kAudioDevicePropertySubVolumeDecibels) {
+                return getProperty(address: address)
+            } else {
+                return nil
+            }
+        }
+
+        set {
+            if let address = validAddress(selector: kAudioDevicePropertySubVolumeDecibels) {
+                if let value = newValue {
+                    let _ = setProperty(address: address, value: value)
+                }
+            }
+        }
     }
 
     // MARK: - ⇄ Input/Output Layout Functions
@@ -661,14 +743,14 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: *(optional)* A `UInt32` with the number of layout channels.
      */
-    public func layoutChannelsForDirection(_ direction: Direction) -> UInt32? {
+    public func layoutChannels(direction: Direction) -> UInt32? {
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyPreferredChannelLayout,
             mScope: directionToScope(direction),
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        if AudioObjectHasProperty(deviceID, &address) {
+        if AudioObjectHasProperty(id, &address) {
             var result = AudioChannelLayout()
             let status = getPropertyData(address, andValue: &result)
 
@@ -683,8 +765,8 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: A `UInt32` with the number of channels.
      */
-    public func channelsForDirection(_ direction: Direction) -> UInt32 {
-        if let streams = streamsForDirection(direction) {
+    public func channels(direction: Direction) -> UInt32 {
+        if let streams = streams(direction: direction) {
             return streams.map({ (stream) -> UInt32 in
                 stream.physicalFormat?.mChannelsPerFrame ?? 0
             }).reduce(0, +)
@@ -699,7 +781,7 @@ final public class AMAudioDevice: AMAudioObject {
         - Returns: `true` when the device is input only, `false` otherwise.
      */
     public func isInputOnlyDevice() -> Bool {
-        return channelsForDirection(.Playback) == 0 && channelsForDirection(.Recording) > 0
+        return channels(direction: .Playback) == 0 && channels(direction: .Recording) > 0
     }
 
     /**
@@ -708,7 +790,7 @@ final public class AMAudioDevice: AMAudioObject {
         - Returns: `true` when the device is output only, `false` otherwise.
      */
     public func isOutputOnlyDevice() -> Bool {
-        return channelsForDirection(.Recording) == 0 && channelsForDirection(.Playback) > 0
+        return channels(direction: .Recording) == 0 && channels(direction: .Playback) > 0
     }
 
     // MARK: - ⇉ Individual Channel Functions
@@ -718,7 +800,7 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: *(optional)* A `VolumeInfo` struct.
      */
-    public func volumeInfoForChannel(_ channel: UInt32, andDirection direction: Direction) -> VolumeInfo? {
+    public func volumeInfo(channel: UInt32, direction: Direction) -> VolumeInfo? {
         // obtain volume info
         var address: AudioObjectPropertyAddress
         var hasAnyProperty = false
@@ -731,9 +813,9 @@ final public class AMAudioDevice: AMAudioObject {
 
         var volumeInfo = VolumeInfo()
 
-        if AudioObjectHasProperty(deviceID, &address) {
+        if AudioObjectHasProperty(id, &address) {
             var canSetVolumeBoolean = DarwinBoolean(false)
-            var status = AudioObjectIsPropertySettable(deviceID, &address, &canSetVolumeBoolean)
+            var status = AudioObjectIsPropertySettable(id, &address, &canSetVolumeBoolean)
 
             if noErr == status {
                 volumeInfo.canSetVolume = canSetVolumeBoolean.boolValue
@@ -752,9 +834,9 @@ final public class AMAudioDevice: AMAudioObject {
         // obtain mute info
         address.mSelector = kAudioDevicePropertyMute
 
-        if AudioObjectHasProperty(deviceID, &address) {
+        if AudioObjectHasProperty(id, &address) {
             var canMuteBoolean = DarwinBoolean(false)
-            var status = AudioObjectIsPropertySettable(deviceID, &address, &canMuteBoolean)
+            var status = AudioObjectIsPropertySettable(id, &address, &canMuteBoolean)
 
             if noErr == status {
                 volumeInfo.canMute = canMuteBoolean.boolValue
@@ -772,9 +854,9 @@ final public class AMAudioDevice: AMAudioObject {
         // obtain play thru info
         address.mSelector = kAudioDevicePropertyPlayThru
 
-        if AudioObjectHasProperty(deviceID, &address) {
+        if AudioObjectHasProperty(id, &address) {
             var canPlayThruBoolean = DarwinBoolean(false)
-            var status = AudioObjectIsPropertySettable(deviceID, &address, &canPlayThruBoolean)
+            var status = AudioObjectIsPropertySettable(id, &address, &canPlayThruBoolean)
 
             if noErr == status {
                 volumeInfo.canPlayThru = canPlayThruBoolean.boolValue
@@ -797,17 +879,14 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: *(optional)* A `Float32` value with the scalar volume.
      */
-    public func volumeForChannel(_ channel: UInt32, andDirection direction: Direction) -> Float32? {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyVolumeScalar,
-            mScope: directionToScope(direction),
-            mElement: channel
-        )
-
-        var volume = Float32(0)
-        let status = getPropertyData(address, andValue: &volume)
-
-        return noErr == status ? volume : nil
+    public func volume(channel: UInt32, direction: Direction) -> Float32? {
+        if let address = validAddress(selector: kAudioDevicePropertyVolumeScalar,
+                                      scope: directionToScope(direction),
+                                      element: channel) {
+            return getProperty(address: address)
+        } else {
+            return nil
+        }
     }
 
     /**
@@ -815,17 +894,14 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: *(optional)* A `Float32` value with the volume in decibels.
      */
-    public func volumeInDecibelsForChannel(_ channel: UInt32, andDirection direction: Direction) -> Float32? {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyVolumeDecibels,
-            mScope: directionToScope(direction),
-            mElement: channel
-        )
-
-        var volumeInDecibels = Float32(0)
-        let status = getPropertyData(address, andValue: &volumeInDecibels)
-
-        return noErr == status ? volumeInDecibels : nil
+    public func volumeInDecibels(channel: UInt32, direction: Direction) -> Float32? {
+        if let address = validAddress(selector: kAudioDevicePropertyVolumeDecibels,
+                                      scope: directionToScope(direction),
+                                      element: channel) {
+            return getProperty(address: address)
+        } else {
+            return nil
+        }
     }
 
     /**
@@ -833,17 +909,14 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: `true` on success, `false` otherwise.
      */
-    public func setVolume(_ volume: Float32, forChannel channel: UInt32, andDirection direction: Direction) -> Bool {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyVolumeScalar,
-            mScope: directionToScope(direction),
-            mElement: channel
-        )
-
-        var newVolume = volume
-        let status = setPropertyData(address, andValue: &newVolume)
-
-        return noErr == status
+    public func setVolume(_ volume: Float32, channel: UInt32, direction: Direction) -> Bool {
+        if let address = validAddress(selector: kAudioDevicePropertyVolumeScalar,
+                                      scope: directionToScope(direction),
+                                      element: channel) {
+            return setProperty(address: address, value: volume)
+        } else {
+            return false
+        }
     }
 
     /**
@@ -851,17 +924,14 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: `true` on success, `false` otherwise.
      */
-    public func setMute(_ shouldMute: Bool, forChannel channel: UInt32, andDirection direction: Direction) -> Bool {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyMute,
-            mScope: directionToScope(direction),
-            mElement: channel
-        )
-
-        var willMute = UInt32(shouldMute == true ? 1 : 0)
-        let status = setPropertyData(address, andValue: &willMute)
-
-        return noErr == status
+    public func setMute(_ shouldMute: Bool, channel: UInt32, direction: Direction) -> Bool {
+        if let address = validAddress(selector: kAudioDevicePropertyMute,
+                                      scope: directionToScope(direction),
+                                      element: channel) {
+            return setProperty(address: address, value: shouldMute)
+        } else {
+            return false
+        }
     }
 
     /**
@@ -869,17 +939,14 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: *(optional)* `true` if channel is muted, false otherwise.
      */
-    public func isChannelMuted(_ channel: UInt32, andDirection direction: Direction) -> Bool? {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyMute,
-            mScope: directionToScope(direction),
-            mElement: channel
-        )
-
-        var valIsMuted = UInt32(0)
-        let status = getPropertyData(address, andValue: &valIsMuted)
-
-        return noErr == status ? Bool(valIsMuted) : nil
+    public func isMuted(channel: UInt32, direction: Direction) -> Bool? {
+        if let address = validAddress(selector: kAudioDevicePropertyMute,
+                                      scope: directionToScope(direction),
+                                      element: channel) {
+            return getProperty(address: address)
+        } else {
+            return nil
+        }
     }
 
     /**
@@ -887,8 +954,8 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: `true` if channel can be muted, `false` otherwise.
      */
-    public func canMuteForChannel(_ channel: UInt32, andDirection direction: Direction) -> Bool {
-        return volumeInfoForChannel(channel, andDirection: direction)?.canMute ?? false
+    public func canMute(channel: UInt32, direction: Direction) -> Bool {
+        return volumeInfo(channel: channel, direction: direction)?.canMute ?? false
     }
 
     /**
@@ -896,17 +963,17 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: `true` if the channel's volume can be set, `false` otherwise.
      */
-    public func canSetVolumeForChannel(_ channel: UInt32, andDirection direction: Direction) -> Bool {
-        return volumeInfoForChannel(channel, andDirection: direction)?.canSetVolume ?? false
+    public func canSetVolume(channel: UInt32, direction: Direction) -> Bool {
+        return volumeInfo(channel: channel, direction: direction)?.canSetVolume ?? false
     }
 
     /**
         A list of channel numbers that best represent the preferred stereo channels
-        used by this device. In most occasions this will be `[1, 2]`.
+        used by this device. In most occasions this will be channels 1 and 2.
 
-        - Returns: A `UInt32` array containing the channel numbers.
+        - Returns: A `StereoPair` tuple containing the channel numbers.
      */
-    public func preferredStereoChannelsForDirection(_ direction: Direction) -> [UInt32]? {
+    public func preferredChannelsForStereo(direction: Direction) -> StereoPair? {
         let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyPreferredChannelsForStereo,
             mScope: directionToScope(direction),
@@ -916,27 +983,47 @@ final public class AMAudioDevice: AMAudioObject {
         var preferredChannels = [UInt32]()
         let status = getPropertyDataArray(address, value: &preferredChannels, andDefaultValue: 0)
 
-        return noErr == status ? preferredChannels : nil
+        if noErr == status && preferredChannels.count == 2 {
+            return (left: preferredChannels[0], right: preferredChannels[1])
+        } else {
+            return nil
+        }
     }
 
-    // MARK: - 🔊 Master Volume Functions
+    /**
+        Attempts to set the new preferred channels for stereo for a given direction.
+     
+        - Returns: `true` on success, `false` otherwise.
+     */
+    public func setPreferredChannelsForStereo(channels: StereoPair, direction: Direction) -> Bool {
+        let address = AudioObjectPropertyAddress(
+            mSelector: kAudioDevicePropertyPreferredChannelsForStereo,
+            mScope: directionToScope(direction),
+            mElement: kAudioObjectPropertyElementMaster
+        )
+
+        var preferredChannels = [channels.left, channels.right]
+        let status = setPropertyData(address, andValue: &preferredChannels)
+
+        return noErr == status
+    }
+
+    // MARK: - 🔊 Master Volume/Balance Functions
 
     /**
         Whether the master volume can be muted for a given direction.
 
         - Returns: `true` when the volume can be muted, `false` otherwise.
      */
-    public func canMuteMasterVolumeForDirection(_ direction: Direction) -> Bool {
-        if canMuteForChannel(kAudioObjectPropertyElementMaster, andDirection: direction) == true {
+    public func canMuteVirtualMasterChannel(direction: Direction) -> Bool {
+        if canMute(channel: kAudioObjectPropertyElementMaster, direction: direction) == true {
             return true
         }
 
-        if let preferredStereoChannels = preferredStereoChannelsForDirection(direction) {
-            let muteCount = preferredStereoChannels.filter { channel -> Bool in
-                canMuteForChannel(channel, andDirection: direction) == true
-            }.count
-
-            return muteCount == preferredStereoChannels.count
+        if let preferredChannelsForStereo = preferredChannelsForStereo(direction: direction) {
+            if canMute(channel: preferredChannelsForStereo.0, direction: direction) && canMute(channel: preferredChannelsForStereo.1, direction: direction) {
+                return true
+            }
         }
 
         return false
@@ -947,41 +1034,68 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: `true` when the volume can be set, `false` otherwise.
      */
-    public func canSetMasterVolumeForDirection(_ direction: Direction) -> Bool {
-        if canSetVolumeForChannel(kAudioObjectPropertyElementMaster, andDirection: direction) == true {
+    public func canSetVirtualMasterVolume(direction: Direction) -> Bool {
+        if validAddress(selector: kAudioHardwareServiceDeviceProperty_VirtualMasterVolume,
+                                      scope: directionToScope(direction)) != nil {
             return true
+        } else {
+            return false
         }
-
-        if let preferredStereoChannels = preferredStereoChannelsForDirection(direction) {
-
-            let canSetVolumeCount = preferredStereoChannels.filter { channel -> Bool in
-                canSetVolumeForChannel(channel, andDirection: direction)
-            }.count
-
-            return canSetVolumeCount == preferredStereoChannels.count
-        }
-
-        return false
     }
 
     /**
-        Sets the master volume for a given direction.
+        Sets the virtual master volume for a given direction.
 
         - Note: The volume is given as a scalar value (i.e., 0 to 1)
 
         - Returns: `true` on success, `false` otherwise.
      */
-    public func setMasterVolume(_ volume: Float32, forDirection direction: Direction) -> Bool {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioHardwareServiceDeviceProperty_VirtualMasterVolume,
-            mScope: directionToScope(direction),
-            mElement: kAudioObjectPropertyElementMaster
-        )
+    public func setVirtualMasterVolume(_ volume: Float32, direction: Direction) -> Bool {
+        if let address = validAddress(selector: kAudioHardwareServiceDeviceProperty_VirtualMasterVolume,
+                                      scope: directionToScope(direction)) {
+            return setProperty(address: address, value: volume)
+        } else {
+            return false
+        }
+    }
 
-        var theVolume = volume
-        let status = setPropertyData(address, andValue: &theVolume)
+    /**
+        The virtual master scalar volume for a given direction.
 
-        return noErr == status
+        - Returns: *(optional)* A `Float32` value with the scalar volume.
+     */
+    public func virtualMasterVolume(direction: Direction) -> Float32? {
+        if let address = validAddress(selector: kAudioHardwareServiceDeviceProperty_VirtualMasterVolume,
+                                      scope: directionToScope(direction)) {
+            return getProperty(address: address)
+        } else {
+            return nil
+        }
+    }
+
+    /**
+        The virtual master volume in decibels for a given direction.
+
+        - Returns: *(optional)* A `Float32` value with the volume in decibels.
+     */
+    public func virtualMasterVolumeInDecibels(direction: Direction) -> Float32? {
+        var referenceChannel: UInt32
+
+        if canSetVolume(channel: kAudioObjectPropertyElementMaster, direction: direction) {
+            referenceChannel = kAudioObjectPropertyElementMaster
+        } else {
+            if let channels = preferredChannelsForStereo(direction: direction) {
+                referenceChannel = channels.0
+            } else {
+                return nil
+            }
+        }
+
+        if let masterVolume = virtualMasterVolume(direction: direction) {
+            return scalarToDecibels(volume: masterVolume, channel: referenceChannel, direction: direction)
+        } else {
+            return nil
+        }
     }
 
     /**
@@ -989,59 +1103,26 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: `true` when muted, `false` otherwise.
      */
-    public func isMasterVolumeMutedForDirection(_ direction: Direction) -> Bool? {
-        return isChannelMuted(kAudioObjectPropertyElementMaster, andDirection: direction)
+    public func isMasterChannelMuted(direction: Direction) -> Bool? {
+        return isMuted(channel: kAudioObjectPropertyElementMaster, direction: direction)
     }
 
-    /**
-        The master scalar volume for a given direction.
-
-        - Returns: *(optional)* A `Float32` value with the scalar volume.
-     */
-    public func masterVolumeForDirection(_ direction: Direction) -> Float32? {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioHardwareServiceDeviceProperty_VirtualMasterVolume,
-            mScope: directionToScope(direction),
-            mElement: kAudioObjectPropertyElementMaster
-        )
-
-        var volumeScalar = Float32(0)
-        let status = getPropertyData(address, andValue: &volumeScalar)
-
-        if noErr != status {
-            return nil
-        }
-
-        return volumeScalar
-    }
-
-    /**
-        The master volume in decibels for a given direction.
-
-        - Returns: *(optional)* A `Float32` value with the volume in decibels.
-     */
-    public func masterVolumeInDecibelsForDirection(_ direction: Direction) -> Float32? {
-        var volumeInDecibels = Float32(0)
-        var referenceChannel: UInt32
-
-        if canSetVolumeForChannel(kAudioObjectPropertyElementMaster, andDirection: direction) {
-            referenceChannel = kAudioObjectPropertyElementMaster
-        } else {
-            if let channels = preferredStereoChannelsForDirection(direction) {
-                referenceChannel = channels[0]
-            } else {
-                return nil
-            }
-        }
-
-        if let masterVolume = masterVolumeForDirection(direction),
-            let decibels = scalarToDecibels(masterVolume, forChannel: referenceChannel, andDirection: direction) {
-            volumeInDecibels = decibels
+    public func virtualMasterBalance(direction: Direction) -> Float32? {
+        if let address = validAddress(selector: kAudioHardwareServiceDeviceProperty_VirtualMasterBalance,
+                                      scope: directionToScope(direction)) {
+            return getProperty(address: address)
         } else {
             return nil
         }
+    }
 
-        return volumeInDecibels
+    public func setVirtualMasterBalance(_ value: Float32, direction: Direction) -> Bool {
+        if let address = validAddress(selector: kAudioHardwareServiceDeviceProperty_VirtualMasterBalance,
+                                      scope: directionToScope(direction)) {
+            return setProperty(address: address, value: value)
+        } else {
+            return false
+        }
     }
 
     // MARK: - 〰 Sample Rate Functions
@@ -1052,17 +1133,8 @@ final public class AMAudioDevice: AMAudioObject {
         - Returns: *(optional)* A `Float64` value with the actual sample rate.
      */
     public func actualSampleRate() -> Float64? {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyActualSampleRate,
-            mScope: kAudioObjectPropertyScopeWildcard,
-            mElement: kAudioObjectPropertyElementMaster
-        )
-
-        var sampleRate = Float64(0)
-        let status = getPropertyData(address, andValue: &sampleRate)
-
-        if noErr == status {
-            return sampleRate == 0 ? nil : sampleRate
+        if let address = validAddress(selector: kAudioDevicePropertyActualSampleRate) {
+            return getProperty(address: address)
         } else {
             return nil
         }
@@ -1074,17 +1146,8 @@ final public class AMAudioDevice: AMAudioObject {
         - Returns: *(optional)* A `Float64` value with the nominal sample rate.
      */
     public func nominalSampleRate() -> Float64? {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyNominalSampleRate,
-            mScope: kAudioObjectPropertyScopeWildcard,
-            mElement: kAudioObjectPropertyElementMaster
-        )
-
-        var sampleRate = Float64(0)
-        let status = getPropertyData(address, andValue: &sampleRate)
-
-        if noErr == status {
-            return sampleRate == 0 ? nil : sampleRate
+        if let address = validAddress(selector: kAudioDevicePropertyNominalSampleRate) {
+            return getProperty(address: address)
         } else {
             return nil
         }
@@ -1096,16 +1159,11 @@ final public class AMAudioDevice: AMAudioObject {
         - Returns: `true` on success, `false` otherwise.
      */
     public func setNominalSampleRate(_ sampleRate: Float64) -> Bool {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyNominalSampleRate,
-            mScope: kAudioObjectPropertyScopeWildcard,
-            mElement: kAudioObjectPropertyElementMaster
-        )
-
-        var nominalSampleRate = sampleRate
-        let status = setPropertyData(address, andValue: &nominalSampleRate)
-
-        return noErr == status
+        if let address = validAddress(selector: kAudioDevicePropertyNominalSampleRate) {
+            return setProperty(address: address, value: sampleRate)
+        } else {
+            return false
+        }
     }
 
     /**
@@ -1114,18 +1172,12 @@ final public class AMAudioDevice: AMAudioObject {
         - Returns: *(optional)* A `Float64` array containing the nominal sample rates.
      */
     public func nominalSampleRates() -> [Float64]? {
-        var sampleRates = [Float64]()
-
-        var address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyAvailableNominalSampleRates,
-            mScope: kAudioObjectPropertyScopeWildcard,
-            mElement: kAudioObjectPropertyElementMaster
-        )
-
-        if !AudioObjectHasProperty(deviceID, &address) {
+        guard let address = validAddress(selector: kAudioDevicePropertyAvailableNominalSampleRates,
+                                         scope: kAudioObjectPropertyScopeWildcard) else {
             return nil
         }
 
+        var sampleRates = [Float64]()
         var valueRanges = [AudioValueRange]()
         let status = getPropertyDataArray(address, value: &valueRanges, andDefaultValue: AudioValueRange())
 
@@ -1170,25 +1222,13 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: *(optional)* A `UInt32` containing the clock source identifier.
      */
-    public func clockSourceIDForChannel(_ channel: UInt32, andDirection direction: Direction) -> UInt32? {
-        var address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyClockSource,
-            mScope: directionToScope(direction),
-            mElement: channel
-        )
-
-        if !AudioObjectHasProperty(deviceID, &address) {
+    public func clockSourceID(channel: UInt32, direction: Direction) -> UInt32? {
+        if let address = validAddress(selector: kAudioDevicePropertyClockSource,
+                                      scope: directionToScope(direction)) {
+            return getProperty(address: address)
+        } else {
             return nil
         }
-
-        var sourceID = UInt32(0)
-        let status = getPropertyData(address, andValue: &sourceID)
-
-        if noErr != status {
-            return nil
-        }
-
-        return sourceID
     }
 
     /**
@@ -1196,9 +1236,9 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: *(optional)* A `String` containing the clock source name.
      */
-    public func clockSourceForChannel(_ channel: UInt32, andDirection direction: Direction) -> String? {
-        if let sourceID = clockSourceIDForChannel(channel, andDirection: direction) {
-            return clockSourceNameForClockSourceID(sourceID, forChannel: channel, andDirection: direction)
+    public func clockSourceName(channel: UInt32, direction: Direction) -> String? {
+        if let sourceID = clockSourceID(channel: channel, direction: direction) {
+            return clockSourceName(clockSourceID: sourceID)
         }
 
         return nil
@@ -1209,14 +1249,10 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: *(optional)* A `UInt32` array containing all the clock source identifiers.
      */
-    public func clockSourceIDsForChannel(_ channel: UInt32, andDirection direction: Direction) -> [UInt32]? {
-        var address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyClockSources,
-            mScope: directionToScope(direction),
-            mElement: channel
-        )
-
-        if !AudioObjectHasProperty(deviceID, &address) {
+    public func clockSourceIDs(channel: UInt32, direction: Direction) -> [UInt32]? {
+        guard let address = validAddress(selector: kAudioDevicePropertyClockSources,
+                                         scope: directionToScope(direction),
+                                         element: channel) else {
             return nil
         }
 
@@ -1235,22 +1271,12 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: *(optional)* A `String` array containing all the clock source names.
      */
-    public func clockSourcesForChannel(_ channel: UInt32, andDirection direction: Direction) -> [String]? {
-        var address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyClockSources,
-            mScope: directionToScope(direction),
-            mElement: channel
-        )
-
-        if !AudioObjectHasProperty(deviceID, &address) {
-            return nil
-        }
-
-        if let clockSourceIDs = clockSourceIDsForChannel(channel, andDirection: direction) {
+    public func clockSourceNames(channel: UInt32, direction: Direction) -> [String]? {
+        if let clockSourceIDs = clockSourceIDs(channel: channel, direction: direction) {
             return clockSourceIDs.map { (clockSourceID) -> String in
                 // We expect clockSourceNameForClockSourceID to never fail in this case, 
                 // but in the unlikely case it does, we provide a default value.
-                clockSourceNameForClockSourceID(clockSourceID, forChannel: channel, andDirection: direction) ?? "Clock source \(clockSourceID)"
+                clockSourceName(clockSourceID: clockSourceID) ?? "Clock source \(clockSourceID)"
             }
         }
 
@@ -1262,7 +1288,7 @@ final public class AMAudioDevice: AMAudioObject {
      
         - Returns: *(optional)* A `String` with the source clock name.
      */
-    public func clockSourceNameForClockSourceID(_ clockSourceID: UInt32, forChannel channel: UInt32, andDirection direction: Direction) -> String? {
+    public func clockSourceName(clockSourceID: UInt32) -> String? {
         var name: CFString = "" as CFString
         var theClockSourceID = clockSourceID
 
@@ -1275,8 +1301,8 @@ final public class AMAudioDevice: AMAudioObject {
 
         let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyClockSourceNameForIDCFString,
-            mScope: directionToScope(direction),
-            mElement: channel
+            mScope: kAudioObjectPropertyScopeGlobal,
+            mElement: kAudioObjectPropertyElementMaster
         )
 
         let status = getPropertyData(address, andValue: &translation)
@@ -1289,17 +1315,14 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: `true` on success, `false` otherwise.
      */
-    public func setClockSourceID(_ clockSourceID: UInt32, forChannel channel: UInt32, andDirection direction: Direction) -> Bool {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyClockSource,
-            mScope: directionToScope(direction),
-            mElement: channel
-        )
-
-        var theClockSourceID = clockSourceID
-        let status = setPropertyData(address, andValue: &theClockSourceID)
-
-        return noErr == status
+    public func setClockSourceID(_ clockSourceID: UInt32, channel: UInt32, direction: Direction) -> Bool {
+        if let address = validAddress(selector: kAudioDevicePropertyClockSource,
+                                      scope: directionToScope(direction),
+                                      element: channel) {
+            return setProperty(address: address, value: clockSourceID)
+        } else {
+            return false
+        }
     }
 
     // MARK: - ↹ Latency Functions
@@ -1309,17 +1332,13 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: *(optional)* A `UInt32` value with the latency in frames.
      */
-    public func deviceLatencyFramesForDirection(_ direction: Direction) -> UInt32? {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyLatency,
-            mScope: directionToScope(direction),
-            mElement: kAudioObjectPropertyElementMaster
-        )
-
-        var latencyFrames = UInt32(0)
-        let status = getPropertyData(address, andValue: &latencyFrames)
-
-        return noErr == status ? latencyFrames : nil
+    public func deviceLatencyFrames(direction: Direction) -> UInt32? {
+        if let address = validAddress(selector: kAudioDevicePropertyLatency,
+                                      scope: directionToScope(direction)) {
+            return getProperty(address: address)
+        } else {
+            return nil
+        }
     }
 
     /**
@@ -1327,17 +1346,13 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: *(optional)* A `UInt32` value with the safety offset in frames.
      */
-    public func deviceSafetyOffsetFramesForDirection(_ direction: Direction) -> UInt32? {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertySafetyOffset,
-            mScope: directionToScope(direction),
-            mElement: kAudioObjectPropertyElementMaster
-        )
-
-        var safetyOffsetFrames = UInt32(0)
-        let status = getPropertyData(address, andValue: &safetyOffsetFrames)
-
-        return noErr == status ? safetyOffsetFrames : nil
+    public func deviceSafetyOffsetFrames(direction: Direction) -> UInt32? {
+        if let address = validAddress(selector: kAudioDevicePropertySafetyOffset,
+                                      scope: directionToScope(direction)) {
+            return getProperty(address: address)
+        } else {
+            return nil
+        }
     }
 
     // MARK: - 🐗 Hog Mode Functions
@@ -1349,11 +1364,10 @@ final public class AMAudioDevice: AMAudioObject {
         - Returns: *(optional)* A `pid_t` value.
      */
     public func hogModePID() -> pid_t? {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyHogMode,
-            mScope: kAudioObjectPropertyScopeWildcard,
-            mElement: kAudioObjectPropertyElementMaster
-        )
+        guard let address = validAddress(selector: kAudioDevicePropertyHogMode,
+                                         scope: kAudioObjectPropertyScopeWildcard) else {
+            return nil
+        }
 
         var pid = pid_t()
         let status = getPropertyData(address, andValue: &pid)
@@ -1367,16 +1381,12 @@ final public class AMAudioDevice: AMAudioObject {
         - Returns: `true` on success, `false` otherwise.
      */
     private func toggleHogMode() -> Bool {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyHogMode,
-            mScope: kAudioObjectPropertyScopeWildcard,
-            mElement: kAudioObjectPropertyElementMaster
-        )
-
-        var zero = 0
-        let status = setPropertyData(address, andValue: &zero)
-
-        return noErr == status
+        if let address = validAddress(selector: kAudioDevicePropertyHogMode,
+                                      scope: kAudioObjectPropertyScopeWildcard) {
+            return setProperty(address: address, value: 0)
+        } else {
+            return false
+        }
     }
 
     /**
@@ -1415,12 +1425,12 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: *(optional)* A `Float32` value with the scalar volume converted in decibels.
      */
-    public func scalarToDecibels(_ volume: Float32, forChannel channel: UInt32, andDirection direction: Direction) -> Float32? {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyVolumeScalarToDecibels,
-            mScope: directionToScope(direction),
-            mElement: channel
-        )
+    public func scalarToDecibels(volume: Float32, channel: UInt32, direction: Direction) -> Float32? {
+        guard let address = validAddress(selector: kAudioDevicePropertyVolumeScalarToDecibels,
+                                      scope: directionToScope(direction),
+                                      element: channel) else {
+            return nil
+        }
 
         var inOutVolume = volume
         let status = getPropertyData(address, andValue: &inOutVolume)
@@ -1433,12 +1443,12 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: *(optional)* A `Float32` value with the decibels volume converted to scalar.
      */
-    public func decibelsToScalar(_ volume: Float32, forChannel channel: UInt32, andDirection direction: Direction) -> Float32? {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyVolumeDecibelsToScalar,
-            mScope: directionToScope(direction),
-            mElement: channel
-        )
+    public func decibelsToScalar(volume: Float32, channel: UInt32, direction: Direction) -> Float32? {
+        guard let address = validAddress(selector: kAudioDevicePropertyVolumeDecibelsToScalar,
+                                         scope: directionToScope(direction),
+                                         element: channel) else {
+                                            return nil
+        }
 
         var inOutVolume = volume
         let status = getPropertyData(address, andValue: &inOutVolume)
@@ -1453,14 +1463,9 @@ final public class AMAudioDevice: AMAudioObject {
 
         - Returns: *(optional)* An array of `AMAudioStream` objects.
      */
-    public func streamsForDirection(_ direction: Direction) -> [AMAudioStream]? {
-        var address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyStreams,
-            mScope: directionToScope(direction),
-            mElement: kAudioObjectPropertyElementMaster
-        )
-
-        if !AudioObjectHasProperty(deviceID, &address) {
+    public func streams(direction: Direction) -> [AMAudioStream]? {
+        guard let address = validAddress(selector: kAudioDevicePropertyStreams,
+                                         scope: directionToScope(direction)) else {
             return nil
         }
 
@@ -1479,20 +1484,15 @@ final public class AMAudioDevice: AMAudioObject {
     // MARK: - Private Functions
 
     private func setDefaultDevice(_ deviceType: AudioObjectPropertySelector) -> Bool {
-        let address = AudioObjectPropertyAddress(
-            mSelector: deviceType,
-            mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMaster
-        )
-
-        var deviceID = self.deviceID
-        let status = setPropertyData(AudioObjectID(kAudioObjectSystemObject), address: address, andValue: &deviceID)
-
-        return noErr == status
+        if let address = validAddress(selector: deviceType) {
+            return setProperty(address: address, value: UInt32(id))
+        } else {
+            return false
+        }
     }
 
     private func getDeviceName() -> String {
-        return name() ?? (cachedDeviceName ?? "<Unknown Device Name>")
+        return super.name ?? (cachedDeviceName ?? "<Unknown Device Name>")
     }
 
     private class func defaultDeviceOfType(_ deviceType: AudioObjectPropertySelector) -> AMAudioDevice? {
@@ -1521,7 +1521,7 @@ final public class AMAudioDevice: AMAudioObject {
             mElement: kAudioObjectPropertyElementWildcard
         )
 
-        let err = AudioObjectAddPropertyListenerBlock(deviceID, &address, notificationsQueue, propertyListenerBlock)
+        let err = AudioObjectAddPropertyListenerBlock(id, &address, notificationsQueue, propertyListenerBlock)
 
         if noErr != err {
             print("Error on AudioObjectAddPropertyListenerBlock: \(err)")
@@ -1538,7 +1538,7 @@ final public class AMAudioDevice: AMAudioObject {
                 mElement: kAudioObjectPropertyElementWildcard
             )
 
-            let err = AudioObjectRemovePropertyListenerBlock(deviceID, &address, notificationsQueue, propertyListenerBlock)
+            let err = AudioObjectRemovePropertyListenerBlock(id, &address, notificationsQueue, propertyListenerBlock)
 
             if noErr != err {
                 print("Error on AudioObjectRemovePropertyListenerBlock: \(err)")
@@ -1557,6 +1557,158 @@ extension AMAudioDevice {
         Returns a string describing this audio device.
      */
     public override var description: String {
-        return "\(deviceName()) (\(deviceID)) (\(super.description))"
+        return "\(name) (\(id)) \(super.description)"
+    }
+}
+
+// MARK: - Deprecated
+
+extension AMAudioDevice {
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use id instead") public var deviceID: AudioObjectID {
+        return id
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use name instead") public func deviceName() -> String {
+        return name
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use uid instead") public func deviceUID() -> String? {
+        return uid
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use modelUID instead") public func deviceModelUID() -> String? {
+        return modelUID
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use configurationApplication instead") public func deviceConfigurationApplication() -> String? {
+        return configurationApplication
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use manufacturer instead") public func deviceManufacturer() -> String? {
+        return manufacturer
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use isHidden() instead") public func deviceIsHidden() -> Bool {
+        return isHidden()
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use streams(direction:) instead") public func streamsForDirection(_ direction: Direction) -> [AMAudioStream]? {
+        return streams(direction: direction)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use channels(direction:) instead") public func channelsForDirection(_ direction: Direction) -> UInt32 {
+        return channels(direction: direction)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use volumeInfo(channel:direction:) instead") public func volumeInfoForChannel(_ channel: UInt32, andDirection direction: Direction) -> VolumeInfo? {
+        return volumeInfo(channel: channel, direction: direction)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use canMute(channel:direction:) instead") public func canMuteForChannel(_ channel: UInt32, andDirection direction: Direction) -> Bool {
+        return canMute(channel: channel, direction: direction)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use canSetvolume(channel:direction:) instead") public func canSetVolumeForChannel(_ channel: UInt32, andDirection direction: Direction) -> Bool {
+        return canSetVolume(channel: channel, direction: direction)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use virtualMasterVolume(direction:) instead") public func masterVolumeForDirection(_ direction: Direction) -> Float32? {
+        return virtualMasterVolume(direction: direction)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use setVirtualMasterVolume(_:direction:) instead") public func setMasterVolume(_ volume: Float32, forDirection direction: Direction) -> Bool {
+        return setVirtualMasterVolume(volume, direction: direction)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use virtualMasterVolumeInDecibels(direction:) instead")public func masterVolumeInDecibelsForDirection(_ direction: Direction) -> Float32? {
+        return virtualMasterVolumeInDecibels(direction: direction)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use name(channel:direction:) instead") public func nameForChannel(_ channel: UInt32, andDirection direction: Direction) -> String? {
+        return name(channel: channel, direction: direction)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use layoutChannels(direction:) instead") public func layoutChannelsForDirection(_ direction: Direction) -> UInt32? {
+        return layoutChannels(direction: direction)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use volume(channel:direction:) instead") public func volumeForChannel(_ channel: UInt32, andDirection direction: Direction) -> Float32? {
+        return volume(channel: channel, direction: direction)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use volumeInDecibels(channel:direction:) instead") public func volumeInDecibelsForChannel(_ channel: UInt32, andDirection direction: Direction) -> Float32? {
+        return volumeInDecibels(channel: channel, direction: direction)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use setVolume(_:channel:direction:) instead") public func setVolume(_ volume: Float32, forChannel channel: UInt32, andDirection direction: Direction) -> Bool {
+        return setVolume(volume, channel: channel, direction: direction)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use setMute(_:channel:direction:) instead") public func setMute(_ shouldMute: Bool, forChannel channel: UInt32, andDirection direction: Direction) -> Bool {
+        return setMute(shouldMute, channel: channel, direction: direction)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use isMuted(channel:direction:) instead") public func isChannelMuted(_ channel: UInt32, andDirection direction: Direction) -> Bool? {
+        return isMuted(channel: channel, direction: direction)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use isMasterChannelMuted(direction:) instead") public func isMasterVolumeMutedForDirection(_ direction: Direction) -> Bool? {
+        return isMasterChannelMuted(direction: direction)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use preferredChannelsForStereo(direction:) instead") public func preferredStereoChannelsForDirection(_ direction: Direction) -> [UInt32]? {
+        if let preferredChannelsForStereo = preferredChannelsForStereo(direction: direction) {
+            return [preferredChannelsForStereo.0, preferredChannelsForStereo.1]
+        } else {
+            return nil
+        }
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use canMuteVirtualMasterChannel(direction:) instead") public func canMuteMasterVolumeForDirection(_ direction: Direction) -> Bool {
+        return canMuteVirtualMasterChannel(direction: direction)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use canSetVirtualMasterVolume(direction:) instead") public func canSetMastervolumeForDirection(_ direction: Direction) -> Bool {
+        return canSetVirtualMasterVolume(direction: direction)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use scalarToDecibels(volume:channel:direction:) instead") public func scalarToDecibels(_ volume: Float32, forChannel channel: UInt32, andDirection direction: Direction) -> Float32? {
+        return scalarToDecibels(volume: volume, channel: channel, direction: direction)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use decibelsToScalar(volume:channel:direction:) instead") public func decibelsToScalar(_ volume: Float32, forChannel channel: UInt32, andDirection direction: Direction) -> Float32? {
+        return decibelsToScalar(volume: volume, channel: channel, direction: direction)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use deviceLatencyFrames(direction:) instead") public func deviceLatencyFramesForDirection(_ direction: Direction) -> UInt32? {
+        return deviceLatencyFrames(direction: direction)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use deviceSafetyOffsetFrames(direction:) instead") public func deviceSafetyOffsetFramesForDirection(_ direction: Direction) -> UInt32? {
+        return deviceSafetyOffsetFrames(direction: direction)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use clockSourceID(channel:direction:) instead") public func clockSourceIDForChannel(_ channel: UInt32, andDirection direction: Direction) -> UInt32? {
+        return clockSourceID(channel: channel, direction: direction)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use clockSourceName(channel:direction:) instead") public func clockSourceForChannel(_ channel: UInt32, andDirection direction: Direction) -> String? {
+        return clockSourceName(channel: channel, direction: direction)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use clockSourceIDs(channel:direction:) instead") public func clockSourceIDsForChannel(_ channel: UInt32, andDirection direction: Direction) -> [UInt32]? {
+        return clockSourceIDs(channel: channel, direction: direction)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use clockSourceNames(channel:direction:) instead") public func clockSourcesForChannel(_ channel: UInt32, andDirection direction: Direction) -> [String]? {
+        return clockSourceNames(channel: channel, direction: direction)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use clockSourceName(clockSourceID:) instead") public func clockSourceNameForClockSourceID(_ clockSourceID: UInt32, forChannel _: UInt32, andDirection _: Direction) -> String? {
+        return clockSourceName(clockSourceID: clockSourceID)
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use setClockSourceID(_:channel:direction:) instead") public func setClockSourceID(_ clockSourceID: UInt32, forChannel channel: UInt32, andDirection direction: Direction) -> Bool {
+        return setClockSourceID(clockSourceID, channel: channel, direction: direction)
     }
 }

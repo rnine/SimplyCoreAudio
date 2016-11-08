@@ -35,7 +35,7 @@ final public class AMAudioStream: AMAudioObject {
 
         - Returns: An `AudioObjectID`.
      */
-    public var streamID: AudioObjectID {
+    public var id: AudioObjectID {
         get {
             return objectID
         }
@@ -53,7 +53,7 @@ final public class AMAudioStream: AMAudioObject {
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        if !AudioObjectHasProperty(self.streamID, &address) {
+        if !AudioObjectHasProperty(self.id, &address) {
             return false
         }
 
@@ -79,7 +79,7 @@ final public class AMAudioStream: AMAudioObject {
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        if !AudioObjectHasProperty(self.streamID, &address) {
+        if !AudioObjectHasProperty(self.id, &address) {
             return nil
         }
 
@@ -105,7 +105,7 @@ final public class AMAudioStream: AMAudioObject {
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        if !AudioObjectHasProperty(self.streamID, &address) {
+        if !AudioObjectHasProperty(self.id, &address) {
             return .Unknown
         }
 
@@ -163,7 +163,7 @@ final public class AMAudioStream: AMAudioObject {
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        if !AudioObjectHasProperty(self.streamID, &address) {
+        if !AudioObjectHasProperty(self.id, &address) {
             return nil
         }
 
@@ -264,7 +264,7 @@ final public class AMAudioStream: AMAudioObject {
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        if !AudioObjectHasProperty(self.streamID, &address) {
+        if !AudioObjectHasProperty(self.id, &address) {
             return nil
         }
 
@@ -296,7 +296,7 @@ final public class AMAudioStream: AMAudioObject {
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        if !AudioObjectHasProperty(self.streamID, &address) {
+        if !AudioObjectHasProperty(self.id, &address) {
             return nil
         }
 
@@ -335,11 +335,11 @@ final public class AMAudioStream: AMAudioObject {
 
     // MARK: - Public Functions
 
-    public static func lookupByID(_ ID: AudioObjectID) -> AMAudioStream? {
-        var instance = AMAudioObjectPool.instancePool.object(forKey: NSNumber(value: UInt(ID))) as? AMAudioStream
+    public static func lookupByID(_ id: AudioObjectID) -> AMAudioStream? {
+        var instance = AMAudioObjectPool.instancePool.object(forKey: NSNumber(value: UInt(id))) as? AMAudioStream
 
         if instance == nil {
-            instance = AMAudioStream(streamID: ID)
+            instance = AMAudioStream(id: id)
         }
 
         return instance
@@ -348,8 +348,8 @@ final public class AMAudioStream: AMAudioObject {
     /**
         Initializes an `AMAudioStream` by providing a valid `AudioObjectID` referencing an existing audio stream.
      */
-    private init(streamID: AudioObjectID) {
-        super.init(objectID: streamID)
+    private init(id: AudioObjectID) {
+        super.init(objectID: id)
         registerForNotifications()
         AMAudioObjectPool.instancePool.setObject(self, forKey: NSNumber(value: UInt(objectID)))
     }
@@ -399,8 +399,8 @@ final public class AMAudioStream: AMAudioObject {
 
         - Returns: *(optional)* An audio stream's name.
      */
-    public func streamName() -> String? {
-        return name()
+    override public var name: String? {
+        return super.name
     }
 
     /**
@@ -463,7 +463,7 @@ final public class AMAudioStream: AMAudioObject {
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        if !AudioObjectHasProperty(streamID, &address) {
+        if !AudioObjectHasProperty(id, &address) {
             return nil
         }
 
@@ -493,7 +493,7 @@ final public class AMAudioStream: AMAudioObject {
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        if !AudioObjectHasProperty(streamID, &address) {
+        if !AudioObjectHasProperty(id, &address) {
             return nil
         }
 
@@ -513,7 +513,7 @@ final public class AMAudioStream: AMAudioObject {
             mElement: kAudioObjectPropertyElementWildcard
         )
 
-        let err = AudioObjectAddPropertyListenerBlock(streamID, &address, notificationsQueue, propertyListenerBlock)
+        let err = AudioObjectAddPropertyListenerBlock(id, &address, notificationsQueue, propertyListenerBlock)
 
         if noErr != err {
             print("Error on AudioObjectAddPropertyListenerBlock: \(err)")
@@ -530,7 +530,7 @@ final public class AMAudioStream: AMAudioObject {
                 mElement: kAudioObjectPropertyElementWildcard
             )
 
-            let err = AudioObjectRemovePropertyListenerBlock(streamID, &address, notificationsQueue, propertyListenerBlock)
+            let err = AudioObjectRemovePropertyListenerBlock(id, &address, notificationsQueue, propertyListenerBlock)
 
             if noErr != err {
                 print("Error on AudioObjectRemovePropertyListenerBlock: \(err)")
@@ -540,5 +540,17 @@ final public class AMAudioStream: AMAudioObject {
         } else {
             isRegisteredForNotifications = false
         }
+    }
+}
+
+// MARK: - Deprecated
+
+extension AMAudioStream {
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use name instead") public func streamName() -> String? {
+        return name
+    }
+
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use id instead") public var streamID: AudioObjectID {
+        return id
     }
 }

@@ -7,7 +7,4 @@
    <FileRef
       location = "group:AMCoreAudio.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:Demo.xcodeproj">
-   </FileRef>
 </Workspace>

@@ -13,6 +13,10 @@ internal class AMAudioObjectPool: NSObject {
     static var instancePool: NSMapTable<NSNumber, AMAudioObject> = NSMapTable.weakToWeakObjects()
 }
 
+fileprivate func log(_ string: String) {
+    print("[AMCoreAudio] \(string)")
+}
+
 /**
     `AMAudioObject`
 
@@ -112,7 +116,7 @@ public class AMAudioObject: NSObject {
 
         - Returns: *(optional)* An audio object's name.
      */
-    internal func name() -> String? {
+    internal var name: String? {
         var name: CFString = "" as CFString
 
         let address = AudioObjectPropertyAddress(
@@ -258,6 +262,7 @@ extension AMAudioObject {
     }
 
     internal func setPropertyData<T>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, andValue value: inout T) -> OSStatus {
+
         var theAddress = address
         let size = UInt32(MemoryLayout<T>.size)
         let status = AudioObjectSetPropertyData(objectID, &theAddress, UInt32(0), nil, size, &value)
@@ -279,6 +284,102 @@ extension AMAudioObject {
 
     internal func setPropertyData<T>(_ address: AudioObjectPropertyAddress, andValue value: inout [T]) -> OSStatus {
         return setPropertyData(objectID, address: address, andValue: &value)
+    }
+
+    internal func address(selector: AudioObjectPropertySelector, scope: AudioObjectPropertyScope = kAudioObjectPropertyScopeGlobal, element: AudioObjectPropertyElement = kAudioObjectPropertyElementMaster) -> AudioObjectPropertyAddress {
+        return AudioObjectPropertyAddress(mSelector: selector,
+                                          mScope: scope,
+                                          mElement: element)
+    }
+
+    internal func validAddress(selector: AudioObjectPropertySelector, scope: AudioObjectPropertyScope = kAudioObjectPropertyScopeGlobal, element: AudioObjectPropertyElement = kAudioObjectPropertyElementMaster) -> AudioObjectPropertyAddress? {
+        var address = self.address(selector: selector, scope: scope, element: element)
+
+        if AudioObjectHasProperty(self.objectID, &address) {
+            return address
+        } else {
+            return nil
+        }
+    }
+
+    // getProperty with default value
+    internal func getProperty<T>(address: AudioObjectPropertyAddress, defaultValue: T) -> T? {
+        var value = defaultValue
+        let status = getPropertyData(address, andValue: &value)
+
+        switch status {
+        case noErr:
+            return value
+        default:
+            log("Unable to get property with address (\(address)). Status: \(status)")
+            return nil
+        }
+    }
+
+    internal func getProperty(address: AudioObjectPropertyAddress, defaultValue: CFString) -> String? {
+        var value = defaultValue
+        let status = getPropertyData(address, andValue: &value)
+
+        switch status {
+        case noErr:
+            return value as String
+        default:
+            log("Unable to get property with address (\(address)). Status: \(status)")
+            return nil
+        }
+    }
+
+    // getProperty UInt32
+    internal func getProperty(address: AudioObjectPropertyAddress) -> UInt32? {
+        return getProperty(address: address, defaultValue: UInt32(0))
+    }
+
+    // getProperty Float32
+    internal func getProperty(address: AudioObjectPropertyAddress) -> Float32? {
+        return getProperty(address: address, defaultValue: Float32(0.0))
+    }
+
+    // getProperty Float64
+    internal func getProperty(address: AudioObjectPropertyAddress) -> Float64? {
+        return getProperty(address: address, defaultValue: Float64(0.0))
+    }
+
+    // getProperty Bool
+    internal func getProperty(address: AudioObjectPropertyAddress) -> Bool? {
+        if let value = getProperty(address: address, defaultValue: UInt32(0)) {
+            return value != 0
+        } else {
+            return nil
+        }
+    }
+
+    // getProperty String
+    internal func getProperty(address: AudioObjectPropertyAddress) -> String? {
+        return getProperty(address: address, defaultValue: "" as CFString)
+    }
+
+    // setProperty T
+    internal func setProperty<T>(address: AudioObjectPropertyAddress, value: T) -> Bool {
+        let status: OSStatus
+
+        if let unwrappedValue = value as? Bool {
+            var newValue: UInt32 = unwrappedValue == true ? 1 : 0
+            status = setPropertyData(address, andValue: &newValue)
+        } else if let unwrappedValue = value as? String {
+            var newValue: CFString = unwrappedValue as CFString
+            status = setPropertyData(address, andValue: &newValue)
+        } else {
+            var newValue = value
+            status = setPropertyData(address, andValue: &newValue)
+        }
+
+        switch status {
+        case noErr:
+            return true
+        default:
+            log("Unable to set property with address (\(address)). Status: \(status)")
+            return false
+        }
     }
 }
 

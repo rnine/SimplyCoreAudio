@@ -14,6 +14,7 @@
 		4563CD481DC661E1006FD207 /* AMCoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4563CD421DC661A4006FD207 /* AMCoreAudio.framework */; };
 		4563CD491DC661E1006FD207 /* AMCoreAudio.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4563CD421DC661A4006FD207 /* AMCoreAudio.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		45D2D0201DC6837800A3A491 /* NSPopUpButton+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D2D01F1DC6837800A3A491 /* NSPopUpButton+Extension.swift */; };
+		45E332A01DCB7A5F00FB9223 /* ExtraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E3329F1DCB7A5F00FB9223 /* ExtraViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +71,7 @@
 		4563CD361DC6617D006FD207 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4563CD3C1DC661A4006FD207 /* AMCoreAudio.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = AMCoreAudio.xcodeproj; path = ../AMCoreAudio.xcodeproj; sourceTree = "<group>"; };
 		45D2D01F1DC6837800A3A491 /* NSPopUpButton+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSPopUpButton+Extension.swift"; sourceTree = "<group>"; };
+		45E3329F1DCB7A5F00FB9223 /* ExtraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtraViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +108,7 @@
 			children = (
 				4563CD361DC6617D006FD207 /* Info.plist */,
 				4563CD2D1DC6617D006FD207 /* AppDelegate.swift */,
+				45E3329F1DCB7A5F00FB9223 /* ExtraViewController.swift */,
 				45D2D01F1DC6837800A3A491 /* NSPopUpButton+Extension.swift */,
 				4563CD2F1DC6617D006FD207 /* ViewController.swift */,
 				4563CD311DC6617D006FD207 /* Assets.xcassets */,
@@ -222,6 +225,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				45D2D0201DC6837800A3A491 /* NSPopUpButton+Extension.swift in Sources */,
+				45E332A01DCB7A5F00FB9223 /* ExtraViewController.swift in Sources */,
 				4563CD301DC6617D006FD207 /* ViewController.swift in Sources */,
 				4563CD2E1DC6617D006FD207 /* AppDelegate.swift in Sources */,
 			);

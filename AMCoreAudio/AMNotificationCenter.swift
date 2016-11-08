@@ -74,6 +74,10 @@ final public class AMNotificationCenter : NSObject {
 
         if subscriberDescriptorsByEvent[type] == nil {
             subscriberDescriptorsByEvent[type] = []
+
+            if eventType is AMAudioHardwareEvent.Type {
+                AMAudioHardware.sharedInstance.enableDeviceMonitoring()
+            }
         }
 
         let descriptor = AMEventSubscriberDescriptor(subscriber: subscriber, queue: dispatchQueue)
@@ -97,6 +101,10 @@ final public class AMNotificationCenter : NSObject {
 
             if subscribers.count == 0 {
                 subscriberDescriptorsByEvent.removeValue(forKey: type)
+
+                if eventType is AMAudioHardwareEvent.Type {
+                    AMAudioHardware.sharedInstance.disableDeviceMonitoring()
+                }
             }
         }
     }

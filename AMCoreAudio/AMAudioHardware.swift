@@ -125,7 +125,7 @@ final public class AMAudioHardware: NSObject {
     }
 
     deinit {
-        cleanup()
+        disableDeviceMonitoring()
     }
 
     /**
@@ -138,23 +138,7 @@ final public class AMAudioHardware: NSObject {
 
         - SeeAlso: disableDeviceMonitoring()
      */
-    public func enableDeviceMonitoring() {
-        setup()
-    }
-
-    /**
-        Disables device monitoring.
-     
-        - SeeAlso: enableDeviceMonitoring()
-     */
-    public func disableDeviceMonitoring() {
-        cleanup()
-    }
-
-    // MARK: - Private Functions
-
-    private func setup() {
-        //print("Foo foo")
+    internal func enableDeviceMonitoring() {
         registerForNotifications()
 
         let allDevices = AMAudioDevice.allDevices()
@@ -164,13 +148,20 @@ final public class AMAudioHardware: NSObject {
         }
     }
 
-    private func cleanup() {
+    /**
+        Disables device monitoring.
+     
+        - SeeAlso: enableDeviceMonitoring()
+     */
+    internal func disableDeviceMonitoring() {
         allKnownDevices.forEach { (device) in
             removeDevice(device)
         }
 
         unregisterForNotifications()
     }
+
+    // MARK: - Private Functions
 
     private func addDevice(_ device: AMAudioDevice) {
         allKnownDevices.append(device)

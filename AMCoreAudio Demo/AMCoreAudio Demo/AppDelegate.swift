@@ -13,18 +13,12 @@ import AMCoreAudio
 class AppDelegate: NSObject, NSApplicationDelegate {
 
 
-    private let audioHardware = AMAudioHardware.sharedInstance
-
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Insert code here to initialize your application
-
-        audioHardware.enableDeviceMonitoring()
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
-
-        audioHardware.disableDeviceMonitoring()
     }
 
 
