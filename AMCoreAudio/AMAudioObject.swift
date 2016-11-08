@@ -383,6 +383,7 @@ extension AMAudioObject: Hashable {
     }
 }
 
+/// :nodoc:
 public func ==(lhs: AMAudioObject, rhs: AMAudioObject) -> Bool {
     return lhs.hashValue == rhs.hashValue
 }
