@@ -1931,7 +1931,7 @@
                             </slider>
                             <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="WJX-r7-f0m">
                                 <rect key="frame" x="398" y="226" width="92" height="18"/>
-                                <sliderCell key="cell" controlSize="small" state="on" alignment="left" maxValue="1" doubleValue="0.5" tickMarkPosition="above" numberOfTickMarks="1" sliderType="linear" id="JYA-4f-Hjl"/>
+                                <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="1" doubleValue="0.5" tickMarkPosition="above" numberOfTickMarks="1" sliderType="linear" id="JYA-4f-Hjl"/>
                                 <connections>
                                     <action selector="setVirtualMasterBalance:" target="ehD-zn-ZH3" id="xwa-us-hOE"/>
                                 </connections>
