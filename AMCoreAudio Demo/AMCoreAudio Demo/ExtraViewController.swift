@@ -20,6 +20,7 @@ class ExtraViewController: NSViewController {
     @IBOutlet var virtualMasterBalanceSlider: NSSlider!
     @IBOutlet var preferredStereoPairLPopUpButton: NSPopUpButton!
     @IBOutlet var preferredStereoPairRPopUpButton: NSPopUpButton!
+    @IBOutlet var tableView: NSTableView!
 
     var representedDirection: AMCoreAudio.Direction?
 
@@ -28,6 +29,7 @@ class ExtraViewController: NSViewController {
             // Update the view, if already loaded.
             if let audioDevice = representedObject as? AudioDevice {
                 populateInfoFields(device: audioDevice)
+                tableView.reloadData()
             }
         }
     }
@@ -133,6 +135,30 @@ class ExtraViewController: NSViewController {
         }
     }
 
+    @IBAction func setChannelMuteState(_ sender: AnyObject) {
+        guard let button = sender as? NSButton else { return }
+
+        if let device = representedObject as? AudioDevice, let direction = representedDirection {
+            let channel = UInt32(button.tag)
+
+            if device.setMute(button.state == NSOnState, channel: channel, direction: direction) == false {
+                print("Unable to update mute state for channel \(channel) and direction \(direction)")
+            }
+        }
+    }
+
+    @IBAction func setChannelVolume(_ sender: AnyObject) {
+        guard let slider = sender as? NSSlider else { return }
+
+        if let device = representedObject as? AudioDevice, let direction = representedDirection {
+            let channel = UInt32(slider.tag)
+
+            if device.setVolume(slider.floatValue, channel: channel, direction: direction) == false {
+                print("Unable to update volume for channel \(channel) and direction \(direction)")
+            }
+        }
+    }
+
     // MARK: - Private
 
     fileprivate func populateInfoFields(device: AudioDevice) {
@@ -227,8 +253,123 @@ class ExtraViewController: NSViewController {
     }
 }
 
-extension ExtraViewController : EventSubscriber {
+// MARK: - NSTableViewDelegate Functions
 
+extension ExtraViewController : NSTableViewDelegate {
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        guard let tableColumn = tableColumn else { return nil }
+
+        switch tableColumn.identifier {
+        case "channel":
+            let cellView = tableView.make(withIdentifier: tableColumn.identifier, owner: self) as? NSTableCellView
+
+            if let textField = cellView?.textField {
+                textField.stringValue = row == 0 ? "M" : String(row)
+            }
+
+            return cellView
+        case "data":
+            let cellView = tableView.make(withIdentifier: tableColumn.identifier, owner: self) as? PopUpButtonCellView
+
+            if let popUpButton = cellView?.popUpButton {
+                popUpButton.removeAllItems()
+            }
+
+            return cellView
+        case "mute":
+            let cellView = tableView.make(withIdentifier: tableColumn.identifier, owner: self) as? CheckBoxCellView
+
+            if let checkBoxButton = cellView?.checkBoxButton {
+                checkBoxButton.title = ""
+
+                if let device = representedObject as? AudioDevice, let direction = representedDirection {
+                    if let isMuted = device.isMuted(channel: UInt32(row), direction: direction) {
+                        checkBoxButton.state = isMuted ? NSOnState : NSOffState
+                        checkBoxButton.isEnabled = true
+                        checkBoxButton.tag = row
+                        checkBoxButton.action = #selector(setChannelMuteState)
+                        checkBoxButton.target = self
+                    } else {
+                        checkBoxButton.state = NSOffState
+                        checkBoxButton.isEnabled = false
+                        checkBoxButton.action = nil
+                        checkBoxButton.target = nil
+                    }
+                }
+            }
+
+            return cellView
+        case "volumeLabel":
+            let cellView = tableView.make(withIdentifier: tableColumn.identifier, owner: self) as? NSTableCellView
+
+            if let textField = cellView?.textField {
+                if let device = representedObject as? AudioDevice, let direction = representedDirection {
+                    if let volume = device.volumeInDecibels(channel: UInt32(row), direction: direction) {
+                        textField.stringValue = String(volume)
+                        textField.isEnabled = true
+                    } else {
+                        textField.stringValue = "N/A"
+                        textField.isEnabled = false
+                    }
+                }
+            }
+
+            return cellView
+        case "volume":
+            let cellView = tableView.make(withIdentifier: tableColumn.identifier, owner: self) as? SliderCellView
+
+            if let slider = cellView?.slider {
+                if let device = representedObject as? AudioDevice, let direction = representedDirection {
+                    if let volume = device.volume(channel: UInt32(row), direction: direction) {
+                        slider.floatValue = volume
+                        slider.isEnabled = true
+                        slider.tag = row
+                        slider.action = #selector(setChannelVolume)
+                        slider.target = self
+                    } else {
+                        slider.floatValue = 1.0
+                        slider.isEnabled = false
+                        slider.action = nil
+                        slider.target = nil
+                    }
+                }
+            }
+
+            return cellView
+        default:
+            return nil
+        }
+    }
+
+    func tableView(_ tableView: NSTableView, shouldReorderColumn columnIndex: Int, toColumn newColumnIndex: Int) -> Bool {
+        return false
+    }
+
+    func tableView(_ tableView: NSTableView, shouldTypeSelectFor event: NSEvent, withCurrentSearch searchString: String?) -> Bool {
+        return false
+    }
+}
+
+// MARK: - NSTableViewDataSource Functions
+
+extension ExtraViewController : NSTableViewDataSource {
+    func numberOfRows(in tableView: NSTableView) -> Int {
+        if let device = representedObject as? AudioDevice, let direction = representedDirection {
+            let channels = device.channels(direction: direction)
+
+            if channels > 0 {
+                return Int(channels) + 1 // take master channel into account
+            } else {
+                return 0
+            }
+        } else {
+            return 0
+        }
+    }
+}
+
+
+extension ExtraViewController : EventSubscriber {
     func eventReceiver(_ event: Event) {
         switch event {
         case let event as AudioDeviceEvent:
@@ -237,13 +378,24 @@ extension ExtraViewController : EventSubscriber {
                 if representedObject as? AudioDevice == audioDevice {
                     populateInfoFields(device: audioDevice)
                 }
-            case .volumeDidChange(let audioDevice, _, _):
+            case .volumeDidChange(let audioDevice, let channel, _):
                 if representedObject as? AudioDevice == audioDevice {
                     populateInfoFields(device: audioDevice)
+
+                    let volumeIndices = IndexSet([tableView.column(withIdentifier: "volumeLabel"),
+                                                  tableView.column(withIdentifier: "volume")])
+
+                    tableView.reloadData(forRowIndexes: IndexSet(integer: Int(channel)),
+                                         columnIndexes: volumeIndices)
                 }
-            case .muteDidChange(let audioDevice, _, _):
+            case .muteDidChange(let audioDevice, let channel, _):
                 if representedObject as? AudioDevice == audioDevice {
                     populateInfoFields(device: audioDevice)
+
+                    let muteIndex = IndexSet([tableView.column(withIdentifier: "mute")])
+
+                    tableView.reloadData(forRowIndexes: IndexSet(integer: Int(channel)),
+                                         columnIndexes: muteIndex)
                 }
             case .preferredChannelsForStereoDidChange(let audioDevice):
                 if representedObject as? AudioDevice == audioDevice {
@@ -252,6 +404,7 @@ extension ExtraViewController : EventSubscriber {
             case .listDidChange(let audioDevice):
                 if representedObject as? AudioDevice == audioDevice {
                     populatePreferredStereoPair(device: audioDevice)
+                    tableView.reloadData()
                 }
             default:
                 break
