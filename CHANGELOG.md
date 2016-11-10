@@ -2,6 +2,18 @@
 
 | Version       | Description   | Date     |
 | -------------:|:------------- |:--------:|
+| 3.1           | Dropped `AM` prefix in all classes/enums/structs. Old ones are still available but deprecated. | TBA |
+|               | Modernized many function signatures. Old ones are still available but deprecated. | |
+|               | All deprecated function signatures and class/enum/struct names are marked for removal in 3.2 release.| |
+|               | Added `isJackConnectedDidChange(audioDevice:)` notification.| |
+|               | Added `preferredChannelsForStereoDidChange(audioDevice) ` notification.| |
+|               | Added some LFE (Low Frequency Effects) functions and variables.| |
+|               | Added `setPreferredChannelsForStereo(channels:direction:)`.| |
+|               | Changed `nominalSampleRate()` and `actualSampleRate()` implementations so they return nil in the event 0 is returned by Core Audio.| |
+|               | Improved `volumeInfo(channel:direction:)` implementation so it does not return a `VolumeInfo` struct unless it is actually populated with any valid values.| |
+|               | Removed the need to manually enable and disable device monitoring in `AudioHardware`.| |
+|               | Added `TerminalType` and `StereoPair` enums.| |
+|               | Added new demo project.| |
 | 3.0.1         | Added `AMCoreAudio` `setHogMode()` and removed `setHogModePidToCurrentProcess()` and `setHogModePID(_:)`              | October 30th, 2016 |
 |               | Fixed `unsetHogMode()` so it does not actually try to request hog mode instead of unsetting it when hog mode is not set.| |
 |               | Changed `AMCoreAudio` `channelsForDirection(_:)` to calculate the total channel count based on the sum of channels in every stream's physical format. Old implementation is still available as `layoutChannelsForDirection(_:)` | |
