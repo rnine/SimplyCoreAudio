@@ -18,8 +18,6 @@ import Foundation
 @available(*, deprecated, message: "Marked for removal in 3.2. Use EventSubscriber instead") public typealias AMEventSubscriber = EventSubscriber
 
 
-// MARK: - NotificationCenter Protocols
-
 /**
     The protocol that any events must implement.
  

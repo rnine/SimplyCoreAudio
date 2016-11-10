@@ -17,7 +17,7 @@ import AudioToolbox.AudioServices
 
 
 /**
-    Represents an `AudioHardwareEvent` event.
+    Represents an `AudioHardware` event.
  */
 public enum AudioHardwareEvent: Event {
     /**

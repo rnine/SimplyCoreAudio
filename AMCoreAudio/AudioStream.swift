@@ -16,7 +16,7 @@ import Foundation
 
 
 /**
-    Represents an `AudioStreamEvent` event.
+    Represents an `AudioStream` event.
  */
 public enum AudioStreamEvent: Event {
     /**
