@@ -2,9 +2,7 @@
 
 | Version       | Description   | Date     |
 | -------------:|:------------- |:--------:|
-| 3.1           | Dropped `AM` prefix in all classes/enums/structs. Old ones are still available but deprecated. | TBA |
-|               | Modernized many function signatures. Old ones are still available but deprecated. | |
-|               | All deprecated function signatures and class/enum/struct names are marked for removal in 3.2 release.| |
+| 3.1           | Deprecated the `AM` prefix in all classes/enums/structs and modernized many function signatures. Old names and signatures are marked for removal in 3.2. | TBA |
 |               | Added `isJackConnectedDidChange(audioDevice:)` notification.| |
 |               | Added `preferredChannelsForStereoDidChange(audioDevice) ` notification.| |
 |               | Added some LFE (Low Frequency Effects) functions and variables.| |
