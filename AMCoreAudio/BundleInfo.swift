@@ -9,9 +9,12 @@
 import Foundation
 
 /**
-    `BundleInfo`
-
-    This class provides information about this bundle such as: the build date, name, version or builder number.
+    This class provides information about this bundle such as: 
+ 
+    - build date
+    - name
+    - version
+    - builder number
  */
 final public class BundleInfo {
     private init() {}

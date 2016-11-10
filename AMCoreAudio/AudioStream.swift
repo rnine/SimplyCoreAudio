@@ -15,7 +15,9 @@ import Foundation
 @available(*, deprecated, message: "Marked for removal in 3.2. Use AudioStreamEvent instead") public typealias AMAudioStreamEvent = AudioStreamEvent
 
 
-///// `AudioStreamEvent` enum
+/**
+    Represents an `AudioStreamEvent` event.
+ */
 public enum AudioStreamEvent: Event {
     /**
         Called whenever the audio stream `isActive` flag changes state.
@@ -216,7 +218,7 @@ final public class AudioStream: AudioObject {
 
             if let status = setStreamPropertyData(kAudioStreamPropertyPhysicalFormat, andValue: &asbd) {
                 if noErr != status {
-                    print("Error setting physicalFormat to \(newValue)")
+                    log("Error setting physicalFormat to \(newValue)")
                 }
             }
         }
@@ -247,7 +249,7 @@ final public class AudioStream: AudioObject {
 
             if let status = setStreamPropertyData(kAudioStreamPropertyVirtualFormat, andValue: &asbd) {
                 if noErr != status {
-                    print("Error setting virtualFormat to \(newValue)")
+                    log("Error setting virtualFormat to \(newValue)")
                 }
             }
         }
@@ -267,7 +269,7 @@ final public class AudioStream: AudioObject {
 
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioStreamPropertyAvailablePhysicalFormats,
-            mScope: self.directionToScope(direction),
+            mScope: scope(direction: direction),
             mElement: kAudioObjectPropertyElementMaster
         )
 
@@ -299,7 +301,7 @@ final public class AudioStream: AudioObject {
 
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioStreamPropertyAvailableVirtualFormats,
-            mScope: self.directionToScope(direction),
+            mScope: scope(direction: direction),
             mElement: kAudioObjectPropertyElementMaster
         )
 
@@ -327,7 +329,7 @@ final public class AudioStream: AudioObject {
 
     private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { (inNumberAddresses, inAddresses) -> Void in
         let address = inAddresses.pointee
-        let direction = self.scopeToDirection(address.mScope)
+        let direction = AMCoreAudio.direction(scope: address.mScope)
         let notificationCenter = NotificationCenter.defaultCenter
 
         switch address.mSelector {
@@ -466,7 +468,7 @@ final public class AudioStream: AudioObject {
 
         var address = AudioObjectPropertyAddress(
             mSelector: selector,
-            mScope: directionToScope(direction),
+            mScope: scope(direction: direction),
             mElement: kAudioObjectPropertyElementMaster
         )
 
@@ -496,7 +498,7 @@ final public class AudioStream: AudioObject {
 
         var address = AudioObjectPropertyAddress(
             mSelector: selector,
-            mScope: directionToScope(direction),
+            mScope: scope(direction: direction),
             mElement: kAudioObjectPropertyElementMaster
         )
 
@@ -523,7 +525,7 @@ final public class AudioStream: AudioObject {
         let err = AudioObjectAddPropertyListenerBlock(id, &address, notificationsQueue, propertyListenerBlock)
 
         if noErr != err {
-            print("Error on AudioObjectAddPropertyListenerBlock: \(err)")
+            log("Error on AudioObjectAddPropertyListenerBlock: \(err)")
         }
 
         isRegisteredForNotifications = noErr == err
@@ -540,7 +542,7 @@ final public class AudioStream: AudioObject {
             let err = AudioObjectRemovePropertyListenerBlock(id, &address, notificationsQueue, propertyListenerBlock)
 
             if noErr != err {
-                print("Error on AudioObjectRemovePropertyListenerBlock: \(err)")
+                log("Error on AudioObjectRemovePropertyListenerBlock: \(err)")
             }
 
             isRegisteredForNotifications = noErr != err

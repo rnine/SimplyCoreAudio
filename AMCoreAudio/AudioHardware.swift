@@ -16,7 +16,9 @@ import AudioToolbox.AudioServices
 @available(*, deprecated, message: "Marked for removal in 3.2. Use AudioHardware instead") public typealias AMAudioHardware = AudioHardware
 
 
-///// `AudioHardwareEvent` enum
+/**
+    Represents an `AudioHardwareEvent` event.
+ */
 public enum AudioHardwareEvent: Event {
     /**
         Called whenever the list of hardware devices and device subdevices changes.
@@ -41,11 +43,9 @@ public enum AudioHardwareEvent: Event {
 }
 
 /**
-    `AudioHardware`
-
     This class allows subscribing to hardware-related audio notifications.
 
-    For a comprehensive list of supported notifications, see `AudioHardwareDelegate`.
+    For a comprehensive list of supported notifications, see `AudioHardwareEvent`.
  */
 final public class AudioHardware {
 
@@ -192,7 +192,7 @@ final public class AudioHardware {
         let err = AudioObjectAddPropertyListenerBlock(AudioObjectID(kAudioObjectSystemObject), &address, notificationsQueue, propertyListenerBlock)
 
         if noErr != err {
-            print("Error on AudioObjectAddPropertyListenerBlock: \(err)")
+            log("Error on AudioObjectAddPropertyListenerBlock: \(err)")
         }
 
         isRegisteredForNotifications = noErr == err
@@ -209,7 +209,7 @@ final public class AudioHardware {
             let err = AudioObjectRemovePropertyListenerBlock(AudioObjectID(kAudioObjectSystemObject), &address, notificationsQueue, propertyListenerBlock)
 
             if noErr != err {
-                print("Error on AudioObjectRemovePropertyListenerBlock: \(err)")
+                log("Error on AudioObjectRemovePropertyListenerBlock: \(err)")
             }
 
             isRegisteredForNotifications = noErr != err

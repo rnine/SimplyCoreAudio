@@ -56,10 +56,10 @@ private struct EventSubscriberDescriptor {
     var queue: DispatchQueue?
 }
 
-// MARK: - AMNotificationCenter
+// MARK: - NotificationCenter
 
 /**
-    `NotificationCenter` is AMCoreAudio's de facto pub-sub system.
+    This is AMCoreAudio's de facto pub-sub system.
  */
 final public class NotificationCenter {
     private var subscriberDescriptorsByEvent = [String: [EventSubscriberDescriptor]]()

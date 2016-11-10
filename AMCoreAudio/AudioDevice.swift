@@ -15,7 +15,10 @@ import AudioToolbox.AudioServices
 /// :nodoc:
 @available(*, deprecated, message: "Marked for removal in 3.2. Use AudioDeviceEvent instead") public typealias AMAudioDeviceEvent = AudioDeviceEvent
 
-///// `AudioDeviceEvent` enum
+
+/**
+    Represents an `AudioDevice` event.
+ */
 public enum AudioDeviceEvent: Event {
     /**
         Called whenever the audio device's sample rate changes.
@@ -83,8 +86,6 @@ public enum AudioDeviceEvent: Event {
 }
 
 /**
-    `AudioDevice`
-
     This class represents an audio device in the system and allows subscribing to audio device notifications.
 
     Devices may be physical or virtual. For a comprehensive list of supported types, please refer to `TransportType`.
@@ -138,7 +139,7 @@ final public class AudioDevice: AudioObject {
                 notificationCenter.publish(AudioDeviceEvent.clockSourceDidChange(
                     audioDevice: strongSelf,
                     channel: address.mElement,
-                    direction: strongSelf.scopeToDirection(address.mScope)
+                    direction: direction(scope: address.mScope)
                 ))
             }
         case kAudioObjectPropertyName:
@@ -154,7 +155,7 @@ final public class AudioDevice: AudioObject {
                 notificationCenter.publish(AudioDeviceEvent.volumeDidChange(
                     audioDevice: strongSelf,
                     channel: address.mElement,
-                    direction: strongSelf.scopeToDirection(address.mScope)
+                    direction: direction(scope: address.mScope)
                 ))
             }
         case kAudioDevicePropertyMute:
@@ -162,7 +163,7 @@ final public class AudioDevice: AudioObject {
                 notificationCenter.publish(AudioDeviceEvent.muteDidChange(
                     audioDevice: strongSelf,
                     channel: address.mElement,
-                    direction: strongSelf.scopeToDirection(address.mScope)
+                    direction: direction(scope: address.mScope)
                 ))
             }
         case kAudioDevicePropertyDeviceIsAlive:
@@ -520,7 +521,7 @@ final public class AudioDevice: AudioObject {
      */
     public func isJackConnected(direction: Direction) -> Bool? {
         if let address = validAddress(selector: kAudioDevicePropertyJackIsConnected,
-                                      scope: directionToScope(direction)) {
+                                      scope: scope(direction: direction)) {
             return getProperty(address: address)
         } else {
             return nil
@@ -573,7 +574,7 @@ final public class AudioDevice: AudioObject {
      */
     public func name(channel: UInt32, direction: Direction) -> String? {
         if let address = validAddress(selector: kAudioObjectPropertyElementName,
-                                      scope: directionToScope(direction),
+                                      scope: scope(direction: direction),
                                       element: channel) {
             if let name: String = getProperty(address: address) {
                 return name.isEmpty ? nil : name
@@ -752,7 +753,7 @@ final public class AudioDevice: AudioObject {
     public func layoutChannels(direction: Direction) -> UInt32? {
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyPreferredChannelLayout,
-            mScope: directionToScope(direction),
+            mScope: scope(direction: direction),
             mElement: kAudioObjectPropertyElementMaster
         )
 
@@ -813,7 +814,7 @@ final public class AudioDevice: AudioObject {
 
         address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyVolumeScalar,
-            mScope: directionToScope(direction),
+            mScope: scope(direction: direction),
             mElement: channel
         )
 
@@ -887,7 +888,7 @@ final public class AudioDevice: AudioObject {
      */
     public func volume(channel: UInt32, direction: Direction) -> Float32? {
         if let address = validAddress(selector: kAudioDevicePropertyVolumeScalar,
-                                      scope: directionToScope(direction),
+                                      scope: scope(direction: direction),
                                       element: channel) {
             return getProperty(address: address)
         } else {
@@ -902,7 +903,7 @@ final public class AudioDevice: AudioObject {
      */
     public func volumeInDecibels(channel: UInt32, direction: Direction) -> Float32? {
         if let address = validAddress(selector: kAudioDevicePropertyVolumeDecibels,
-                                      scope: directionToScope(direction),
+                                      scope: scope(direction: direction),
                                       element: channel) {
             return getProperty(address: address)
         } else {
@@ -917,7 +918,7 @@ final public class AudioDevice: AudioObject {
      */
     public func setVolume(_ volume: Float32, channel: UInt32, direction: Direction) -> Bool {
         if let address = validAddress(selector: kAudioDevicePropertyVolumeScalar,
-                                      scope: directionToScope(direction),
+                                      scope: scope(direction: direction),
                                       element: channel) {
             return setProperty(address: address, value: volume)
         } else {
@@ -932,7 +933,7 @@ final public class AudioDevice: AudioObject {
      */
     public func setMute(_ shouldMute: Bool, channel: UInt32, direction: Direction) -> Bool {
         if let address = validAddress(selector: kAudioDevicePropertyMute,
-                                      scope: directionToScope(direction),
+                                      scope: scope(direction: direction),
                                       element: channel) {
             return setProperty(address: address, value: shouldMute)
         } else {
@@ -947,7 +948,7 @@ final public class AudioDevice: AudioObject {
      */
     public func isMuted(channel: UInt32, direction: Direction) -> Bool? {
         if let address = validAddress(selector: kAudioDevicePropertyMute,
-                                      scope: directionToScope(direction),
+                                      scope: scope(direction: direction),
                                       element: channel) {
             return getProperty(address: address)
         } else {
@@ -982,7 +983,7 @@ final public class AudioDevice: AudioObject {
     public func preferredChannelsForStereo(direction: Direction) -> StereoPair? {
         let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyPreferredChannelsForStereo,
-            mScope: directionToScope(direction),
+            mScope: scope(direction: direction),
             mElement: kAudioObjectPropertyElementMaster
         )
 
@@ -1004,7 +1005,7 @@ final public class AudioDevice: AudioObject {
     public func setPreferredChannelsForStereo(channels: StereoPair, direction: Direction) -> Bool {
         let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyPreferredChannelsForStereo,
-            mScope: directionToScope(direction),
+            mScope: scope(direction: direction),
             mElement: kAudioObjectPropertyElementMaster
         )
 
@@ -1042,7 +1043,7 @@ final public class AudioDevice: AudioObject {
      */
     public func canSetVirtualMasterVolume(direction: Direction) -> Bool {
         if validAddress(selector: kAudioHardwareServiceDeviceProperty_VirtualMasterVolume,
-                                      scope: directionToScope(direction)) != nil {
+                                      scope: scope(direction: direction)) != nil {
             return true
         } else {
             return false
@@ -1058,7 +1059,7 @@ final public class AudioDevice: AudioObject {
      */
     public func setVirtualMasterVolume(_ volume: Float32, direction: Direction) -> Bool {
         if let address = validAddress(selector: kAudioHardwareServiceDeviceProperty_VirtualMasterVolume,
-                                      scope: directionToScope(direction)) {
+                                      scope: scope(direction: direction)) {
             return setProperty(address: address, value: volume)
         } else {
             return false
@@ -1072,7 +1073,7 @@ final public class AudioDevice: AudioObject {
      */
     public func virtualMasterVolume(direction: Direction) -> Float32? {
         if let address = validAddress(selector: kAudioHardwareServiceDeviceProperty_VirtualMasterVolume,
-                                      scope: directionToScope(direction)) {
+                                      scope: scope(direction: direction)) {
             return getProperty(address: address)
         } else {
             return nil
@@ -1115,7 +1116,7 @@ final public class AudioDevice: AudioObject {
 
     public func virtualMasterBalance(direction: Direction) -> Float32? {
         if let address = validAddress(selector: kAudioHardwareServiceDeviceProperty_VirtualMasterBalance,
-                                      scope: directionToScope(direction)) {
+                                      scope: scope(direction: direction)) {
             return getProperty(address: address)
         } else {
             return nil
@@ -1124,7 +1125,7 @@ final public class AudioDevice: AudioObject {
 
     public func setVirtualMasterBalance(_ value: Float32, direction: Direction) -> Bool {
         if let address = validAddress(selector: kAudioHardwareServiceDeviceProperty_VirtualMasterBalance,
-                                      scope: directionToScope(direction)) {
+                                      scope: scope(direction: direction)) {
             return setProperty(address: address, value: value)
         } else {
             return false
@@ -1210,7 +1211,7 @@ final public class AudioDevice: AudioObject {
                     let endIndex = possibleRates.index(of: valueRange.mMaximum) {
                     sampleRates += possibleRates[startIndex..<endIndex + 1]
                 } else {
-                    print("Failed to obtain list of supported sample rates ranging from \(valueRange.mMinimum) to \(valueRange.mMaximum). This is an error in AMCoreAudio and should be reported to the project maintainers.")
+                    log("Failed to obtain list of supported sample rates ranging from \(valueRange.mMinimum) to \(valueRange.mMaximum). This is an error in AMCoreAudio and should be reported to the project maintainers.")
                 }
             } else {
                 // We did not get a range (this should be the most common case)
@@ -1230,7 +1231,7 @@ final public class AudioDevice: AudioObject {
      */
     public func clockSourceID(channel: UInt32, direction: Direction) -> UInt32? {
         if let address = validAddress(selector: kAudioDevicePropertyClockSource,
-                                      scope: directionToScope(direction)) {
+                                      scope: scope(direction: direction)) {
             return getProperty(address: address)
         } else {
             return nil
@@ -1257,7 +1258,7 @@ final public class AudioDevice: AudioObject {
      */
     public func clockSourceIDs(channel: UInt32, direction: Direction) -> [UInt32]? {
         guard let address = validAddress(selector: kAudioDevicePropertyClockSources,
-                                         scope: directionToScope(direction),
+                                         scope: scope(direction: direction),
                                          element: channel) else {
             return nil
         }
@@ -1323,7 +1324,7 @@ final public class AudioDevice: AudioObject {
      */
     public func setClockSourceID(_ clockSourceID: UInt32, channel: UInt32, direction: Direction) -> Bool {
         if let address = validAddress(selector: kAudioDevicePropertyClockSource,
-                                      scope: directionToScope(direction),
+                                      scope: scope(direction: direction),
                                       element: channel) {
             return setProperty(address: address, value: clockSourceID)
         } else {
@@ -1340,7 +1341,7 @@ final public class AudioDevice: AudioObject {
      */
     public func deviceLatencyFrames(direction: Direction) -> UInt32? {
         if let address = validAddress(selector: kAudioDevicePropertyLatency,
-                                      scope: directionToScope(direction)) {
+                                      scope: scope(direction: direction)) {
             return getProperty(address: address)
         } else {
             return nil
@@ -1354,7 +1355,7 @@ final public class AudioDevice: AudioObject {
      */
     public func deviceSafetyOffsetFrames(direction: Direction) -> UInt32? {
         if let address = validAddress(selector: kAudioDevicePropertySafetyOffset,
-                                      scope: directionToScope(direction)) {
+                                      scope: scope(direction: direction)) {
             return getProperty(address: address)
         } else {
             return nil
@@ -1433,7 +1434,7 @@ final public class AudioDevice: AudioObject {
      */
     public func scalarToDecibels(volume: Float32, channel: UInt32, direction: Direction) -> Float32? {
         guard let address = validAddress(selector: kAudioDevicePropertyVolumeScalarToDecibels,
-                                      scope: directionToScope(direction),
+                                      scope: scope(direction: direction),
                                       element: channel) else {
             return nil
         }
@@ -1451,7 +1452,7 @@ final public class AudioDevice: AudioObject {
      */
     public func decibelsToScalar(volume: Float32, channel: UInt32, direction: Direction) -> Float32? {
         guard let address = validAddress(selector: kAudioDevicePropertyVolumeDecibelsToScalar,
-                                         scope: directionToScope(direction),
+                                         scope: scope(direction: direction),
                                          element: channel) else {
                                             return nil
         }
@@ -1471,7 +1472,7 @@ final public class AudioDevice: AudioObject {
      */
     public func streams(direction: Direction) -> [AudioStream]? {
         guard let address = validAddress(selector: kAudioDevicePropertyStreams,
-                                         scope: directionToScope(direction)) else {
+                                         scope: scope(direction: direction)) else {
             return nil
         }
 
@@ -1530,7 +1531,7 @@ final public class AudioDevice: AudioObject {
         let err = AudioObjectAddPropertyListenerBlock(id, &address, notificationsQueue, propertyListenerBlock)
 
         if noErr != err {
-            print("Error on AudioObjectAddPropertyListenerBlock: \(err)")
+            log("Error on AudioObjectAddPropertyListenerBlock: \(err)")
         }
 
         isRegisteredForNotifications = noErr == err
@@ -1547,7 +1548,7 @@ final public class AudioDevice: AudioObject {
             let err = AudioObjectRemovePropertyListenerBlock(id, &address, notificationsQueue, propertyListenerBlock)
 
             if noErr != err {
-                print("Error on AudioObjectRemovePropertyListenerBlock: \(err)")
+                log("Error on AudioObjectRemovePropertyListenerBlock: \(err)")
             }
 
             isRegisteredForNotifications = noErr != err

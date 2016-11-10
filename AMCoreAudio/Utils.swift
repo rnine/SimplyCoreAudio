@@ -8,22 +8,21 @@
 
 import Foundation
 
-final internal class Utils {
-    private init() {}
-    
-    class func directionToScope(_ direction: Direction) -> AudioObjectPropertyScope {
-        return .Playback == direction ? kAudioObjectPropertyScopeOutput : kAudioObjectPropertyScopeInput
-    }
+internal func log(_ string: String) {
+    print("[AMCoreAudio] \(string)")
+}
 
-    class func scopeToDirection(_ scope: AudioObjectPropertyScope) -> Direction {
-        switch scope {
-        case kAudioObjectPropertyScopeOutput:
-            return .Playback
-        case kAudioObjectPropertyScopeInput:
-            return .Recording
-        default:
-            return .Invalid
-        }
-    }
+internal func scope(direction: Direction) -> AudioObjectPropertyScope {
+    return .Playback == direction ? kAudioObjectPropertyScopeOutput : kAudioObjectPropertyScopeInput
+}
 
+internal func direction(scope: AudioObjectPropertyScope) -> Direction {
+    switch scope {
+    case kAudioObjectPropertyScopeOutput:
+        return .Playback
+    case kAudioObjectPropertyScopeInput:
+        return .Recording
+    default:
+        return .Invalid
+    }
 }

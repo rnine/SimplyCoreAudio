@@ -16,27 +16,13 @@ internal class AudioObjectPool: NSObject {
     static var instancePool: NSMapTable<NSNumber, AudioObject> = NSMapTable.weakToWeakObjects()
 }
 
-fileprivate func log(_ string: String) {
-    print("[AMCoreAudio] \(string)")
-}
-
 /**
-    `AudioObject`
-
-    This class represents a Core Audio object currently present in the system. In Core Audio, 
+    This class represents a Core Audio object currently present in the system. In Core Audio,
     audio objects are referenced by its `AudioObjectID` and belong to a specific `AudioClassID`. 
     For more information, please refer to Core Audio's documentation or source code.
  */
 public class AudioObject {
     internal var objectID: AudioObjectID
-
-    internal func directionToScope(_ direction: Direction) -> AudioObjectPropertyScope {
-        return Utils.directionToScope(direction)
-    }
-
-    internal func scopeToDirection(_ scope: AudioObjectPropertyScope) -> Direction {
-        return Utils.scopeToDirection(scope)
-    }
 
     internal init(objectID: AudioObjectID) {
         self.objectID = objectID
