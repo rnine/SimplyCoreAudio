@@ -1655,8 +1655,8 @@
                                                         </tableCellView>
                                                     </prototypeCellViews>
                                                 </tableColumn>
-                                                <tableColumn identifier="data" editable="NO" width="180" minWidth="180" maxWidth="180" id="dH6-qi-iDx">
-                                                    <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Data">
+                                                <tableColumn identifier="name" editable="NO" width="180" minWidth="180" maxWidth="180" id="dH6-qi-iDx">
+                                                    <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Name">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -1667,32 +1667,22 @@
                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                     <prototypeCellViews>
-                                                        <tableCellView id="drG-ag-rC3" customClass="PopUpButtonCellView" customModule="AMCoreAudio_Demo" customModuleProvider="target">
+                                                        <tableCellView id="drG-ag-rC3">
                                                             <rect key="frame" x="30" y="0.0" width="180" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="AH9-WA-FIH">
-                                                                    <rect key="frame" x="-2" y="-6" width="180" height="22"/>
-                                                                    <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="XvH-f2-krK" id="1J0-Bc-EdA">
-                                                                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xtk-z1-UkY">
+                                                                    <rect key="frame" x="0.0" y="-1" width="180" height="14"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                    <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="left" title="Table View Cell" id="2OO-0g-QSP">
                                                                         <font key="font" metaFont="smallSystem"/>
-                                                                        <menu key="menu" id="y7D-lf-S5X">
-                                                                            <items>
-                                                                                <menuItem title="Item 1" state="on" id="XvH-f2-krK"/>
-                                                                                <menuItem title="Item 2" id="mci-Dy-msn"/>
-                                                                                <menuItem title="Item 3" id="RSm-LW-30I"/>
-                                                                            </items>
-                                                                        </menu>
-                                                                    </popUpButtonCell>
-                                                                </popUpButton>
+                                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textFieldCell>
+                                                                </textField>
                                                             </subviews>
-                                                            <constraints>
-                                                                <constraint firstAttribute="trailing" secondItem="AH9-WA-FIH" secondAttribute="trailing" constant="5" id="NCe-T3-hbn"/>
-                                                                <constraint firstItem="AH9-WA-FIH" firstAttribute="top" secondItem="drG-ag-rC3" secondAttribute="top" constant="2" id="TOl-9j-XYl"/>
-                                                                <constraint firstItem="AH9-WA-FIH" firstAttribute="leading" secondItem="drG-ag-rC3" secondAttribute="leading" constant="1" id="fu4-Sj-3wF"/>
-                                                            </constraints>
                                                             <connections>
-                                                                <outlet property="popUpButton" destination="AH9-WA-FIH" id="tAA-N8-qub"/>
+                                                                <outlet property="textField" destination="xtk-z1-UkY" id="9VI-9P-9T2"/>
                                                             </connections>
                                                         </tableCellView>
                                                     </prototypeCellViews>

@@ -217,6 +217,7 @@ class ExtraViewController: NSViewController {
                 LFEMuteCheckbox.state = LFEMute == true ? NSOnState : NSOffState
                 LFEMuteCheckbox.isEnabled = true
             } else {
+                LFEMuteCheckbox.state = NSOffState
                 LFEMuteCheckbox.isEnabled = false
             }
         default:
@@ -237,7 +238,7 @@ class ExtraViewController: NSViewController {
             preferredStereoPairRPopUpButton.isEnabled = true
 
             for channel in 1...device.channels(direction: direction) {
-                let channelName = device.name(channel: channel, direction: direction) ?? String(channel)
+                let channelName = String(channel)
                 preferredStereoPairLPopUpButton.addItem(withTitle: channelName)
                 preferredStereoPairLPopUpButton.lastItem?.tag = Int(channel)
                 preferredStereoPairRPopUpButton.addItem(withTitle: channelName)
@@ -268,11 +269,16 @@ extension ExtraViewController : NSTableViewDelegate {
             }
 
             return cellView
-        case "data":
-            let cellView = tableView.make(withIdentifier: tableColumn.identifier, owner: self) as? PopUpButtonCellView
+        case "name":
+            let cellView = tableView.make(withIdentifier: tableColumn.identifier, owner: self) as? NSTableCellView
 
-            if let popUpButton = cellView?.popUpButton {
-                popUpButton.removeAllItems()
+            if let textField = cellView?.textField {
+                if let device = representedObject as? AudioDevice, let direction = representedDirection,
+                    let channelName = device.name(channel: UInt32(row), direction: direction) {
+                    textField.stringValue = channelName
+                } else {
+                    textField.stringValue = row == 0 ? "Master" : "Channel \(row)"
+                }
             }
 
             return cellView
