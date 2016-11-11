@@ -6,7 +6,7 @@
 [![GitHub tag](https://img.shields.io/github/tag/rnine/AMCoreAudio.svg)](https://github.com/rnine/AMCoreAudio)
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/rnine/AMCoreAudio/blob/develop/LICENSE.md)
 
-`AMCoreAudio` is a macOS framework written in Swift that aims to make [Apple's Core Audio](https://developer.apple.com/library/mac/documentation/MusicAudio/Conceptual/CoreAudioOverview/) use less tedious.
+`AMCoreAudio` is a Swift framework that aims to make [Core Audio](https://developer.apple.com/library/mac/documentation/MusicAudio/Conceptual/CoreAudioOverview/) use less tedious in macOS.
 
 Here's a few things it can do:
 
