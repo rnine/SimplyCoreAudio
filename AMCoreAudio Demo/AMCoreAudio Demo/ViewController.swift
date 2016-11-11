@@ -27,8 +27,6 @@ class ViewController: NSViewController {
     @IBOutlet var deviceRecordingLatencyLabel: NSTextField!
     @IBOutlet var devicePlaybackSafetyOffsetLabel: NSTextField!
     @IBOutlet var deviceRecordingSafetyOffsetLabel: NSTextField!
-    @IBOutlet var devicePlaybackMasterVolumeLabel: NSTextField!
-    @IBOutlet var deviceRecordingMasterVolumeLabel: NSTextField!
     @IBOutlet var deviceHogModeLabel: NSTextField!
     @IBOutlet var deviceIsAliveLabel: NSTextField!
     @IBOutlet var deviceIsRunningLabel: NSTextField!
@@ -237,9 +235,6 @@ class ViewController: NSViewController {
             deviceRecordingSafetyOffsetLabel.stringValue = unknownValue
         }
 
-        populatePlaybackMasterVolume(device: device)
-        populateRecordingMasterVolume(device: device)
-
         if let hogPID = device.hogModePID() {
             deviceHogModeLabel.stringValue = "\(hogPID)"
         } else {
@@ -443,28 +438,6 @@ class ViewController: NSViewController {
         }
     }
 
-    fileprivate func populatePlaybackMasterVolume(device: AudioDevice) {
-        if let playbackMasterVolume = device.virtualMasterVolumeInDecibels(direction: .Playback) {
-            let isMuted = (device.isMasterChannelMuted(direction: .Playback) ?? false)
-            devicePlaybackMasterVolumeLabel.isEnabled = true
-            devicePlaybackMasterVolumeLabel.stringValue = isMuted ? "Muted" : "\(playbackMasterVolume) dBfs"
-        } else {
-            devicePlaybackMasterVolumeLabel.stringValue = unknownValue
-            devicePlaybackMasterVolumeLabel.isEnabled = false
-        }
-    }
-
-    fileprivate func populateRecordingMasterVolume(device: AudioDevice) {
-        if let recordingMasterVolume = device.virtualMasterVolumeInDecibels(direction: .Recording) {
-            let isMuted = (device.isMasterChannelMuted(direction: .Recording) ?? false)
-            deviceRecordingMasterVolumeLabel.isEnabled = true
-            deviceRecordingMasterVolumeLabel.stringValue = isMuted ? "Muted" : "\(recordingMasterVolume) dBfs"
-        } else {
-            deviceRecordingMasterVolumeLabel.stringValue = unknownValue
-            deviceRecordingMasterVolumeLabel.isEnabled = false
-        }
-    }
-
     fileprivate func booleanToString(bool: Bool) -> String {
         return bool == true ? "Yes" : "No"
     }
@@ -558,28 +531,10 @@ extension ViewController : EventSubscriber {
                 if representedObject as? AudioDevice == audioDevice {
                     populateDeviceInformation(device: audioDevice)
                 }
-            case .volumeDidChange(let audioDevice, _, let direction):
-                if representedObject as? AudioDevice == audioDevice {
-                    switch direction {
-                    case .Playback:
-                        populatePlaybackMasterVolume(device: audioDevice)
-                    case .Recording:
-                        populateRecordingMasterVolume(device: audioDevice)
-                    case .Invalid:
-                        break
-                    }
-                }
-            case .muteDidChange(let audioDevice, _, let direction):
-                if representedObject as? AudioDevice == audioDevice {
-                    switch direction {
-                    case .Playback:
-                        populatePlaybackMasterVolume(device: audioDevice)
-                    case .Recording:
-                        populateRecordingMasterVolume(device: audioDevice)
-                    case .Invalid:
-                        break
-                    }
-                }
+            case .volumeDidChange(_, _, _):
+                break
+            case .muteDidChange(_, _, _):
+                break
             case .isAliveDidChange(let audioDevice):
                 if representedObject as? AudioDevice == audioDevice {
                     deviceIsAliveLabel.stringValue = booleanToString(bool: audioDevice.isAlive())
