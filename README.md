@@ -23,7 +23,7 @@ Here's a few things it can do:
 
 **Note:** If you are targeting OS X version 10.7 or 10.8 please use the [objc branch](https://github.com/rnine/AMCoreAudio/tree/objc).
 
-![Alt text](images/screenshot.png?raw=true "AMCoreAudio Demo (Output tab)")
+![Alt text](https://github.com/rnine/AMCoreAudio/raw/develop/images/screenshot.png?raw=true "AMCoreAudio Demo (Output tab)")
 
 ### Documentation
 
