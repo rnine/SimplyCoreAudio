@@ -6,23 +6,24 @@
 [![GitHub tag](https://img.shields.io/github/tag/rnine/AMCoreAudio.svg)](https://github.com/rnine/AMCoreAudio)
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/rnine/AMCoreAudio/blob/develop/LICENSE.md)
 
-`AMCoreAudio` is a Swift wrapper for [Apple's Core Audio](https://developer.apple.com/library/mac/documentation/MusicAudio/Conceptual/CoreAudioOverview/) framework focusing on:
+`AMCoreAudio` is a macOS framework that aims to make [Apple's Core Audio](https://developer.apple.com/library/mac/documentation/MusicAudio/Conceptual/CoreAudioOverview/) use less tedious in Swift.
+
+Here's a few things it can do:
 
 - Simplifying audio device enumeration
 - Providing accessors for the most relevant audio device properties (i.e., device name, device manufacturer, device UID, volume, mute, sample rate, clock source, etc.)
-- Subscribing to system and audio device specific notifications using delegation
 - Managing (physical and virtual) audio streams associated to an audio device
-- Subscribing for audio stream notifications
+- Subscribing to audio hardware, audio device, and audio stream events
 - etc.
-
-`AMCoreAudio` is currently powering [AudioMate](http://audiomateapp.com) (recently open-sourced and available at https://github.com/The9Labs/AudioMate).
 
 ### Requirements
 
 * Xcode 8 and Swift 3
 * OS X 10.9 or later
 
-**Note:** If you are targeting OS X 10.7 or 10.8 please use the [objc branch](https://github.com/rnine/AMCoreAudio/tree/objc).
+**Note:** If you are targeting OS X version 10.7 or 10.8 please use the [objc branch](https://github.com/rnine/AMCoreAudio/tree/objc).
+
+![Alt text](images/screenshot.png?raw=true "AMCoreAudio Demo (Output tab)")
 
 ### Documentation
 
@@ -34,7 +35,8 @@ Do you want to contribute to the project? Please fork, patch, and then submit a 
 
 ### Sample Projects
 
-* [AudioMate](https://github.com/The9Labs/AudioMate) (a full-featured app recently open-sourced.)
+* `AMCoreAudio Demo` (included in this repository)
+* [AudioMate](https://github.com/The9Labs/AudioMate) (a full-featured app recently open-sourced)
 
 ### License
 
