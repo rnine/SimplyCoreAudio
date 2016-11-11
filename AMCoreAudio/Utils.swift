@@ -8,8 +8,16 @@
 
 import Foundation
 
-internal func log(_ string: String) {
-    print("[AMCoreAudio] \(string)")
+private let logDateFormatter: DateFormatter = {
+    $0.locale = NSLocale.current
+    $0.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
+
+    return $0
+}(DateFormatter())
+
+internal func log(_ message: String, file: String = #file, line: Int = #line, function: String = #function) {
+    let fileName = file.components(separatedBy: "/").last ?? file
+    print("\(logDateFormatter.string(from: Date())) [AMCoreAudio] [\(fileName):\(line)] \(function) > \(message)")
 }
 
 internal func scope(direction: Direction) -> AudioObjectPropertyScope {
