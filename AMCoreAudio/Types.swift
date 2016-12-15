@@ -18,10 +18,6 @@ public typealias StereoPair = (left: UInt32, right: UInt32)
  */
 public enum Direction: String {
     /**
-        Invalid direction
-     */
-    case invalid
-    /**
         Playback direction
      */
     case playback

@@ -24,13 +24,13 @@ internal func scope(direction: Direction) -> AudioObjectPropertyScope {
     return .playback == direction ? kAudioObjectPropertyScopeOutput : kAudioObjectPropertyScopeInput
 }
 
-internal func direction(scope: AudioObjectPropertyScope) -> Direction {
+internal func direction(to scope: AudioObjectPropertyScope) -> Direction? {
     switch scope {
     case kAudioObjectPropertyScopeOutput:
         return .playback
     case kAudioObjectPropertyScopeInput:
         return .recording
     default:
-        return .invalid
+        return nil
     }
 }

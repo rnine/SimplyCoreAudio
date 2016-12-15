@@ -135,11 +135,11 @@ final public class AudioDevice: AudioObject {
                 notificationCenter.publish(AudioDeviceEvent.availableNominalSampleRatesDidChange(audioDevice: strongSelf))
             }
         case kAudioDevicePropertyClockSource:
-            if let strongSelf = self {
+            if let strongSelf = self, let direction = direction(to: address.mScope) {
                 notificationCenter.publish(AudioDeviceEvent.clockSourceDidChange(
                     audioDevice: strongSelf,
                     channel: address.mElement,
-                    direction: direction(scope: address.mScope)
+                    direction: direction
                 ))
             }
         case kAudioObjectPropertyName:
@@ -151,19 +151,19 @@ final public class AudioDevice: AudioObject {
                 notificationCenter.publish(AudioDeviceEvent.listDidChange(audioDevice: strongSelf))
             }
         case kAudioDevicePropertyVolumeScalar:
-            if let strongSelf = self {
+            if let strongSelf = self, let direction = direction(to: address.mScope) {
                 notificationCenter.publish(AudioDeviceEvent.volumeDidChange(
                     audioDevice: strongSelf,
                     channel: address.mElement,
-                    direction: direction(scope: address.mScope)
+                    direction: direction
                 ))
             }
         case kAudioDevicePropertyMute:
-            if let strongSelf = self {
+            if let strongSelf = self, let direction = direction(to: address.mScope) {
                 notificationCenter.publish(AudioDeviceEvent.muteDidChange(
                     audioDevice: strongSelf,
                     channel: address.mElement,
-                    direction: direction(scope: address.mScope)
+                    direction: direction
                 ))
             }
         case kAudioDevicePropertyDeviceIsAlive:

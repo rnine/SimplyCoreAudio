@@ -329,7 +329,7 @@ final public class AudioStream: AudioObject {
 
     private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { (inNumberAddresses, inAddresses) -> Void in
         let address = inAddresses.pointee
-        let direction = AMCoreAudio.direction(scope: address.mScope)
+        let direction = AMCoreAudio.direction(to: address.mScope)
         let notificationCenter = NotificationCenter.defaultCenter
 
         switch address.mSelector {
