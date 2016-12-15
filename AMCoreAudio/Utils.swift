@@ -21,16 +21,16 @@ internal func log(_ message: String, file: String = #file, line: Int = #line, fu
 }
 
 internal func scope(direction: Direction) -> AudioObjectPropertyScope {
-    return .Playback == direction ? kAudioObjectPropertyScopeOutput : kAudioObjectPropertyScopeInput
+    return .playback == direction ? kAudioObjectPropertyScopeOutput : kAudioObjectPropertyScopeInput
 }
 
 internal func direction(scope: AudioObjectPropertyScope) -> Direction {
     switch scope {
     case kAudioObjectPropertyScopeOutput:
-        return .Playback
+        return .playback
     case kAudioObjectPropertyScopeInput:
-        return .Recording
+        return .recording
     default:
-        return .Invalid
+        return .invalid
     }
 }

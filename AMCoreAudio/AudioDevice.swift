@@ -329,7 +329,7 @@ final public class AudioDevice: AudioObject {
         let devices = allDevices()
 
         return devices.filter { device -> Bool in
-            device.channels(direction: .Recording) > 0
+            device.channels(direction: .recording) > 0
         }
     }
 
@@ -344,7 +344,7 @@ final public class AudioDevice: AudioObject {
         let devices = allDevices()
 
         return devices.filter { device -> Bool in
-            device.channels(direction: .Playback) > 0
+            device.channels(direction: .playback) > 0
         }
     }
 
@@ -463,35 +463,35 @@ final public class AudioDevice: AudioObject {
         if noErr == status {
             switch transportType {
             case kAudioDeviceTransportTypeBuiltIn:
-                return .BuiltIn
+                return .builtIn
             case kAudioDeviceTransportTypeAggregate:
-                return .Aggregate
+                return .aggregate
             case kAudioDeviceTransportTypeVirtual:
-                return .Virtual
+                return .virtual
             case kAudioDeviceTransportTypePCI:
-                return .PCI
+                return .pci
             case kAudioDeviceTransportTypeUSB:
-                return .USB
+                return .usb
             case kAudioDeviceTransportTypeFireWire:
-                return .FireWire
+                return .fireWire
             case kAudioDeviceTransportTypeBluetooth:
-                return .Bluetooth
+                return .bluetooth
             case kAudioDeviceTransportTypeBluetoothLE:
-                return .BluetoothLE
+                return .bluetoothLE
             case kAudioDeviceTransportTypeHDMI:
-                return .HDMI
+                return .hdmi
             case kAudioDeviceTransportTypeDisplayPort:
-                return .DisplayPort
+                return .displayPort
             case kAudioDeviceTransportTypeAirPlay:
-                return .AirPlay
+                return .airPlay
             case kAudioDeviceTransportTypeAVB:
-                return .AVB
+                return .avb
             case kAudioDeviceTransportTypeThunderbolt:
-                return .Thunderbolt
+                return .thunderbolt
             case kAudioDeviceTransportTypeUnknown:
                 fallthrough
             default:
-                return .Unknown
+                return .unknown
             }
         }
 
@@ -788,7 +788,7 @@ final public class AudioDevice: AudioObject {
         - Returns: `true` when the device is input only, `false` otherwise.
      */
     public func isInputOnlyDevice() -> Bool {
-        return channels(direction: .Playback) == 0 && channels(direction: .Recording) > 0
+        return channels(direction: .playback) == 0 && channels(direction: .recording) > 0
     }
 
     /**
@@ -797,7 +797,7 @@ final public class AudioDevice: AudioObject {
         - Returns: `true` when the device is output only, `false` otherwise.
      */
     public func isOutputOnlyDevice() -> Bool {
-        return channels(direction: .Recording) == 0 && channels(direction: .Playback) > 0
+        return channels(direction: .recording) == 0 && channels(direction: .playback) > 0
     }
 
     // MARK: - ⇉ Individual Channel Functions

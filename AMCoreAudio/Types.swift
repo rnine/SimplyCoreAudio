@@ -20,15 +20,15 @@ public enum Direction: String {
     /**
         Invalid direction
      */
-    case Invalid
+    case invalid
     /**
         Playback direction
      */
-    case Playback
+    case playback
     /**
         Recording direction
      */
-    case Recording
+    case recording
 }
 
 /**
@@ -38,59 +38,59 @@ public enum TransportType: String {
     /**
         Unknown Transport Type
      */
-    case Unknown
+    case unknown
     /**
         Built-In Transport Type
      */
-    case BuiltIn
+    case builtIn
     /**
         Aggregate Transport Type
      */
-    case Aggregate
+    case aggregate
     /**
         Virtual Transport Type
      */
-    case Virtual
+    case virtual
     /**
         PCI Transport Type
      */
-    case PCI
+    case pci
     /**
         USB Transport Type
      */
-    case USB
+    case usb
     /**
         FireWire Transport Type
      */
-    case FireWire
+    case fireWire
     /**
         Bluetooth Transport Type
      */
-    case Bluetooth
+    case bluetooth
     /**
         Bluetooth LE Transport Type
      */
-    case BluetoothLE
+    case bluetoothLE
     /**
         HDMI Transport Type
      */
-    case HDMI
+    case hdmi
     /**
         DisplayPort Transport Type
      */
-    case DisplayPort
+    case displayPort
     /**
         AirPlay Transport Type
      */
-    case AirPlay
+    case airPlay
     /**
         Audio Video Bridging (AVB) Transport Type
      */
-    case AVB
+    case avb
     /**
         Thunderbolt Transport Type
      */
-    case Thunderbolt
+    case thunderbolt
 }
 
 /**
@@ -100,57 +100,57 @@ public enum TerminalType: String {
     /**
         Unknown
      */
-    case Unknown
+    case unknown
     /**
         The ID for a terminal type of a line level stream. 
         Note that this applies to both input streams and output streams.
      */
-    case Line
+    case line
     /**
         A stream from/to a digital audio interface as defined by ISO 60958 (aka SPDIF or AES/EBU).
         Note that this applies to both input streams and output streams.
      */
-    case DigitalAudioInterface
+    case digitalAudioInterface
     /**
         Speaker
      */
-    case Speaker
+    case speaker
     /**
         Headphones
      */
-    case Headphones
+    case headphones
     /**
         Speaker for low frequency effects
      */
-    case LFESpeaker
+    case lfeSpeaker
     /**
         A speaker on a telephone handset receiver
      */
-    case ReceiverSpeaker
+    case receiverSpeaker
     /**
         A microphone
      */
-    case Microphone
+    case microphone
     /**
         A microphone attached to an headset
      */
-    case HeadsetMicrophone
+    case headsetMicrophone
     /**
         A microphone on a telephone handset receiver
      */
-    case ReceiverMicrophone
+    case receiverMicrophone
     /**
         A device providing a TTY signl
      */
-    case TTY
+    case tty
     /**
         A stream from/to an HDMI port
      */
-    case HDMI
+    case hdmi
     /**
         A stream from/to an DisplayPort port
      */
-    case DisplayPort
+    case displayPort
 }
 
 /**

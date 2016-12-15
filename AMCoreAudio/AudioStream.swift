@@ -115,45 +115,45 @@ final public class AudioStream: AudioObject {
         )
 
         if !AudioObjectHasProperty(self.id, &address) {
-            return .Unknown
+            return .unknown
         }
 
         var terminalType: UInt32 = 0
         let status = self.getPropertyData(address, andValue: &terminalType)
 
         if noErr != status {
-            return .Unknown
+            return .unknown
         }
 
         switch terminalType {
         case kAudioStreamTerminalTypeLine:
-            return .Line
+            return .line
         case kAudioStreamTerminalTypeDigitalAudioInterface:
-            return .DigitalAudioInterface
+            return .digitalAudioInterface
         case kAudioStreamTerminalTypeSpeaker:
-            return .Speaker
+            return .speaker
         case kAudioStreamTerminalTypeHeadphones:
-            return .Headphones
+            return .headphones
         case kAudioStreamTerminalTypeLFESpeaker:
-            return .LFESpeaker
+            return .lfeSpeaker
         case kAudioStreamTerminalTypeReceiverSpeaker:
-            return .ReceiverSpeaker
+            return .receiverSpeaker
         case kAudioStreamTerminalTypeMicrophone:
-            return .Microphone
+            return .microphone
         case kAudioStreamTerminalTypeHeadsetMicrophone:
-            return .HeadsetMicrophone
+            return .headsetMicrophone
         case kAudioStreamTerminalTypeReceiverMicrophone:
-            return .ReceiverMicrophone
+            return .receiverMicrophone
         case kAudioStreamTerminalTypeTTY:
-            return .TTY
+            return .tty
         case kAudioStreamTerminalTypeHDMI:
-            return .HDMI
+            return .hdmi
         case kAudioStreamTerminalTypeDisplayPort:
-            return .DisplayPort
+            return .displayPort
         case kAudioStreamTerminalTypeUnknown:
             fallthrough
         default:
-            return .Unknown
+            return .unknown
         }
     }()
 
@@ -185,9 +185,9 @@ final public class AudioStream: AudioObject {
 
         switch direction {
         case 0:
-            return .Playback
+            return .playback
         case 1:
-            return .Recording
+            return .recording
         default:
             return nil
         }
