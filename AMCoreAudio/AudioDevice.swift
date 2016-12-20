@@ -231,9 +231,7 @@ final public class AudioDevice: AudioObject {
 
         super.init(objectID: deviceID)
 
-        if isAlive() == false {
-            return nil
-        }
+        guard owningObject != nil else { return nil }
 
         cachedDeviceName = getDeviceName()
         registerForNotifications()

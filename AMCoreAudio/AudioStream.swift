@@ -398,6 +398,11 @@ final public class AudioStream: AudioObject {
 
     // MARK: - Public Functions
 
+    /**
+        Returns an `AudioStream` by providing a valid audio stream identifier.
+
+        - Note: If identifier is not valid, `nil` will be returned.
+     */
     public static func lookup(by id: AudioObjectID) -> AudioStream? {
 
         var instance = AudioObjectPool.instancePool.object(forKey: NSNumber(value: UInt(id))) as? AudioStream
@@ -412,9 +417,11 @@ final public class AudioStream: AudioObject {
     /**
         Initializes an `AudioStream` by providing a valid `AudioObjectID` referencing an existing audio stream.
      */
-    private init(id: AudioObjectID) {
+    private init?(id: AudioObjectID) {
 
         super.init(objectID: id)
+
+        guard owningObject != nil else { return nil }
 
         registerForNotifications()
         AudioObjectPool.instancePool.setObject(self, forKey: NSNumber(value: UInt(objectID)))
