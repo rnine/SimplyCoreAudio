@@ -101,25 +101,6 @@ final public class AudioDevice: AudioObject {
      */
     private(set) var cachedDeviceName: String!
 
-    /**
-        The audio device's identifier (ID).
-
-        - Note: This identifier will change with system restarts.
-        If you need an unique identifier that persists between restarts, use `uid` instead.
-     
-        - SeeAlso: `uid`
-
-        - Returns: An audio device identifier.
-     */
-    public var id: AudioObjectID {
-
-        get {
-
-            return objectID
-
-        }
-    }
-
     private var isRegisteredForNotifications = false
 
     private lazy var notificationsQueue: DispatchQueue = {
@@ -432,6 +413,25 @@ final public class AudioDevice: AudioObject {
 
 
     // MARK: - ✪ General Device Information Functions
+
+    /**
+        The audio device's identifier (ID).
+
+        - Note: This identifier will change with system restarts. 
+          If you need an unique identifier that persists between restarts, use `uid` instead.
+
+        - SeeAlso: `uid`
+
+        - Returns: An audio device identifier.
+     */
+    public var id: AudioObjectID {
+
+        get {
+
+            return objectID
+
+        }
+    }
 
     /**
         The audio device's name as reported by the system.
@@ -1721,6 +1721,8 @@ final public class AudioDevice: AudioObject {
 
 
 extension AudioDevice: CustomStringConvertible {
+
+    // MARK: - CustomStringConvertible Protocol
 
     /**
         Returns a string describing this audio device.

@@ -603,6 +603,8 @@ final public class AudioStream: AudioObject {
 
 extension AudioStream: CustomStringConvertible {
 
+    // MARK: - CustomStringConvertible Protocol
+
     /**
         Returns a string describing this audio stream.
      */
