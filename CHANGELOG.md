@@ -11,6 +11,8 @@
 |               | Improved `volumeInfo(channel:direction:)` implementation so it does not return a `VolumeInfo` struct unless it is actually populated with any valid values.| |
 |               | Removed the need to manually enable and disable device monitoring in `AudioHardware`.| |
 |               | Added `TerminalType` and `StereoPair` enums.| |
+|               | Changed all enum values to camelCase to follow Swift 3 conventions.| |
+|               | Removed `.invalid` direction (it was only used internally and is no longer required.)| |
 |               | Added new demo project.| |
 | 3.0.1         | Added `AMCoreAudio` `setHogMode()` and removed `setHogModePidToCurrentProcess()` and `setHogModePID(_:)`              | October 30th, 2016 |
 |               | Fixed `unsetHogMode()` so it does not actually try to request hog mode instead of unsetting it when hog mode is not set.| |
