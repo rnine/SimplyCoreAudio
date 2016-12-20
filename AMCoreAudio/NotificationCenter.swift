@@ -33,6 +33,7 @@ public protocol Event {}
     Typically, this will be a class that also happens to conform to the `Hashable` protocol.
  */
 public protocol EventSubscriber {
+
     /**
         This is the event handler.
      */
@@ -46,13 +47,17 @@ public protocol EventSubscriber {
 }
 
 func ==(lhs: EventSubscriber, rhs: EventSubscriber) -> Bool {
+
     return lhs.hashValue == rhs.hashValue
 }
 
+
 private struct EventSubscriberDescriptor {
+
     var subscriber: EventSubscriber
     var queue: DispatchQueue?
 }
+
 
 // MARK: - NotificationCenter
 
@@ -60,6 +65,7 @@ private struct EventSubscriberDescriptor {
     This is `AMCoreAudio`'s de facto pub-sub system.
  */
 final public class NotificationCenter {
+
     private var subscriberDescriptorsByEvent = [String: [EventSubscriberDescriptor]]()
 
     private init() {}
@@ -78,6 +84,7 @@ final public class NotificationCenter {
         - Parameter dispatchQueue: (optional) A dispatch queue to use for delivering the events.
      */
     public func subscribe(_ subscriber: EventSubscriber, eventType: Event.Type, dispatchQueue: DispatchQueue? = nil) {
+
         let type = String(describing: eventType)
 
         if subscriberDescriptorsByEvent[type] == nil {
@@ -100,6 +107,7 @@ final public class NotificationCenter {
         - Parameter eventType: A class, struct or enum type conforming to the `Event` protocol.
      */
     public func unsubscribe(_ subscriber: EventSubscriber, eventType: Event.Type) {
+
         let type = String(describing: eventType)
 
         if var subscribers = subscriberDescriptorsByEvent[type] {
@@ -123,6 +131,7 @@ final public class NotificationCenter {
         - Parameter event: The event conforming to the `Event` protocol to publish.
      */
     func publish(_ event: Event) {
+
         let type = String(describing: type(of: event))
 
         if let subscriberDescriptors = subscriberDescriptorsByEvent[type] {

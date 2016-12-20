@@ -42,6 +42,7 @@ public enum AudioHardwareEvent: Event {
     case defaultSystemOutputDeviceChanged(audioDevice: AudioDevice)
 }
 
+
 /**
     This class allows subscribing to hardware-related audio notifications.
 
@@ -66,68 +67,78 @@ final public class AudioHardware {
     private var isRegisteredForNotifications = false
 
     private lazy var notificationsQueue: DispatchQueue = {
+
         return DispatchQueue(label: "io.9labs.AMCoreAudio.hardwareNotifications", attributes: .concurrent)
     }()
 
     private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { [weak self] (inNumberAddresses, inAddresses) -> Void in
+
         let address = inAddresses.pointee
         let notificationCenter = NotificationCenter.defaultCenter
 
         switch address.mSelector {
         case kAudioObjectPropertyOwnedObjects:
+
             // Get the latest device list
             let latestDeviceList = AudioDevice.allDevices()
 
             let addedDevices = latestDeviceList.filter { (audioDevice) -> Bool in
-                let isContained = (self?.allKnownDevices.filter({ (oldAudioDevice) -> Bool in
-                    return oldAudioDevice == audioDevice
-                }) ?? []).count > 0
+                let isContained = self?.allKnownDevices.contains { return $0 == audioDevice } ?? false
 
                 return !isContained
             }
 
             let removedDevices = self?.allKnownDevices.filter { (audioDevice) -> Bool in
-                let isContained = latestDeviceList.filter({ (oldAudioDevice) -> Bool in
-                    return oldAudioDevice == audioDevice
-                }).count > 0
+                let isContained = latestDeviceList.contains { return $0 == audioDevice }
 
                 return !isContained
-            }
+            } ?? []
 
             // Add new devices
-            addedDevices.forEach { (device) in
-                self?.addDevice(device)
+            for device in addedDevices {
+                self?.add(device: device)
             }
-            
+
             // Remove old devices
-            removedDevices?.forEach { (device) in
-                self?.removeDevice(device)
+            for device in removedDevices {
+                self?.remove(device: device)
             }
 
             notificationCenter.publish(AudioHardwareEvent.deviceListChanged(
                 addedDevices: addedDevices,
-                removedDevices: removedDevices ?? []
+                removedDevices: removedDevices
             ))
+
         case kAudioHardwarePropertyDefaultInputDevice:
+
             if let audioDevice = AudioDevice.defaultInputDevice() {
                 notificationCenter.publish(AudioHardwareEvent.defaultInputDeviceChanged(audioDevice: audioDevice))
             }
+
         case kAudioHardwarePropertyDefaultOutputDevice:
+
             if let audioDevice = AudioDevice.defaultOutputDevice() {
                 notificationCenter.publish(AudioHardwareEvent.defaultOutputDeviceChanged(audioDevice: audioDevice))
             }
+
         case kAudioHardwarePropertyDefaultSystemOutputDevice:
+
             if let audioDevice = AudioDevice.defaultSystemOutputDevice() {
                 notificationCenter.publish(AudioHardwareEvent.defaultSystemOutputDeviceChanged(audioDevice: audioDevice))
             }
+
         default:
+
             break
+
         }
     }
+
 
     // MARK: - Public Functions
 
     deinit {
+
         disableDeviceMonitoring()
     }
 
@@ -142,12 +153,13 @@ final public class AudioHardware {
         - SeeAlso: disableDeviceMonitoring()
      */
     internal func enableDeviceMonitoring() {
+
         registerForNotifications()
 
         let allDevices = AudioDevice.allDevices()
 
-        allDevices.forEach { (device) in
-            addDevice(device)
+        for device in allDevices {
+            add(device: device)
         }
     }
 
@@ -157,28 +169,34 @@ final public class AudioHardware {
         - SeeAlso: enableDeviceMonitoring()
      */
     internal func disableDeviceMonitoring() {
-        allKnownDevices.forEach { (device) in
-            removeDevice(device)
+
+        for device in allKnownDevices {
+            remove(device: device)
         }
 
         unregisterForNotifications()
     }
 
+
     // MARK: - Private Functions
 
-    private func addDevice(_ device: AudioDevice) {
+    private func add(device: AudioDevice) {
+
         allKnownDevices.append(device)
     }
 
-    private func removeDevice(_ device: AudioDevice) {
+    private func remove(device: AudioDevice) {
+
         if let idx = allKnownDevices.index(of: device) {
             allKnownDevices.remove(at: idx)
         }
     }
 
+
     // MARK: - Notification Book-keeping
 
     private func registerForNotifications() {
+
         if isRegisteredForNotifications {
             unregisterForNotifications()
         }
@@ -199,6 +217,7 @@ final public class AudioHardware {
     }
 
     private func unregisterForNotifications() {
+
         if isRegisteredForNotifications {
             var address = AudioObjectPropertyAddress(
                 mSelector: kAudioObjectPropertySelectorWildcard,

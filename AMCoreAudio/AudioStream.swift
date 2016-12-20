@@ -19,6 +19,7 @@ import Foundation
     Represents an `AudioStream` event.
  */
 public enum AudioStreamEvent: Event {
+
     /**
         Called whenever the audio stream `isActive` flag changes state.
      */
@@ -45,7 +46,9 @@ final public class AudioStream: AudioObject {
         - Returns: An `AudioObjectID`.
      */
     public var id: AudioObjectID {
+
         get {
+
             return objectID
         }
     }
@@ -56,6 +59,7 @@ final public class AudioStream: AudioObject {
         - Returns: `true` when enabled, `false` otherwise.
      */
     public lazy var active: Bool = {
+
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioStreamPropertyIsActive,
             mScope: kAudioObjectPropertyScopeGlobal,
@@ -82,6 +86,7 @@ final public class AudioStream: AudioObject {
         - Returns: *(optional)* A `UInt32`.
      */
     public lazy var startingChannel: UInt32? = {
+
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioStreamPropertyStartingChannel,
             mScope: kAudioObjectPropertyScopeGlobal,
@@ -108,6 +113,7 @@ final public class AudioStream: AudioObject {
         - Return: A `TerminalType`.
     */
     public lazy var terminalType: TerminalType = {
+
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioStreamPropertyTerminalType,
             mScope: kAudioObjectPropertyScopeGlobal,
@@ -127,33 +133,61 @@ final public class AudioStream: AudioObject {
 
         switch terminalType {
         case kAudioStreamTerminalTypeLine:
+
             return .line
+
         case kAudioStreamTerminalTypeDigitalAudioInterface:
+
             return .digitalAudioInterface
+
         case kAudioStreamTerminalTypeSpeaker:
+
             return .speaker
+
         case kAudioStreamTerminalTypeHeadphones:
+
             return .headphones
+
         case kAudioStreamTerminalTypeLFESpeaker:
+
             return .lfeSpeaker
+
         case kAudioStreamTerminalTypeReceiverSpeaker:
+
             return .receiverSpeaker
+
         case kAudioStreamTerminalTypeMicrophone:
+
             return .microphone
+
         case kAudioStreamTerminalTypeHeadsetMicrophone:
+
             return .headsetMicrophone
+
         case kAudioStreamTerminalTypeReceiverMicrophone:
+
             return .receiverMicrophone
+
         case kAudioStreamTerminalTypeTTY:
+
             return .tty
+
         case kAudioStreamTerminalTypeHDMI:
+
             return .hdmi
+
         case kAudioStreamTerminalTypeDisplayPort:
+
             return .displayPort
+
         case kAudioStreamTerminalTypeUnknown:
+
             fallthrough
+
         default:
+
             return .unknown
+
         }
     }()
 
@@ -166,6 +200,7 @@ final public class AudioStream: AudioObject {
         - Returns: *(optional)* A `Direction`.
      */
     public lazy var direction: Direction? = {
+
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioStreamPropertyDirection,
             mScope: kAudioObjectPropertyScopeGlobal,
@@ -185,11 +220,17 @@ final public class AudioStream: AudioObject {
 
         switch direction {
         case 0:
+
             return .playback
+
         case 1:
+
             return .recording
+
         default:
+
             return nil
+
         }
     }()
 
@@ -201,7 +242,9 @@ final public class AudioStream: AudioObject {
         - Returns: *(optional)* An `AudioStreamBasicDescription`.
      */
     public var physicalFormat: AudioStreamBasicDescription? {
+
         get {
+
             var asbd = AudioStreamBasicDescription()
 
             if let status = getStreamPropertyData(kAudioStreamPropertyPhysicalFormat, andValue: &asbd) {
@@ -214,6 +257,7 @@ final public class AudioStream: AudioObject {
         }
 
         set {
+
             var asbd = newValue
 
             if let status = setStreamPropertyData(kAudioStreamPropertyPhysicalFormat, andValue: &asbd) {
@@ -232,7 +276,9 @@ final public class AudioStream: AudioObject {
         - Returns: *(optional)* An `AudioStreamBasicDescription`.
      */
     public var virtualFormat: AudioStreamBasicDescription? {
+
         get {
+
             var asbd = AudioStreamBasicDescription()
 
             if let status = getStreamPropertyData(kAudioStreamPropertyVirtualFormat, andValue: &asbd) {
@@ -245,6 +291,7 @@ final public class AudioStream: AudioObject {
         }
 
         set {
+
             var asbd = newValue
 
             if let status = setStreamPropertyData(kAudioStreamPropertyVirtualFormat, andValue: &asbd) {
@@ -263,9 +310,8 @@ final public class AudioStream: AudioObject {
         - Returns: *(optional)* An array of `AudioStreamRangedDescription` structs.
      */
     public lazy var availablePhysicalFormats: [AudioStreamRangedDescription]? = {
-        guard let direction = self.direction else {
-            return nil
-        }
+
+        guard let direction = self.direction else { return nil }
 
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioStreamPropertyAvailablePhysicalFormats,
@@ -295,9 +341,8 @@ final public class AudioStream: AudioObject {
         - Returns: *(optional)* An array of `AudioStreamRangedDescription` structs.
      */
     public lazy var availableVirtualFormats: [AudioStreamRangedDescription]? = {
-        guard let direction = self.direction else {
-            return nil
-        }
+
+        guard let direction = self.direction else { return nil }
 
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioStreamPropertyAvailableVirtualFormats,
@@ -319,32 +364,42 @@ final public class AudioStream: AudioObject {
         return asrd
     }()
 
+
     // MARK: - Private Properties
 
     private var isRegisteredForNotifications = false
 
     private lazy var notificationsQueue: DispatchQueue = {
+
         return DispatchQueue(label: "io.9labs.AMCoreAudio.notifications", attributes: .concurrent)
     }()
 
     private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { (inNumberAddresses, inAddresses) -> Void in
+
         let address = inAddresses.pointee
         let direction = AMCoreAudio.direction(to: address.mScope)
         let notificationCenter = NotificationCenter.defaultCenter
 
         switch address.mSelector {
         case kAudioStreamPropertyIsActive:
+
             notificationCenter.publish(AudioStreamEvent.isActiveDidChange(audioStream: self))
+
         case kAudioStreamPropertyPhysicalFormat:
+
             notificationCenter.publish(AudioStreamEvent.physicalFormatDidChange(audioStream: self))
+
         default:
+
             break
+
         }
     }
 
     // MARK: - Public Functions
 
     public static func lookupByID(_ id: AudioObjectID) -> AudioStream? {
+
         var instance = AudioObjectPool.instancePool.object(forKey: NSNumber(value: UInt(id))) as? AudioStream
 
         if instance == nil {
@@ -358,12 +413,15 @@ final public class AudioStream: AudioObject {
         Initializes an `AudioStream` by providing a valid `AudioObjectID` referencing an existing audio stream.
      */
     private init(id: AudioObjectID) {
+
         super.init(objectID: id)
+
         registerForNotifications()
         AudioObjectPool.instancePool.setObject(self, forKey: NSNumber(value: UInt(objectID)))
     }
 
     deinit {
+
         unregisterForNotifications()
         AudioObjectPool.instancePool.removeObject(forKey: NSNumber(value: UInt(objectID)))
     }
@@ -382,22 +440,16 @@ final public class AudioStream: AudioObject {
         - Returns: *(optional)* An array of `AudioStreamBasicDescription` structs.
      */
     public final func availablePhysicalFormatsMatchingCurrentNominalSampleRate(_ includeNonMixable: Bool = true) -> [AudioStreamBasicDescription]? {
-        guard let physicalFormats = availablePhysicalFormats,
-              let physicalFormat = physicalFormat else {
-            return nil
-        }
+
+        guard let physicalFormats = availablePhysicalFormats, let physicalFormat = physicalFormat else { return nil }
 
         var filteredFormats = physicalFormats.filter { (format) -> Bool in
             format.mSampleRateRange.mMinimum >= physicalFormat.mSampleRate &&
             format.mSampleRateRange.mMaximum <= physicalFormat.mSampleRate
-        }.map({ (asrd) -> AudioStreamBasicDescription in
-            asrd.mFormat
-        })
+        }.map { $0.mFormat }
 
         if !includeNonMixable {
-            filteredFormats = filteredFormats.filter({ (asbd) -> Bool in
-                asbd.mFormatFlags & kAudioFormatFlagIsNonMixable == 0
-            })
+            filteredFormats = filteredFormats.filter { $0.mFormatFlags & kAudioFormatFlagIsNonMixable == 0 }
         }
 
         return filteredFormats
@@ -409,6 +461,7 @@ final public class AudioStream: AudioObject {
         - Returns: *(optional)* An audio stream's name.
      */
     override public var name: String? {
+
         return super.name
     }
 
@@ -426,26 +479,21 @@ final public class AudioStream: AudioObject {
         - Returns: *(optional)* An array of `AudioStreamBasicDescription` structs.
      */
     public final func availableVirtualFormatsMatchingCurrentNominalSampleRate(_ includeNonMixable: Bool = true) -> [AudioStreamBasicDescription]? {
-        guard let virtualFormats = availableVirtualFormats,
-            let virtualFormat = virtualFormat else {
-                return nil
-        }
+
+        guard let virtualFormats = availableVirtualFormats, let virtualFormat = virtualFormat else { return nil }
 
         var filteredFormats = virtualFormats.filter { (format) -> Bool in
             format.mSampleRateRange.mMinimum >= virtualFormat.mSampleRate &&
                 format.mSampleRateRange.mMaximum <= virtualFormat.mSampleRate
-            }.map({ (asrd) -> AudioStreamBasicDescription in
-                asrd.mFormat
-            })
+            }.map { $0.mFormat }
 
         if !includeNonMixable {
-            filteredFormats = filteredFormats.filter({ (asbd) -> Bool in
-                asbd.mFormatFlags & kAudioFormatFlagIsNonMixable == 0
-            })
+            filteredFormats = filteredFormats.filter { $0.mFormatFlags & kAudioFormatFlagIsNonMixable == 0 }
         }
 
         return filteredFormats
     }
+
 
     // MARK: - Private Functions
 
@@ -462,9 +510,8 @@ final public class AudioStream: AudioObject {
         - Returns: An `OSStatus` with `noErr` on success, or an error code other than `noErr` when it fails.
      */
     private func getStreamPropertyData<T>(_ selector: AudioObjectPropertySelector, andValue value: inout T) -> OSStatus? {
-        guard let direction = direction else {
-            return nil
-        }
+
+        guard let direction = direction else { return nil }
 
         var address = AudioObjectPropertyAddress(
             mSelector: selector,
@@ -492,9 +539,8 @@ final public class AudioStream: AudioObject {
         - Returns: An `OSStatus` with `noErr` on success, or an error code other than `noErr` when it fails.
      */
     private func setStreamPropertyData<T>(_ selector: AudioObjectPropertySelector, andValue value: inout T) -> OSStatus? {
-        guard let direction = direction else {
-            return nil
-        }
+
+        guard let direction = direction else { return nil }
 
         var address = AudioObjectPropertyAddress(
             mSelector: selector,
@@ -509,9 +555,11 @@ final public class AudioStream: AudioObject {
         return setPropertyData(address, andValue: &value)
     }
 
+
     // MARK: - Notification Book-keeping
 
     private func registerForNotifications() {
+
         if isRegisteredForNotifications {
             unregisterForNotifications()
         }
@@ -532,6 +580,7 @@ final public class AudioStream: AudioObject {
     }
 
     private func unregisterForNotifications() {
+
         if isRegisteredForNotifications {
             var address = AudioObjectPropertyAddress(
                 mSelector: kAudioObjectPropertySelectorWildcard,
@@ -553,24 +602,30 @@ final public class AudioStream: AudioObject {
 }
 
 extension AudioStream: CustomStringConvertible {
+
     /**
         Returns a string describing this audio stream.
      */
     public var description: String {
+
         return "\(name ?? "Stream \(id)") (\(id))"
     }
 }
 
+
 // MARK: - Deprecated
 
 extension AudioStream {
+
     /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use name instead") public func streamName() -> String? {
+
         return name
     }
 
     /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use id instead") public var streamID: AudioObjectID {
+
         return id
     }
 }

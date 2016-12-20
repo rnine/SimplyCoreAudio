@@ -35,6 +35,7 @@ final public class BundleInfo {
 
     /// Returns this bundle's build information
     public static func buildInfo() -> String? {
+
         guard let buildDate = buildDate, let name = name, let version = version, let buildNumber = buildNumber else {
             return nil
         }

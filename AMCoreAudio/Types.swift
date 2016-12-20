@@ -153,6 +153,7 @@ public enum TerminalType: String {
     This struct holds volume, mute, and playthru information about a given channel and direction of an `AudioDevice`.
  */
 public struct VolumeInfo {
+
     var volume: Float32?
     var hasVolume: Bool
     var canSetVolume: Bool
@@ -162,6 +163,7 @@ public struct VolumeInfo {
     var isPlayThruSet: Bool
 
     init() {
+
         hasVolume = false
         canSetVolume = false
         canMute = false

@@ -12,9 +12,12 @@ import CoreAudio.AudioHardwareBase
 /// :nodoc:
 @available(*, deprecated, message: "Marked for removal in 3.2. Use AudioObject instead") public typealias AMAudioObject = AudioObject
 
+
 internal class AudioObjectPool: NSObject {
+
     static var instancePool: NSMapTable<NSNumber, AudioObject> = NSMapTable.weakToWeakObjects()
 }
+
 
 /**
     This class represents a Core Audio object currently present in the system. In Core Audio,
@@ -22,13 +25,16 @@ internal class AudioObjectPool: NSObject {
     For more information, please refer to Core Audio's documentation or source code.
  */
 public class AudioObject {
+
     internal var objectID: AudioObjectID
 
     internal init(objectID: AudioObjectID) {
+
         self.objectID = objectID
     }
 
     deinit {
+
         // NO-OP
     }
 
@@ -38,6 +44,7 @@ public class AudioObject {
         - Returns: *(optional)* An `AudioClassID`.
      */
     public lazy var classID: AudioClassID? = {
+
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioObjectPropertyClass,
             mScope: kAudioObjectPropertyScopeGlobal,
@@ -64,6 +71,7 @@ public class AudioObject {
         - Returns: *(optional)* An `AudioObject`.
      */
     public lazy var owningObject: AudioObject? = {
+
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioObjectPropertyOwner,
             mScope: kAudioObjectPropertyScopeGlobal,
@@ -90,13 +98,10 @@ public class AudioObject {
         - Returns: *(optional)* An `AudioDevice`.
      */
     public lazy var owningDevice: AudioDevice? = {
-        if let object = self.owningObject {
-            if object.classID == kAudioDeviceClassID {
-                return AudioDevice.lookupByID(object.objectID)
-            }
-        }
 
-        return nil
+        guard let object = self.owningObject, object.classID == kAudioDeviceClassID else { return nil }
+
+        return AudioDevice.lookupByID(object.objectID)
     }()
 
     /**
@@ -105,6 +110,7 @@ public class AudioObject {
         - Returns: *(optional)* An audio object's name.
      */
     internal var name: String? {
+
         var name: CFString = "" as CFString
 
         let address = AudioObjectPropertyAddress(
@@ -121,26 +127,32 @@ public class AudioObject {
 
 extension AudioObject {
 
+
     // MARK: - Class Functions
 
     internal class func getPropertyDataSize<Q>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, qualifierDataSize: UInt32?, qualifierData: inout [Q], andSize size: inout UInt32) -> (OSStatus) {
+
         var theAddress = address
 
         return AudioObjectGetPropertyDataSize(objectID, &theAddress, qualifierDataSize ?? UInt32(0), &qualifierData, &size)
     }
 
     internal class func getPropertyDataSize<Q>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, qualifierDataSize: UInt32?, qualifierData: inout Q, andSize size: inout UInt32) -> (OSStatus) {
+
         var theAddress = address
 
         return AudioObjectGetPropertyDataSize(objectID, &theAddress, qualifierDataSize ?? UInt32(0), &qualifierData, &size)
     }
 
     internal class func getPropertyDataSize(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, andSize size: inout UInt32) -> (OSStatus) {
+
         var nilValue: ExpressibleByNilLiteral?
+
         return getPropertyDataSize(objectID, address: address, qualifierDataSize: nil, qualifierData: &nilValue, andSize: &size)
     }
 
     internal class func getPropertyData<T>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, andValue value: inout T) -> OSStatus {
+
         var theAddress = address
         var size = UInt32(MemoryLayout<T>.size)
         let status = AudioObjectGetPropertyData(objectID, &theAddress, UInt32(0), nil, &size, &value)
@@ -149,6 +161,7 @@ extension AudioObject {
     }
 
     internal class func getPropertyDataArray<T,Q>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, qualifierDataSize: UInt32?, qualifierData: inout Q, value: inout [T], andDefaultValue defaultValue: T) -> OSStatus {
+
         var size = UInt32(0)
         let sizeStatus = getPropertyDataSize(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, andSize: &size)
 
@@ -165,6 +178,7 @@ extension AudioObject {
     }
 
     internal class func getPropertyDataArray<T,Q>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, qualifierDataSize: UInt32?, qualifierData: inout [Q], value: inout [T], andDefaultValue defaultValue: T) -> OSStatus {
+
         var size = UInt32(0)
         let sizeStatus = getPropertyDataSize(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, andSize: &size)
 
@@ -181,61 +195,77 @@ extension AudioObject {
     }
 
     internal class func getPropertyDataArray<T>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, value: inout [T], andDefaultValue defaultValue: T) -> OSStatus {
+
         var nilValue: ExpressibleByNilLiteral?
+
         return getPropertyDataArray(objectID, address: address, qualifierDataSize: nil, qualifierData: &nilValue, value: &value, andDefaultValue: defaultValue)
     }
+
 
     // MARK: - Instance Functions
 
     internal func getPropertyDataSize<Q>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, qualifierDataSize: UInt32?, qualifierData: inout [Q], andSize size: inout UInt32) -> (OSStatus) {
+
         return type(of: self).getPropertyDataSize(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, andSize: &size)
     }
 
     internal func getPropertyDataSize<Q>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, qualifierDataSize: UInt32?, qualifierData: inout Q, andSize size: inout UInt32) -> (OSStatus) {
+
         return type(of: self).getPropertyDataSize(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, andSize: &size)
     }
 
     internal func getPropertyDataSize(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, andSize size: inout UInt32) -> OSStatus {
+
         return type(of: self).getPropertyDataSize(objectID, address: address, andSize: &size)
     }
 
     internal func getPropertyDataSize<Q>(_ address: AudioObjectPropertyAddress, qualifierDataSize: UInt32?, qualifierData: inout [Q], andSize size: inout UInt32) -> (OSStatus) {
+
         return type(of: self).getPropertyDataSize(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, andSize: &size)
     }
 
     internal func getPropertyDataSize<Q>(_ address: AudioObjectPropertyAddress, qualifierDataSize: UInt32?, qualifierData: inout Q, andSize size: inout UInt32) -> (OSStatus) {
+
         return type(of: self).getPropertyDataSize(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, andSize: &size)
     }
 
     internal func getPropertyDataSize(_ address: AudioObjectPropertyAddress, andSize size: inout UInt32) -> OSStatus {
+
         return type(of: self).getPropertyDataSize(objectID, address: address, andSize: &size)
     }
 
     internal func getPropertyData<T>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, andValue value: inout T) -> OSStatus {
+
         return type(of: self).getPropertyData(objectID, address: address, andValue: &value)
     }
 
     internal func getPropertyDataArray<T,Q>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, qualifierDataSize: UInt32?, qualifierData: inout Q, value: inout [T], andDefaultValue defaultValue: T) -> OSStatus {
+
         return type(of: self).getPropertyDataArray(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, value: &value, andDefaultValue: defaultValue)
     }
 
     internal func getPropertyDataArray<T>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, value: inout [T], andDefaultValue defaultValue: T) -> OSStatus {
+
         return getPropertyDataArray(objectID, address: address, value: &value, andDefaultValue: defaultValue)
     }
 
     internal func getPropertyData<T>(_ address: AudioObjectPropertyAddress, andValue value: inout T) -> OSStatus {
+
         return type(of: self).getPropertyData(objectID, address: address, andValue: &value)
     }
 
     internal func getPropertyDataArray<T,Q>(_ address: AudioObjectPropertyAddress, qualifierDataSize: UInt32?, qualifierData: inout Q, value: inout [T], andDefaultValue defaultValue: T) -> OSStatus {
+
         return type(of: self).getPropertyDataArray(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, value: &value, andDefaultValue: defaultValue)
     }
 
     internal func getPropertyDataArray<T,Q>(_ address: AudioObjectPropertyAddress, qualifierDataSize: UInt32?, qualifierData: inout [Q], value: inout [T], andDefaultValue defaultValue: T) -> OSStatus {
+
         return type(of: self).getPropertyDataArray(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, value: &value, andDefaultValue: defaultValue)
     }
 
     internal func getPropertyDataArray<T>(_ address: AudioObjectPropertyAddress, value: inout [T], andDefaultValue defaultValue: T) -> OSStatus {
+
         return type(of: self).getPropertyDataArray(objectID, address: address, value: &value, andDefaultValue: defaultValue)
     }
 
@@ -249,6 +279,7 @@ extension AudioObject {
     }
 
     internal func setPropertyData<T>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, andValue value: inout [T]) -> OSStatus {
+
         var theAddress = address
         let size = UInt32(value.count * MemoryLayout<T>.size)
         let status = AudioObjectSetPropertyData(objectID, &theAddress, UInt32(0), nil, size, &value)
@@ -257,20 +288,24 @@ extension AudioObject {
     }
 
     internal func setPropertyData<T>(_ address: AudioObjectPropertyAddress, andValue value: inout T) -> OSStatus {
+
         return setPropertyData(objectID, address: address, andValue: &value)
     }
 
     internal func setPropertyData<T>(_ address: AudioObjectPropertyAddress, andValue value: inout [T]) -> OSStatus {
+
         return setPropertyData(objectID, address: address, andValue: &value)
     }
 
     internal func address(selector: AudioObjectPropertySelector, scope: AudioObjectPropertyScope = kAudioObjectPropertyScopeGlobal, element: AudioObjectPropertyElement = kAudioObjectPropertyElementMaster) -> AudioObjectPropertyAddress {
+
         return AudioObjectPropertyAddress(mSelector: selector,
                                           mScope: scope,
                                           mElement: element)
     }
 
     internal func validAddress(selector: AudioObjectPropertySelector, scope: AudioObjectPropertyScope = kAudioObjectPropertyScopeGlobal, element: AudioObjectPropertyElement = kAudioObjectPropertyElementMaster) -> AudioObjectPropertyAddress? {
+
         var address = self.address(selector: selector, scope: scope, element: element)
 
         if AudioObjectHasProperty(self.objectID, &address) {
@@ -282,48 +317,61 @@ extension AudioObject {
 
     // getProperty with default value
     internal func getProperty<T>(address: AudioObjectPropertyAddress, defaultValue: T) -> T? {
+
         var value = defaultValue
         let status = getPropertyData(address, andValue: &value)
 
         switch status {
         case noErr:
+
             return value
+
         default:
+
             log("Unable to get property with address (\(address)). Status: \(status)")
             return nil
         }
     }
 
     internal func getProperty(address: AudioObjectPropertyAddress, defaultValue: CFString) -> String? {
+
         var value = defaultValue
         let status = getPropertyData(address, andValue: &value)
 
         switch status {
         case noErr:
+
             return value as String
+
         default:
+
             log("Unable to get property with address (\(address)). Status: \(status)")
             return nil
+
         }
     }
 
     // getProperty UInt32
     internal func getProperty(address: AudioObjectPropertyAddress) -> UInt32? {
+
         return getProperty(address: address, defaultValue: UInt32(0))
     }
 
     // getProperty Float32
     internal func getProperty(address: AudioObjectPropertyAddress) -> Float32? {
+
         return getProperty(address: address, defaultValue: Float32(0.0))
     }
 
     // getProperty Float64
     internal func getProperty(address: AudioObjectPropertyAddress) -> Float64? {
+
         return getProperty(address: address, defaultValue: Float64(0.0))
     }
 
     // getProperty Bool
     internal func getProperty(address: AudioObjectPropertyAddress) -> Bool? {
+
         if let value = getProperty(address: address, defaultValue: UInt32(0)) {
             return value != 0
         } else {
@@ -333,11 +381,13 @@ extension AudioObject {
 
     // getProperty String
     internal func getProperty(address: AudioObjectPropertyAddress) -> String? {
+
         return getProperty(address: address, defaultValue: "" as CFString)
     }
 
     // setProperty T
     internal func setProperty<T>(address: AudioObjectPropertyAddress, value: T) -> Bool {
+
         let status: OSStatus
 
         if let unwrappedValue = value as? Bool {
@@ -353,10 +403,14 @@ extension AudioObject {
 
         switch status {
         case noErr:
+
             return true
+
         default:
+
             log("Unable to set property with address (\(address)). Status: \(status)")
             return false
+
         }
     }
 }
@@ -368,11 +422,13 @@ extension AudioObject: Hashable {
         The hash value.
      */
     public var hashValue: Int {
+
         return Int(objectID)
     }
 }
 
 /// :nodoc:
 public func ==(lhs: AudioObject, rhs: AudioObject) -> Bool {
+
     return lhs.hashValue == rhs.hashValue
 }
