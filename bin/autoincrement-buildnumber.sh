@@ -16,4 +16,4 @@ if [ -z "$buildnum" ]; then
     exit 1
 fi
 
-/usr/libexec/Plistbuddy -c "Set CFBundleVersion $buildnum" "$infoplist"
+/usr/libexec/PlistBuddy -c "Set CFBundleVersion $buildnum" "$infoplist"
