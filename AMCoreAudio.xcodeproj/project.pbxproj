@@ -28,6 +28,13 @@
 			remoteGlobalIDString = 454D24591B4BE40E0043FA12;
 			remoteInfo = AMCoreAudio;
 		};
+		454204D01E09408300207BA8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 454204CB1E09408200207BA8 /* AMCoreAudio Demo.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4563CD2A1DC6617D006FD207;
+			remoteInfo = "AMCoreAudio Demo";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +45,7 @@
 		452129C91B53C5A30077A712 /* AMCoreAudioBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AMCoreAudioBridge.h; sourceTree = "<group>"; };
 		452129D21B53C7820077A712 /* AMCoreAudio-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AMCoreAudio-Bridging-Header.h"; sourceTree = "<group>"; };
 		453C2B971B7E1BFF00466C7D /* AMCoreAudioTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AMCoreAudioTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		454204CB1E09408200207BA8 /* AMCoreAudio Demo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "AMCoreAudio Demo.xcodeproj"; path = "AMCoreAudio Demo/AMCoreAudio Demo.xcodeproj"; sourceTree = "<group>"; };
 		4544F5A71CC41A42006DCD67 /* NotificationCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCenter.swift; sourceTree = "<group>"; };
 		454D245A1B4BE40E0043FA12 /* AMCoreAudio.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AMCoreAudio.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		454D245F1B4BE40E0043FA12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -79,9 +87,18 @@
 			name = Extensions;
 			sourceTree = "<group>";
 		};
+		454204CC1E09408200207BA8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				454204D11E09408300207BA8 /* AMCoreAudio Demo.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		454D24501B4BE40D0043FA12 = {
 			isa = PBXGroup;
 			children = (
+				454204CB1E09408200207BA8 /* AMCoreAudio Demo.xcodeproj */,
 				45D3B7CE1DA55FE30044C37B /* CHANGELOG.md */,
 				45D3B7CF1DA55FE30044C37B /* LICENSE.md */,
 				45D3B7D01DA55FE30044C37B /* README.md */,
@@ -199,6 +216,12 @@
 			mainGroup = 454D24501B4BE40D0043FA12;
 			productRefGroup = 454D245B1B4BE40E0043FA12 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 454204CC1E09408200207BA8 /* Products */;
+					ProjectRef = 454204CB1E09408200207BA8 /* AMCoreAudio Demo.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				454D24591B4BE40E0043FA12 /* AMCoreAudio */,
@@ -206,6 +229,16 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		454204D11E09408300207BA8 /* AMCoreAudio Demo.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = "AMCoreAudio Demo.app";
+			remoteRef = 454204D01E09408300207BA8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		453C2B951B7E1BFF00466C7D /* Resources */ = {
