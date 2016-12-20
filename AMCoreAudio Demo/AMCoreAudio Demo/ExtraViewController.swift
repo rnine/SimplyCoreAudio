@@ -187,12 +187,12 @@ class ExtraViewController: NSViewController {
         }
 
         switch direction {
-        case .Recording:
+        case .recording:
             shouldOwniSubCheckbox.isHidden = true
             LFEVolumeLabel.isHidden = true
             LFEVolumeSlider.isHidden = true
             LFEMuteCheckbox.isHidden = true
-        case .Playback:
+        case .playback:
             shouldOwniSubCheckbox.isHidden = false
             LFEVolumeLabel.isHidden = false
             LFEVolumeSlider.isHidden = false

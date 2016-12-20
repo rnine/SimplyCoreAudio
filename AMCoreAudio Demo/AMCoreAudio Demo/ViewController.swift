@@ -98,12 +98,12 @@ class ViewController: NSViewController {
         case .some("Input"):
             if let dc = segue.destinationController as? ExtraViewController {
                 inputViewController = dc
-                dc.representedDirection = .Recording
+                dc.representedDirection = .recording
             }
         case .some("Output"):
             if let dc = segue.destinationController as? ExtraViewController {
                 outputViewController = dc
-                dc.representedDirection = .Playback
+                dc.representedDirection = .playback
             }
         default:
             break
@@ -135,7 +135,7 @@ class ViewController: NSViewController {
         if let popUpButton = sender as? NSPopUpButton, let item = popUpButton.selectedItem {
             if let representedAudioDevice = representedObject as? AudioDevice {
                 let clockSourceID = UInt32(item.tag)
-                if representedAudioDevice.setClockSourceID(clockSourceID, channel: 0, direction: .Playback) == false {
+                if representedAudioDevice.setClockSourceID(clockSourceID, channel: 0, direction: .playback) == false {
                     print("Unable to set clock source to \(clockSourceID) on audio device \(representedAudioDevice)")
                 }
             }
@@ -211,25 +211,25 @@ class ViewController: NSViewController {
 
         populateClockSourcesPopUpButton(device: device)
 
-        if let playbackLatency = device.deviceLatencyFrames(direction: .Playback) {
+        if let playbackLatency = device.deviceLatencyFrames(direction: .playback) {
             devicePlaybackLatencyLabel.stringValue = "\(playbackLatency) frames"
         } else {
             devicePlaybackLatencyLabel.stringValue = unknownValue
         }
 
-        if let recordingLatency = device.deviceLatencyFrames(direction: .Playback) {
+        if let recordingLatency = device.deviceLatencyFrames(direction: .playback) {
             deviceRecordingLatencyLabel.stringValue = "\(recordingLatency) frames"
         } else {
             deviceRecordingLatencyLabel.stringValue = unknownValue
         }
 
-        if let playbackSafetyOffset = device.deviceSafetyOffsetFrames(direction: .Playback) {
+        if let playbackSafetyOffset = device.deviceSafetyOffsetFrames(direction: .playback) {
             devicePlaybackSafetyOffsetLabel.stringValue = "\(playbackSafetyOffset) frames"
         } else {
             devicePlaybackSafetyOffsetLabel.stringValue = unknownValue
         }
 
-        if let recordingSafetyOffset = device.deviceSafetyOffsetFrames(direction: .Recording) {
+        if let recordingSafetyOffset = device.deviceSafetyOffsetFrames(direction: .recording) {
             deviceRecordingSafetyOffsetLabel.stringValue = "\(recordingSafetyOffset) frames"
         } else {
             deviceRecordingSafetyOffsetLabel.stringValue = unknownValue
@@ -270,11 +270,11 @@ class ViewController: NSViewController {
 
         let direction: AMCoreAudio.Direction!
 
-        switch (device.channels(direction: .Playback), device.channels(direction: .Recording)) {
+        switch (device.channels(direction: .playback), device.channels(direction: .recording)) {
         case let (p, _) where (p > 0):
-            direction = .Playback
+            direction = .playback
         case let (p, r) where (p == 0 && r > 0):
-            direction = .Recording
+            direction = .recording
         default:
             return // not supported
         }
@@ -299,7 +299,7 @@ class ViewController: NSViewController {
     fileprivate func populatePlaybackStreamPopUpButton(device: AudioDevice) {
         playbackStreamPopUpButton.removeAllItems()
 
-        if let playbackStreams = device.streams(direction: .Playback), playbackStreams.count > 0 {
+        if let playbackStreams = device.streams(direction: .playback), playbackStreams.count > 0 {
             playbackStreamPopUpButton.isEnabled = true
             for stream in playbackStreams {
                 playbackStreamPopUpButton.addItem(withTitle: stream.name ?? "Output Stream \(format(id: stream.id))")
@@ -319,7 +319,7 @@ class ViewController: NSViewController {
     fileprivate func populateRecordingStreamPopUpButton(device: AudioDevice) {
         recordingStreamPopUpButton.removeAllItems()
 
-        if let recordingStreams = device.streams(direction: .Recording), recordingStreams.count > 0 {
+        if let recordingStreams = device.streams(direction: .recording), recordingStreams.count > 0 {
             recordingStreamPopUpButton.isEnabled = true
             for stream in recordingStreams {
                 recordingStreamPopUpButton.addItem(withTitle: stream.name ?? "Input Stream \(format(id: stream.id))")
@@ -568,9 +568,9 @@ extension ViewController : EventSubscriber {
             case .physicalFormatDidChange(let audioStream):
                 if audioStream.owningDevice == representedObject as? AudioDevice {
                     switch audioStream.direction {
-                    case .some(.Playback):
+                    case .some(.playback):
                         populatePlaybackStreamInfo(stream: audioStream)
-                    case .some(.Recording):
+                    case .some(.recording):
                         populateRecordingStreamInfo(stream: audioStream)
                     default:
                         break
