@@ -220,8 +220,6 @@ class ExtraViewController: NSViewController {
                 LFEMuteCheckbox.state = NSOffState
                 LFEMuteCheckbox.isEnabled = false
             }
-        default:
-            break
         }
     }
 
