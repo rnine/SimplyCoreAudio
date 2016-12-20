@@ -101,7 +101,7 @@ public class AudioObject {
 
         guard let object = self.owningObject, object.classID == kAudioDeviceClassID else { return nil }
 
-        return AudioDevice.lookupByID(object.objectID)
+        return AudioDevice.lookup(by: object.objectID)
     }()
 
     /**

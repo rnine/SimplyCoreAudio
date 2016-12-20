@@ -398,7 +398,7 @@ final public class AudioStream: AudioObject {
 
     // MARK: - Public Functions
 
-    public static func lookupByID(_ id: AudioObjectID) -> AudioStream? {
+    public static func lookup(by id: AudioObjectID) -> AudioStream? {
 
         var instance = AudioObjectPool.instancePool.object(forKey: NSNumber(value: UInt(id))) as? AudioStream
 
@@ -618,6 +618,12 @@ extension AudioStream: CustomStringConvertible {
 // MARK: - Deprecated
 
 extension AudioStream {
+
+    /// :nodoc:
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use lookup(by:)") public static func lookupByID(_ id: AudioObjectID) -> AudioStream? {
+
+        return lookup(by: id)
+    }
 
     /// :nodoc:
     @available(*, deprecated, message: "Marked for removal in 3.2. Use name instead") public func streamName() -> String? {

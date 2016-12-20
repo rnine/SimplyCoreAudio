@@ -83,7 +83,7 @@ class ViewController: NSViewController {
         // Set view controller's represented object
         if let selectedItem = deviceListPopUpButton.selectedItem {
             let deviceID = AudioObjectID(selectedItem.tag)
-            representedObject = AudioDevice.lookupByID(deviceID)
+            representedObject = AudioDevice.lookup(by: deviceID)
         }
     }
 
@@ -115,7 +115,7 @@ class ViewController: NSViewController {
     @IBAction func showDevice(_ sender: AnyObject) {
         if let popUpButton = sender as? NSPopUpButton, let item = popUpButton.selectedItem {
             let deviceID = AudioObjectID(item.tag)
-            representedObject = AudioDevice.lookupByID(deviceID)
+            representedObject = AudioDevice.lookup(by: deviceID)
         }
     }
 
@@ -144,7 +144,7 @@ class ViewController: NSViewController {
 
     @IBAction func updateStreamVirtualFormat(_ sender: AnyObject) {
         if let popUpButton = sender as? NSPopUpButton, let item = popUpButton.selectedItem {
-            if let stream = AudioStream.lookupByID(AudioObjectID(item.tag)),
+            if let stream = AudioStream.lookup(by: AudioObjectID(item.tag)),
                let format = item.representedObject as? AudioStreamBasicDescription {
                 stream.virtualFormat = format
             }
@@ -153,7 +153,7 @@ class ViewController: NSViewController {
 
     @IBAction func updateStreamPhysicalFormat(_ sender: AnyObject) {
         if let popUpButton = sender as? NSPopUpButton, let item = popUpButton.selectedItem {
-            if let stream = AudioStream.lookupByID(AudioObjectID(item.tag)),
+            if let stream = AudioStream.lookup(by: AudioObjectID(item.tag)),
                 let format = item.representedObject as? AudioStreamBasicDescription {
                 stream.physicalFormat = format
             }
@@ -162,7 +162,7 @@ class ViewController: NSViewController {
 
     @IBAction func selectPlaybackStream(_ sender: AnyObject) {
         if let popUpButton = sender as? NSPopUpButton, let item = popUpButton.selectedItem {
-            if let stream = AudioStream.lookupByID(AudioObjectID(item.tag)) {
+            if let stream = AudioStream.lookup(by: AudioObjectID(item.tag)) {
                 populatePlaybackStreamInfo(stream: stream)
             }
         }
@@ -170,7 +170,7 @@ class ViewController: NSViewController {
 
     @IBAction func selectRecordingStream(_ sender: AnyObject) {
         if let popUpButton = sender as? NSPopUpButton, let item = popUpButton.selectedItem {
-            if let stream = AudioStream.lookupByID(AudioObjectID(item.tag)) {
+            if let stream = AudioStream.lookup(by: AudioObjectID(item.tag)) {
                 populateRecordingStreamInfo(stream: stream)
             }
         }
