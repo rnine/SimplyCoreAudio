@@ -10,7 +10,6 @@
 		450765261B4E92B8005E87C9 /* Bool+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450765251B4E92B8005E87C9 /* Bool+Extensions.swift */; };
 		450A4B311CBDB09400EB7B34 /* AudioStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450A4B301CBDB09400EB7B34 /* AudioStream.swift */; };
 		450A4B331CBDB14E00EB7B34 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450A4B321CBDB14E00EB7B34 /* Utils.swift */; };
-		452129C81B53C5890077A712 /* AMCoreAudioBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 452129C71B53C5890077A712 /* AMCoreAudioBridge.m */; };
 		453C2B9C1B7E1BFF00466C7D /* AMCoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 454D245A1B4BE40E0043FA12 /* AMCoreAudio.framework */; };
 		4544F5A81CC41A42006DCD67 /* NotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4544F5A71CC41A42006DCD67 /* NotificationCenter.swift */; };
 		454D24751B4BE4860043FA12 /* AudioDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454D24741B4BE4860043FA12 /* AudioDevice.swift */; };
@@ -18,6 +17,7 @@
 		45A7405A1B4EE37400C19842 /* AudioHardware.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A740591B4EE37400C19842 /* AudioHardware.swift */; };
 		45B919DC1CD3E3E100552C67 /* BundleInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B919DB1CD3E3E100552C67 /* BundleInfo.swift */; };
 		45BF8FB81CBDB29800B15908 /* AudioObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BF8FB71CBDB29800B15908 /* AudioObject.swift */; };
+		45D6EA1C1E0AD61A005C45EB /* AMCoreAudio.h in Headers */ = {isa = PBXBuildFile; fileRef = 45D6EA1B1E0AD618005C45EB /* AMCoreAudio.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,9 +41,6 @@
 		450765251B4E92B8005E87C9 /* Bool+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bool+Extensions.swift"; sourceTree = "<group>"; };
 		450A4B301CBDB09400EB7B34 /* AudioStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioStream.swift; sourceTree = "<group>"; };
 		450A4B321CBDB14E00EB7B34 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
-		452129C71B53C5890077A712 /* AMCoreAudioBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMCoreAudioBridge.m; sourceTree = "<group>"; };
-		452129C91B53C5A30077A712 /* AMCoreAudioBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AMCoreAudioBridge.h; sourceTree = "<group>"; };
-		452129D21B53C7820077A712 /* AMCoreAudio-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AMCoreAudio-Bridging-Header.h"; sourceTree = "<group>"; };
 		453C2B971B7E1BFF00466C7D /* AMCoreAudioTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AMCoreAudioTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		454204CB1E09408200207BA8 /* AMCoreAudio Demo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "AMCoreAudio Demo.xcodeproj"; path = "AMCoreAudio Demo/AMCoreAudio Demo.xcodeproj"; sourceTree = "<group>"; };
 		4544F5A71CC41A42006DCD67 /* NotificationCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCenter.swift; sourceTree = "<group>"; };
@@ -58,6 +55,8 @@
 		45D3B7CE1DA55FE30044C37B /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
 		45D3B7CF1DA55FE30044C37B /* LICENSE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
 		45D3B7D01DA55FE30044C37B /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		45D6EA161E0AD394005C45EB /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		45D6EA1B1E0AD618005C45EB /* AMCoreAudio.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AMCoreAudio.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +104,7 @@
 				45D3B7CD1DA55FE30044C37B /* AMCoreAudio.podspec */,
 				454D245C1B4BE40E0043FA12 /* AMCoreAudio */,
 				454D245B1B4BE40E0043FA12 /* Products */,
+				45D6EA151E0AD394005C45EB /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -120,9 +120,7 @@
 		454D245C1B4BE40E0043FA12 /* AMCoreAudio */ = {
 			isa = PBXGroup;
 			children = (
-				452129D21B53C7820077A712 /* AMCoreAudio-Bridging-Header.h */,
-				452129C91B53C5A30077A712 /* AMCoreAudioBridge.h */,
-				452129C71B53C5890077A712 /* AMCoreAudioBridge.m */,
+				45D6EA1B1E0AD618005C45EB /* AMCoreAudio.h */,
 				454D245F1B4BE40E0043FA12 /* Info.plist */,
 				454D24741B4BE4860043FA12 /* AudioDevice.swift */,
 				45A740591B4EE37400C19842 /* AudioHardware.swift */,
@@ -137,6 +135,14 @@
 			path = AMCoreAudio;
 			sourceTree = "<group>";
 		};
+		45D6EA151E0AD394005C45EB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				45D6EA161E0AD394005C45EB /* CoreAudio.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -144,6 +150,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45D6EA1C1E0AD61A005C45EB /* AMCoreAudio.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -295,7 +302,6 @@
 				450A4B331CBDB14E00EB7B34 /* Utils.swift in Sources */,
 				4544F5A81CC41A42006DCD67 /* NotificationCenter.swift in Sources */,
 				45BF8FB81CBDB29800B15908 /* AudioObject.swift in Sources */,
-				452129C81B53C5890077A712 /* AMCoreAudioBridge.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -438,7 +444,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.9labs.AMCoreAudio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "AMCoreAudio/AMCoreAudio-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
@@ -461,7 +466,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.9labs.AMCoreAudio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "AMCoreAudio/AMCoreAudio-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

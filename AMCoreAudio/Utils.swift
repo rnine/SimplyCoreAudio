@@ -8,6 +8,7 @@
 
 import Foundation
 
+
 private let logDateFormatter: DateFormatter = {
 
     $0.locale = NSLocale.current

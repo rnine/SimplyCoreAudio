@@ -264,8 +264,25 @@ final public class AudioDevice: AudioObject {
      */
     public static func lookup(by uid: String) -> AudioDevice? {
 
+        let address = AudioObjectPropertyAddress(
+            mSelector: kAudioHardwarePropertyDeviceForUID,
+            mScope: kAudioObjectPropertyScopeGlobal,
+            mElement: kAudioObjectPropertyElementMaster
+        )
+
         var deviceID = kAudioObjectUnknown
-        let status = AMAudioHardwarePropertyDeviceForUID(uid, &deviceID)
+        var cfUID = (uid as CFString)
+
+        var translation = AudioValueTranslation(
+            mInputData: &cfUID,
+            mInputDataSize: UInt32(MemoryLayout<CFString>.size),
+            mOutputData: &deviceID,
+            mOutputDataSize: UInt32(MemoryLayout<AudioObjectID>.size)
+        )
+
+        let status = getPropertyData(AudioObjectID(kAudioObjectSystemObject),
+                                     address: address,
+                                     andValue: &translation)
 
         if noErr != status || deviceID == kAudioObjectUnknown {
             return nil
