@@ -8,15 +8,6 @@
 
 import Foundation
 
-/// :nodoc:
-@available(*, deprecated, message: "Marked for removal in 3.2. Use Event instead") public typealias AMEvent = Event
-
-/// :nodoc:
-@available(*, deprecated, message: "Marked for removal in 3.2. Use NotificationCenter instead") public typealias AMNotificationCenter = NotificationCenter
-
-/// :nodoc:
-@available(*, deprecated, message: "Marked for removal in 3.2. Use EventSubscriber instead") public typealias AMEventSubscriber = EventSubscriber
-
 
 /**
     The protocol that any events must implement.

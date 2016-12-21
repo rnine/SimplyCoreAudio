@@ -9,12 +9,6 @@
 import Foundation
 import AudioToolbox.AudioServices
 
-/// :nodoc:
-@available(*, deprecated, message: "Marked for removal in 3.2. Use AudioHardwareEvent instead") public typealias AMAudioHardwareEvent = AudioHardwareEvent
-
-/// :nodoc:
-@available(*, deprecated, message: "Marked for removal in 3.2. Use AudioHardware instead") public typealias AMAudioHardware = AudioHardware
-
 
 /**
     Represents an `AudioHardware` event.

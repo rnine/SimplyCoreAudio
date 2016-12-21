@@ -8,12 +8,6 @@
 
 import Foundation
 
-/// :nodoc:
-@available(*, deprecated, message: "Marked for removal in 3.2. Use AudioStream instead") public typealias AMAudioStream = AudioStream
-
-/// :nodoc:
-@available(*, deprecated, message: "Marked for removal in 3.2. Use AudioStreamEvent instead") public typealias AMAudioStreamEvent = AudioStreamEvent
-
 
 /**
     Represents an `AudioStream` event.
@@ -618,29 +612,5 @@ extension AudioStream: CustomStringConvertible {
     public var description: String {
 
         return "\(name ?? "Stream \(id)") (\(id))"
-    }
-}
-
-
-// MARK: - Deprecated
-
-extension AudioStream {
-
-    /// :nodoc:
-    @available(*, deprecated, message: "Marked for removal in 3.2. Use lookup(by:)") public static func lookupByID(_ id: AudioObjectID) -> AudioStream? {
-
-        return lookup(by: id)
-    }
-
-    /// :nodoc:
-    @available(*, deprecated, message: "Marked for removal in 3.2. Use name instead") public func streamName() -> String? {
-
-        return name
-    }
-
-    /// :nodoc:
-    @available(*, deprecated, message: "Marked for removal in 3.2. Use id instead") public var streamID: AudioObjectID {
-
-        return id
     }
 }

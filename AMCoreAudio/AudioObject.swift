@@ -9,9 +9,6 @@
 import Foundation
 import CoreAudio.AudioHardwareBase
 
-/// :nodoc:
-@available(*, deprecated, message: "Marked for removal in 3.2. Use AudioObject instead") public typealias AMAudioObject = AudioObject
-
 
 internal class AudioObjectPool: NSObject {
 
