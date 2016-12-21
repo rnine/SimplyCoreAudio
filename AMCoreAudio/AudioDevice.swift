@@ -1487,7 +1487,7 @@ final public class AudioDevice: AudioObject {
 
         - Returns: *(optional)* A `UInt32` value with the latency in frames.
      */
-    public func deviceLatencyFrames(direction: Direction) -> UInt32? {
+    public func latency(direction: Direction) -> UInt32? {
 
         if let address = validAddress(selector: kAudioDevicePropertyLatency,
                                       scope: scope(direction: direction)) {
@@ -1502,7 +1502,7 @@ final public class AudioDevice: AudioObject {
 
         - Returns: *(optional)* A `UInt32` value with the safety offset in frames.
      */
-    public func deviceSafetyOffsetFrames(direction: Direction) -> UInt32? {
+    public func safetyOffset(direction: Direction) -> UInt32? {
 
         if let address = validAddress(selector: kAudioDevicePropertySafetyOffset,
                                       scope: scope(direction: direction)) {
@@ -1965,5 +1965,17 @@ extension AudioDevice {
     @available(*, deprecated, message: "Marked for removal in 3.2. Use setClockSourceID(_:channel:direction:) instead") public func setClockSourceID(_ clockSourceID: UInt32, forChannel channel: UInt32, andDirection direction: Direction) -> Bool {
 
         return setClockSourceID(clockSourceID, channel: channel, direction: direction)
+    }
+
+    /// :nodoc:
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use latency(direction:) instead") public func deviceLatencyFrames(direction: Direction) -> UInt32? {
+
+        return latency(direction: direction)
+    }
+
+    /// :nodoc:
+    @available(*, deprecated, message: "Marked for removal in 3.2. Use safetyOffset(direction:) instead") public func deviceSafetyOffsetFrames(direction: Direction) -> UInt32? {
+
+        return safetyOffset(direction: direction)
     }
 }

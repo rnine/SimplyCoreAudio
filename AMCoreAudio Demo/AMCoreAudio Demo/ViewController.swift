@@ -211,25 +211,25 @@ class ViewController: NSViewController {
 
         populateClockSourcesPopUpButton(device: device)
 
-        if let playbackLatency = device.deviceLatencyFrames(direction: .playback) {
+        if let playbackLatency = device.latency(direction: .playback) {
             devicePlaybackLatencyLabel.stringValue = "\(playbackLatency) frames"
         } else {
             devicePlaybackLatencyLabel.stringValue = unknownValue
         }
 
-        if let recordingLatency = device.deviceLatencyFrames(direction: .playback) {
+        if let recordingLatency = device.latency(direction: .playback) {
             deviceRecordingLatencyLabel.stringValue = "\(recordingLatency) frames"
         } else {
             deviceRecordingLatencyLabel.stringValue = unknownValue
         }
 
-        if let playbackSafetyOffset = device.deviceSafetyOffsetFrames(direction: .playback) {
+        if let playbackSafetyOffset = device.safetyOffset(direction: .playback) {
             devicePlaybackSafetyOffsetLabel.stringValue = "\(playbackSafetyOffset) frames"
         } else {
             devicePlaybackSafetyOffsetLabel.stringValue = unknownValue
         }
 
-        if let recordingSafetyOffset = device.deviceSafetyOffsetFrames(direction: .recording) {
+        if let recordingSafetyOffset = device.safetyOffset(direction: .recording) {
             deviceRecordingSafetyOffsetLabel.stringValue = "\(recordingSafetyOffset) frames"
         } else {
             deviceRecordingSafetyOffsetLabel.stringValue = unknownValue
