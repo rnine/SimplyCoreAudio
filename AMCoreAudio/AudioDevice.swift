@@ -786,7 +786,7 @@ final public class AudioDevice: AudioObject {
 
         - Return: *(optional)* `true` when LFE output is muted, `false` otherwise.
      */
-    public var LFEMute: Bool? {
+    public var lfeMute: Bool? {
 
         get {
 
@@ -812,7 +812,7 @@ final public class AudioDevice: AudioObject {
 
         - Return: *(optional)* A `Float32` with the volume.
      */
-    public var LFEVolume: Float32? {
+    public var lfeVolume: Float32? {
 
         get {
 
@@ -838,7 +838,7 @@ final public class AudioDevice: AudioObject {
 
         - Return: *(optional)* A `Float32` with the volume.
      */
-    public var LFEVolumeDecibels: Float32? {
+    public var lfeVolumeDecibels: Float32? {
 
         get {
 

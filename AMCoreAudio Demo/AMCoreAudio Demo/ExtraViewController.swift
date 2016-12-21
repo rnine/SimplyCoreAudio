@@ -69,7 +69,7 @@ class ExtraViewController: NSViewController {
         guard let slider = sender as? NSSlider else { return }
 
         if let audioDevice = representedObject as? AudioDevice {
-            audioDevice.LFEVolume = slider.floatValue
+            audioDevice.lfeVolume = slider.floatValue
         }
     }
 
@@ -77,7 +77,7 @@ class ExtraViewController: NSViewController {
         guard let button = sender as? NSButton else { return }
 
         if let audioDevice = representedObject as? AudioDevice {
-            audioDevice.LFEMute = button.state == NSOnState
+            audioDevice.lfeMute = button.state == NSOnState
         }
     }
 
@@ -206,14 +206,14 @@ class ExtraViewController: NSViewController {
                 shouldOwniSubCheckbox.isEnabled = false
             }
 
-            if let LFEVolume = device.LFEVolume {
+            if let LFEVolume = device.lfeVolume {
                 LFEVolumeSlider.floatValue = LFEVolume
                 LFEVolumeSlider.isEnabled = true
             } else {
                 LFEVolumeSlider.isEnabled = false
             }
 
-            if let LFEMute = device.LFEMute {
+            if let LFEMute = device.lfeMute {
                 LFEMuteCheckbox.state = LFEMute == true ? NSOnState : NSOffState
                 LFEMuteCheckbox.isEnabled = true
             } else {
