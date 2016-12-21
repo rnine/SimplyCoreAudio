@@ -1,14 +1,18 @@
 Pod::Spec.new do |s|
   s.name         = 'AMCoreAudio'
-  s.version      = '3.0.1'
-  s.summary      = 'AMCoreAudio is a Swift wrapper for Apple\'s CoreAudio framework'
+  s.version      = '3.1'
+  s.summary      = 'A Swift framework that aims to make Core Audio use less tedious in macOS'
 
   s.description  = <<-DESC
-                   AMCoreAudio is a Swift wrapper for Apple's CoreAudio framework focusing on:
+                   AMCoreAudio is a Swift framework that aims to make Core Audio use less tedious in macOS.
+
+                   Here's a few things it can do:
 
                    * Simplifying audio device enumeration
                    * Providing accessors for the most relevant audio device properties (i.e., device name, device manufacturer, device UID, volume, mute, sample rate, clock source, etc.)
-                   * Subscribing to system and audio device specific notifications using delegation, etc.
+                   * Managing (physical and virtual) audio streams associated to an audio device
+                   * Subscribing to audio hardware, audio device, and audio stream events
+                   * etc.
                    DESC
 
   s.homepage     = 'https://github.com/rnine/AMCoreAudio'

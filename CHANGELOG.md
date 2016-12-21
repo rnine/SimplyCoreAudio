@@ -2,7 +2,7 @@
 
 | Version       | Description   | Date     |
 | -------------:|:------------- |:--------:|
-| 3.1           | Deprecated the `AM` prefix in all classes/enums/structs and modernized many function signatures. Old names and signatures are marked for removal in 3.2. | TBA |
+| 3.1           | Deprecated the `AM` prefix in all classes/enums/structs and modernized many function signatures. Old names and signatures are marked for removal in 3.2. | December 21st, 2016|
 |               | Added `isJackConnectedDidChange(audioDevice:)` notification.| |
 |               | Added `preferredChannelsForStereoDidChange(audioDevice) ` notification.| |
 |               | Added some LFE (Low Frequency Effects) functions and variables.| |
@@ -14,7 +14,7 @@
 |               | Changed all enum values to camelCase to follow Swift 3 conventions.| |
 |               | Removed `.invalid` direction (it was only used internally and is no longer required.)| |
 |               | Added new demo project.| |
-| 3.0.1         | Added `AMCoreAudio` `setHogMode()` and removed `setHogModePidToCurrentProcess()` and `setHogModePID(_:)`              | October 30th, 2016 |
+| 3.0.1         | Added `AMCoreAudio` `setHogMode()` and removed `setHogModePidToCurrentProcess()` and `setHogModePID(_:)`              | October 30th, 2016|
 |               | Fixed `unsetHogMode()` so it does not actually try to request hog mode instead of unsetting it when hog mode is not set.| |
 |               | Changed `AMCoreAudio` `channelsForDirection(_:)` to calculate the total channel count based on the sum of channels in every stream's physical format. Old implementation is still available as `layoutChannelsForDirection(_:)` | |
 | 3.0           | Added Swift 3 support and new Pub/Sub notification system. | October 5th, 2016|
