@@ -227,9 +227,9 @@ final public class AudioDevice: AudioObject {
      
         - Parameter deviceID: An audio device identifier that is valid and present in the system.
      */
-    private init?(deviceID: AudioObjectID) {
+    private init?(id: AudioObjectID) {
 
-        super.init(objectID: deviceID)
+        super.init(objectID: id)
 
         guard owningObject != nil else { return nil }
 
@@ -257,7 +257,7 @@ final public class AudioDevice: AudioObject {
         var instance = AudioObjectPool.instancePool.object(forKey: NSNumber(value: UInt(id))) as? AudioDevice
 
         if instance == nil {
-            instance = AudioDevice(deviceID: id)
+            instance = AudioDevice(id: id)
         }
 
         return instance
@@ -744,9 +744,7 @@ final public class AudioDevice: AudioObject {
         let status = getPropertyDataArray(address, value: &relatedDevices, andDefaultValue: AudioDeviceID())
 
         if noErr == status {
-            return relatedDevices.map { deviceID -> AudioDevice? in
-                AudioDevice.lookup(by: deviceID)
-            }.flatMap { $0 }
+            return relatedDevices.map { AudioDevice.lookup(by: $0) }.flatMap { $0 }
         }
 
         return nil
@@ -1425,10 +1423,10 @@ final public class AudioDevice: AudioObject {
     public func clockSourceNames(channel: UInt32, direction: Direction) -> [String]? {
 
         if let clockSourceIDs = clockSourceIDs(channel: channel, direction: direction) {
-            return clockSourceIDs.map { (clockSourceID) -> String in
+            return clockSourceIDs.map {
                 // We expect clockSourceNameForClockSourceID to never fail in this case, 
                 // but in the unlikely case it does, we provide a default value.
-                clockSourceName(clockSourceID: clockSourceID) ?? "Clock source \(clockSourceID)"
+                clockSourceName(clockSourceID: $0) ?? "Clock source \(clockSourceID)"
             }
         }
 
@@ -1635,9 +1633,7 @@ final public class AudioDevice: AudioObject {
             return nil
         }
 
-        return streamIDs.map({ (streamID) -> AudioStream in
-            AudioStream.lookup(by: streamID)!
-        })
+        return streamIDs.map { AudioStream.lookup(by: $0) }.flatMap { $0 }
     }
 
 
