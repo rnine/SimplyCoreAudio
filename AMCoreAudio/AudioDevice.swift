@@ -1650,13 +1650,13 @@ final public class AudioDevice: AudioObject {
 
     // MARK: - Private Functions
 
-    private func setDefaultDevice(_ deviceType: AudioObjectPropertySelector) -> Bool {
+    private func setDefaultDevice(_ type: AudioObjectPropertySelector) -> Bool {
 
-        if let address = validAddress(selector: deviceType) {
-            return setProperty(address: address, value: UInt32(id))
-        } else {
-            return false
-        }
+        let address = self.address(selector: type)
+        var deviceID = UInt32(id)
+        let status = setPropertyData(AudioObjectID(kAudioObjectSystemObject), address: address, andValue: &deviceID)
+
+        return noErr == status
     }
 
     private func getDeviceName() -> String {
@@ -1666,12 +1666,7 @@ final public class AudioDevice: AudioObject {
 
     private class func defaultDevice(of type: AudioObjectPropertySelector) -> AudioDevice? {
 
-        let address = AudioObjectPropertyAddress(
-            mSelector: type,
-            mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMaster
-        )
-
+        let address = self.address(selector: type)
         var deviceID = AudioDeviceID()
         let status = getPropertyData(AudioObjectID(kAudioObjectSystemObject), address: address, andValue: &deviceID)
 

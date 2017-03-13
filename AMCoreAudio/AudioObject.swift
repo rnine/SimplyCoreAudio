@@ -127,6 +127,13 @@ extension AudioObject {
 
     // MARK: - Class Functions
 
+    internal class func address(selector: AudioObjectPropertySelector, scope: AudioObjectPropertyScope = kAudioObjectPropertyScopeGlobal, element: AudioObjectPropertyElement = kAudioObjectPropertyElementMaster) -> AudioObjectPropertyAddress {
+
+        return AudioObjectPropertyAddress(mSelector: selector,
+                                          mScope: scope,
+                                          mElement: element)
+    }
+
     internal class func getPropertyDataSize<Q>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, qualifierDataSize: UInt32?, qualifierData: inout [Q], andSize size: inout UInt32) -> (OSStatus) {
 
         var theAddress = address
@@ -296,9 +303,7 @@ extension AudioObject {
 
     internal func address(selector: AudioObjectPropertySelector, scope: AudioObjectPropertyScope = kAudioObjectPropertyScopeGlobal, element: AudioObjectPropertyElement = kAudioObjectPropertyElementMaster) -> AudioObjectPropertyAddress {
 
-        return AudioObjectPropertyAddress(mSelector: selector,
-                                          mScope: scope,
-                                          mElement: element)
+        return AudioObject.address(selector: selector, scope: scope, element: element)
     }
 
     internal func validAddress(selector: AudioObjectPropertySelector, scope: AudioObjectPropertyScope = kAudioObjectPropertyScopeGlobal, element: AudioObjectPropertyElement = kAudioObjectPropertyElementMaster) -> AudioObjectPropertyAddress? {
