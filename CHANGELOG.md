@@ -2,6 +2,7 @@
 
 | Version       | Description   | Date     |
 | -------------:|:------------- |:--------:|
+| 3.1.1         | Fixing broken `setDefaultDevice(_:)` functionality (reported by @DerButtsche.) | March 13th, 2017|
 | 3.1           | Deprecated the `AM` prefix in all classes/enums/structs and modernized many function signatures. Old names and signatures are marked for removal in 3.2. | December 21st, 2016|
 |               | Added `isJackConnectedDidChange(audioDevice:)` notification.| |
 |               | Added `preferredChannelsForStereoDidChange(audioDevice) ` notification.| |
