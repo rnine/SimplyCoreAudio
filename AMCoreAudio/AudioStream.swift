@@ -256,7 +256,7 @@ final public class AudioStream: AudioObject {
 
             if let status = setStreamPropertyData(kAudioStreamPropertyPhysicalFormat, andValue: &asbd) {
                 if noErr != status {
-                    log("Error setting physicalFormat to \(newValue)")
+                    log("Error setting physicalFormat to \(String(describing: newValue))")
                 }
             }
         }
@@ -290,7 +290,7 @@ final public class AudioStream: AudioObject {
 
             if let status = setStreamPropertyData(kAudioStreamPropertyVirtualFormat, andValue: &asbd) {
                 if noErr != status {
-                    log("Error setting virtualFormat to \(newValue)")
+                    log("Error setting virtualFormat to \(String(describing: newValue))")
                 }
             }
         }
