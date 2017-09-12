@@ -268,18 +268,7 @@ class ViewController: NSViewController {
     fileprivate func populateClockSourcesPopUpButton(device: AudioDevice) {
         deviceClockSourcesPopupButton.removeAllItems()
 
-        let direction: AMCoreAudio.Direction!
-
-        switch (device.channels(direction: .playback), device.channels(direction: .recording)) {
-        case let (p, _) where (p > 0):
-            direction = .playback
-        case let (p, r) where (p == 0 && r > 0):
-            direction = .recording
-        default:
-            return // not supported
-        }
-
-        if let clockSourceIDs = device.clockSourceIDs(channel: 0, direction: direction), clockSourceIDs.count > 0 {
+        if let clockSourceIDs = device.clockSourceIDs(), clockSourceIDs.count > 0 {
             deviceClockSourcesPopupButton.isEnabled = true
             for clockSourceID in clockSourceIDs {
                 let clockSourceName = device.clockSourceName(clockSourceID: clockSourceID) ?? "Internal"
@@ -287,7 +276,7 @@ class ViewController: NSViewController {
                 deviceClockSourcesPopupButton.lastItem?.tag = Int(clockSourceID)
             }
 
-            if let clockSourceID = device.clockSourceID(channel: 0, direction: direction) {
+            if let clockSourceID = device.clockSourceID() {
                 deviceClockSourcesPopupButton.selectItem(withTag: Int(clockSourceID))
             }
         } else {
@@ -513,9 +502,9 @@ extension ViewController : EventSubscriber {
                     populateRecordingStreamPopUpButton(device: audioDevice)
                     populatePlaybackStreamPopUpButton(device: audioDevice)
                 }
-            case .clockSourceDidChange(let audioDevice, let channel, let direction):
+            case .clockSourceDidChange(let audioDevice):
                 if representedObject as? AudioDevice == audioDevice {
-                    if let clockSourceID = audioDevice.clockSourceID(channel: channel, direction: direction) {
+                    if let clockSourceID = audioDevice.clockSourceID() {
                         deviceClockSourcesPopupButton.selectItem(withTag: Int(clockSourceID))
                     }
                 }

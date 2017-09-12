@@ -27,9 +27,9 @@ public enum AudioDeviceEvent: Event {
     case availableNominalSampleRatesDidChange(audioDevice: AudioDevice)
 
     /**
-        Called whenever the audio device's clock source changes for a given channel and direction.
+        Called whenever the audio device's clock source changes.
      */
-    case clockSourceDidChange(audioDevice: AudioDevice, channel: UInt32, direction: Direction)
+    case clockSourceDidChange(audioDevice: AudioDevice)
 
     /**
         Called whenever the audio device's name changes.
@@ -123,11 +123,9 @@ final public class AudioDevice: AudioObject {
 
         case kAudioDevicePropertyClockSource:
 
-            if let strongSelf = self, let direction = direction(to: address.mScope) {
+            if let strongSelf = self {
                 notificationCenter.publish(AudioDeviceEvent.clockSourceDidChange(
-                    audioDevice: strongSelf,
-                    channel: address.mElement,
-                    direction: direction
+                    audioDevice: strongSelf
                 ))
             }
 
@@ -1381,10 +1379,10 @@ final public class AudioDevice: AudioObject {
 
         - Returns: *(optional)* A `UInt32` containing the clock source identifier.
      */
-    public func clockSourceID(channel: UInt32, direction: Direction) -> UInt32? {
+    public func clockSourceID() -> UInt32? {
 
         if let address = validAddress(selector: kAudioDevicePropertyClockSource,
-                                      scope: scope(direction: direction)) {
+                                      scope: kAudioObjectPropertyScopeGlobal) {
             return getProperty(address: address)
         } else {
             return nil
@@ -1396,9 +1394,9 @@ final public class AudioDevice: AudioObject {
 
         - Returns: *(optional)* A `String` containing the clock source name.
      */
-    public func clockSourceName(channel: UInt32, direction: Direction) -> String? {
+    public func clockSourceName() -> String? {
 
-        if let sourceID = clockSourceID(channel: channel, direction: direction) {
+        if let sourceID = clockSourceID() {
             return clockSourceName(clockSourceID: sourceID)
         }
 
@@ -1410,11 +1408,11 @@ final public class AudioDevice: AudioObject {
 
         - Returns: *(optional)* A `UInt32` array containing all the clock source identifiers.
      */
-    public func clockSourceIDs(channel: UInt32, direction: Direction) -> [UInt32]? {
+    public func clockSourceIDs() -> [UInt32]? {
 
         guard let address = validAddress(selector: kAudioDevicePropertyClockSources,
-                                         scope: scope(direction: direction),
-                                         element: channel) else { return nil }
+                                         scope: kAudioObjectPropertyScopeGlobal,
+                                         element: kAudioObjectPropertyElementMaster) else { return nil }
 
         var clockSourceIDs = [UInt32]()
         let status = getPropertyDataArray(address, value: &clockSourceIDs, andDefaultValue: 0)
@@ -1431,9 +1429,9 @@ final public class AudioDevice: AudioObject {
 
         - Returns: *(optional)* A `String` array containing all the clock source names.
      */
-    public func clockSourceNames(channel: UInt32, direction: Direction) -> [String]? {
+    public func clockSourceNames() -> [String]? {
 
-        if let clockSourceIDs = clockSourceIDs(channel: channel, direction: direction) {
+        if let clockSourceIDs = clockSourceIDs() {
             return clockSourceIDs.map {
                 // We expect clockSourceNameForClockSourceID to never fail in this case, 
                 // but in the unlikely case it does, we provide a default value.
