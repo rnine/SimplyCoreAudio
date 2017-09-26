@@ -433,8 +433,7 @@ final public class AudioStream: AudioObject {
         - Note: By default, both mixable and non-mixable streams are returned, however,  non-mixable
         streams can be filtered out by setting `includeNonMixable` to `false`.
 
-        - Parameters:
-            - includeNonMixable: Whether to include non-mixable streams in the returned array. Defaults to `true`.
+        - Parameter includeNonMixable: Whether to include non-mixable streams in the returned array. Defaults to `true`.
 
         - SeeAlso: `availableVirtualFormatsMatchingCurrentNominalSampleRate(_:)`
 
@@ -472,8 +471,7 @@ final public class AudioStream: AudioObject {
         - Note: By default, both mixable and non-mixable streams are returned, however,  non-mixable 
         streams can be filtered out by setting `includeNonMixable` to `false`.
 
-        - Parameters:
-            - includeNonMixable: Whether to include non-mixable streams in the returned array. Defaults to `true`.
+        - Parameter includeNonMixable: Whether to include non-mixable streams in the returned array. Defaults to `true`.
      
         - SeeAlso: `availablePhysicalFormatsMatchingCurrentNominalSampleRate(_:)`
 

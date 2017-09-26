@@ -135,7 +135,7 @@ class ViewController: NSViewController {
         if let popUpButton = sender as? NSPopUpButton, let item = popUpButton.selectedItem {
             if let representedAudioDevice = representedObject as? AudioDevice {
                 let clockSourceID = UInt32(item.tag)
-                if representedAudioDevice.setClockSourceID(clockSourceID, channel: 0, direction: .playback) == false {
+                if representedAudioDevice.setClockSourceID(clockSourceID) == false {
                     print("Unable to set clock source to \(clockSourceID) on audio device \(representedAudioDevice)")
                 }
             }
