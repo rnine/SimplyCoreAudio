@@ -1313,6 +1313,16 @@ final public class AudioDevice: AudioObject {
         return isMuted(channel: kAudioObjectPropertyElementMaster, direction: direction)
     }
 
+    /**
+         The virtual master balance for a given direction.
+
+         The range is from 0 (all power to the left) to 1 (all power to the right) with the value of 0.5 signifying
+         that the channels have equal power.
+
+        - Parameter direction: A direction.
+
+        - Returns: *(optional)* A `Float32` value with the stereo balance.
+     */
     public func virtualMasterBalance(direction: Direction) -> Float32? {
 
         if let address = validAddress(selector: kAudioHardwareServiceDeviceProperty_VirtualMasterBalance,
@@ -1323,6 +1333,17 @@ final public class AudioDevice: AudioObject {
         }
     }
 
+    /**
+        Sets the new virtual master balance for a given direction.
+
+        The range is from 0 (all power to the left) to 1 (all power to the right) with the value of 0.5 signifying
+        that the channels have equal power.
+
+        - Parameter value: The new balance.
+        - Parameter direction: A direction.
+
+        - Returns: `true` on success, `false` otherwise.
+     */
     @discardableResult public func setVirtualMasterBalance(_ value: Float32, direction: Direction) -> Bool {
 
         if let address = validAddress(selector: kAudioHardwareServiceDeviceProperty_VirtualMasterBalance,
