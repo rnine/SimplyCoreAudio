@@ -123,7 +123,7 @@ final public class NotificationCenter {
      */
     func publish(_ event: Event) {
 
-        let type = String(describing: type(of: event))
+        let type = String(describing: Swift.type(of: event))
 
         if let subscriberDescriptors = subscriberDescriptorsByEvent[type] {
             for descriptor in subscriberDescriptors {

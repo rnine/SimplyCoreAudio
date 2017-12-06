@@ -9,6 +9,14 @@
 import Cocoa
 import AMCoreAudio
 
+extension NSUserInterfaceItemIdentifier {
+
+    static let volumeLabel = NSUserInterfaceItemIdentifier(rawValue: "volumeLabel")
+    static let volume = NSUserInterfaceItemIdentifier(rawValue: "volume")
+    static let mute = NSUserInterfaceItemIdentifier(rawValue: "mute")
+}
+
+
 class ExtraViewController: NSViewController {
 
     @IBOutlet var isConnectedLabel: NSTextField!
@@ -61,7 +69,7 @@ class ExtraViewController: NSViewController {
         guard let button = sender as? NSButton else { return }
 
         if let audioDevice = representedObject as? AudioDevice {
-            audioDevice.shouldOwniSub = button.state == NSOnState
+            audioDevice.shouldOwniSub = button.state == .on
         }
     }
 
@@ -77,7 +85,7 @@ class ExtraViewController: NSViewController {
         guard let button = sender as? NSButton else { return }
 
         if let audioDevice = representedObject as? AudioDevice {
-            audioDevice.lfeMute = button.state == NSOnState
+            audioDevice.lfeMute = button.state == .on
         }
     }
 
@@ -141,7 +149,7 @@ class ExtraViewController: NSViewController {
         if let device = representedObject as? AudioDevice, let direction = representedDirection {
             let channel = UInt32(button.tag)
 
-            if device.setMute(button.state == NSOnState, channel: channel, direction: direction) == false {
+            if device.setMute(button.state == .on, channel: channel, direction: direction) == false {
                 print("Unable to update mute state for channel \(channel) and direction \(direction)")
             }
         }
@@ -199,10 +207,10 @@ class ExtraViewController: NSViewController {
             LFEMuteCheckbox.isHidden = false
 
             if let shouldOwniSub = device.shouldOwniSub {
-                shouldOwniSubCheckbox.state = shouldOwniSub ? NSOnState : NSOffState
+                shouldOwniSubCheckbox.state = shouldOwniSub ? .on : .off
                 shouldOwniSubCheckbox.isEnabled = true
             } else {
-                shouldOwniSubCheckbox.state = NSOffState
+                shouldOwniSubCheckbox.state = .off
                 shouldOwniSubCheckbox.isEnabled = false
             }
 
@@ -214,10 +222,10 @@ class ExtraViewController: NSViewController {
             }
 
             if let LFEMute = device.lfeMute {
-                LFEMuteCheckbox.state = LFEMute == true ? NSOnState : NSOffState
+                LFEMuteCheckbox.state = LFEMute == true ? .on : .off
                 LFEMuteCheckbox.isEnabled = true
             } else {
-                LFEMuteCheckbox.state = NSOffState
+                LFEMuteCheckbox.state = .off
                 LFEMuteCheckbox.isEnabled = false
             }
         }
@@ -258,9 +266,9 @@ extension ExtraViewController : NSTableViewDelegate {
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         guard let tableColumn = tableColumn else { return nil }
 
-        switch tableColumn.identifier {
+        switch tableColumn.identifier.rawValue {
         case "channel":
-            let cellView = tableView.make(withIdentifier: tableColumn.identifier, owner: self) as? NSTableCellView
+            let cellView = tableView.makeView(withIdentifier: tableColumn.identifier, owner: self) as? NSTableCellView
 
             if let textField = cellView?.textField {
                 textField.stringValue = row == 0 ? "M" : String(row)
@@ -268,7 +276,7 @@ extension ExtraViewController : NSTableViewDelegate {
 
             return cellView
         case "name":
-            let cellView = tableView.make(withIdentifier: tableColumn.identifier, owner: self) as? NSTableCellView
+            let cellView = tableView.makeView(withIdentifier: tableColumn.identifier, owner: self) as? NSTableCellView
 
             if let textField = cellView?.textField {
                 if let device = representedObject as? AudioDevice, let direction = representedDirection,
@@ -281,20 +289,20 @@ extension ExtraViewController : NSTableViewDelegate {
 
             return cellView
         case "mute":
-            let cellView = tableView.make(withIdentifier: tableColumn.identifier, owner: self) as? CheckBoxCellView
+            let cellView = tableView.makeView(withIdentifier: tableColumn.identifier, owner: self) as? CheckBoxCellView
 
             if let checkBoxButton = cellView?.checkBoxButton {
                 checkBoxButton.title = ""
 
                 if let device = representedObject as? AudioDevice, let direction = representedDirection {
                     if let isMuted = device.isMuted(channel: UInt32(row), direction: direction) {
-                        checkBoxButton.state = isMuted ? NSOnState : NSOffState
+                        checkBoxButton.state = isMuted ? .on : .off
                         checkBoxButton.isEnabled = true
                         checkBoxButton.tag = row
                         checkBoxButton.action = #selector(setChannelMuteState)
                         checkBoxButton.target = self
                     } else {
-                        checkBoxButton.state = NSOffState
+                        checkBoxButton.state = .off
                         checkBoxButton.isEnabled = false
                         checkBoxButton.action = nil
                         checkBoxButton.target = nil
@@ -304,7 +312,7 @@ extension ExtraViewController : NSTableViewDelegate {
 
             return cellView
         case "volumeLabel":
-            let cellView = tableView.make(withIdentifier: tableColumn.identifier, owner: self) as? NSTableCellView
+            let cellView = tableView.makeView(withIdentifier: tableColumn.identifier, owner: self) as? NSTableCellView
 
             if let textField = cellView?.textField {
                 if let device = representedObject as? AudioDevice, let direction = representedDirection {
@@ -320,7 +328,7 @@ extension ExtraViewController : NSTableViewDelegate {
 
             return cellView
         case "volume":
-            let cellView = tableView.make(withIdentifier: tableColumn.identifier, owner: self) as? SliderCellView
+            let cellView = tableView.makeView(withIdentifier: tableColumn.identifier, owner: self) as? SliderCellView
 
             if let slider = cellView?.slider {
                 if let device = representedObject as? AudioDevice, let direction = representedDirection {
@@ -386,8 +394,8 @@ extension ExtraViewController : EventSubscriber {
                 if representedObject as? AudioDevice == audioDevice {
                     populateInfoFields(device: audioDevice)
 
-                    let volumeIndices = IndexSet([tableView.column(withIdentifier: "volumeLabel"),
-                                                  tableView.column(withIdentifier: "volume")])
+                    let volumeIndices = IndexSet([tableView.column(withIdentifier: .volumeLabel),
+                                                  tableView.column(withIdentifier: .volume)])
 
                     tableView.reloadData(forRowIndexes: IndexSet(integer: Int(channel)),
                                          columnIndexes: volumeIndices)
@@ -396,7 +404,7 @@ extension ExtraViewController : EventSubscriber {
                 if representedObject as? AudioDevice == audioDevice {
                     populateInfoFields(device: audioDevice)
 
-                    let muteIndex = IndexSet([tableView.column(withIdentifier: "mute")])
+                    let muteIndex = IndexSet([tableView.column(withIdentifier: .mute)])
 
                     tableView.reloadData(forRowIndexes: IndexSet(integer: Int(channel)),
                                          columnIndexes: muteIndex)

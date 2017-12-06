@@ -94,7 +94,7 @@ class ViewController: NSViewController {
     }
 
     override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
-        switch segue.identifier {
+        switch segue.identifier?.rawValue {
         case .some("Input"):
             if let dc = segue.destinationController as? ExtraViewController {
                 inputViewController = dc
