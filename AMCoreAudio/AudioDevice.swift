@@ -337,7 +337,7 @@ final public class AudioDevice: AudioObject {
 
         let deviceIDs = allDeviceIDs()
 
-        let devices = deviceIDs.map { AudioDevice.lookup(by: $0) }.flatMap { $0 }
+        let devices = deviceIDs.compactMap { AudioDevice.lookup(by: $0) }
 
         return devices
     }
@@ -773,7 +773,7 @@ final public class AudioDevice: AudioObject {
         let status = getPropertyDataArray(address, value: &relatedDevices, andDefaultValue: AudioDeviceID())
 
         if noErr == status {
-            return relatedDevices.map { AudioDevice.lookup(by: $0) }.flatMap { $0 }
+            return relatedDevices.compactMap { AudioDevice.lookup(by: $0) }
         }
 
         return nil
@@ -1747,7 +1747,7 @@ final public class AudioDevice: AudioObject {
             return nil
         }
 
-        return streamIDs.map { AudioStream.lookup(by: $0) }.flatMap { $0 }
+        return streamIDs.compactMap { AudioStream.lookup(by: $0) }
     }
 
 

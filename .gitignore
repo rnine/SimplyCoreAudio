@@ -12,3 +12,4 @@ Pods/
 build/
 docsets/
 docs
+Carthage/Build

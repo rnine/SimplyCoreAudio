@@ -10,7 +10,7 @@ import Foundation
 
 extension Bool {
 
-    init<T : Integer>(_ integer: T) {
+    init<T : BinaryInteger>(_ integer: T) {
 
         self.init(integer != 0)
     }
