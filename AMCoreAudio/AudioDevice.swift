@@ -77,6 +77,11 @@ public enum AudioDeviceEvent: Event {
         Called whenever the audio device's *preferred channels for stereo* property changes.
      */
     case preferredChannelsForStereoDidChange(audioDevice: AudioDevice)
+
+    /**
+        Called whenever the audio device's *hog mode* property changes.
+     */
+    case hogModeDidChange(audioDevice: AudioDevice)
 }
 
 
@@ -189,6 +194,12 @@ final public class AudioDevice: AudioObject {
 
             if let strongSelf = self {
                 notificationCenter.publish(AudioDeviceEvent.preferredChannelsForStereoDidChange(audioDevice: strongSelf))
+            }
+
+        case kAudioDevicePropertyHogMode:
+
+            if let strongSelf = self {
+                notificationCenter.publish(AudioDeviceEvent.hogModeDidChange(audioDevice: strongSelf))
             }
 
         // Unhandled cases beyond this point

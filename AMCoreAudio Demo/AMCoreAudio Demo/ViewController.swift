@@ -536,6 +536,14 @@ extension ViewController : EventSubscriber {
                 if representedObject as? AudioDevice == audioDevice {
                     deviceIsRunningSomewhereLabel.stringValue = booleanToString(bool: audioDevice.isRunningSomewhere())
                 }
+            case .hogModeDidChange(let audioDevice):
+                if representedObject as? AudioDevice == audioDevice {
+                    if let hogPID = audioDevice.hogModePID() {
+                        deviceHogModeLabel.stringValue = "\(hogPID)"
+                    } else {
+                        deviceHogModeLabel.stringValue = unknownValue
+                    }
+                }
             default:
                 break
             }
