@@ -248,11 +248,6 @@ extension AudioObject {
         return type(of: self).getPropertyDataArray(objectID, address: address, qualifierDataSize: qualifierDataSize, qualifierData: &qualifierData, value: &value, andDefaultValue: defaultValue)
     }
 
-    internal func getPropertyDataArray<T>(_ objectID: AudioObjectID, address: AudioObjectPropertyAddress, value: inout [T], andDefaultValue defaultValue: T) -> OSStatus {
-
-        return getPropertyDataArray(objectID, address: address, value: &value, andDefaultValue: defaultValue)
-    }
-
     internal func getPropertyData<T>(_ address: AudioObjectPropertyAddress, andValue value: inout T) -> OSStatus {
 
         return type(of: self).getPropertyData(objectID, address: address, andValue: &value)

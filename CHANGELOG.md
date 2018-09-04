@@ -2,7 +2,9 @@
 
 | Version        | Description| Date     |
 | -------------:|:------------- |:--------:|
-| 3.2             | Added Swift 4 support.| February 26th, 2018 |
+| 3.2.1           | Added Swift 4.2 support.| September 4th, 2018 |
+|                    | Added `hogModeDidChange(audioDevice:)` notification. | |
+| 3.2              | Added Swift 4 support.| February 26th, 2018 |
 | 3.1.3           | Removed unnecessary `channel` and `direction` arguments from AudioDevice `setClockSourceID(_:)`. | September 26th, 2017 |
 |                    | Improved documentation. | |
 | 3.1.2           | Removed `channel` and `direction` arguments from `clockSourceID()` , `clockSourceName()`,  `clockSourceIDs()`, and `clockSourceNames()`. | September 12th, 2017 |
