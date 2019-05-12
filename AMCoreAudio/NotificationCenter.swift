@@ -102,7 +102,7 @@ final public class NotificationCenter {
         let type = String(describing: eventType)
 
         if var subscribers = subscriberDescriptorsByEvent[type] {
-            if let idx = subscribers.index(where: { (aSubscriber) -> Bool in aSubscriber.subscriber == subscriber}) {
+            if let idx = subscribers.firstIndex(where: { (aSubscriber) -> Bool in aSubscriber.subscriber == subscriber}) {
                 subscribers.remove(at: idx)
             }
 

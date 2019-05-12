@@ -2,6 +2,7 @@
 
 | Version        | Description| Date     |
 | -------------:|:------------- |:--------:|
+| 3.3              | Added Swift 5 support.| May 12th, 2019 |
 | 3.2.1           | Added Swift 4.2 support.| September 4th, 2018 |
 |                    | Added `hogModeDidChange(audioDevice:)` notification. | |
 | 3.2              | Added Swift 4 support.| February 26th, 2018 |

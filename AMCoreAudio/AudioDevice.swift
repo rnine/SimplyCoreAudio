@@ -1445,8 +1445,8 @@ final public class AudioDevice: AudioObject {
                 //
                 // This could be a headset audio device (i.e., CS50/CS60-USB Headset)
                 // or a virtual audio driver (i.e., "System Audio Recorder" by WonderShare AllMyMusic)
-                if let startIndex = possibleRates.index(of: valueRange.mMinimum),
-                    let endIndex = possibleRates.index(of: valueRange.mMaximum) {
+                if let startIndex = possibleRates.firstIndex(of: valueRange.mMinimum),
+                    let endIndex = possibleRates.firstIndex(of: valueRange.mMaximum) {
                     sampleRates += possibleRates[startIndex..<endIndex + 1]
                 } else {
                     log("Failed to obtain list of supported sample rates ranging from \(valueRange.mMinimum) to \(valueRange.mMaximum). This is an error in AMCoreAudio and should be reported to the project maintainers.")
@@ -1524,7 +1524,7 @@ final public class AudioDevice: AudioObject {
             return clockSourceIDs.map {
                 // We expect clockSourceNameForClockSourceID to never fail in this case, 
                 // but in the unlikely case it does, we provide a default value.
-                clockSourceName(clockSourceID: $0) ?? "Clock source \(clockSourceID)"
+                clockSourceName(clockSourceID: $0) ?? "Clock source \(String(describing: clockSourceID))"
             }
         }
 

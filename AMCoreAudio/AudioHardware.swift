@@ -180,7 +180,7 @@ final public class AudioHardware {
 
     private func remove(device: AudioDevice) {
 
-        if let idx = allKnownDevices.index(of: device) {
+        if let idx = allKnownDevices.firstIndex(of: device) {
             allKnownDevices.remove(at: idx)
         }
     }

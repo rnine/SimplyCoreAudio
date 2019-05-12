@@ -418,9 +418,8 @@ extension AudioObject: Hashable {
     /**
         The hash value.
      */
-    public var hashValue: Int {
-
-        return Int(objectID)
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(objectID)
     }
 }
 
