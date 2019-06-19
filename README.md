@@ -18,7 +18,7 @@ Here's a few things it can do:
 
 ### Requirements
 
-* Xcode 10.2 and Swift 5
+* Xcode 10.2 and Swift 4.0 up to 5.0
 * OS X 10.9 or later
 
 **Note:** If you are targeting OS X version 10.7 or 10.8 please use the [objc branch](https://github.com/rnine/AMCoreAudio/tree/objc).
@@ -36,7 +36,6 @@ Do you want to contribute to the project? Please fork, patch, and then submit a 
 ### Sample Projects
 
 * `AMCoreAudio Demo` (included in this repository)
-* [AudioMate](https://github.com/The9Labs/AudioMate) (a full-featured app recently open-sourced)
 
 ### License
 

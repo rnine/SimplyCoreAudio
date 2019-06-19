@@ -97,14 +97,14 @@
 		454D24501B4BE40D0043FA12 = {
 			isa = PBXGroup;
 			children = (
-				454204CB1E09408200207BA8 /* AMCoreAudio Demo.xcodeproj */,
 				45D3B7CE1DA55FE30044C37B /* CHANGELOG.md */,
 				45D3B7CF1DA55FE30044C37B /* LICENSE.md */,
 				45D3B7D01DA55FE30044C37B /* README.md */,
 				45D3B7CD1DA55FE30044C37B /* AMCoreAudio.podspec */,
+				454204CB1E09408200207BA8 /* AMCoreAudio Demo.xcodeproj */,
 				454D245C1B4BE40E0043FA12 /* AMCoreAudio */,
-				454D245B1B4BE40E0043FA12 /* Products */,
 				45D6EA151E0AD394005C45EB /* Frameworks */,
+				454D245B1B4BE40E0043FA12 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -277,7 +277,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "$SRCROOT/bin/update_build_date.sh\n$SRCROOT/bin/autoincrement-buildnumber.sh";
+			shellScript = "$SRCROOT/bin/update_build_date.sh\n$SRCROOT/bin/autoincrement-buildnumber.sh\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

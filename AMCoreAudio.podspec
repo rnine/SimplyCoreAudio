@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'AMCoreAudio'
-  s.version      = '3.3'
+  s.version      = '3.3.1'
   s.summary      = 'A Swift framework that aims to make Core Audio use less tedious in macOS'
 
   s.description  = <<-DESC
@@ -27,4 +27,6 @@ Pod::Spec.new do |s|
   s.source_files = 'AMCoreAudio/*.{swift,h,m}'
 
   s.requires_arc = true
+
+  s.swift_versions = ['4.0', '4.2', '5.0']
 end
