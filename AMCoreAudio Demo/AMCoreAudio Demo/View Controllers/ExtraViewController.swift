@@ -6,19 +6,16 @@
 //  Copyright © 2016 9Labs. All rights reserved.
 //
 
-import Cocoa
 import AMCoreAudio
+import Cocoa
 
 extension NSUserInterfaceItemIdentifier {
-
     static let volumeLabel = NSUserInterfaceItemIdentifier(rawValue: "volumeLabel")
     static let volume = NSUserInterfaceItemIdentifier(rawValue: "volume")
     static let mute = NSUserInterfaceItemIdentifier(rawValue: "mute")
 }
 
-
 class ExtraViewController: NSViewController {
-
     @IBOutlet var isConnectedLabel: NSTextField!
     @IBOutlet var shouldOwniSubCheckbox: NSButton!
     @IBOutlet var LFEMuteCheckbox: NSButton!
@@ -49,7 +46,6 @@ class ExtraViewController: NSViewController {
         NotificationCenter.defaultCenter.subscribe(self, eventType: AudioDeviceEvent.self, dispatchQueue: DispatchQueue.main)
     }
 
-    
     override func viewWillAppear() {
         super.viewWillAppear()
 
@@ -57,7 +53,6 @@ class ExtraViewController: NSViewController {
             representedObject = p.representedObject
         }
     }
-
 
     deinit {
         NotificationCenter.defaultCenter.unsubscribe(self, eventType: AudioDeviceEvent.self)
@@ -262,7 +257,7 @@ class ExtraViewController: NSViewController {
 
 // MARK: - NSTableViewDelegate Functions
 
-extension ExtraViewController : NSTableViewDelegate {
+extension ExtraViewController: NSTableViewDelegate {
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         guard let tableColumn = tableColumn else { return nil }
 
@@ -353,19 +348,19 @@ extension ExtraViewController : NSTableViewDelegate {
         }
     }
 
-    func tableView(_ tableView: NSTableView, shouldReorderColumn columnIndex: Int, toColumn newColumnIndex: Int) -> Bool {
+    func tableView(_: NSTableView, shouldReorderColumn _: Int, toColumn _: Int) -> Bool {
         return false
     }
 
-    func tableView(_ tableView: NSTableView, shouldTypeSelectFor event: NSEvent, withCurrentSearch searchString: String?) -> Bool {
+    func tableView(_: NSTableView, shouldTypeSelectFor _: NSEvent, withCurrentSearch _: String?) -> Bool {
         return false
     }
 }
 
 // MARK: - NSTableViewDataSource Functions
 
-extension ExtraViewController : NSTableViewDataSource {
-    func numberOfRows(in tableView: NSTableView) -> Int {
+extension ExtraViewController: NSTableViewDataSource {
+    func numberOfRows(in _: NSTableView) -> Int {
         if let device = representedObject as? AudioDevice, let direction = representedDirection {
             let channels = device.channels(direction: direction)
 
@@ -380,13 +375,12 @@ extension ExtraViewController : NSTableViewDataSource {
     }
 }
 
-
-extension ExtraViewController : EventSubscriber {
+extension ExtraViewController: EventSubscriber {
     func eventReceiver(_ event: Event) {
         switch event {
         case let event as AudioDeviceEvent:
             switch event {
-            case .isJackConnectedDidChange(let audioDevice):
+            case let .isJackConnectedDidChange(audioDevice):
                 if representedObject as? AudioDevice == audioDevice {
                     populateInfoFields(device: audioDevice)
                 }
@@ -409,11 +403,11 @@ extension ExtraViewController : EventSubscriber {
                     tableView.reloadData(forRowIndexes: IndexSet(integer: Int(channel)),
                                          columnIndexes: muteIndex)
                 }
-            case .preferredChannelsForStereoDidChange(let audioDevice):
+            case let .preferredChannelsForStereoDidChange(audioDevice):
                 if representedObject as? AudioDevice == audioDevice {
                     populatePreferredStereoPair(device: audioDevice)
                 }
-            case .listDidChange(let audioDevice):
+            case let .listDidChange(audioDevice):
                 if representedObject as? AudioDevice == audioDevice {
                     populatePreferredStereoPair(device: audioDevice)
                     tableView.reloadData()

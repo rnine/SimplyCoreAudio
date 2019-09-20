@@ -28,13 +28,6 @@
 			remoteGlobalIDString = 454D245A1B4BE40E0043FA12;
 			remoteInfo = AMCoreAudio;
 		};
-		4563CD431DC661A4006FD207 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 4563CD3C1DC661A4006FD207 /* AMCoreAudio.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 453C2B971B7E1BFF00466C7D;
-			remoteInfo = AMCoreAudioTests;
-		};
 		4563CD451DC661AD006FD207 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 4563CD3C1DC661A4006FD207 /* AMCoreAudio.xcodeproj */;
@@ -112,14 +105,11 @@
 		4563CD2C1DC6617D006FD207 /* AMCoreAudio Demo */ = {
 			isa = PBXGroup;
 			children = (
-				4563CD361DC6617D006FD207 /* Info.plist */,
 				4563CD2D1DC6617D006FD207 /* AppDelegate.swift */,
-				45E3329F1DCB7A5F00FB9223 /* ExtraViewController.swift */,
-				45D2D01F1DC6837800A3A491 /* NSPopUpButton+Extension.swift */,
-				4563CD2F1DC6617D006FD207 /* ViewController.swift */,
-				4563CD311DC6617D006FD207 /* Assets.xcassets */,
 				456563B21DD36836006B6086 /* Cell Views */,
-				4563CD331DC6617D006FD207 /* Main.storyboard */,
+				45A0A6122335621100F495FA /* Extensions */,
+				45A0A611233561EE00F495FA /* Supporting Files */,
+				45A0A6132335621C00F495FA /* View Controllers */,
 			);
 			path = "AMCoreAudio Demo";
 			sourceTree = "<group>";
@@ -128,7 +118,6 @@
 			isa = PBXGroup;
 			children = (
 				4563CD421DC661A4006FD207 /* AMCoreAudio.framework */,
-				4563CD441DC661A4006FD207 /* AMCoreAudioTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -141,6 +130,33 @@
 				456563C01DD36EE6006B6086 /* SliderCellView.swift */,
 			);
 			name = "Cell Views";
+			sourceTree = "<group>";
+		};
+		45A0A611233561EE00F495FA /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				4563CD361DC6617D006FD207 /* Info.plist */,
+				4563CD331DC6617D006FD207 /* Main.storyboard */,
+				4563CD311DC6617D006FD207 /* Assets.xcassets */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		45A0A6122335621100F495FA /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				45D2D01F1DC6837800A3A491 /* NSPopUpButton+Extension.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		45A0A6132335621C00F495FA /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				45E3329F1DCB7A5F00FB9223 /* ExtraViewController.swift */,
+				4563CD2F1DC6617D006FD207 /* ViewController.swift */,
+			);
+			path = "View Controllers";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -173,7 +189,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0810;
-				LastUpgradeCheck = 1020;
+				LastUpgradeCheck = 1100;
 				ORGANIZATIONNAME = 9Labs;
 				TargetAttributes = {
 					4563CD291DC6617D006FD207 = {
@@ -212,13 +228,6 @@
 			fileType = wrapper.framework;
 			path = AMCoreAudio.framework;
 			remoteRef = 4563CD411DC661A4006FD207 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		4563CD441DC661A4006FD207 /* AMCoreAudioTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = AMCoreAudioTests.xctest;
-			remoteRef = 4563CD431DC661A4006FD207 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -326,12 +335,13 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -378,10 +388,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -390,13 +401,13 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = "AMCoreAudio Demo/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.9labs.AMCoreAudio-Demo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -405,13 +416,13 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = "AMCoreAudio Demo/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.9labs.AMCoreAudio-Demo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};

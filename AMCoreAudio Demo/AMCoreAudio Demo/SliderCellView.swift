@@ -9,7 +9,6 @@
 import Cocoa
 
 class SliderCellView: NSTableCellView {
-
     @IBOutlet var slider: NSSlider!
 
     override func draw(_ dirtyRect: NSRect) {
@@ -17,5 +16,4 @@ class SliderCellView: NSTableCellView {
 
         // Drawing code here.
     }
-    
 }

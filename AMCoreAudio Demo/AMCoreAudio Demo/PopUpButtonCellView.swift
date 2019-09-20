@@ -9,7 +9,6 @@
 import Cocoa
 
 class PopUpButtonCellView: NSTableCellView {
-
     @IBOutlet var popUpButton: NSPopUpButton!
 
     override func draw(_ dirtyRect: NSRect) {
@@ -17,5 +16,4 @@ class PopUpButtonCellView: NSTableCellView {
 
         // Drawing code here.
     }
-    
 }

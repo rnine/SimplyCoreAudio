@@ -9,7 +9,6 @@
 import Cocoa
 
 class CheckBoxCellView: NSTableCellView {
-
     @IBOutlet var checkBoxButton: NSButton!
 
     override func draw(_ dirtyRect: NSRect) {
@@ -17,5 +16,4 @@ class CheckBoxCellView: NSTableCellView {
 
         // Drawing code here.
     }
-    
 }

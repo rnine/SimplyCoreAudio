@@ -6,11 +6,10 @@
 //  Copyright © 2016 9Labs. All rights reserved.
 //
 
-import Cocoa
 import AMCoreAudio
+import Cocoa
 
 class ViewController: NSViewController {
-
     @IBOutlet var deviceListPopUpButton: NSPopUpButton!
     @IBOutlet var deviceNameLabel: NSTextField!
     @IBOutlet var deviceManufacturerLabel: NSTextField!
@@ -93,7 +92,7 @@ class ViewController: NSViewController {
         NotificationCenter.defaultCenter.unsubscribe(self, eventType: AudioStreamEvent.self)
     }
 
-    override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
+    override func prepare(for segue: NSStoryboardSegue, sender _: Any?) {
         switch segue.identifier {
         case .some("Input"):
             if let dc = segue.destinationController as? ExtraViewController {
@@ -145,7 +144,7 @@ class ViewController: NSViewController {
     @IBAction func updateStreamVirtualFormat(_ sender: AnyObject) {
         if let popUpButton = sender as? NSPopUpButton, let item = popUpButton.selectedItem {
             if let stream = AudioStream.lookup(by: AudioObjectID(item.tag)),
-               let format = item.representedObject as? AudioStreamBasicDescription {
+                let format = item.representedObject as? AudioStreamBasicDescription {
                 stream.virtualFormat = format
             }
         }
@@ -249,7 +248,7 @@ class ViewController: NSViewController {
     fileprivate func populateNominalSampleRatesPopUpButton(device: AudioDevice) {
         deviceNominalSampleRatesPopupButton.removeAllItems()
 
-        if let sampleRates = device.nominalSampleRates(), sampleRates.count > 0 {
+        if let sampleRates = device.nominalSampleRates(), !sampleRates.isEmpty {
             deviceNominalSampleRatesPopupButton.isEnabled = true
             for sampleRate in sampleRates {
                 deviceNominalSampleRatesPopupButton.addItem(withTitle: format(sampleRate: sampleRate))
@@ -268,7 +267,7 @@ class ViewController: NSViewController {
     fileprivate func populateClockSourcesPopUpButton(device: AudioDevice) {
         deviceClockSourcesPopupButton.removeAllItems()
 
-        if let clockSourceIDs = device.clockSourceIDs(), clockSourceIDs.count > 0 {
+        if let clockSourceIDs = device.clockSourceIDs(), !clockSourceIDs.isEmpty {
             deviceClockSourcesPopupButton.isEnabled = true
             for clockSourceID in clockSourceIDs {
                 let clockSourceName = device.clockSourceName(clockSourceID: clockSourceID) ?? "Internal"
@@ -288,7 +287,7 @@ class ViewController: NSViewController {
     fileprivate func populatePlaybackStreamPopUpButton(device: AudioDevice) {
         playbackStreamPopUpButton.removeAllItems()
 
-        if let playbackStreams = device.streams(direction: .playback), playbackStreams.count > 0 {
+        if let playbackStreams = device.streams(direction: .playback), !playbackStreams.isEmpty {
             playbackStreamPopUpButton.isEnabled = true
             for stream in playbackStreams {
                 playbackStreamPopUpButton.addItem(withTitle: stream.name ?? "Output Stream \(format(id: stream.id))")
@@ -308,7 +307,7 @@ class ViewController: NSViewController {
     fileprivate func populateRecordingStreamPopUpButton(device: AudioDevice) {
         recordingStreamPopUpButton.removeAllItems()
 
-        if let recordingStreams = device.streams(direction: .recording), recordingStreams.count > 0 {
+        if let recordingStreams = device.streams(direction: .recording), !recordingStreams.isEmpty {
             recordingStreamPopUpButton.isEnabled = true
             for stream in recordingStreams {
                 recordingStreamPopUpButton.addItem(withTitle: stream.name ?? "Input Stream \(format(id: stream.id))")
@@ -334,7 +333,7 @@ class ViewController: NSViewController {
             playbackStreamStartingChannelLabel.stringValue = "\(stream.startingChannel ?? 0)"
             playbackStreamTerminalTypeLabel.stringValue = "\(stream.terminalType)"
 
-            if let virtualFormats = stream.availableVirtualFormatsMatchingCurrentNominalSampleRate(), virtualFormats.count > 0 {
+            if let virtualFormats = stream.availableVirtualFormatsMatchingCurrentNominalSampleRate(), !virtualFormats.isEmpty {
                 playbackStreamVirtualFormatPopUpButton.isEnabled = true
                 for format in virtualFormats {
                     playbackStreamVirtualFormatPopUpButton.addItem(withTitle: "\(humanReadableStreamBasicDescription(asbd: format))")
@@ -351,7 +350,7 @@ class ViewController: NSViewController {
                 playbackStreamVirtualFormatPopUpButton.removeAllItems()
             }
 
-            if let physicalFormats = stream.availablePhysicalFormatsMatchingCurrentNominalSampleRate(), physicalFormats.count > 0 {
+            if let physicalFormats = stream.availablePhysicalFormatsMatchingCurrentNominalSampleRate(), !physicalFormats.isEmpty {
                 playbackStreamPhysicalFormatPopUpButton.isEnabled = true
                 for format in physicalFormats {
                     playbackStreamPhysicalFormatPopUpButton.addItem(withTitle: "\(humanReadableStreamBasicDescription(asbd: format))")
@@ -385,7 +384,7 @@ class ViewController: NSViewController {
             recordingStreamStartingChannelLabel.stringValue = "\(stream.startingChannel ?? 0)"
             recordingStreamTerminalTypeLabel.stringValue = "\(stream.terminalType)"
 
-            if let virtualFormats = stream.availableVirtualFormatsMatchingCurrentNominalSampleRate(), virtualFormats.count > 0 {
+            if let virtualFormats = stream.availableVirtualFormatsMatchingCurrentNominalSampleRate(), !virtualFormats.isEmpty {
                 recordingStreamVirtualFormatPopUpButton.isEnabled = true
                 for format in virtualFormats {
                     recordingStreamVirtualFormatPopUpButton.addItem(withTitle: "\(humanReadableStreamBasicDescription(asbd: format))")
@@ -402,7 +401,7 @@ class ViewController: NSViewController {
                 recordingStreamVirtualFormatPopUpButton.removeAllItems()
             }
 
-            if let physicalFormats = stream.availablePhysicalFormatsMatchingCurrentNominalSampleRate(), physicalFormats.count > 0 {
+            if let physicalFormats = stream.availablePhysicalFormatsMatchingCurrentNominalSampleRate(), !physicalFormats.isEmpty {
                 recordingStreamPhysicalFormatPopUpButton.isEnabled = true
                 for format in physicalFormats {
                     recordingStreamPhysicalFormatPopUpButton.addItem(withTitle: "\(humanReadableStreamBasicDescription(asbd: format))")
@@ -475,13 +474,12 @@ class ViewController: NSViewController {
     }
 }
 
-extension ViewController : EventSubscriber {
-
+extension ViewController: EventSubscriber {
     func eventReceiver(_ event: Event) {
         switch event {
         case let event as AudioDeviceEvent:
             switch event {
-            case .nominalSampleRateDidChange(let audioDevice):
+            case let .nominalSampleRateDidChange(audioDevice):
                 if representedObject as? AudioDevice == audioDevice {
                     if let sampleRate = audioDevice.nominalSampleRate() {
                         deviceNominalSampleRatesPopupButton.selectItem(withRepresentedObject: sampleRate)
@@ -496,19 +494,19 @@ extension ViewController : EventSubscriber {
                     populateRecordingStreamPopUpButton(device: audioDevice)
                     populatePlaybackStreamPopUpButton(device: audioDevice)
                 }
-            case .availableNominalSampleRatesDidChange(let audioDevice):
+            case let .availableNominalSampleRatesDidChange(audioDevice):
                 if representedObject as? AudioDevice == audioDevice {
                     populateNominalSampleRatesPopUpButton(device: audioDevice)
                     populateRecordingStreamPopUpButton(device: audioDevice)
                     populatePlaybackStreamPopUpButton(device: audioDevice)
                 }
-            case .clockSourceDidChange(let audioDevice):
+            case let .clockSourceDidChange(audioDevice):
                 if representedObject as? AudioDevice == audioDevice {
                     if let clockSourceID = audioDevice.clockSourceID() {
                         deviceClockSourcesPopupButton.selectItem(withTag: Int(clockSourceID))
                     }
                 }
-            case .nameDidChange(let audioDevice):
+            case let .nameDidChange(audioDevice):
                 if representedObject as? AudioDevice == audioDevice {
                     deviceNameLabel.stringValue = audioDevice.name
                 }
@@ -516,27 +514,27 @@ extension ViewController : EventSubscriber {
                 if let item = deviceListPopUpButton.item(withTag: Int(audioDevice.id)) {
                     item.title = audioDevice.name
                 }
-            case .listDidChange(let audioDevice):
+            case let .listDidChange(audioDevice):
                 if representedObject as? AudioDevice == audioDevice {
                     populateDeviceInformation(device: audioDevice)
                 }
-            case .volumeDidChange(_, _, _):
+            case .volumeDidChange:
                 break
-            case .muteDidChange(_, _, _):
+            case .muteDidChange:
                 break
-            case .isAliveDidChange(let audioDevice):
+            case let .isAliveDidChange(audioDevice):
                 if representedObject as? AudioDevice == audioDevice {
                     deviceIsAliveLabel.stringValue = booleanToString(bool: audioDevice.isAlive())
                 }
-            case .isRunningDidChange(let audioDevice):
+            case let .isRunningDidChange(audioDevice):
                 if representedObject as? AudioDevice == audioDevice {
                     deviceIsRunningLabel.stringValue = booleanToString(bool: audioDevice.isRunning())
                 }
-            case .isRunningSomewhereDidChange(let audioDevice):
+            case let .isRunningSomewhereDidChange(audioDevice):
                 if representedObject as? AudioDevice == audioDevice {
                     deviceIsRunningSomewhereLabel.stringValue = booleanToString(bool: audioDevice.isRunningSomewhere())
                 }
-            case .hogModeDidChange(let audioDevice):
+            case let .hogModeDidChange(audioDevice):
                 if representedObject as? AudioDevice == audioDevice {
                     if let hogPID = audioDevice.hogModePID() {
                         deviceHogModeLabel.stringValue = "\(hogPID)"
@@ -549,20 +547,20 @@ extension ViewController : EventSubscriber {
             }
         case let event as AudioHardwareEvent:
             switch event {
-            case .deviceListChanged(_, _):
+            case .deviceListChanged:
                 self.populateDeviceList()
-            case .defaultInputDeviceChanged(let audioDevice):
+            case let .defaultInputDeviceChanged(audioDevice):
                 print("Default input device changed to \(audioDevice)")
-            case .defaultOutputDeviceChanged(let audioDevice):
+            case let .defaultOutputDeviceChanged(audioDevice):
                 print("Default output device changed to \(audioDevice)")
-            case .defaultSystemOutputDeviceChanged(let audioDevice):
+            case let .defaultSystemOutputDeviceChanged(audioDevice):
                 print("Default system output device changed to \(audioDevice)")
             }
         case let event as AudioStreamEvent:
             switch event {
-            case .isActiveDidChange(let audioStream):
+            case let .isActiveDidChange(audioStream):
                 print("Audio stream \(audioStream) active status changed to \(audioStream.active)")
-            case .physicalFormatDidChange(let audioStream):
+            case let .physicalFormatDidChange(audioStream):
                 if audioStream.owningDevice == representedObject as? AudioDevice {
                     switch audioStream.direction {
                     case .some(.playback):
