@@ -2,16 +2,52 @@ import XCTest
 @testable import AMCoreAudio
 
 final class AudioDeviceTests: XCTestCase {
+    let defaultOutputDevice = AudioDevice.defaultOutputDevice()
+    let defaultInputDevice = AudioDevice.defaultInputDevice()
+    let defaultSystemOutputDevice = AudioDevice.defaultSystemOutputDevice()
+
     override func setUp() {
         super.setUp()
 
+        ResetDefaultDevices()
         try? ResetDeviceState()
     }
 
     override func tearDown() {
         super.tearDown()
 
+        ResetDefaultDevices()
         try? ResetDeviceState()
+    }
+
+    func testDeviceLookUp() throws {
+        let device = try GetDevice()
+        let deviceUID = try XCTUnwrap(device.uid)
+
+        XCTAssertEqual(AudioDevice.lookup(by: device.id), device)
+        XCTAssertEqual(AudioDevice.lookup(by: deviceUID), device)
+    }
+
+    func testDeviceEnumeration() throws {
+        let device = try GetDevice()
+
+        XCTAssertTrue(AudioDevice.allDevices().contains(device))
+        XCTAssertTrue(AudioDevice.allDeviceIDs().contains(device.id))
+        XCTAssertTrue(AudioDevice.allInputDevices().contains(device))
+        XCTAssertTrue(AudioDevice.allOutputDevices().contains(device))
+    }
+
+    func testSettingDefaultDevice() throws {
+        let device = try GetDevice()
+
+        XCTAssertTrue(device.setAsDefaultSystemDevice())
+        XCTAssertEqual(AudioDevice.defaultSystemOutputDevice(), device)
+
+        XCTAssertTrue(device.setAsDefaultOutputDevice())
+        XCTAssertEqual(AudioDevice.defaultOutputDevice(), device)
+
+        XCTAssertTrue(device.setAsDefaultInputDevice())
+        XCTAssertEqual(AudioDevice.defaultInputDevice(), device)
     }
 
     func testGeneralDeviceInformation() throws {
@@ -19,6 +55,7 @@ final class AudioDeviceTests: XCTestCase {
 
         XCTAssertEqual(device.name, "Null Audio Device")
         XCTAssertEqual(device.manufacturer, "Apple Inc.")
+        XCTAssertEqual(device.uid, "NullAudioDevice_UID")
         XCTAssertEqual(device.modelUID, "NullAudioDevice_ModelUID")
         XCTAssertEqual(device.configurationApplication, "com.apple.audio.AudioMIDISetup")
         XCTAssertEqual(device.transportType, TransportType.virtual)
@@ -48,8 +85,19 @@ final class AudioDeviceTests: XCTestCase {
         let device = try GetDevice()
 
         XCTAssertNil(device.shouldOwniSub)
+        device.shouldOwniSub = true
+        XCTAssertNil(device.shouldOwniSub)
+
         XCTAssertNil(device.lfeMute)
+        device.lfeMute = true
+        XCTAssertNil(device.lfeMute)
+
         XCTAssertNil(device.lfeVolume)
+        device.lfeVolume = 1.0
+        XCTAssertNil(device.lfeVolume)
+
+        XCTAssertNil(device.lfeVolumeDecibels)
+        device.lfeVolumeDecibels = 6.0
         XCTAssertNil(device.lfeVolumeDecibels)
     }
 
@@ -246,13 +294,17 @@ final class AudioDeviceTests: XCTestCase {
 
         XCTAssertTrue(device.setVirtualMasterVolume(0.0, direction: .playback))
         XCTAssertEqual(device.virtualMasterVolume(direction: .playback), 0.0)
+        XCTAssertEqual(device.virtualMasterVolumeInDecibels(direction: .playback), -96.0)
         XCTAssertTrue(device.setVirtualMasterVolume(0.5, direction: .playback))
         XCTAssertEqual(device.virtualMasterVolume(direction: .playback), 0.5)
+        XCTAssertEqual(device.virtualMasterVolumeInDecibels(direction: .playback), -70.5)
 
         XCTAssertTrue(device.setVirtualMasterVolume(0.0, direction: .recording))
         XCTAssertEqual(device.virtualMasterVolume(direction: .recording), 0.0)
+        XCTAssertEqual(device.virtualMasterVolumeInDecibels(direction: .recording), -96.0)
         XCTAssertTrue(device.setVirtualMasterVolume(0.5, direction: .recording))
         XCTAssertEqual(device.virtualMasterVolume(direction: .recording), 0.5)
+        XCTAssertEqual(device.virtualMasterVolumeInDecibels(direction: .recording), -70.5)
     }
 
     func testVirtualMasterBalance() throws {
@@ -367,6 +419,12 @@ final class AudioDeviceTests: XCTestCase {
 
     private func GetDevice(file: StaticString = #file, line: UInt = #line) throws -> AudioDevice {
         return try XCTUnwrap(AudioDevice.lookup(by: "NullAudioDevice_UID"), "NullAudio driver is missing.", file: file, line: line)
+    }
+
+    private func ResetDefaultDevices() {
+        defaultOutputDevice?.setAsDefaultOutputDevice()
+        defaultInputDevice?.setAsDefaultInputDevice()
+        defaultSystemOutputDevice?.setAsDefaultSystemDevice()
     }
 
     private func ResetDeviceState() throws {
