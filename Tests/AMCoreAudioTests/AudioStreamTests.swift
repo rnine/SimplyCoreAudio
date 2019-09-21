@@ -1,20 +1,6 @@
 import XCTest
 @testable import AMCoreAudio
 
-extension AudioStreamBasicDescription: Equatable {}
-
-public func == (lhs: AudioStreamBasicDescription, rhs: AudioStreamBasicDescription) -> Bool {
-    return
-        lhs.mBitsPerChannel == rhs.mBitsPerChannel &&
-        lhs.mBytesPerFrame == rhs.mBytesPerFrame &&
-        lhs.mBytesPerPacket == rhs.mBytesPerPacket &&
-        lhs.mChannelsPerFrame == rhs.mChannelsPerFrame &&
-        lhs.mFormatFlags == rhs.mFormatFlags &&
-        lhs.mFormatID == rhs.mFormatID &&
-        lhs.mFramesPerPacket == rhs.mFramesPerPacket &&
-        lhs.mReserved == rhs.mReserved
-}
-
 class AudioStreamTests: XCTestCase {
     func testProperties() throws {
         let device = try GetDevice()
@@ -39,13 +25,11 @@ class AudioStreamTests: XCTestCase {
         XCTAssertNotNil(outputStream.availablePhysicalFormatsMatchingCurrentNominalSampleRate(true))
         XCTAssertNotNil(outputStream.availablePhysicalFormatsMatchingCurrentNominalSampleRate(false))
 
-        let outVirtualFormat = try XCTUnwrap(outputStream.availableVirtualFormatsMatchingCurrentNominalSampleRate()?.first)
         outputStream.virtualFormat = nil
-        XCTAssertEqual(outputStream.virtualFormat, outVirtualFormat)
+        XCTAssertNotNil(outputStream.virtualFormat)
 
-        let outPhysicalFormat = try XCTUnwrap(outputStream.availablePhysicalFormatsMatchingCurrentNominalSampleRate()?.first)
         outputStream.physicalFormat = nil
-        XCTAssertEqual(outputStream.physicalFormat, outPhysicalFormat)
+        XCTAssertNotNil(outputStream.physicalFormat)
 
         let inputStream = try XCTUnwrap(inputStreams.first)
         XCTAssertTrue(inputStream.active)
@@ -62,13 +46,11 @@ class AudioStreamTests: XCTestCase {
         XCTAssertNotNil(inputStream.availablePhysicalFormatsMatchingCurrentNominalSampleRate(true))
         XCTAssertNotNil(inputStream.availablePhysicalFormatsMatchingCurrentNominalSampleRate(false))
 
-        let inVirtualFormat = try XCTUnwrap(inputStream.availableVirtualFormatsMatchingCurrentNominalSampleRate()?.first)
         inputStream.virtualFormat = nil
-        XCTAssertEqual(inputStream.virtualFormat, inVirtualFormat)
+        XCTAssertNotNil(inputStream.virtualFormat)
 
-        let inPhysicalFormat = try XCTUnwrap(inputStream.availablePhysicalFormatsMatchingCurrentNominalSampleRate()?.first)
         inputStream.physicalFormat = nil
-        XCTAssertEqual(inputStream.physicalFormat, inPhysicalFormat)
+        XCTAssertNotNil(inputStream.physicalFormat)
     }
 
     // MARK: - Private Functions
