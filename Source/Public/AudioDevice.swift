@@ -790,6 +790,15 @@ public final class AudioDevice: AudioObject {
         return getProperty(address: address)
     }
 
+    /// Whether the master channel is muted for a given direction.
+    ///
+    /// - Parameter direction: A direction.
+    ///
+    /// - Returns: `true` when muted, `false` otherwise.
+    public func isMasterChannelMuted(direction: Direction) -> Bool? {
+        return isMuted(channel: kAudioObjectPropertyElementMaster, direction: direction)
+    }
+
     /// Whether a channel can be muted for a given direction.
     ///
     /// - Parameter channel: A channel.
@@ -798,6 +807,23 @@ public final class AudioDevice: AudioObject {
     /// - Returns: `true` if channel can be muted, `false` otherwise.
     public func canMute(channel: UInt32, direction: Direction) -> Bool {
         return volumeInfo(channel: channel, direction: direction)?.canMute ?? false
+    }
+
+    /// Whether the master volume can be muted for a given direction.
+    ///
+    /// - Parameter direction: A direction.
+    ///
+    /// - Returns: `true` when the volume can be muted, `false` otherwise.
+    public func canMuteMasterChannel(direction: Direction) -> Bool {
+        if canMute(channel: kAudioObjectPropertyElementMaster, direction: direction) == true {
+            return true
+        }
+
+        guard let preferredChannelsForStereo = preferredChannelsForStereo(direction: direction) else { return false }
+        guard canMute(channel: preferredChannelsForStereo.0, direction: direction) else { return false }
+        guard canMute(channel: preferredChannelsForStereo.1, direction: direction) else { return false }
+
+        return true
     }
 
     /// Whether a channel's volume can be set for a given direction.
@@ -850,23 +876,12 @@ public final class AudioDevice: AudioObject {
         return noErr == status
     }
 
-    // MARK: - 🔊 Master Volume/Balance Functions
+    // MARK: - 🔊 Virtual Master Volume / Balance Functions
 
-    /// Whether the master volume can be muted for a given direction.
-    ///
-    /// - Parameter direction: A direction.
-    ///
-    /// - Returns: `true` when the volume can be muted, `false` otherwise.
+    /// :nodoc:
+    @available(*, renamed: "canMuteMasterChannel", message: "Marked for removal in version 4.0")
     public func canMuteVirtualMasterChannel(direction: Direction) -> Bool {
-        if canMute(channel: kAudioObjectPropertyElementMaster, direction: direction) == true {
-            return true
-        }
-
-        guard let preferredChannelsForStereo = preferredChannelsForStereo(direction: direction) else { return false }
-        guard canMute(channel: preferredChannelsForStereo.0, direction: direction) else { return false }
-        guard canMute(channel: preferredChannelsForStereo.1, direction: direction) else { return false }
-
-        return true
+        return canMuteMasterChannel(direction: direction)
     }
 
     /// Whether the master volume can be set for a given direction.
@@ -924,15 +939,6 @@ public final class AudioDevice: AudioObject {
         guard let masterVolume = virtualMasterVolume(direction: direction) else { return nil }
 
         return scalarToDecibels(volume: masterVolume, channel: referenceChannel, direction: direction)
-    }
-
-    /// Whether the volume is muted for a given direction.
-    ///
-    /// - Parameter direction: A direction.
-    ///
-    /// - Returns: `true` when muted, `false` otherwise.
-    public func isMasterChannelMuted(direction: Direction) -> Bool? {
-        return isMuted(channel: kAudioObjectPropertyElementMaster, direction: direction)
     }
 
     /// The virtual master balance for a given direction.
@@ -1038,6 +1044,65 @@ public final class AudioDevice: AudioObject {
         }
 
         return sampleRates
+    }
+
+    // MARK: - ⚄ Data Source Functions
+
+    /// A list of item IDs for the currently selected data sources.
+    ///
+    /// - Returns: *(optional)* A `UInt32` array containing all the item IDs.
+    public func dataSource(direction: Direction) -> [UInt32]? {
+        guard let address = validAddress(selector: kAudioDevicePropertyDataSource,
+                                         scope: scope(direction: direction)) else { return nil }
+
+        var dataSourceIDs = [UInt32]()
+        let status = getPropertyDataArray(address, value: &dataSourceIDs, andDefaultValue: 0)
+
+        guard noErr == status else { return nil }
+
+        return dataSourceIDs
+    }
+
+    /// A list of all the IDs of all the data sources currently available.
+    ///
+    /// - Returns: *(optional)* A `UInt32` array containing all the item IDs.
+    public func dataSources(direction: Direction) -> [UInt32]? {
+        guard let address = validAddress(selector: kAudioDevicePropertyDataSources,
+                                         scope: scope(direction: direction)) else { return nil }
+
+        var dataSourceIDs = [UInt32]()
+        let status = getPropertyDataArray(address, value: &dataSourceIDs, andDefaultValue: 0)
+
+        guard noErr == status else { return nil }
+
+        return dataSourceIDs
+    }
+
+    /// Returns the data source name for a given data source ID.
+    ///
+    /// - Parameter dataSourceID: A data source ID.
+    ///
+    /// - Returns: *(optional)* A `String` with the data source name.
+    public func dataSourceName(dataSourceID: UInt32, direction: Direction) -> String? {
+        var name: CFString = "" as CFString
+        var theDataSourceID = dataSourceID
+
+        var translation = AudioValueTranslation(
+            mInputData: &theDataSourceID,
+            mInputDataSize: UInt32(MemoryLayout<UInt32>.size),
+            mOutputData: &name,
+            mOutputDataSize: UInt32(MemoryLayout<CFString>.size)
+        )
+
+        let address = AudioObjectPropertyAddress(
+            mSelector: kAudioDevicePropertyDataSourceNameForIDCFString,
+            mScope: scope(direction: direction),
+            mElement: kAudioObjectPropertyElementMaster
+        )
+
+        let status = getPropertyData(address, andValue: &translation)
+
+        return noErr == status ? (name as String) : nil
     }
 
     // MARK: - 𝍄 Clock Source Functions
@@ -1185,7 +1250,8 @@ public final class AudioDevice: AudioObject {
     /// audio device.
     ///
     /// - Returns: `true` on success, `false` otherwise.
-    @discardableResult public func setHogMode() -> Bool {
+    @discardableResult
+    public func setHogMode() -> Bool {
         guard hogModePID() != pid_t(ProcessInfo.processInfo.processIdentifier) else { return false }
 
         return toggleHogMode()
@@ -1195,6 +1261,7 @@ public final class AudioDevice: AudioObject {
     /// the hog mode to `-1`.
     ///
     /// - Returns: `true` on success, `false` otherwise.
+    @discardableResult
     public func unsetHogMode() -> Bool {
         guard hogModePID() == pid_t(ProcessInfo.processInfo.processIdentifier) else { return false }
 
