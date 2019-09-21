@@ -10,6 +10,9 @@
 		450765261B4E92B8005E87C9 /* Bool+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450765251B4E92B8005E87C9 /* Bool+Extensions.swift */; };
 		450A4B311CBDB09400EB7B34 /* AudioStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450A4B301CBDB09400EB7B34 /* AudioStream.swift */; };
 		450A4B331CBDB14E00EB7B34 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450A4B321CBDB14E00EB7B34 /* Utils.swift */; };
+		4522DC0B233632140084CA02 /* AMCoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 454D245A1B4BE40E0043FA12 /* AMCoreAudio.framework */; };
+		4522DC162336325B0084CA02 /* XCTestManifests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4522DC132336325B0084CA02 /* XCTestManifests.swift */; };
+		4522DC172336325B0084CA02 /* AudioDeviceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4522DC142336325B0084CA02 /* AudioDeviceTests.swift */; };
 		4544F5A81CC41A42006DCD67 /* NotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4544F5A71CC41A42006DCD67 /* NotificationCenter.swift */; };
 		454D24751B4BE4860043FA12 /* AudioDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454D24741B4BE4860043FA12 /* AudioDevice.swift */; };
 		459AD4B923354AB400C2ED06 /* AudioDeviceEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459AD4B823354AB400C2ED06 /* AudioDeviceEvent.swift */; };
@@ -29,10 +32,24 @@
 		45BF8FB81CBDB29800B15908 /* AudioObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BF8FB71CBDB29800B15908 /* AudioObject.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		4522DC0C233632140084CA02 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 454D24511B4BE40D0043FA12 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 454D24591B4BE40E0043FA12;
+			remoteInfo = AMCoreAudio;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		450765251B4E92B8005E87C9 /* Bool+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bool+Extensions.swift"; sourceTree = "<group>"; };
 		450A4B301CBDB09400EB7B34 /* AudioStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioStream.swift; sourceTree = "<group>"; };
 		450A4B321CBDB14E00EB7B34 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		4522DC06233632140084CA02 /* AMCoreAudioTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AMCoreAudioTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4522DC132336325B0084CA02 /* XCTestManifests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCTestManifests.swift; sourceTree = "<group>"; };
+		4522DC142336325B0084CA02 /* AudioDeviceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioDeviceTests.swift; sourceTree = "<group>"; };
+		4522DC152336325B0084CA02 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4544F5A71CC41A42006DCD67 /* NotificationCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCenter.swift; sourceTree = "<group>"; };
 		454D245A1B4BE40E0043FA12 /* AMCoreAudio.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AMCoreAudio.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		454D245F1B4BE40E0043FA12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -61,6 +78,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		4522DC03233632140084CA02 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4522DC0B233632140084CA02 /* AMCoreAudio.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		454D24561B4BE40E0043FA12 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -71,6 +96,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4522DC112336325B0084CA02 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				4522DC122336325B0084CA02 /* AMCoreAudioTests */,
+				4522DC152336325B0084CA02 /* Info.plist */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		4522DC122336325B0084CA02 /* AMCoreAudioTests */ = {
+			isa = PBXGroup;
+			children = (
+				4522DC142336325B0084CA02 /* AudioDeviceTests.swift */,
+				4522DC132336325B0084CA02 /* XCTestManifests.swift */,
+			);
+			path = AMCoreAudioTests;
+			sourceTree = "<group>";
+		};
 		454D24501B4BE40D0043FA12 = {
 			isa = PBXGroup;
 			children = (
@@ -82,6 +125,7 @@
 				45D6EA151E0AD394005C45EB /* Frameworks */,
 				454D245B1B4BE40E0043FA12 /* Products */,
 				454D245C1B4BE40E0043FA12 /* Source */,
+				4522DC112336325B0084CA02 /* Tests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -89,6 +133,7 @@
 			isa = PBXGroup;
 			children = (
 				454D245A1B4BE40E0043FA12 /* AMCoreAudio.framework */,
+				4522DC06233632140084CA02 /* AMCoreAudioTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -199,6 +244,24 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		4522DC05233632140084CA02 /* AMCoreAudioTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4522DC10233632140084CA02 /* Build configuration list for PBXNativeTarget "AMCoreAudioTests" */;
+			buildPhases = (
+				4522DC02233632140084CA02 /* Sources */,
+				4522DC03233632140084CA02 /* Frameworks */,
+				4522DC04233632140084CA02 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4522DC0D233632140084CA02 /* PBXTargetDependency */,
+			);
+			name = AMCoreAudioTests;
+			productName = AMCoreAudioTests;
+			productReference = 4522DC06233632140084CA02 /* AMCoreAudioTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		454D24591B4BE40E0043FA12 /* AMCoreAudio */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 454D246E1B4BE40E0043FA12 /* Build configuration list for PBXNativeTarget "AMCoreAudio" */;
@@ -225,10 +288,14 @@
 		454D24511B4BE40D0043FA12 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0700;
+				LastSwiftUpdateCheck = 1100;
 				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = 9Labs;
 				TargetAttributes = {
+					4522DC05233632140084CA02 = {
+						CreatedOnToolsVersion = 11.0;
+						ProvisioningStyle = Automatic;
+					};
 					454D24591B4BE40E0043FA12 = {
 						CreatedOnToolsVersion = 7.0;
 						LastSwiftMigration = 1020;
@@ -249,11 +316,19 @@
 			projectRoot = "";
 			targets = (
 				454D24591B4BE40E0043FA12 /* AMCoreAudio */,
+				4522DC05233632140084CA02 /* AMCoreAudioTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		4522DC04233632140084CA02 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		454D24581B4BE40E0043FA12 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -299,6 +374,15 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		4522DC02233632140084CA02 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4522DC172336325B0084CA02 /* AudioDeviceTests.swift in Sources */,
+				4522DC162336325B0084CA02 /* XCTestManifests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		454D24551B4BE40E0043FA12 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -327,7 +411,61 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		4522DC0D233632140084CA02 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 454D24591B4BE40E0043FA12 /* AMCoreAudio */;
+			targetProxy = 4522DC0C233632140084CA02 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		4522DC0E233632140084CA02 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Tests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = io.9labs.AMCoreAudioTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		4522DC0F233632140084CA02 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Tests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = io.9labs.AMCoreAudioTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		454D246C1B4BE40E0043FA12 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -481,6 +619,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		4522DC10233632140084CA02 /* Build configuration list for PBXNativeTarget "AMCoreAudioTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4522DC0E233632140084CA02 /* Debug */,
+				4522DC0F233632140084CA02 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		454D24541B4BE40D0043FA12 /* Build configuration list for PBXProject "AMCoreAudio" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -2,7 +2,6 @@ import XCTest
 @testable import AMCoreAudio
 
 final class AudioDeviceTests: XCTestCase {
-
     override func setUp() {
         super.setUp()
 
@@ -223,17 +222,17 @@ final class AudioDeviceTests: XCTestCase {
         XCTAssertEqual(preferredChannels.left, 1)
         XCTAssertEqual(preferredChannels.right, 2)
 
-        XCTAssertTrue(device.setPreferredChannelsForStereo(channels: StereoPair(left: 1, right: 1) , direction: .playback))
+        XCTAssertTrue(device.setPreferredChannelsForStereo(channels: StereoPair(left: 1, right: 1), direction: .playback))
         preferredChannels = try XCTUnwrap(device.preferredChannelsForStereo(direction: .playback))
         XCTAssertEqual(preferredChannels.left, 1)
         XCTAssertEqual(preferredChannels.right, 1)
 
-        XCTAssertTrue(device.setPreferredChannelsForStereo(channels: StereoPair(left: 2, right: 2) , direction: .playback))
+        XCTAssertTrue(device.setPreferredChannelsForStereo(channels: StereoPair(left: 2, right: 2), direction: .playback))
         preferredChannels = try XCTUnwrap(device.preferredChannelsForStereo(direction: .playback))
         XCTAssertEqual(preferredChannels.left, 2)
         XCTAssertEqual(preferredChannels.right, 2)
 
-        XCTAssertTrue(device.setPreferredChannelsForStereo(channels: StereoPair(left: 1, right: 2) , direction: .playback))
+        XCTAssertTrue(device.setPreferredChannelsForStereo(channels: StereoPair(left: 1, right: 2), direction: .playback))
         preferredChannels = try XCTUnwrap(device.preferredChannelsForStereo(direction: .playback))
         XCTAssertEqual(preferredChannels.left, 1)
         XCTAssertEqual(preferredChannels.right, 2)
@@ -380,7 +379,7 @@ final class AudioDeviceTests: XCTestCase {
             sleep(1)
         }
 
-        device.setPreferredChannelsForStereo(channels: StereoPair(left: 1, right: 2) , direction: .playback)
+        device.setPreferredChannelsForStereo(channels: StereoPair(left: 1, right: 2), direction: .playback)
         device.setMute(false, channel: 0, direction: .playback)
         device.setMute(false, channel: 0, direction: .recording)
         device.setVolume(0.5, channel: 0, direction: .playback)
