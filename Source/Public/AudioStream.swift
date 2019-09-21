@@ -25,71 +25,50 @@ public final class AudioStream: AudioObject {
     /// Returns whether this audio stream is enabled and doing I/O.
     ///
     /// - Returns: `true` when enabled, `false` otherwise.
-    public lazy var active: Bool = {
+    public var active: Bool {
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioStreamPropertyIsActive,
             mScope: kAudioObjectPropertyScopeGlobal,
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        if !AudioObjectHasProperty(self.id, &address) {
-            return false
-        }
-
+        guard AudioObjectHasProperty(self.id, &address) else { return false }
         var active: UInt32 = 0
-        let status = self.getPropertyData(address, andValue: &active)
-
-        if noErr != status {
-            return false
-        }
+        guard noErr == self.getPropertyData(address, andValue: &active) else { return false }
 
         return active == 1
-    }()
+    }
 
     /// Specifies the first element in the owning device that corresponds to the element one of this stream.
     ///
     /// - Returns: *(optional)* A `UInt32`.
-    public lazy var startingChannel: UInt32? = {
+    public var startingChannel: UInt32? {
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioStreamPropertyStartingChannel,
             mScope: kAudioObjectPropertyScopeGlobal,
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        if !AudioObjectHasProperty(self.id, &address) {
-            return nil
-        }
-
+        guard AudioObjectHasProperty(self.id, &address) else { return nil }
         var startingChannel: UInt32 = 0
-        let status = self.getPropertyData(address, andValue: &startingChannel)
-
-        if noErr != status {
-            return nil
-        }
+        guard noErr == self.getPropertyData(address, andValue: &startingChannel) else { return nil }
 
         return startingChannel
-    }()
+    }
 
     /// Describes the general kind of functionality attached to this stream.
     ///
     /// - Return: A `TerminalType`.
-    public lazy var terminalType: TerminalType = {
+    public var terminalType: TerminalType {
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioStreamPropertyTerminalType,
             mScope: kAudioObjectPropertyScopeGlobal,
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        if !AudioObjectHasProperty(id, &address) {
-            return .unknown
-        }
-
+        guard AudioObjectHasProperty(id, &address) else { return .unknown }
         var terminalType: UInt32 = 0
-        let status = getPropertyData(address, andValue: &terminalType)
-
-        if noErr != status {
-            return .unknown
-        }
+        guard noErr == getPropertyData(address, andValue: &terminalType) else { return .unknown }
 
         switch terminalType {
         case kAudioStreamTerminalTypeLine:
@@ -121,7 +100,29 @@ public final class AudioStream: AudioObject {
         default:
             return .unknown
         }
-    }()
+    }
+
+    /// The latency in frames for this stream.
+    ///
+    /// Note that the owning `AudioDevice` may have additional latency so it should be
+    /// queried as well. If both the device and the stream say they have latency,
+    /// then the total latency for the stream is the device latency summed with the
+    /// stream latency.
+    ///
+    /// - Returns: *(optional)* A `UInt32` value with the latency in frames.
+    public var latency: UInt32? {
+        var address = AudioObjectPropertyAddress(
+            mSelector: kAudioStreamPropertyLatency,
+            mScope: kAudioObjectPropertyScopeGlobal,
+            mElement: kAudioObjectPropertyElementMaster
+        )
+
+        guard AudioObjectHasProperty(id, &address) else { return nil }
+        var latency: UInt32 = 0
+        guard noErr == getPropertyData(address, andValue: &latency) else { return nil }
+
+        return latency
+    }
 
     /// The audio stream's direction.
     ///
@@ -129,23 +130,16 @@ public final class AudioStream: AudioObject {
     /// this will be `Direction.Playback`, likewise, for input streams, `Direction.Recording` will be returned.
     ///
     /// - Returns: *(optional)* A `Direction`.
-    public lazy var direction: Direction? = {
+    public var direction: Direction? {
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioStreamPropertyDirection,
             mScope: kAudioObjectPropertyScopeGlobal,
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        if !AudioObjectHasProperty(id, &address) {
-            return nil
-        }
-
+        guard AudioObjectHasProperty(id, &address) else { return nil }
         var direction: UInt32 = 0
-        let status = getPropertyData(address, andValue: &direction)
-
-        if noErr != status {
-            return nil
-        }
+        guard noErr == getPropertyData(address, andValue: &direction) else { return nil }
 
         switch direction {
         case 0:
@@ -155,7 +149,7 @@ public final class AudioStream: AudioObject {
         default:
             return nil
         }
-    }()
+    }
 
     /// An `AudioStreamBasicDescription` that describes the current data format for this audio stream.
     ///
@@ -165,18 +159,15 @@ public final class AudioStream: AudioObject {
     public var physicalFormat: AudioStreamBasicDescription? {
         get {
             var asbd = AudioStreamBasicDescription()
+            guard noErr == getStreamPropertyData(kAudioStreamPropertyPhysicalFormat, andValue: &asbd) else { return nil }
 
-            if let status = getStreamPropertyData(kAudioStreamPropertyPhysicalFormat, andValue: &asbd), noErr == status {
-                return asbd
-            }
-
-            return nil
+            return asbd
         }
 
         set {
             var asbd = newValue
 
-            if let status = setStreamPropertyData(kAudioStreamPropertyPhysicalFormat, andValue: &asbd), noErr != status {
+            if noErr == setStreamPropertyData(kAudioStreamPropertyPhysicalFormat, andValue: &asbd) {
                 log("Error setting physicalFormat to \(String(describing: newValue))")
             }
         }
@@ -190,18 +181,15 @@ public final class AudioStream: AudioObject {
     public var virtualFormat: AudioStreamBasicDescription? {
         get {
             var asbd = AudioStreamBasicDescription()
+            guard noErr == getStreamPropertyData(kAudioStreamPropertyVirtualFormat, andValue: &asbd) else { return nil }
 
-            if let status = getStreamPropertyData(kAudioStreamPropertyVirtualFormat, andValue: &asbd), noErr == status {
-                return asbd
-            }
-
-            return nil
+            return asbd
         }
 
         set {
             var asbd = newValue
 
-            if let status = setStreamPropertyData(kAudioStreamPropertyVirtualFormat, andValue: &asbd), noErr != status {
+            if noErr == setStreamPropertyData(kAudioStreamPropertyVirtualFormat, andValue: &asbd) {
                 log("Error setting virtualFormat to \(String(describing: newValue))")
             }
         }
@@ -221,15 +209,9 @@ public final class AudioStream: AudioObject {
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        if !AudioObjectHasProperty(id, &address) {
-            return nil
-        }
-
+        guard AudioObjectHasProperty(id, &address) else { return nil }
         var asrd = [AudioStreamRangedDescription]()
-
-        let status = getPropertyDataArray(address, value: &asrd, andDefaultValue: AudioStreamRangedDescription())
-
-        if noErr != status {
+        guard noErr == getPropertyDataArray(address, value: &asrd, andDefaultValue: AudioStreamRangedDescription()) else {
             return nil
         }
 
@@ -250,14 +232,9 @@ public final class AudioStream: AudioObject {
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        if !AudioObjectHasProperty(id, &address) {
-            return nil
-        }
-
+        guard AudioObjectHasProperty(id, &address) else { return nil }
         var asrd = [AudioStreamRangedDescription]()
-        let status = getPropertyDataArray(address, value: &asrd, andDefaultValue: AudioStreamRangedDescription())
-
-        if noErr != status {
+        guard noErr == getPropertyDataArray(address, value: &asrd, andDefaultValue: AudioStreamRangedDescription()) else {
             return nil
         }
 
@@ -340,13 +317,6 @@ public final class AudioStream: AudioObject {
         return filteredFormats
     }
 
-    /// The audio stream's name as reported by the system.
-    ///
-    /// - Returns: *(optional)* An audio stream's name.
-    public override var name: String? {
-        return super.name
-    }
-
     /// All the available virtual formats for this audio stream matching the current virtual format's sample rate.
     ///
     /// - Note: By default, both mixable and non-mixable streams are returned, however,  non-mixable
@@ -393,9 +363,7 @@ public final class AudioStream: AudioObject {
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        if !AudioObjectHasProperty(id, &address) {
-            return nil
-        }
+        guard AudioObjectHasProperty(id, &address) else { return nil }
 
         return getPropertyData(address, andValue: &value)
     }
@@ -419,9 +387,7 @@ public final class AudioStream: AudioObject {
             mElement: kAudioObjectPropertyElementMaster
         )
 
-        if !AudioObjectHasProperty(id, &address) {
-            return nil
-        }
+        guard AudioObjectHasProperty(id, &address) else { return nil }
 
         return setPropertyData(address, andValue: &value)
     }
