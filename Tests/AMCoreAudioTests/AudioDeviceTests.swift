@@ -60,6 +60,8 @@ final class AudioDeviceTests: XCTestCase {
         XCTAssertEqual(device.configurationApplication, "com.apple.audio.AudioMIDISetup")
         XCTAssertEqual(device.transportType, TransportType.virtual)
 
+        XCTAssertFalse(device.isInputOnlyDevice())
+        XCTAssertFalse(device.isOutputOnlyDevice())
         XCTAssertFalse(device.isHidden())
 
         XCTAssertNil(device.isJackConnected(direction: .playback))
