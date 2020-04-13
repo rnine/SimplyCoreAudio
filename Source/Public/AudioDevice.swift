@@ -24,8 +24,6 @@ public final class AudioDevice: AudioObject {
 
     private var isRegisteredForNotifications = false
 
-    private let notificationsQueue = DispatchQueue.global(qos: .userInitiated)
-
     private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { [weak self] (_, inAddresses) -> Void in
         let address = inAddresses.pointee
         let notificationCenter = NotificationCenter.defaultCenter
@@ -1362,7 +1360,7 @@ public final class AudioDevice: AudioObject {
             mElement: kAudioObjectPropertyElementWildcard
         )
 
-        let err = AudioObjectAddPropertyListenerBlock(id, &address, notificationsQueue, propertyListenerBlock)
+        let err = AudioObjectAddPropertyListenerBlock(id, &address, NotificationCenter.notificationsQueue, propertyListenerBlock)
 
         if noErr != err {
             log("Error on AudioObjectAddPropertyListenerBlock: \(err)")
@@ -1380,7 +1378,7 @@ public final class AudioDevice: AudioObject {
             mElement: kAudioObjectPropertyElementWildcard
         )
 
-        let err = AudioObjectRemovePropertyListenerBlock(id, &address, notificationsQueue, propertyListenerBlock)
+        let err = AudioObjectRemovePropertyListenerBlock(id, &address, NotificationCenter.notificationsQueue, propertyListenerBlock)
 
         if noErr != err {
             log("Error on AudioObjectRemovePropertyListenerBlock: \(err)")
