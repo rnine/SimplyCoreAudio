@@ -24,7 +24,7 @@ Pod::Spec.new do |s|
   s.osx.deployment_target = '10.10'
 
   s.source       = { :git => 'https://github.com/rnine/AMCoreAudio.git', :tag => s.version }
-  s.source_files = 'AMCoreAudio/*.{swift,h,m}'
+  s.source_files = 'Source/*.{swift,h,m}'
 
   s.requires_arc = true
 
