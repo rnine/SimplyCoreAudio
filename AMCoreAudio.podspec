@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'AMCoreAudio'
-  s.version      = '3.4-develop'
+  s.version      = '3.4'
   s.summary      = 'A Swift framework that aims to make Core Audio use less tedious in macOS'
 
   s.description  = <<-DESC
@@ -23,8 +23,8 @@ Pod::Spec.new do |s|
   s.platform     = :osx, '10.10'
   s.osx.deployment_target = '10.10'
 
-  s.source       = { :git => 'https://github.com/fbarbat/AMCoreAudio.git', :branch => 'develop' }
-  s.source_files = 'Source/**/*.{swift,h,m}'
+  s.source       = { :git => 'https://github.com/rnine/AMCoreAudio.git', :tag => s.version }
+  s.source_files = 'AMCoreAudio/*.{swift,h,m}'
 
   s.requires_arc = true
 
