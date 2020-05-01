@@ -75,7 +75,7 @@ public class AudioObject {
     /// The audio object's name as reported by the system.
     ///
     /// - Returns: *(optional)* An audio object's name.
-    var name: String? {
+    public var name: String? {
         var name: CFString = "" as CFString
 
         let address = AudioObjectPropertyAddress(
