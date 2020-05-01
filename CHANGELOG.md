@@ -2,7 +2,13 @@
 
 | Version        | Description| Date     |
 | -------------:|:------------- |:--------:|
-| 3.4              | Added SPM support. | TBD |
+| 3.4              | Added SPM support. | May 1st, 2020 |
+|                    | Added `isMasterChannelMuted(direction:`, `dataSource(direction:)`, `dataSources(direction:)` and `dataSourceName(dataSourceID:direction:)`. ||
+|                    | Renamed `canMuteVirtualMasterChannel(direction:)` to `canMuteMasterChannel(direction:)`. ||
+|                    | Added `latency` to `AudioStream`. ||
+|                    | Removed `name` property from `AudioStream`. ||
+|                    | Exposed `name` property from `AudioObject` publicly.||
+|                    | Fixed some thread safety issues by using a serial queue to subscribe to audio property listeners (@fbarbat.)||
 | 3.3.1           | Minor cleanup. | June 19th, 2019 |
 | 3.3              | Added Swift 5 support.| May 12th, 2019 |
 | 3.2.1           | Added Swift 4.2 support.| September 4th, 2018 |
