@@ -154,17 +154,21 @@ public final class AudioDevice: AudioObject {
 
         var deviceID = kAudioObjectUnknown
         var cfUID = (uid as CFString)
+        
+        let status: OSStatus = withUnsafeMutablePointer(to: &cfUID) { (cfUIDPtr) in
+            withUnsafeMutablePointer(to: &deviceID) { (deviceIDPtr) in
+                var translation = AudioValueTranslation(
+                    mInputData: cfUIDPtr,
+                    mInputDataSize: UInt32(MemoryLayout<CFString>.size),
+                    mOutputData: deviceIDPtr,
+                    mOutputDataSize: UInt32(MemoryLayout<AudioObjectID>.size)
+                )
 
-        var translation = AudioValueTranslation(
-            mInputData: &cfUID,
-            mInputDataSize: UInt32(MemoryLayout<CFString>.size),
-            mOutputData: &deviceID,
-            mOutputDataSize: UInt32(MemoryLayout<AudioObjectID>.size)
-        )
-
-        let status = getPropertyData(AudioObjectID(kAudioObjectSystemObject),
-                                     address: address,
-                                     andValue: &translation)
+                return getPropertyData(AudioObjectID(kAudioObjectSystemObject),
+                                         address: address,
+                                         andValue: &translation)
+            }
+        }
 
         if noErr != status || deviceID == kAudioObjectUnknown {
             return nil
@@ -1083,22 +1087,26 @@ public final class AudioDevice: AudioObject {
     /// - Returns: *(optional)* A `String` with the data source name.
     public func dataSourceName(dataSourceID: UInt32, direction: Direction) -> String? {
         var name: CFString = "" as CFString
-        var theDataSourceID = dataSourceID
+        var mDataSourceID = dataSourceID
 
-        var translation = AudioValueTranslation(
-            mInputData: &theDataSourceID,
-            mInputDataSize: UInt32(MemoryLayout<UInt32>.size),
-            mOutputData: &name,
-            mOutputDataSize: UInt32(MemoryLayout<CFString>.size)
-        )
+        let status: OSStatus = withUnsafeMutablePointer(to: &mDataSourceID) { (mDataSourceIDPtr) in
+            withUnsafeMutablePointer(to: &name) { (namePtr) in
+                var translation = AudioValueTranslation(
+                    mInputData: mDataSourceIDPtr,
+                    mInputDataSize: UInt32(MemoryLayout<UInt32>.size),
+                    mOutputData: namePtr,
+                    mOutputDataSize: UInt32(MemoryLayout<CFString>.size)
+                )
 
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyDataSourceNameForIDCFString,
-            mScope: scope(direction: direction),
-            mElement: kAudioObjectPropertyElementMaster
-        )
-
-        let status = getPropertyData(address, andValue: &translation)
+                let address = AudioObjectPropertyAddress(
+                    mSelector: kAudioDevicePropertyDataSourceNameForIDCFString,
+                    mScope: scope(direction: direction),
+                    mElement: kAudioObjectPropertyElementMaster
+                )
+                
+                return getPropertyData(address, andValue: &translation)
+            }
+        }
 
         return noErr == status ? (name as String) : nil
     }
@@ -1160,22 +1168,26 @@ public final class AudioDevice: AudioObject {
     /// - Returns: *(optional)* A `String` with the source clock name.
     public func clockSourceName(clockSourceID: UInt32) -> String? {
         var name: CFString = "" as CFString
-        var theClockSourceID = clockSourceID
+        var mClockSourceID = clockSourceID
 
-        var translation = AudioValueTranslation(
-            mInputData: &theClockSourceID,
-            mInputDataSize: UInt32(MemoryLayout<UInt32>.size),
-            mOutputData: &name,
-            mOutputDataSize: UInt32(MemoryLayout<CFString>.size)
-        )
+        let status: OSStatus = withUnsafeMutablePointer(to: &mClockSourceID) { (mClockSourceIDPtr) in
+            withUnsafeMutablePointer(to: &name) { (namePtr) in
+                var translation = AudioValueTranslation(
+                    mInputData: mClockSourceIDPtr,
+                    mInputDataSize: UInt32(MemoryLayout<UInt32>.size),
+                    mOutputData: namePtr,
+                    mOutputDataSize: UInt32(MemoryLayout<CFString>.size)
+                )
 
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyClockSourceNameForIDCFString,
-            mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMaster
-        )
+                let address = AudioObjectPropertyAddress(
+                    mSelector: kAudioDevicePropertyClockSourceNameForIDCFString,
+                    mScope: kAudioObjectPropertyScopeGlobal,
+                    mElement: kAudioObjectPropertyElementMaster
+                )
 
-        let status = getPropertyData(address, andValue: &translation)
+                return getPropertyData(address, andValue: &translation)
+            }
+        }
 
         return noErr == status ? (name as String) : nil
     }
