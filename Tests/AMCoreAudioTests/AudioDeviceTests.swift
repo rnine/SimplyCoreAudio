@@ -1,5 +1,5 @@
-import XCTest
 @testable import AMCoreAudio
+import XCTest
 
 final class AudioDeviceTests: XCTestCase {
     let defaultOutputDevice = AudioDevice.defaultOutputDevice()
@@ -417,6 +417,37 @@ final class AudioDeviceTests: XCTestCase {
         XCTAssertNotNil(device.streams(direction: .recording))
     }
 
+    func testCreateAndDestroyAggregateDevice() {
+        let inputs = AudioDevice.allNonAggregateDevices().filter {
+            $0.channels(direction: .recording) > 0
+        }
+
+        let outputs = AudioDevice.allNonAggregateDevices().filter {
+            $0.channels(direction: .playback) > 0
+        }
+
+        guard let input = inputs.first?.uid,
+              let output = outputs.first?.uid else {
+            XCTFail("Failed to find an input and output to use")
+            return
+        }
+
+        guard let device = AudioDevice.createAggregateDevice(masterDeviceUID: output,
+                                                             secondDeviceUID: input,
+                                                             named: "testCreateAggregateAudioDevice",
+                                                             uid: "testCreateAggregateAudioDevice-12345") else {
+            XCTFail("Failed creating device")
+            return
+        }
+        
+        wait(for: 2)
+
+        let error = AudioDevice.removeAggregateDevice(id: device.id)
+        XCTAssertTrue(error == noErr, "Failed removing device")
+        
+        wait(for: 2)
+    }
+
     // MARK: - Private Functions
 
     private func GetDevice(file: StaticString = #file, line: UInt = #line) throws -> AudioDevice {
@@ -446,5 +477,13 @@ final class AudioDeviceTests: XCTestCase {
         device.setVolume(0.5, channel: 0, direction: .recording)
         device.setVirtualMasterVolume(0.5, direction: .playback)
         device.setVirtualMasterVolume(0.5, direction: .recording)
+    }
+
+    private func wait(for interval: TimeInterval) {
+        let delayExpectation = XCTestExpectation(description: "delayExpectation")
+        DispatchQueue.main.asyncAfter(deadline: .now() + interval) {
+            delayExpectation.fulfill()
+        }
+        wait(for: [delayExpectation], timeout: interval)
     }
 }
