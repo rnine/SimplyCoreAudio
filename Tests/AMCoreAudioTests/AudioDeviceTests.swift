@@ -484,6 +484,6 @@ final class AudioDeviceTests: XCTestCase {
         DispatchQueue.main.asyncAfter(deadline: .now() + interval) {
             delayExpectation.fulfill()
         }
-        wait(for: [delayExpectation], timeout: interval)
+        wait(for: [delayExpectation], timeout: interval + 1)
     }
 }
