@@ -439,12 +439,15 @@ final class AudioDeviceTests: XCTestCase {
             XCTFail("Failed creating device")
             return
         }
-        
+
+        XCTAssertTrue(device.isAggregateDevice())
+        XCTAssertTrue(device.ownedAggregateDevices()?.count == 2)
+
         wait(for: 2)
 
         let error = AudioDevice.removeAggregateDevice(id: device.id)
         XCTAssertTrue(error == noErr, "Failed removing device")
-        
+
         wait(for: 2)
     }
 
