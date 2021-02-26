@@ -37,9 +37,14 @@ Here's a few things it can do:
 
 Do you want to contribute to the project? Please fork, patch, and then submit a pull request!
 
-### Sample Projects
+### Running Tests
 
-- `AMCoreAudio Demo` (included in this repository)
+Please make sure to install `NullAudio.driver` before attempting to run tests:
+
+###  Installing `NullAudio.driver`
+
+1. Unzip `NullAudio.driver.zip` included in `Tests/Extras`.
+2. Copy `NullAudio.driver` to `/Library/Audio/Plug-Ins/HAL`.
 
 ### License
 

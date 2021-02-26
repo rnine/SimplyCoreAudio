@@ -8,6 +8,7 @@
 
 import AudioToolbox.AudioServices
 import Foundation
+import os.log
 
 /// Represents a pair of stereo channel numbers.
 public typealias StereoPair = (left: UInt32, right: UInt32)
@@ -1068,7 +1069,7 @@ public final class AudioDevice: AudioObject {
                 {
                     sampleRates += possibleRates[startIndex..<endIndex + 1]
                 } else {
-                    log("Failed to obtain list of supported sample rates ranging from \(valueRange.mMinimum) to \(valueRange.mMaximum). This is an error in AMCoreAudio and should be reported to the project maintainers.")
+                    os_log("Failed to obtain list of supported sample rates ranging from %f to %f. This is an error in AMCoreAudio and should be reported to the project maintainers.", log: .default, type: .debug, valueRange.mMinimum, valueRange.mMaximum)
                 }
             } else {
                 // We did not get a range (this should be the most common case)
@@ -1406,7 +1407,7 @@ public final class AudioDevice: AudioObject {
         let err = AudioObjectAddPropertyListenerBlock(id, &address, NotificationCenter.notificationsQueue, propertyListenerBlock)
 
         if noErr != err {
-            log("Error on AudioObjectAddPropertyListenerBlock: \(err)")
+            os_log("Error on AudioObjectAddPropertyListenerBlock: %@.", log: .default, type: .debug, err)
         }
 
         isRegisteredForNotifications = noErr == err
@@ -1424,7 +1425,7 @@ public final class AudioDevice: AudioObject {
         let err = AudioObjectRemovePropertyListenerBlock(id, &address, NotificationCenter.notificationsQueue, propertyListenerBlock)
 
         if noErr != err {
-            log("Error on AudioObjectRemovePropertyListenerBlock: \(err)")
+            os_log("Error on AudioObjectRemovePropertyListenerBlock: %@.", log: .default, type: .debug, err)
         }
 
         isRegisteredForNotifications = noErr != err

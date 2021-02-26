@@ -8,6 +8,7 @@
 
 import CoreAudio.AudioHardwareBase
 import Foundation
+import os.log
 
 /// `AudioStream`
 ///
@@ -168,7 +169,7 @@ public final class AudioStream: AudioObject {
             var asbd = newValue
 
             if noErr == setStreamPropertyData(kAudioStreamPropertyPhysicalFormat, andValue: &asbd) {
-                log("Error setting physicalFormat to \(String(describing: newValue))")
+                os_log("Error setting physicalFormat to %@.", log: .default, type: .debug, String(describing: newValue))
             }
         }
     }
@@ -190,7 +191,7 @@ public final class AudioStream: AudioObject {
             var asbd = newValue
 
             if noErr == setStreamPropertyData(kAudioStreamPropertyVirtualFormat, andValue: &asbd) {
-                log("Error setting virtualFormat to \(String(describing: newValue))")
+                os_log("Error setting virtualFormat to %@.", log: .default, type: .debug, String(describing: newValue))
             }
         }
     }
@@ -406,7 +407,7 @@ public final class AudioStream: AudioObject {
         let err = AudioObjectAddPropertyListenerBlock(id, &address, NotificationCenter.notificationsQueue, propertyListenerBlock)
 
         if noErr != err {
-            log("Error on AudioObjectAddPropertyListenerBlock: \(err)")
+            os_log("Error on AudioObjectAddPropertyListenerBlock: %@.", log: .default, type: .debug, err)
         }
 
         isRegisteredForNotifications = noErr == err
@@ -424,7 +425,7 @@ public final class AudioStream: AudioObject {
         let err = AudioObjectRemovePropertyListenerBlock(id, &address, NotificationCenter.notificationsQueue, propertyListenerBlock)
 
         if noErr != err {
-            log("Error on AudioObjectRemovePropertyListenerBlock: \(err)")
+            os_log("Error on AudioObjectRemovePropertyListenerBlock: %@.", log: .default, type: .debug, err)
         }
 
         isRegisteredForNotifications = noErr != err

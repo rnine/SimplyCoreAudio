@@ -1,5 +1,5 @@
 //
-//  Utils.swift
+//  Globals.swift
 //  AMCoreAudio
 //
 //  Created by Ruben Nine on 13/04/16.
@@ -8,18 +8,15 @@
 
 import CoreAudio.AudioHardwareBase
 import Foundation
+import os.log
 
-private let logDateFormatter: DateFormatter = {
-    $0.locale = NSLocale.current
-    $0.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
+private class BundleFinder {}
 
-    return $0
-}(DateFormatter())
+extension OSLog {
+    private static var subsystem = Bundle(for: BundleFinder.self).bundleIdentifier!
 
-func log(_ message: String, file: String = #file, line: Int = #line, function: String = #function) {
-    let filename = file.components(separatedBy: "/").last ?? file
-
-    print("\(logDateFormatter.string(from: Date())) [AMCoreAudio] [\(filename):\(line)] \(function) > \(message)")
+    /// Default logger.
+    static let `default` = OSLog(subsystem: subsystem, category: "AMCoreAudio")
 }
 
 func scope(direction: Direction) -> AudioObjectPropertyScope {

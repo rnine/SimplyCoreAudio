@@ -8,6 +8,7 @@
 
 import CoreAudio.AudioHardwareBase
 import Foundation
+import os.log
 
 /// This class allows subscribing to hardware-related audio notifications.
 ///
@@ -129,7 +130,7 @@ public final class AudioHardware {
         let err = AudioObjectAddPropertyListenerBlock(systemObjectID, &address, NotificationCenter.notificationsQueue, propertyListenerBlock)
 
         if noErr != err {
-            log("Error on AudioObjectAddPropertyListenerBlock: \(err)")
+            os_log("Error on AudioObjectAddPropertyListenerBlock: %@.", log: .default, type: .debug, err)
         }
 
         isRegisteredForNotifications = noErr == err
@@ -148,7 +149,7 @@ public final class AudioHardware {
         let err = AudioObjectRemovePropertyListenerBlock(systemObjectID, &address, NotificationCenter.notificationsQueue, propertyListenerBlock)
 
         if noErr != err {
-            log("Error on AudioObjectRemovePropertyListenerBlock: \(err)")
+            os_log("Error on AudioObjectRemovePropertyListenerBlock: %@.", log: .default, type: .debug, err)
         }
 
         isRegisteredForNotifications = noErr != err

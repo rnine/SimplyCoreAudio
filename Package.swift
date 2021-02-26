@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "AMCoreAudio",
-    platforms: [.macOS(.v10_10)],
+    platforms: [.macOS(.v10_12)],
     products: [
         .library(name: "AMCoreAudio", targets: ["AMCoreAudio"])
     ],

@@ -3,6 +3,7 @@
 //  Copyright © 2021 9Labs. All rights reserved.
 
 import AudioToolbox.AudioServices
+import os.log
 
 public extension AudioDevice {
     /// - Returns: `true` if this device is an aggregate one, `false` otherwise.
@@ -79,7 +80,7 @@ public extension AudioDevice {
         let error = AudioHardwareCreateAggregateDevice(desc as CFDictionary, &deviceID)
 
         guard error == noErr else {
-            log("Failed creating aggregate device with error: \(error)")
+            os_log("Failed creating aggregate device with error: %@.", log: .default, type: .debug, error)
             return nil
         }
         return AudioDevice.lookup(by: deviceID)
