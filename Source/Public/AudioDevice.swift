@@ -154,9 +154,9 @@ public final class AudioDevice: AudioObject {
 
         var deviceID = kAudioObjectUnknown
         var cfUID = (uid as CFString)
-        
-        let status: OSStatus = withUnsafeMutablePointer(to: &cfUID) { (cfUIDPtr) in
-            withUnsafeMutablePointer(to: &deviceID) { (deviceIDPtr) in
+
+        let status: OSStatus = withUnsafeMutablePointer(to: &cfUID) { cfUIDPtr in
+            withUnsafeMutablePointer(to: &deviceID) { deviceIDPtr in
                 var translation = AudioValueTranslation(
                     mInputData: cfUIDPtr,
                     mInputDataSize: UInt32(MemoryLayout<CFString>.size),
@@ -165,8 +165,8 @@ public final class AudioDevice: AudioObject {
                 )
 
                 return getPropertyData(AudioObjectID(kAudioObjectSystemObject),
-                                         address: address,
-                                         andValue: &translation)
+                                       address: address,
+                                       andValue: &translation)
             }
         }
 
@@ -221,6 +221,35 @@ public final class AudioDevice: AudioObject {
     /// - Returns: An array of `AudioDevice` objects.
     public class func allOutputDevices() -> [AudioDevice] {
         return allDevices().filter { $0.channels(direction: .playback) > 0 }
+    }
+
+    /// All the devices in the system that support input and output.
+    ///
+    /// - Note: The list may also include *Aggregate* and *Multi-Output* devices.
+    ///
+    /// - Returns: An array of `AudioDevice` objects.
+    public static func allIODevices() -> [AudioDevice] {
+        return AudioDevice.allDevices().filter {
+            $0.channels(direction: .recording) > 0 && $0.channels(direction: .playback) > 0
+        }
+    }
+
+    /// All the devices in the system that are real devices - not aggregate ones.
+    ///
+    /// - Returns: An array of `AudioDevice` objects.
+    public static func allNonAggregateDevices() -> [AudioDevice] {
+        return AudioDevice.allDevices().filter {
+            !$0.isAggregateDevice()
+        }
+    }
+
+    /// All the devices in the system that are aggregate devices.
+    ///
+    /// - Returns: An array of `AudioDevice` objects.
+    public static func allAggregateDevices() -> [AudioDevice] {
+        return AudioDevice.allDevices().filter {
+            $0.isAggregateDevice()
+        }
     }
 
     /// The default input device.
@@ -284,7 +313,7 @@ public final class AudioDevice: AudioObject {
     /// The audio device's name as reported by the system.
     ///
     /// - Returns: An audio device's name.
-    public override var name: String {
+    override public var name: String {
         return getDeviceName()
     }
 
@@ -1024,7 +1053,7 @@ public final class AudioDevice: AudioObject {
             6400, 8000, 11025, 12000,
             16000, 22050, 24000, 32000,
             44100, 48000, 64000, 88200,
-            96000, 128_000, 176_400, 192_000
+            96000, 128000, 176400, 192000,
         ]
 
         for valueRange in valueRanges {
@@ -1034,8 +1063,8 @@ public final class AudioDevice: AudioObject {
                 // This could be a headset audio device (i.e., CS50/CS60-USB Headset)
                 // or a virtual audio driver (i.e., "System Audio Recorder" by WonderShare AllMyMusic)
                 if let startIndex = possibleRates.firstIndex(of: valueRange.mMinimum),
-                    let endIndex = possibleRates.firstIndex(of: valueRange.mMaximum) {
-                    sampleRates += possibleRates[startIndex..<endIndex + 1]
+                   let endIndex = possibleRates.firstIndex(of: valueRange.mMaximum) {
+                    sampleRates += possibleRates[startIndex ..< endIndex + 1]
                 } else {
                     log("Failed to obtain list of supported sample rates ranging from \(valueRange.mMinimum) to \(valueRange.mMaximum). This is an error in AMCoreAudio and should be reported to the project maintainers.")
                 }
@@ -1089,8 +1118,8 @@ public final class AudioDevice: AudioObject {
         var name: CFString = "" as CFString
         var mDataSourceID = dataSourceID
 
-        let status: OSStatus = withUnsafeMutablePointer(to: &mDataSourceID) { (mDataSourceIDPtr) in
-            withUnsafeMutablePointer(to: &name) { (namePtr) in
+        let status: OSStatus = withUnsafeMutablePointer(to: &mDataSourceID) { mDataSourceIDPtr in
+            withUnsafeMutablePointer(to: &name) { namePtr in
                 var translation = AudioValueTranslation(
                     mInputData: mDataSourceIDPtr,
                     mInputDataSize: UInt32(MemoryLayout<UInt32>.size),
@@ -1103,7 +1132,7 @@ public final class AudioDevice: AudioObject {
                     mScope: scope(direction: direction),
                     mElement: kAudioObjectPropertyElementMaster
                 )
-                
+
                 return getPropertyData(address, andValue: &translation)
             }
         }
@@ -1170,8 +1199,8 @@ public final class AudioDevice: AudioObject {
         var name: CFString = "" as CFString
         var mClockSourceID = clockSourceID
 
-        let status: OSStatus = withUnsafeMutablePointer(to: &mClockSourceID) { (mClockSourceIDPtr) in
-            withUnsafeMutablePointer(to: &name) { (namePtr) in
+        let status: OSStatus = withUnsafeMutablePointer(to: &mClockSourceID) { mClockSourceIDPtr in
+            withUnsafeMutablePointer(to: &name) { namePtr in
                 var translation = AudioValueTranslation(
                     mInputData: mClockSourceIDPtr,
                     mInputDataSize: UInt32(MemoryLayout<UInt32>.size),
