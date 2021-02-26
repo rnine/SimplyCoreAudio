@@ -10,13 +10,9 @@ import CoreAudio.AudioHardwareBase
 import Foundation
 import os.log
 
-private class BundleFinder {}
-
 extension OSLog {
-    private static var subsystem = Bundle(for: BundleFinder.self).bundleIdentifier!
-
     /// Default logger.
-    static let `default` = OSLog(subsystem: subsystem, category: "AMCoreAudio")
+    static let `default` = OSLog(subsystem: "AMCoreAudio", category: "default")
 }
 
 func scope(direction: Direction) -> AudioObjectPropertyScope {
