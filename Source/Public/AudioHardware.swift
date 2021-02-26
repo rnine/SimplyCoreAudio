@@ -19,7 +19,6 @@ public final class AudioHardware {
     private var allKnownDevices = [AudioDevice]()
     private var isRegisteredForNotifications = false
 
-
     private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { [weak self] (_, inAddresses) -> Void in
         let address = inAddresses.pointee
         let notificationCenter = NotificationCenter.defaultCenter

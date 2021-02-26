@@ -144,7 +144,8 @@ class ViewController: NSViewController {
     @IBAction func updateStreamVirtualFormat(_ sender: AnyObject) {
         if let popUpButton = sender as? NSPopUpButton, let item = popUpButton.selectedItem {
             if let stream = AudioStream.lookup(by: AudioObjectID(item.tag)),
-                let format = item.representedObject as? AudioStreamBasicDescription {
+               let format = item.representedObject as? AudioStreamBasicDescription
+            {
                 stream.virtualFormat = format
             }
         }
@@ -153,7 +154,8 @@ class ViewController: NSViewController {
     @IBAction func updateStreamPhysicalFormat(_ sender: AnyObject) {
         if let popUpButton = sender as? NSPopUpButton, let item = popUpButton.selectedItem {
             if let stream = AudioStream.lookup(by: AudioObjectID(item.tag)),
-                let format = item.representedObject as? AudioStreamBasicDescription {
+               let format = item.representedObject as? AudioStreamBasicDescription
+            {
                 stream.physicalFormat = format
             }
         }
@@ -439,7 +441,7 @@ class ViewController: NSViewController {
     }
 
     fileprivate func humanReadableStreamBasicDescription(asbd: AudioStreamBasicDescription) -> String {
-        var descriptionElements: [String] = [String]()
+        var descriptionElements = [String]()
 
         // Mixable vs non-mixable
         if asbd.mFormatFlags & kAudioFormatFlagIsNonMixable == 0 {

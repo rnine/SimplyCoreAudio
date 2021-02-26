@@ -275,7 +275,8 @@ extension ExtraViewController: NSTableViewDelegate {
 
             if let textField = cellView?.textField {
                 if let device = representedObject as? AudioDevice, let direction = representedDirection,
-                    let channelName = device.name(channel: UInt32(row), direction: direction) {
+                   let channelName = device.name(channel: UInt32(row), direction: direction)
+                {
                     textField.stringValue = channelName
                 } else {
                     textField.stringValue = row == 0 ? "Master" : "Channel \(row)"
@@ -384,7 +385,7 @@ extension ExtraViewController: EventSubscriber {
                 if representedObject as? AudioDevice == audioDevice {
                     populateInfoFields(device: audioDevice)
                 }
-            case .volumeDidChange(let audioDevice, let channel, _):
+            case let .volumeDidChange(audioDevice, channel, _):
                 if representedObject as? AudioDevice == audioDevice {
                     populateInfoFields(device: audioDevice)
 
@@ -394,7 +395,7 @@ extension ExtraViewController: EventSubscriber {
                     tableView.reloadData(forRowIndexes: IndexSet(integer: Int(channel)),
                                          columnIndexes: volumeIndices)
                 }
-            case .muteDidChange(let audioDevice, let channel, _):
+            case let .muteDidChange(audioDevice, channel, _):
                 if representedObject as? AudioDevice == audioDevice {
                     populateInfoFields(device: audioDevice)
 

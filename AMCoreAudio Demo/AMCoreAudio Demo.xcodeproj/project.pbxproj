@@ -42,6 +42,13 @@
 			remoteGlobalIDString = 454D24591B4BE40E0043FA12;
 			remoteInfo = AMCoreAudio;
 		};
+		4587D44925E8FD25006CEFF7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4563CD3C1DC661A4006FD207 /* AMCoreAudio.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4522DC06233632140084CA02;
+			remoteInfo = AMCoreAudioTests;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -118,6 +125,7 @@
 			isa = PBXGroup;
 			children = (
 				4563CD421DC661A4006FD207 /* AMCoreAudio.framework */,
+				4587D44A25E8FD25006CEFF7 /* AMCoreAudioTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -189,7 +197,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0810;
-				LastUpgradeCheck = 1100;
+				LastUpgradeCheck = 1240;
 				ORGANIZATIONNAME = 9Labs;
 				TargetAttributes = {
 					4563CD291DC6617D006FD207 = {
@@ -228,6 +236,13 @@
 			fileType = wrapper.framework;
 			path = AMCoreAudio.framework;
 			remoteRef = 4563CD411DC661A4006FD207 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4587D44A25E8FD25006CEFF7 /* AMCoreAudioTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = AMCoreAudioTests.xctest;
+			remoteRef = 4587D44925E8FD25006CEFF7 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -310,6 +325,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -369,6 +385,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;

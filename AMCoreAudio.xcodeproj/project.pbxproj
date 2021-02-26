@@ -17,6 +17,7 @@
 		4522DC4023364EFB0084CA02 /* AudioStreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4522DC3F23364EFB0084CA02 /* AudioStreamTests.swift */; };
 		4544F5A81CC41A42006DCD67 /* NotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4544F5A71CC41A42006DCD67 /* NotificationCenter.swift */; };
 		454D24751B4BE4860043FA12 /* AudioDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454D24741B4BE4860043FA12 /* AudioDevice.swift */; };
+		4587D44325E8FD15006CEFF7 /* AudioDevice+Aggregate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4587D44225E8FD15006CEFF7 /* AudioDevice+Aggregate.swift */; };
 		459AD4B923354AB400C2ED06 /* AudioDeviceEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459AD4B823354AB400C2ED06 /* AudioDeviceEvent.swift */; };
 		459AD4BB23354B5C00C2ED06 /* AudioHardwareEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459AD4BA23354B5C00C2ED06 /* AudioHardwareEvent.swift */; };
 		459AD4BD23354B9E00C2ED06 /* AudioStreamEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459AD4BC23354B9E00C2ED06 /* AudioStreamEvent.swift */; };
@@ -58,6 +59,7 @@
 		454D245A1B4BE40E0043FA12 /* AMCoreAudio.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AMCoreAudio.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		454D245F1B4BE40E0043FA12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		454D24741B4BE4860043FA12 /* AudioDevice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AudioDevice.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		4587D44225E8FD15006CEFF7 /* AudioDevice+Aggregate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AudioDevice+Aggregate.swift"; sourceTree = "<group>"; };
 		459AD4B823354AB400C2ED06 /* AudioDeviceEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDeviceEvent.swift; sourceTree = "<group>"; };
 		459AD4BA23354B5C00C2ED06 /* AudioHardwareEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioHardwareEvent.swift; sourceTree = "<group>"; };
 		459AD4BC23354B9E00C2ED06 /* AudioStreamEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioStreamEvent.swift; sourceTree = "<group>"; };
@@ -157,6 +159,7 @@
 		459AD4B3233549BC00C2ED06 /* Public */ = {
 			isa = PBXGroup;
 			children = (
+				4587D44225E8FD15006CEFF7 /* AudioDevice+Aggregate.swift */,
 				454D24741B4BE4860043FA12 /* AudioDevice.swift */,
 				45A740591B4EE37400C19842 /* AudioHardware.swift */,
 				45BF8FB71CBDB29800B15908 /* AudioObject.swift */,
@@ -295,7 +298,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1100;
-				LastUpgradeCheck = 1020;
+				LastUpgradeCheck = 1240;
 				ORGANIZATIONNAME = 9Labs;
 				TargetAttributes = {
 					4522DC05233632140084CA02 = {
@@ -401,6 +404,7 @@
 				45A0A61E233564A100F495FA /* VolumeInfo.swift in Sources */,
 				45B919DC1CD3E3E100552C67 /* BundleInfo.swift in Sources */,
 				459AD4C523354D9C00C2ED06 /* Event.swift in Sources */,
+				4587D44325E8FD15006CEFF7 /* AudioDevice+Aggregate.swift in Sources */,
 				454D24751B4BE4860043FA12 /* AudioDevice.swift in Sources */,
 				45A0A61B2335647B00F495FA /* TerminalType.swift in Sources */,
 				459AD4C723354DAF00C2ED06 /* EventSubscriber.swift in Sources */,
@@ -497,6 +501,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -555,6 +560,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;

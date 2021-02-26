@@ -20,9 +20,9 @@ public final class NotificationCenter {
     private var subscriberDescriptorsByEvent = [String: [EventSubscriberDescriptor]]()
 
     private init() {}
-    
+
     static let notificationsQueue = DispatchQueue(label: "AMCoreAudioNotificationsQueue", target: DispatchQueue.global(qos: .userInitiated))
-    
+
     /// Returns a singleton `NotificationCenter` instance.
     public static let defaultCenter = NotificationCenter()
 

@@ -26,7 +26,6 @@
 --operatorfunc spaced
 --patternlet hoist
 --ranges no-space
---self init-only
 --semicolons inline
 --stripunusedargs always
 --trimwhitespace always
@@ -36,7 +35,7 @@
 # rules
 
 --enable isEmpty
---enable specifiers
+--enable modifierOrder
 --enable spaceAroundComments
 --enable spaceInsideComments
 --enable linebreakAtEndOfFile

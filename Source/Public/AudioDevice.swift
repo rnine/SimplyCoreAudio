@@ -437,7 +437,8 @@ public final class AudioDevice: AudioObject {
     /// - Returns: `true` when jack is connected, `false` otherwise.
     public func isJackConnected(direction: Direction) -> Bool? {
         if let address = validAddress(selector: kAudioDevicePropertyJackIsConnected,
-                                      scope: scope(direction: direction)) {
+                                      scope: scope(direction: direction))
+        {
             return getProperty(address: address)
         } else {
             return nil
@@ -1053,7 +1054,7 @@ public final class AudioDevice: AudioObject {
             6400, 8000, 11025, 12000,
             16000, 22050, 24000, 32000,
             44100, 48000, 64000, 88200,
-            96000, 128000, 176400, 192000,
+            96000, 128_000, 176_400, 192_000
         ]
 
         for valueRange in valueRanges {
@@ -1063,8 +1064,9 @@ public final class AudioDevice: AudioObject {
                 // This could be a headset audio device (i.e., CS50/CS60-USB Headset)
                 // or a virtual audio driver (i.e., "System Audio Recorder" by WonderShare AllMyMusic)
                 if let startIndex = possibleRates.firstIndex(of: valueRange.mMinimum),
-                   let endIndex = possibleRates.firstIndex(of: valueRange.mMaximum) {
-                    sampleRates += possibleRates[startIndex ..< endIndex + 1]
+                   let endIndex = possibleRates.firstIndex(of: valueRange.mMaximum)
+                {
+                    sampleRates += possibleRates[startIndex..<endIndex + 1]
                 } else {
                     log("Failed to obtain list of supported sample rates ranging from \(valueRange.mMinimum) to \(valueRange.mMaximum). This is an error in AMCoreAudio and should be reported to the project maintainers.")
                 }

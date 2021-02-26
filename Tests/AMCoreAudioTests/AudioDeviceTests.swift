@@ -1,5 +1,5 @@
-@testable import AMCoreAudio
 import XCTest
+@testable import AMCoreAudio
 
 final class AudioDeviceTests: XCTestCase {
     let defaultOutputDevice = AudioDevice.defaultOutputDevice()
@@ -427,7 +427,8 @@ final class AudioDeviceTests: XCTestCase {
         }
 
         guard let input = inputs.first?.uid,
-              let output = outputs.first?.uid else {
+              let output = outputs.first?.uid
+        else {
             XCTFail("Failed to find an input and output to use")
             return
         }
@@ -435,7 +436,8 @@ final class AudioDeviceTests: XCTestCase {
         guard let device = AudioDevice.createAggregateDevice(masterDeviceUID: output,
                                                              secondDeviceUID: input,
                                                              named: "testCreateAggregateAudioDevice",
-                                                             uid: "testCreateAggregateAudioDevice-12345") else {
+                                                             uid: "testCreateAggregateAudioDevice-12345")
+        else {
             XCTFail("Failed creating device")
             return
         }
