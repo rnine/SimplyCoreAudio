@@ -10,4 +10,4 @@ readme: README.md
 skip_undocumented: false
 hide_documentation_coverage: false
 
-xcodebuild_arguments: [-project, AMCoreAudio.xcodeproj, -target, AMCoreAudio]
+swift_build_tool: spm
