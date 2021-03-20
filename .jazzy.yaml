@@ -1,4 +1,4 @@
-module: AMCoreAudio
+module: SimplyCoreAudio
 author: Ruben Nine
 github_url: https://github.com/rnine/AMCoreAudio
 
