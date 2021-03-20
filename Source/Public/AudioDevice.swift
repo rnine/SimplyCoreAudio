@@ -97,102 +97,6 @@ public final class AudioDevice: AudioObject {
         return lookup(by: deviceID)
     }
 
-    /// All the audio device identifiers currently available in the system.
-    ///
-    /// - Note: This list may also include *Aggregate* and *Multi-Output* devices.
-    ///
-    /// - Returns: An array of `AudioObjectID` values.
-    public class func allDeviceIDs() -> [AudioObjectID] {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioHardwarePropertyDevices,
-            mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMaster
-        )
-
-        let systemObjectID = AudioObjectID(kAudioObjectSystemObject)
-        var allIDs = [AudioObjectID]()
-        let status = getPropertyDataArray(systemObjectID, address: address, value: &allIDs, andDefaultValue: 0)
-
-        return noErr == status ? allIDs : []
-    }
-
-    /// All the audio devices currently available in the system.
-    ///
-    /// - Note: This list may also include *Aggregate* and *Multi-Output* devices.
-    ///
-    /// - Returns: An array of `AudioDevice` objects.
-    public class func allDevices() -> [AudioDevice] {
-        return allDeviceIDs().compactMap { AudioDevice.lookup(by: $0) }
-    }
-
-    /// All the devices in the system that have at least one input.
-    ///
-    /// - Note: This list may also include *Aggregate* devices.
-    ///
-    /// - Returns: An array of `AudioDevice` objects.
-    public class func allInputDevices() -> [AudioDevice] {
-        return allDevices().filter { $0.channels(direction: .recording) > 0 }
-    }
-
-    /// All the devices in the system that have at least one output.
-    ///
-    /// - Note: The list may also include *Aggregate* and *Multi-Output* devices.
-    ///
-    /// - Returns: An array of `AudioDevice` objects.
-    public class func allOutputDevices() -> [AudioDevice] {
-        return allDevices().filter { $0.channels(direction: .playback) > 0 }
-    }
-
-    /// All the devices in the system that support input and output.
-    ///
-    /// - Note: The list may also include *Aggregate* and *Multi-Output* devices.
-    ///
-    /// - Returns: An array of `AudioDevice` objects.
-    public static func allIODevices() -> [AudioDevice] {
-        return AudioDevice.allDevices().filter {
-            $0.channels(direction: .recording) > 0 && $0.channels(direction: .playback) > 0
-        }
-    }
-
-    /// All the devices in the system that are real devices - not aggregate ones.
-    ///
-    /// - Returns: An array of `AudioDevice` objects.
-    public static func allNonAggregateDevices() -> [AudioDevice] {
-        return AudioDevice.allDevices().filter {
-            !$0.isAggregateDevice()
-        }
-    }
-
-    /// All the devices in the system that are aggregate devices.
-    ///
-    /// - Returns: An array of `AudioDevice` objects.
-    public static func allAggregateDevices() -> [AudioDevice] {
-        return AudioDevice.allDevices().filter {
-            $0.isAggregateDevice()
-        }
-    }
-
-    /// The default input device.
-    ///
-    /// - Returns: *(optional)* An `AudioDevice`.
-    public class func defaultInputDevice() -> AudioDevice? {
-        return defaultDevice(of: kAudioHardwarePropertyDefaultInputDevice)
-    }
-
-    /// The default output device.
-    ///
-    /// - Returns: *(optional)* An `AudioDevice`.
-    public class func defaultOutputDevice() -> AudioDevice? {
-        return defaultDevice(of: kAudioHardwarePropertyDefaultOutputDevice)
-    }
-
-    /// The default system output device.
-    ///
-    /// - Returns: *(optional)* An `AudioDevice`.
-    public class func defaultSystemOutputDevice() -> AudioDevice? {
-        return defaultDevice(of: kAudioHardwarePropertyDefaultSystemOutputDevice)
-    }
-
     // MARK: - Default Device Functions
 
     /// Promotes this device to become the default input device.
@@ -1292,14 +1196,6 @@ public final class AudioDevice: AudioObject {
         let status = setPropertyData(AudioObjectID(kAudioObjectSystemObject), address: address, andValue: &deviceID)
 
         return noErr == status
-    }
-
-    private class func defaultDevice(of type: AudioObjectPropertySelector) -> AudioDevice? {
-        let address = self.address(selector: type)
-        var deviceID = AudioDeviceID()
-        let status = getPropertyData(AudioObjectID(kAudioObjectSystemObject), address: address, andValue: &deviceID)
-
-        return noErr == status ? AudioDevice.lookup(by: deviceID) : nil
     }
 
     // MARK: - Notification Book-keeping

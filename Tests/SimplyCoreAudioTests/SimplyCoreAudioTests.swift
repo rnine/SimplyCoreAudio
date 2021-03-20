@@ -8,7 +8,14 @@ import XCTest
 @testable import SimplyCoreAudio
 
 class SimplyCoreAudioTests: XCTestCase {
-    func testInitializer() throws {
-        _ = SimplyCoreAudio()
+    let simplyCoreAudio = SimplyCoreAudio()
+
+    func testDeviceEnumeration() throws {
+        let device = try GetDevice()
+
+        XCTAssertTrue(simplyCoreAudio.allDevices.contains(device))
+        XCTAssertTrue(simplyCoreAudio.allDeviceIDs.contains(device.id))
+        XCTAssertTrue(simplyCoreAudio.allInputDevices.contains(device))
+        XCTAssertTrue(simplyCoreAudio.allOutputDevices.contains(device))
     }
 }

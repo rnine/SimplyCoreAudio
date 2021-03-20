@@ -2,9 +2,7 @@ import XCTest
 @testable import SimplyCoreAudio
 
 final class AudioDeviceTests: XCTestCase {
-    let defaultOutputDevice = AudioDevice.defaultOutputDevice()
-    let defaultInputDevice = AudioDevice.defaultInputDevice()
-    let defaultSystemOutputDevice = AudioDevice.defaultSystemOutputDevice()
+    let simplyCoreAudio = SimplyCoreAudio()
 
     override func setUp() {
         super.setUp()
@@ -28,26 +26,17 @@ final class AudioDeviceTests: XCTestCase {
         XCTAssertEqual(AudioDevice.lookup(by: deviceUID), device)
     }
 
-    func testDeviceEnumeration() throws {
-        let device = try GetDevice()
-
-        XCTAssertTrue(AudioDevice.allDevices().contains(device))
-        XCTAssertTrue(AudioDevice.allDeviceIDs().contains(device.id))
-        XCTAssertTrue(AudioDevice.allInputDevices().contains(device))
-        XCTAssertTrue(AudioDevice.allOutputDevices().contains(device))
-    }
-
     func testSettingDefaultDevice() throws {
         let device = try GetDevice()
 
         XCTAssertTrue(device.setAsDefaultSystemDevice())
-        XCTAssertEqual(AudioDevice.defaultSystemOutputDevice(), device)
+        XCTAssertEqual(simplyCoreAudio.defaultSystemOutputDevice, device)
 
         XCTAssertTrue(device.setAsDefaultOutputDevice())
-        XCTAssertEqual(AudioDevice.defaultOutputDevice(), device)
+        XCTAssertEqual(simplyCoreAudio.defaultOutputDevice, device)
 
         XCTAssertTrue(device.setAsDefaultInputDevice())
-        XCTAssertEqual(AudioDevice.defaultInputDevice(), device)
+        XCTAssertEqual(simplyCoreAudio.defaultInputDevice, device)
     }
 
     func testGeneralDeviceInformation() throws {
@@ -418,11 +407,11 @@ final class AudioDeviceTests: XCTestCase {
     }
 
     func testCreateAndDestroyAggregateDevice() {
-        let inputs = AudioDevice.allNonAggregateDevices().filter {
+        let inputs = simplyCoreAudio.allNonAggregateDevices.filter {
             $0.channels(direction: .recording) > 0
         }
 
-        let outputs = AudioDevice.allNonAggregateDevices().filter {
+        let outputs = simplyCoreAudio.allNonAggregateDevices.filter {
             $0.channels(direction: .playback) > 0
         }
 
@@ -455,14 +444,10 @@ final class AudioDeviceTests: XCTestCase {
 
     // MARK: - Private Functions
 
-    private func GetDevice(file: StaticString = #file, line: UInt = #line) throws -> AudioDevice {
-        return try XCTUnwrap(AudioDevice.lookup(by: "NullAudioDevice_UID"), "NullAudio driver is missing.", file: file, line: line)
-    }
-
     private func ResetDefaultDevices() {
-        defaultOutputDevice?.setAsDefaultOutputDevice()
-        defaultInputDevice?.setAsDefaultInputDevice()
-        defaultSystemOutputDevice?.setAsDefaultSystemDevice()
+        simplyCoreAudio.defaultOutputDevice?.setAsDefaultOutputDevice()
+        simplyCoreAudio.defaultInputDevice?.setAsDefaultInputDevice()
+        simplyCoreAudio.defaultSystemOutputDevice?.setAsDefaultSystemDevice()
     }
 
     private func ResetDeviceState() throws {

@@ -8,9 +8,6 @@ import CoreAudio.AudioHardwareBase
 import Foundation
 import os.log
 
-/// This class allows subscribing to hardware-related audio notifications.
-///
-/// For a comprehensive list of supported notifications, see `AudioHardwareEvent`.
 final class AudioHardware {
     // MARK: - Fileprivate Properties
 
@@ -19,25 +16,14 @@ final class AudioHardware {
 
     // MARK: - Internal Functions
 
-    /// Enables device monitoring so events like the ones below are generated:
-    ///
-    /// - added or removed device
-    /// - new default input device
-    /// - new default output device
-    /// - new default system output device
-    ///
-    /// - SeeAlso: `disableDeviceMonitoring()`
     func enableDeviceMonitoring() {
         registerForNotifications()
 
-        for device in AudioDevice.allDevices() {
+        for device in allDevices {
             add(device: device)
         }
     }
 
-    /// Disables device monitoring.
-    ///
-    /// - SeeAlso: `enableDeviceMonitoring()`
     func disableDeviceMonitoring() {
         for device in allKnownDevices {
             remove(device: device)
@@ -45,11 +31,71 @@ final class AudioHardware {
 
         unregisterForNotifications()
     }
+
+    var allDeviceIDs: [AudioObjectID] {
+        let address = AudioObjectPropertyAddress(
+            mSelector: kAudioHardwarePropertyDevices,
+            mScope: kAudioObjectPropertyScopeGlobal,
+            mElement: kAudioObjectPropertyElementMaster
+        )
+
+        let systemObjectID = AudioObjectID(kAudioObjectSystemObject)
+        var allIDs = [AudioObjectID]()
+        let status = AudioDevice.getPropertyDataArray(systemObjectID, address: address, value: &allIDs, andDefaultValue: 0)
+
+        return noErr == status ? allIDs : []
+    }
+
+    var allDevices: [AudioDevice] {
+        allDeviceIDs.compactMap { AudioDevice.lookup(by: $0) }
+    }
+
+    var allInputDevices: [AudioDevice] {
+        allDevices.filter { $0.channels(direction: .recording) > 0 }
+    }
+
+    var allOutputDevices: [AudioDevice] {
+        allDevices.filter { $0.channels(direction: .playback) > 0 }
+    }
+
+    var allIODevices: [AudioDevice] {
+        allDevices.filter {
+            $0.channels(direction: .recording) > 0 && $0.channels(direction: .playback) > 0
+        }
+    }
+
+    var allNonAggregateDevices: [AudioDevice] {
+        allDevices.filter { !$0.isAggregateDevice() }
+    }
+
+    var allAggregateDevices: [AudioDevice] {
+        allDevices.filter { $0.isAggregateDevice() }
+    }
+
+    var defaultInputDevice: AudioDevice? {
+        defaultDevice(of: kAudioHardwarePropertyDefaultInputDevice)
+    }
+
+    var defaultOutputDevice: AudioDevice? {
+        defaultDevice(of: kAudioHardwarePropertyDefaultOutputDevice)
+    }
+
+    var defaultSystemOutputDevice: AudioDevice? {
+        defaultDevice(of: kAudioHardwarePropertyDefaultSystemOutputDevice)
+    }
 }
 
 // MARK: - Fileprivate Functions
 
 fileprivate extension AudioHardware {
+    func defaultDevice(of type: AudioObjectPropertySelector) -> AudioDevice? {
+        let address = AudioDevice.address(selector: type)
+        var deviceID = AudioDeviceID()
+        let status = AudioDevice.getPropertyData(AudioObjectID(kAudioObjectSystemObject), address: address, andValue: &deviceID)
+
+        return noErr == status ? AudioDevice.lookup(by: deviceID) : nil
+    }
+
     func add(device: AudioDevice) {
         allKnownDevices.append(device)
     }
@@ -115,7 +161,7 @@ private func propertyListener(objectID: UInt32,
     switch address.mSelector {
     case kAudioObjectPropertyOwnedObjects:
         // Get the latest device list
-        let latestDeviceList = AudioDevice.allDevices()
+        let latestDeviceList = _self.allDevices
 
         let addedDevices = latestDeviceList.filter { (audioDevice) -> Bool in
             !(_self.allKnownDevices.contains { $0 == audioDevice })
