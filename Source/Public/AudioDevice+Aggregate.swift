@@ -1,6 +1,8 @@
+//
 //  AudioDevice+Aggregate.swift
+//
 //  Created by Ryan Francesconi on 2/24/21.
-//  Copyright © 2021 9Labs. All rights reserved.
+//
 
 import AudioToolbox.AudioServices
 import os.log

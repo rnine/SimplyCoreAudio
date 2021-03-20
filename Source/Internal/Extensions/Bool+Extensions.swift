@@ -1,7 +1,7 @@
 //
 //  Bool+Extensions.swift
 //
-//  Created by Ruben on 7/9/15.
+//  Created by Ruben Nine on 7/9/15.
 //
 
 import Foundation
