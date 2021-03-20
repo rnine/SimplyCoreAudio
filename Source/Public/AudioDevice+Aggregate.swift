@@ -9,16 +9,16 @@ import os.log
 
 public extension AudioDevice {
     /// - Returns: `true` if this device is an aggregate one, `false` otherwise.
-    func isAggregateDevice() -> Bool {
-        guard let aggregateDevices = ownedAggregateDevices() else { return false }
+    var isAggregateDevice: Bool {
+        guard let aggregateDevices = ownedAggregateDevices else { return false }
         return !aggregateDevices.isEmpty
     }
 
     /// All the subdevices of this aggregate device
     ///
     /// - Returns: An array of `AudioDevice` objects.
-    func ownedAggregateDevices() -> [AudioDevice]? {
-        guard let ownedObjectIDs = ownedObjectIDs() else { return nil }
+    var ownedAggregateDevices: [AudioDevice]? {
+        guard let ownedObjectIDs = ownedObjectIDs else { return nil }
 
         let ownedDevices = ownedObjectIDs.compactMap { (id) -> AudioDevice? in
             AudioDevice.lookup(by: id)
@@ -30,8 +30,8 @@ public extension AudioDevice {
     /// All the subdevices of this aggregate device that support input
     ///
     /// - Returns: An array of `AudioDevice` objects.
-    func ownedAggregateInputDevices() -> [AudioDevice]? {
-        ownedAggregateDevices()?.filter {
+    var ownedAggregateInputDevices: [AudioDevice]? {
+        ownedAggregateDevices?.filter {
             guard let channels = $0.layoutChannels(direction: .recording) else { return false }
             return channels > 0
         }
@@ -40,8 +40,8 @@ public extension AudioDevice {
     /// All the subdevices of this aggregate device that support output
     ///
     /// - Returns: An array of `AudioDevice` objects.
-    func ownedAggregateOutputDevices() -> [AudioDevice]? {
-        ownedAggregateDevices()?.filter {
+    var ownedAggregateOutputDevices: [AudioDevice]? {
+        ownedAggregateDevices?.filter {
             guard let channels = $0.layoutChannels(direction: .playback) else { return false }
             return channels > 0
         }

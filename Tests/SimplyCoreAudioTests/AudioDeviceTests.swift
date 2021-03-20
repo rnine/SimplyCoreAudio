@@ -49,16 +49,16 @@ final class AudioDeviceTests: XCTestCase {
         XCTAssertEqual(device.configurationApplication, "com.apple.audio.AudioMIDISetup")
         XCTAssertEqual(device.transportType, TransportType.virtual)
 
-        XCTAssertFalse(device.isInputOnlyDevice())
-        XCTAssertFalse(device.isOutputOnlyDevice())
-        XCTAssertFalse(device.isHidden())
+        XCTAssertFalse(device.isInputOnlyDevice)
+        XCTAssertFalse(device.isOutputOnlyDevice)
+        XCTAssertFalse(device.isHidden)
 
         XCTAssertNil(device.isJackConnected(direction: .playback))
         XCTAssertNil(device.isJackConnected(direction: .recording))
 
-        XCTAssertTrue(device.isAlive())
-        XCTAssertFalse(device.isRunning())
-        XCTAssertFalse(device.isRunningSomewhere())
+        XCTAssertTrue(device.isAlive)
+        XCTAssertFalse(device.isRunning)
+        XCTAssertFalse(device.isRunningSomewhere)
 
         XCTAssertNil(device.name(channel: 0, direction: .playback))
         XCTAssertNil(device.name(channel: 1, direction: .playback))
@@ -67,9 +67,9 @@ final class AudioDeviceTests: XCTestCase {
         XCTAssertNil(device.name(channel: 1, direction: .recording))
         XCTAssertNil(device.name(channel: 2, direction: .recording))
 
-        XCTAssertNotNil(device.ownedObjectIDs())
-        XCTAssertNotNil(device.controlList())
-        XCTAssertNotNil(device.relatedDevices())
+        XCTAssertNotNil(device.ownedObjectIDs)
+        XCTAssertNotNil(device.controlList)
+        XCTAssertNotNil(device.relatedDevices)
     }
 
     func testLFE() throws {
@@ -101,8 +101,8 @@ final class AudioDeviceTests: XCTestCase {
         XCTAssertEqual(device.channels(direction: .playback), 2)
         XCTAssertEqual(device.channels(direction: .recording), 2)
 
-        XCTAssertFalse(device.isInputOnlyDevice())
-        XCTAssertFalse(device.isOutputOnlyDevice())
+        XCTAssertFalse(device.isInputOnlyDevice)
+        XCTAssertFalse(device.isOutputOnlyDevice)
     }
 
     func testVolumeInfo() throws {
@@ -311,17 +311,17 @@ final class AudioDeviceTests: XCTestCase {
     func testSampleRate() throws {
         let device = try GetDevice()
 
-        XCTAssertEqual(device.nominalSampleRates(), [44100, 48000])
+        XCTAssertEqual(device.nominalSampleRates, [44100, 48000])
 
         XCTAssertTrue(device.setNominalSampleRate(44100))
         sleep(1)
-        XCTAssertEqual(device.nominalSampleRate(), 44100)
-        XCTAssertEqual(device.actualSampleRate(), 44100)
+        XCTAssertEqual(device.nominalSampleRate, 44100)
+        XCTAssertEqual(device.actualSampleRate, 44100)
 
         XCTAssertTrue(device.setNominalSampleRate(48000))
         sleep(1)
-        XCTAssertEqual(device.nominalSampleRate(), 48000)
-        XCTAssertEqual(device.actualSampleRate(), 48000)
+        XCTAssertEqual(device.nominalSampleRate, 48000)
+        XCTAssertEqual(device.actualSampleRate, 48000)
     }
 
     func testDataSource() throws {
@@ -357,10 +357,10 @@ final class AudioDeviceTests: XCTestCase {
     func testClockSource() throws {
         let device = try GetDevice()
 
-        XCTAssertNil(device.clockSourceID())
-        XCTAssertNil(device.clockSourceIDs())
-        XCTAssertNil(device.clockSourceName())
-        XCTAssertNil(device.clockSourceNames())
+        XCTAssertNil(device.clockSourceID)
+        XCTAssertNil(device.clockSourceIDs)
+        XCTAssertNil(device.clockSourceName)
+        XCTAssertNil(device.clockSourceNames)
         XCTAssertNil(device.clockSourceName(clockSourceID: 0))
         XCTAssertFalse(device.setClockSourceID(0))
     }
@@ -382,11 +382,11 @@ final class AudioDeviceTests: XCTestCase {
     func testHogMode() throws {
         let device = try GetDevice()
 
-        XCTAssertEqual(device.hogModePID(), -1)
+        XCTAssertEqual(device.hogModePID, -1)
         XCTAssertTrue(device.setHogMode())
-        XCTAssertEqual(device.hogModePID(), pid_t(ProcessInfo.processInfo.processIdentifier))
+        XCTAssertEqual(device.hogModePID, pid_t(ProcessInfo.processInfo.processIdentifier))
         XCTAssertTrue(device.unsetHogMode())
-        XCTAssertEqual(device.hogModePID(), -1)
+        XCTAssertEqual(device.hogModePID, -1)
     }
 
     func testVolumeConversion() throws {
@@ -431,8 +431,8 @@ final class AudioDeviceTests: XCTestCase {
             return
         }
 
-        XCTAssertTrue(device.isAggregateDevice())
-        XCTAssertTrue(device.ownedAggregateDevices()?.count == 2)
+        XCTAssertTrue(device.isAggregateDevice)
+        XCTAssertTrue(device.ownedAggregateDevices?.count == 2)
 
         wait(for: 2)
 
@@ -455,7 +455,7 @@ final class AudioDeviceTests: XCTestCase {
 
         device.unsetHogMode()
 
-        if device.nominalSampleRate() != 44100 {
+        if device.nominalSampleRate != 44100 {
             device.setNominalSampleRate(44100)
             sleep(1)
         }

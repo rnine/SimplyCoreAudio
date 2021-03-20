@@ -8,21 +8,7 @@ import Foundation
 import AudioToolbox.AudioServices
 
 public final class SimplyCoreAudio {
-    // MARK: - Private Properties
-
-    private let hardware = AudioHardware()
-
-    // MARK: - Lifecycle
-
-    init() {
-        hardware.enableDeviceMonitoring()
-    }
-
-    deinit {
-        hardware.disableDeviceMonitoring()
-    }
-
-    // MARK: - Public Functions
+    // MARK: - Public Properties
 
     /// All the audio device identifiers currently available in the system.
     ///
@@ -102,5 +88,19 @@ public final class SimplyCoreAudio {
     /// - Returns: *(optional)* An `AudioDevice`.
     public var defaultSystemOutputDevice: AudioDevice? {
         hardware.defaultSystemOutputDevice
+    }
+
+    // MARK: - Private Properties
+
+    private let hardware = AudioHardware()
+
+    // MARK: - Lifecycle
+
+    init() {
+        hardware.enableDeviceMonitoring()
+    }
+
+    deinit {
+        hardware.disableDeviceMonitoring()
     }
 }

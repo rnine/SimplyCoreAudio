@@ -17,9 +17,7 @@ public final class AudioStream: AudioObject {
     /// This audio stream's identifier.
     ///
     /// - Returns: An `AudioObjectID`.
-    public var id: AudioObjectID {
-        return objectID
-    }
+    public var id: AudioObjectID { objectID }
 
     /// Returns whether this audio stream is enabled and doing I/O.
     ///
@@ -244,20 +242,7 @@ public final class AudioStream: AudioObject {
 
     private var isRegisteredForNotifications = false
 
-    // MARK: - Public Functions
-
-    /// Returns an `AudioStream` by providing a valid audio stream identifier.
-    ///
-    /// - Note: If identifier is not valid, `nil` will be returned.
-    public static func lookup(by id: AudioObjectID) -> AudioStream? {
-        var instance = AudioObjectPool.instancePool.object(forKey: NSNumber(value: UInt(id))) as? AudioStream
-
-        if instance == nil {
-            instance = AudioStream(id: id)
-        }
-
-        return instance
-    }
+    // MARK: - Lifecycle
 
     /// Initializes an `AudioStream` by providing a valid `AudioObjectID` referencing an existing audio stream.
     private init?(id: AudioObjectID) {
@@ -273,6 +258,23 @@ public final class AudioStream: AudioObject {
         AudioObjectPool.instancePool.removeObject(forKey: NSNumber(value: UInt(objectID)))
         unregisterForNotifications()
     }
+}
+
+// MARK: - Public Functions
+
+public extension AudioStream {
+    /// Returns an `AudioStream` by providing a valid audio stream identifier.
+    ///
+    /// - Note: If identifier is not valid, `nil` will be returned.
+    static func lookup(by id: AudioObjectID) -> AudioStream? {
+        var instance = AudioObjectPool.instancePool.object(forKey: NSNumber(value: UInt(id))) as? AudioStream
+
+        if instance == nil {
+            instance = AudioStream(id: id)
+        }
+
+        return instance
+    }
 
     /// All the available physical formats for this audio stream matching the current physical format's sample rate.
     ///
@@ -284,7 +286,7 @@ public final class AudioStream: AudioObject {
     /// - SeeAlso: `availableVirtualFormatsMatchingCurrentNominalSampleRate(_:)`
     ///
     /// - Returns: *(optional)* An array of `AudioStreamBasicDescription` structs.
-    public final func availablePhysicalFormatsMatchingCurrentNominalSampleRate(_ includeNonMixable: Bool = true) -> [AudioStreamBasicDescription]? {
+    func availablePhysicalFormatsMatchingCurrentNominalSampleRate(_ includeNonMixable: Bool = true) -> [AudioStreamBasicDescription]? {
         guard let physicalFormats = availablePhysicalFormats, let physicalFormat = physicalFormat else { return nil }
 
         var filteredFormats = physicalFormats.filter { (format) -> Bool in
@@ -309,7 +311,7 @@ public final class AudioStream: AudioObject {
     /// - SeeAlso: `availablePhysicalFormatsMatchingCurrentNominalSampleRate(_:)`
     ///
     /// - Returns: *(optional)* An array of `AudioStreamBasicDescription` structs.
-    public final func availableVirtualFormatsMatchingCurrentNominalSampleRate(_ includeNonMixable: Bool = true) -> [AudioStreamBasicDescription]? {
+    func availableVirtualFormatsMatchingCurrentNominalSampleRate(_ includeNonMixable: Bool = true) -> [AudioStreamBasicDescription]? {
         guard let virtualFormats = availableVirtualFormats, let virtualFormat = virtualFormat else { return nil }
 
         var filteredFormats = virtualFormats.filter { (format) -> Bool in
@@ -323,9 +325,11 @@ public final class AudioStream: AudioObject {
 
         return filteredFormats
     }
+}
 
-    // MARK: - Private Functions
+// MARK: - Private Functions
 
+private extension AudioStream {
     /// This is an specialized version of `getPropertyData` that only requires passing an `AudioObjectPropertySelector`
     /// instead of an `AudioObjectPropertyAddress`. The scope is computed from the stream's `Direction`, and the element
     /// is assumed to be `kAudioObjectPropertyElementMaster`.
@@ -336,7 +340,7 @@ public final class AudioStream: AudioObject {
     /// - Parameter value: The value that will be returned.
     ///
     /// - Returns: An `OSStatus` with `noErr` on success, or an error code other than `noErr` when it fails.
-    private func getStreamPropertyData<T>(_ selector: AudioObjectPropertySelector, andValue value: inout T) -> OSStatus? {
+    func getStreamPropertyData<T>(_ selector: AudioObjectPropertySelector, andValue value: inout T) -> OSStatus? {
         guard let direction = direction else { return nil }
 
         var address = AudioObjectPropertyAddress(
@@ -360,7 +364,7 @@ public final class AudioStream: AudioObject {
     /// - Parameter value: The new value we want to set.
     ///
     /// - Returns: An `OSStatus` with `noErr` on success, or an error code other than `noErr` when it fails.
-    private func setStreamPropertyData<T>(_ selector: AudioObjectPropertySelector, andValue value: inout T) -> OSStatus? {
+    func setStreamPropertyData<T>(_ selector: AudioObjectPropertySelector, andValue value: inout T) -> OSStatus? {
         guard let direction = direction else { return nil }
 
         var address = AudioObjectPropertyAddress(
@@ -376,7 +380,7 @@ public final class AudioStream: AudioObject {
 
     // MARK: - Notification Book-keeping
 
-    private func registerForNotifications() {
+    func registerForNotifications() {
         if isRegisteredForNotifications {
             unregisterForNotifications()
         }
@@ -396,7 +400,7 @@ public final class AudioStream: AudioObject {
         }
     }
 
-    private func unregisterForNotifications() {
+    func unregisterForNotifications() {
         guard isRegisteredForNotifications else { return }
 
         var address = AudioObjectPropertyAddress(

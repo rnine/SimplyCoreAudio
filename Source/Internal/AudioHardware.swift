@@ -65,11 +65,11 @@ final class AudioHardware {
     }
 
     var allNonAggregateDevices: [AudioDevice] {
-        allDevices.filter { !$0.isAggregateDevice() }
+        allDevices.filter { !$0.isAggregateDevice }
     }
 
     var allAggregateDevices: [AudioDevice] {
-        allDevices.filter { $0.isAggregateDevice() }
+        allDevices.filter { $0.isAggregateDevice }
     }
 
     var defaultInputDevice: AudioDevice? {
