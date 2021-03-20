@@ -8,9 +8,6 @@ import AudioToolbox.AudioServices
 import Foundation
 import os.log
 
-/// Represents a pair of stereo channel numbers.
-public typealias StereoPair = (left: UInt32, right: UInt32)
-
 /// This class represents an audio device in the system and allows subscribing to audio device notifications.
 ///
 /// Devices may be physical or virtual. For a comprehensive list of supported types, please refer to `TransportType`.

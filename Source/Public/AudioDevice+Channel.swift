@@ -7,6 +7,9 @@
 
 import AudioToolbox.AudioServices
 
+/// Represents a pair of stereo channel numbers.
+public typealias StereoPair = (left: UInt32, right: UInt32)
+
 // MARK: - ⇉ Individual Channel Functions
 
 public extension AudioDevice {
