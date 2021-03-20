@@ -13,9 +13,6 @@ extension OSLog {
     static let `default` = OSLog(subsystem: "SimplyCoreAudio", category: "default")
 }
 
-let propertyListenerQueue = DispatchQueue(label: "io.9labs.SimplyCoreAudio.propertyListenerQueue",
-                                          target: DispatchQueue.global(qos: .userInitiated))
-
 func scope(direction: Direction) -> AudioObjectPropertyScope {
     direction == .playback ? kAudioObjectPropertyScopeOutput : kAudioObjectPropertyScopeInput
 }
