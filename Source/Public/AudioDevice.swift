@@ -8,7 +8,7 @@ import AudioToolbox.AudioServices
 import Foundation
 import os.log
 
-/// This class represents an audio device in the system and allows subscribing to audio device notifications.
+/// `AudioDevice` represents an audio device in the system.
 ///
 /// Devices may be physical or virtual. For a comprehensive list of supported types, please refer to `TransportType`.
 public final class AudioDevice: AudioObject {

@@ -8,9 +8,7 @@ import CoreAudio.AudioHardwareBase
 import Foundation
 import os.log
 
-/// `AudioStream`
-///
-/// This class represents an audio stream belonging to an audio object.
+/// `AudioStream` represents an audio stream that belongs to an audio object.
 public final class AudioStream: AudioObject {
     // MARK: - Public Properties
 

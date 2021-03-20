@@ -124,9 +124,9 @@ public extension SimplyCoreAudio {
     ///
     /// - Returns *(optional)* An aggregate `AudioDevice` if one can be created.
     func createAggregateDevice(masterDeviceUID: String,
-                                      secondDeviceUID: String?,
-                                      named name: String,
-                                      uid: String) -> AudioDevice?
+                               secondDeviceUID: String?,
+                               named name: String,
+                               uid: String) -> AudioDevice?
     {
         var deviceList: [[String: Any]] = [
             [kAudioSubDeviceUIDKey: masterDeviceUID]
