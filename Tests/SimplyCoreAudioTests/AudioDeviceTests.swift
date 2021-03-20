@@ -422,10 +422,10 @@ final class AudioDeviceTests: XCTestCase {
             return
         }
 
-        guard let device = AudioDevice.createAggregateDevice(masterDeviceUID: output,
-                                                             secondDeviceUID: input,
-                                                             named: "testCreateAggregateAudioDevice",
-                                                             uid: "testCreateAggregateAudioDevice-12345")
+        guard let device = simplyCoreAudio.createAggregateDevice(masterDeviceUID: output,
+                                                                 secondDeviceUID: input,
+                                                                 named: "testCreateAggregateAudioDevice",
+                                                                 uid: "testCreateAggregateAudioDevice-12345")
         else {
             XCTFail("Failed creating device")
             return
@@ -436,7 +436,7 @@ final class AudioDeviceTests: XCTestCase {
 
         wait(for: 2)
 
-        let error = AudioDevice.removeAggregateDevice(id: device.id)
+        let error = simplyCoreAudio.removeAggregateDevice(id: device.id)
         XCTAssertTrue(error == noErr, "Failed removing device")
 
         wait(for: 2)
