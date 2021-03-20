@@ -7,8 +7,8 @@
 import CoreAudio.AudioHardwareBase
 import Foundation
 
-/// `AudioObject` represents a Core Audio object currently present in the system. In Core Audio,
-/// audio objects are referenced by its `AudioObjectID` and belong to a specific `AudioClassID`.
+/// `AudioObject` represents a Core Audio managed audio object. In Core Audio, audio objects are referenced by
+/// its `AudioObjectID` and belong to a specific `AudioClassID`.
 ///
 /// For more information, please refer to Core Audio's documentation or source code.
 public class AudioObject {
@@ -71,7 +71,7 @@ public class AudioObject {
         return AudioDevice.lookup(by: object.objectID)
     }()
 
-    /// The audio object's name as reported by the system.
+    /// The audio object's name as reported by Core Audio.
     ///
     /// - Returns: *(optional)* An audio object's name.
     public var name: String? {

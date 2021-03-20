@@ -8,7 +8,7 @@ import AudioToolbox.AudioServices
 import Foundation
 import os.log
 
-/// `AudioDevice` represents an audio device in the system.
+/// `AudioDevice` represents an audio device managed by Core Audio.
 ///
 /// Devices may be physical or virtual. For a comprehensive list of supported types, please refer to `TransportType`.
 public final class AudioDevice: AudioObject {
@@ -22,7 +22,7 @@ public final class AudioDevice: AudioObject {
 
     // MARK: - Lifecycle Functions
 
-    /// Initializes an `AudioDevice` by providing a valid audio device identifier that is present in the system.
+    /// Initializes an `AudioDevice` by providing a valid audio device identifier.
     ///
     /// - Parameter id: An audio device identifier.
     private init?(id: AudioObjectID) {
@@ -42,7 +42,7 @@ public final class AudioDevice: AudioObject {
 
     // MARK: - AudioObject Overrides
 
-    /// The audio device's name as reported by the system.
+    /// The audio device's name as reported by Core Audio.
     ///
     /// - Returns: An audio device's name.
     public override var name: String { super.name ?? cachedDeviceName ?? "<Unknown Device Name>" }

@@ -17,7 +17,7 @@ import os.log
 public final class SimplyCoreAudio {
     // MARK: - Public Properties
 
-    /// All the audio device identifiers currently available in the system.
+    /// All the audio device identifiers currently available.
     ///
     /// - Note: This list may also include *Aggregate* and *Multi-Output* devices.
     ///
@@ -26,7 +26,7 @@ public final class SimplyCoreAudio {
         hardware.allDeviceIDs
     }
 
-    /// All the audio devices currently available in the system.
+    /// All the audio devices currently available.
     ///
     /// - Note: This list may also include *Aggregate* and *Multi-Output* devices.
     ///
@@ -35,7 +35,7 @@ public final class SimplyCoreAudio {
         hardware.allDevices
     }
 
-    /// All the devices in the system that have at least one input.
+    /// All the devices that have at least one input.
     ///
     /// - Note: This list may also include *Aggregate* devices.
     ///
@@ -44,7 +44,7 @@ public final class SimplyCoreAudio {
         hardware.allInputDevices
     }
 
-    /// All the devices in the system that have at least one output.
+    /// All the devices that have at least one output.
     ///
     /// - Note: The list may also include *Aggregate* and *Multi-Output* devices.
     ///
@@ -53,7 +53,7 @@ public final class SimplyCoreAudio {
         hardware.allOutputDevices
     }
 
-    /// All the devices in the system that support input and output.
+    /// All the devices that support input and output.
     ///
     /// - Note: The list may also include *Aggregate* and *Multi-Output* devices.
     ///
@@ -62,14 +62,14 @@ public final class SimplyCoreAudio {
         hardware.allIODevices
     }
 
-    /// All the devices in the system that are real devices - not aggregate ones.
+    /// All the devices that are real devices — not aggregate ones.
     ///
     /// - Returns: An array of `AudioDevice` objects.
     public var allNonAggregateDevices: [AudioDevice] {
         hardware.allNonAggregateDevices
     }
 
-    /// All the devices in the system that are aggregate devices.
+    /// All the devices that are aggregate devices.
     ///
     /// - Returns: An array of `AudioDevice` objects.
     public var allAggregateDevices: [AudioDevice] {
