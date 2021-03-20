@@ -12,29 +12,20 @@ public struct VolumeInfo {
     public var volume: Float32?
 
     /// Returns whether volume is present.
-    public var hasVolume: Bool
+    public var hasVolume: Bool = false
 
     /// Returns whether volume can be set.
-    public var canSetVolume: Bool
+    public var canSetVolume: Bool = false
 
     /// Returns whether audio can be muted.
-    public var canMute: Bool
+    public var canMute: Bool = false
 
     /// Returns whether audio is muted.
-    public var isMuted: Bool
+    public var isMuted: Bool = false
 
     /// Returns whether play thru is supported.
-    public var canPlayThru: Bool
+    public var canPlayThru: Bool = false
 
     /// Returns whether play thru is enabled.
-    public var isPlayThruSet: Bool
-
-    init() {
-        hasVolume = false
-        canSetVolume = false
-        canMute = false
-        isMuted = false
-        canPlayThru = false
-        isPlayThruSet = false
-    }
+    public var isPlayThruSet: Bool = false
 }
