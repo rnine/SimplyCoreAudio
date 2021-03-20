@@ -182,8 +182,8 @@ private func propertyListener(objectID: UInt32,
         }
 
         let userInfo: [AnyHashable: Any] = [
-            "added": addedDevices,
-            "removed": removedDevices
+            "addedDevices": addedDevices,
+            "removedDevices": removedDevices
         ]
 
         notificationCenter.post(name: Notifications.deviceListChanged.name, object: _self, userInfo: userInfo)
