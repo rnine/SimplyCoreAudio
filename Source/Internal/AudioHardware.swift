@@ -197,5 +197,5 @@ private func propertyListener(objectID: UInt32,
         break
     }
 
-    return noErr
+    return kAudioHardwareNoError
 }

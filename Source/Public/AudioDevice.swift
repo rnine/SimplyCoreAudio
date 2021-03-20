@@ -163,7 +163,9 @@ private func propertyListener(objectID: UInt32,
                               numInAddresses: UInt32,
                               inAddresses : UnsafePointer<AudioObjectPropertyAddress>,
                               clientData: Optional<UnsafeMutableRawPointer>) -> Int32 {
-    guard AudioObjectPool.instancePool.object(forKey: NSNumber(value: UInt(objectID))) != nil else { return -1 }
+    guard AudioObjectPool.instancePool.object(forKey: NSNumber(value: UInt(objectID))) != nil else {
+        return kAudioHardwareBadObjectError
+    }
 
     let _self: AudioDevice = Unmanaged<AudioDevice>.fromOpaque(clientData!).takeUnretainedValue()
     let address = inAddresses.pointee
@@ -217,5 +219,5 @@ private func propertyListener(objectID: UInt32,
         break
     }
 
-    return noErr
+    return kAudioHardwareNoError
 }
