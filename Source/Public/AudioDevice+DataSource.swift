@@ -13,9 +13,9 @@ public extension AudioDevice {
     /// A list of item IDs for the currently selected data sources.
     ///
     /// - Returns: *(optional)* A `UInt32` array containing all the item IDs.
-    func dataSource(direction: Direction) -> [UInt32]? {
+    func dataSource(scope: Scope) -> [UInt32]? {
         guard let address = validAddress(selector: kAudioDevicePropertyDataSource,
-                                         scope: scope(direction: direction)) else { return nil }
+                                         scope: propertyScope(from: scope)) else { return nil }
 
         var dataSourceIDs = [UInt32]()
         let status = getPropertyDataArray(address, value: &dataSourceIDs, andDefaultValue: 0)
@@ -28,9 +28,9 @@ public extension AudioDevice {
     /// A list of all the IDs of all the data sources currently available.
     ///
     /// - Returns: *(optional)* A `UInt32` array containing all the item IDs.
-    func dataSources(direction: Direction) -> [UInt32]? {
+    func dataSources(scope: Scope) -> [UInt32]? {
         guard let address = validAddress(selector: kAudioDevicePropertyDataSources,
-                                         scope: scope(direction: direction)) else { return nil }
+                                         scope: propertyScope(from: scope)) else { return nil }
 
         var dataSourceIDs = [UInt32]()
         let status = getPropertyDataArray(address, value: &dataSourceIDs, andDefaultValue: 0)
@@ -45,7 +45,7 @@ public extension AudioDevice {
     /// - Parameter dataSourceID: A data source ID.
     ///
     /// - Returns: *(optional)* A `String` with the data source name.
-    func dataSourceName(dataSourceID: UInt32, direction: Direction) -> String? {
+    func dataSourceName(dataSourceID: UInt32, scope: Scope) -> String? {
         var name: CFString = "" as CFString
         var mDataSourceID = dataSourceID
 
@@ -60,7 +60,7 @@ public extension AudioDevice {
 
                 let address = AudioObjectPropertyAddress(
                     mSelector: kAudioDevicePropertyDataSourceNameForIDCFString,
-                    mScope: scope(direction: direction),
+                    mScope: propertyScope(from: scope),
                     mElement: kAudioObjectPropertyElementMaster
                 )
 

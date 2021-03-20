@@ -13,20 +13,20 @@ public typealias StereoPair = (left: UInt32, right: UInt32)
 // MARK: - ⇉ Individual Channel Functions
 
 public extension AudioDevice {
-    /// A `VolumeInfo` struct containing information about a particular channel and direction combination.
+    /// A `VolumeInfo` struct containing information about a particular channel and scope combination.
     ///
     /// - Parameter channel: A channel.
-    /// - Parameter direction: A direction.
+    /// - Parameter scope: A scope.
     ///
     /// - Returns: *(optional)* A `VolumeInfo` struct.
-    func volumeInfo(channel: UInt32, direction: Direction) -> VolumeInfo? {
+    func volumeInfo(channel: UInt32, scope: Scope) -> VolumeInfo? {
         // Obtain volume info
         var address: AudioObjectPropertyAddress
         var hasAnyProperty = false
 
         address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyVolumeScalar,
-            mScope: scope(direction: direction),
+            mScope: propertyScope(from: scope),
             mElement: channel
         )
 
@@ -93,134 +93,134 @@ public extension AudioDevice {
         return hasAnyProperty ? volumeInfo : nil
     }
 
-    /// The scalar volume for a given channel and direction.
+    /// The scalar volume for a given channel and scope.
     ///
     /// - Parameter channel: A channel.
-    /// - Parameter direction: A direction.
+    /// - Parameter scope: A scope.
     ///
     /// - Returns: *(optional)* A `Float32` value with the scalar volume.
-    func volume(channel: UInt32, direction: Direction) -> Float32? {
+    func volume(channel: UInt32, scope: Scope) -> Float32? {
         guard let address = validAddress(selector: kAudioDevicePropertyVolumeScalar,
-                                         scope: scope(direction: direction),
+                                         scope: propertyScope(from: scope),
                                          element: channel) else { return nil }
 
         return getProperty(address: address)
     }
 
-    /// The volume in decibels *(dbFS)* for a given channel and direction.
+    /// The volume in decibels *(dbFS)* for a given channel and scope.
     ///
     /// - Parameter channel: A channel.
-    /// - Parameter direction: A direction.
+    /// - Parameter scope: A scope.
     ///
     /// - Returns: *(optional)* A `Float32` value with the volume in decibels.
-    func volumeInDecibels(channel: UInt32, direction: Direction) -> Float32? {
+    func volumeInDecibels(channel: UInt32, scope: Scope) -> Float32? {
         guard let address = validAddress(selector: kAudioDevicePropertyVolumeDecibels,
-                                         scope: scope(direction: direction),
+                                         scope: propertyScope(from: scope),
                                          element: channel) else { return nil }
 
         return getProperty(address: address)
     }
 
-    /// Sets the channel's volume for a given direction.
+    /// Sets the channel's volume for a given scope.
     ///
     /// - Parameter volume: The new volume as a scalar value ranging from 0 to 1.
     /// - Parameter channel: A channel.
-    /// - Parameter direction: A direction.
+    /// - Parameter scope: A scope.
     ///
     /// - Returns: `true` on success, `false` otherwise.
-    @discardableResult func setVolume(_ volume: Float32, channel: UInt32, direction: Direction) -> Bool {
+    @discardableResult func setVolume(_ volume: Float32, channel: UInt32, scope: Scope) -> Bool {
         guard let address = validAddress(selector: kAudioDevicePropertyVolumeScalar,
-                                         scope: scope(direction: direction),
+                                         scope: propertyScope(from: scope),
                                          element: channel) else { return false }
 
         return setProperty(address: address, value: volume)
     }
 
-    /// Mutes a channel for a given direction.
+    /// Mutes a channel for a given scope.
     ///
     /// - Parameter shouldMute: Whether channel should be muted or not.
     /// - Parameter channel: A channel.
-    /// - Parameter direction: A direction.
+    /// - Parameter scope: A scope.
     ///
     /// - Returns: `true` on success, `false` otherwise.
-    @discardableResult func setMute(_ shouldMute: Bool, channel: UInt32, direction: Direction) -> Bool {
+    @discardableResult func setMute(_ shouldMute: Bool, channel: UInt32, scope: Scope) -> Bool {
         guard let address = validAddress(selector: kAudioDevicePropertyMute,
-                                         scope: scope(direction: direction),
+                                         scope: propertyScope(from: scope),
                                          element: channel) else { return false }
 
         return setProperty(address: address, value: shouldMute)
     }
 
-    /// Whether a channel is muted for a given direction.
+    /// Whether a channel is muted for a given scope.
     ///
     /// - Parameter channel: A channel.
-    /// - Parameter direction: A direction.
+    /// - Parameter scope: A scope.
     ///
     /// - Returns: *(optional)* `true` if channel is muted, false otherwise.
-    func isMuted(channel: UInt32, direction: Direction) -> Bool? {
+    func isMuted(channel: UInt32, scope: Scope) -> Bool? {
         guard let address = validAddress(selector: kAudioDevicePropertyMute,
-                                         scope: scope(direction: direction),
+                                         scope: propertyScope(from: scope),
                                          element: channel) else { return nil }
 
         return getProperty(address: address)
     }
 
-    /// Whether the master channel is muted for a given direction.
+    /// Whether the master channel is muted for a given scope.
     ///
-    /// - Parameter direction: A direction.
+    /// - Parameter scope: A scope.
     ///
     /// - Returns: `true` when muted, `false` otherwise.
-    func isMasterChannelMuted(direction: Direction) -> Bool? {
-        isMuted(channel: kAudioObjectPropertyElementMaster, direction: direction)
+    func isMasterChannelMuted(scope: Scope) -> Bool? {
+        isMuted(channel: kAudioObjectPropertyElementMaster, scope: scope)
     }
 
-    /// Whether a channel can be muted for a given direction.
+    /// Whether a channel can be muted for a given scope.
     ///
     /// - Parameter channel: A channel.
-    /// - Parameter direction: A direction.
+    /// - Parameter scope: A scope.
     ///
     /// - Returns: `true` if channel can be muted, `false` otherwise.
-    func canMute(channel: UInt32, direction: Direction) -> Bool {
-        volumeInfo(channel: channel, direction: direction)?.canMute ?? false
+    func canMute(channel: UInt32, scope: Scope) -> Bool {
+        volumeInfo(channel: channel, scope: scope)?.canMute ?? false
     }
 
-    /// Whether the master volume can be muted for a given direction.
+    /// Whether the master volume can be muted for a given scope.
     ///
-    /// - Parameter direction: A direction.
+    /// - Parameter scope: A scope.
     ///
     /// - Returns: `true` when the volume can be muted, `false` otherwise.
-    func canMuteMasterChannel(direction: Direction) -> Bool {
-        if canMute(channel: kAudioObjectPropertyElementMaster, direction: direction) == true {
+    func canMuteMasterChannel(scope: Scope) -> Bool {
+        if canMute(channel: kAudioObjectPropertyElementMaster, scope: scope) == true {
             return true
         }
 
-        guard let preferredChannelsForStereo = preferredChannelsForStereo(direction: direction) else { return false }
-        guard canMute(channel: preferredChannelsForStereo.0, direction: direction) else { return false }
-        guard canMute(channel: preferredChannelsForStereo.1, direction: direction) else { return false }
+        guard let preferredChannelsForStereo = preferredChannelsForStereo(scope: scope) else { return false }
+        guard canMute(channel: preferredChannelsForStereo.0, scope: scope) else { return false }
+        guard canMute(channel: preferredChannelsForStereo.1, scope: scope) else { return false }
 
         return true
     }
 
-    /// Whether a channel's volume can be set for a given direction.
+    /// Whether a channel's volume can be set for a given scope.
     ///
     /// - Parameter channel: A channel.
-    /// - Parameter direction: A direction.
+    /// - Parameter scope: A scope.
     ///
     /// - Returns: `true` if the channel's volume can be set, `false` otherwise.
-    func canSetVolume(channel: UInt32, direction: Direction) -> Bool {
-        volumeInfo(channel: channel, direction: direction)?.canSetVolume ?? false
+    func canSetVolume(channel: UInt32, scope: Scope) -> Bool {
+        volumeInfo(channel: channel, scope: scope)?.canSetVolume ?? false
     }
 
     /// A list of channel numbers that best represent the preferred stereo channels
     /// used by this device. In most occasions this will be channels 1 and 2.
     ///
-    /// - Parameter direction: A direction.
+    /// - Parameter scope: A scope.
     ///
     /// - Returns: A `StereoPair` tuple containing the channel numbers.
-    func preferredChannelsForStereo(direction: Direction) -> StereoPair? {
+    func preferredChannelsForStereo(scope: Scope) -> StereoPair? {
         let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyPreferredChannelsForStereo,
-            mScope: scope(direction: direction),
+            mScope: propertyScope(from: scope),
             mElement: kAudioObjectPropertyElementMaster
         )
 
@@ -232,16 +232,16 @@ public extension AudioDevice {
         return (left: preferredChannels[0], right: preferredChannels[1])
     }
 
-    /// Attempts to set the new preferred channels for stereo for a given direction.
+    /// Attempts to set the new preferred channels for stereo for a given scope.
     ///
     /// - Parameter channels: A `StereoPair` representing the preferred channels.
-    /// - Parameter direction: A direction.
+    /// - Parameter scope: A scope.
     ///
     /// - Returns: `true` on success, `false` otherwise.
-    @discardableResult func setPreferredChannelsForStereo(channels: StereoPair, direction: Direction) -> Bool {
+    @discardableResult func setPreferredChannelsForStereo(channels: StereoPair, scope: Scope) -> Bool {
         let address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyPreferredChannelsForStereo,
-            mScope: scope(direction: direction),
+            mScope: propertyScope(from: scope),
             mElement: kAudioObjectPropertyElementMaster
         )
 

@@ -6,7 +6,7 @@
 
 import Foundation
 
-/// This struct holds volume, mute, and playthru information about a given channel and direction of an `AudioDevice`.
+/// This struct holds volume, mute, and playthru information about a given channel and scope of an `AudioDevice`.
 public struct VolumeInfo {
     /// Returns an scalar volume, or `nil` if unavailable.
     public var volume: Float32?

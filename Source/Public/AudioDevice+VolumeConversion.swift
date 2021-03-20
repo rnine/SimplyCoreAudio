@@ -10,16 +10,16 @@ import AudioToolbox.AudioServices
 // MARK: - ♺ Volume Conversion Functions
 
 public extension AudioDevice {
-    /// Converts a scalar volume to a decibel *(dbFS)* volume for the given channel and direction.
+    /// Converts a scalar volume to a decibel *(dbFS)* volume for the given channel and scope.
     ///
     /// - Parameter volume: A scalar volume.
     /// - Parameter channel: A channel number.
-    /// - Parameter direction: A direction.
+    /// - Parameter scope: A scope.
     ///
     /// - Returns: *(optional)* A `Float32` value with the scalar volume converted in decibels.
-    func scalarToDecibels(volume: Float32, channel: UInt32, direction: Direction) -> Float32? {
+    func scalarToDecibels(volume: Float32, channel: UInt32, scope: Scope) -> Float32? {
         guard let address = validAddress(selector: kAudioDevicePropertyVolumeScalarToDecibels,
-                                         scope: scope(direction: direction),
+                                         scope: propertyScope(from: scope),
                                          element: channel) else { return nil }
 
         var inOutVolume = volume
@@ -28,16 +28,16 @@ public extension AudioDevice {
         return noErr == status ? inOutVolume : nil
     }
 
-    /// Converts a relative decibel *(dbFS)* volume to a scalar volume for the given channel and direction.
+    /// Converts a relative decibel *(dbFS)* volume to a scalar volume for the given channel and scope.
     ///
     /// - Parameter volume: A volume in relative decibels (dbFS).
     /// - Parameter channel: A channel number.
-    /// - Parameter direction: A direction.
+    /// - Parameter scope: A scope.
     ///
     /// - Returns: *(optional)* A `Float32` value with the decibels volume converted to scalar.
-    func decibelsToScalar(volume: Float32, channel: UInt32, direction: Direction) -> Float32? {
+    func decibelsToScalar(volume: Float32, channel: UInt32, scope: Scope) -> Float32? {
         guard let address = validAddress(selector: kAudioDevicePropertyVolumeDecibelsToScalar,
-                                         scope: scope(direction: direction),
+                                         scope: propertyScope(from: scope),
                                          element: channel) else { return nil }
 
         var inOutVolume = volume

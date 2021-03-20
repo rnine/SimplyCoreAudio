@@ -10,26 +10,26 @@ import AudioToolbox.AudioServices
 // MARK: - ↹ Latency Functions
 
 public extension AudioDevice {
-    /// The latency in frames for the specified direction.
+    /// The latency in frames for the specified scope.
     ///
-    /// - Parameter direction: A direction.
+    /// - Parameter scope: A scope.
     ///
     /// - Returns: *(optional)* A `UInt32` value with the latency in frames.
-    func latency(direction: Direction) -> UInt32? {
+    func latency(scope: Scope) -> UInt32? {
         guard let address = validAddress(selector: kAudioDevicePropertyLatency,
-                                         scope: scope(direction: direction)) else { return nil }
+                                         scope: propertyScope(from: scope)) else { return nil }
 
         return getProperty(address: address)
     }
 
-    /// The safety offset frames for the specified direction.
+    /// The safety offset frames for the specified scope.
     ///
-    /// - Parameter direction: A direction.
+    /// - Parameter scope: A scope.
     ///
     /// - Returns: *(optional)* A `UInt32` value with the safety offset in frames.
-    func safetyOffset(direction: Direction) -> UInt32? {
+    func safetyOffset(scope: Scope) -> UInt32? {
         guard let address = validAddress(selector: kAudioDevicePropertySafetyOffset,
-                                         scope: scope(direction: direction)) else { return nil }
+                                         scope: propertyScope(from: scope)) else { return nil }
 
         return getProperty(address: address)
     }

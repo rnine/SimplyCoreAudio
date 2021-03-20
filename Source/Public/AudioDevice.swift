@@ -185,14 +185,14 @@ private func propertyListener(objectID: UInt32,
     case kAudioDevicePropertyVolumeScalar:
         let userInfo: [AnyHashable: Any] = [
             "channel": address.mElement,
-            "direction": direction
+            "scope": scope
         ]
 
         notificationCenter.post(name: Notifications.deviceVolumeDidChange.name, object: _self, userInfo: userInfo)
     case kAudioDevicePropertyMute:
         let userInfo: [AnyHashable: Any] = [
             "channel": address.mElement,
-            "direction": direction
+            "scope": scope
         ]
 
         notificationCenter.post(name: Notifications.deviceMuteDidChange.name, object: _self, userInfo: userInfo)

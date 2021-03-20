@@ -34,7 +34,7 @@ public extension AudioDevice {
     /// - Returns: An array of `AudioDevice` objects.
     var ownedAggregateInputDevices: [AudioDevice]? {
         ownedAggregateDevices?.filter {
-            guard let channels = $0.layoutChannels(direction: .recording) else { return false }
+            guard let channels = $0.layoutChannels(scope: .input) else { return false }
             return channels > 0
         }
     }
@@ -44,7 +44,7 @@ public extension AudioDevice {
     /// - Returns: An array of `AudioDevice` objects.
     var ownedAggregateOutputDevices: [AudioDevice]? {
         ownedAggregateDevices?.filter {
-            guard let channels = $0.layoutChannels(direction: .playback) else { return false }
+            guard let channels = $0.layoutChannels(scope: .output) else { return false }
             return channels > 0
         }
     }

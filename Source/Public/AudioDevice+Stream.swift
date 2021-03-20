@@ -10,14 +10,14 @@ import AudioToolbox.AudioServices
 // MARK: - ♨︎ Stream Functions
 
 public extension AudioDevice {
-    /// Returns a list of streams for a given direction.
+    /// Returns a list of streams for a given scope.
     ///
-    /// - Parameter direction: A direction.
+    /// - Parameter scope: A scope.
     ///
     /// - Returns: *(optional)* An array of `AudioStream` objects.
-    func streams(direction: Direction) -> [AudioStream]? {
+    func streams(scope: Scope) -> [AudioStream]? {
         guard let address = validAddress(selector: kAudioDevicePropertyStreams,
-                                         scope: scope(direction: direction)) else { return nil }
+                                         scope: propertyScope(from: scope)) else { return nil }
 
         var streamIDs = [AudioStreamID]()
         let status = getPropertyDataArray(address, value: &streamIDs, andDefaultValue: 0)

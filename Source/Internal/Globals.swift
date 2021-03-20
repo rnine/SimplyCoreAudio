@@ -15,17 +15,23 @@ extension OSLog {
     static let `default` = OSLog(subsystem: subsystem, category: "default")
 }
 
-func scope(direction: Direction) -> AudioObjectPropertyScope {
-    direction == .playback ? kAudioObjectPropertyScopeOutput : kAudioObjectPropertyScopeInput
+func propertyScope(from scope: Scope) -> AudioObjectPropertyScope {
+    switch scope {
+    case .global: return kAudioObjectPropertyScopeGlobal
+    case .input: return kAudioObjectPropertyScopeInput
+    case .output: return kAudioObjectPropertyScopeOutput
+    case .playthrough: return kAudioObjectPropertyScopePlayThrough
+    case .wildcard: return kAudioObjectPropertyScopeWildcard
+    }
 }
 
-func direction(to scope: AudioObjectPropertyScope) -> Direction? {
-    switch scope {
-    case kAudioObjectPropertyScopeOutput:
-        return .playback
-    case kAudioObjectPropertyScopeInput:
-        return .recording
-    default:
-        return nil
+func scope(from propertyScope: AudioObjectPropertyScope) -> Scope? {
+    switch propertyScope {
+    case kAudioObjectPropertyScopeGlobal: return .global
+    case kAudioObjectPropertyScopeInput: return .input
+    case kAudioObjectPropertyScopeOutput: return .output
+    case kAudioObjectPropertyScopePlayThrough: return .playthrough
+    case kAudioObjectPropertyScopeWildcard: return .wildcard
+    default: return nil
     }
 }

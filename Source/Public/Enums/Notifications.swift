@@ -28,14 +28,14 @@ enum Notifications: String, NotificationName {
     /// audio devices (either physical or virtual.)
     case deviceOwnedObjectsDidChange
 
-    /// Called whenever the audio device's volume for a given channel and direction changes.
+    /// Called whenever the audio device's volume for a given channel and scope changes.
     ///
-    /// Returned `userInfo` object will contain the keys `channel` and `direction`.
+    /// Returned `userInfo` object will contain the keys `channel` and `scope`.
     case deviceVolumeDidChange
 
-    /// Called whenever the audio device's mute state for a given channel and direction changes.
+    /// Called whenever the audio device's mute state for a given channel and scope changes.
     ///
-    /// Returned `userInfo` object will contain the keys `channel` and `direction`.
+    /// Returned `userInfo` object will contain the keys `channel` and `scope`.
     case deviceMuteDidChange
 
     /// Called whenever the audio device's *is alive* property changes.

@@ -53,19 +53,19 @@ final class AudioDeviceTests: XCTestCase {
         XCTAssertFalse(device.isOutputOnlyDevice)
         XCTAssertFalse(device.isHidden)
 
-        XCTAssertNil(device.isJackConnected(direction: .playback))
-        XCTAssertNil(device.isJackConnected(direction: .recording))
+        XCTAssertNil(device.isJackConnected(scope: .output))
+        XCTAssertNil(device.isJackConnected(scope: .input))
 
         XCTAssertTrue(device.isAlive)
         XCTAssertFalse(device.isRunning)
         XCTAssertFalse(device.isRunningSomewhere)
 
-        XCTAssertNil(device.name(channel: 0, direction: .playback))
-        XCTAssertNil(device.name(channel: 1, direction: .playback))
-        XCTAssertNil(device.name(channel: 2, direction: .playback))
-        XCTAssertNil(device.name(channel: 0, direction: .recording))
-        XCTAssertNil(device.name(channel: 1, direction: .recording))
-        XCTAssertNil(device.name(channel: 2, direction: .recording))
+        XCTAssertNil(device.name(channel: 0, scope: .output))
+        XCTAssertNil(device.name(channel: 1, scope: .output))
+        XCTAssertNil(device.name(channel: 2, scope: .output))
+        XCTAssertNil(device.name(channel: 0, scope: .input))
+        XCTAssertNil(device.name(channel: 1, scope: .input))
+        XCTAssertNil(device.name(channel: 2, scope: .input))
 
         XCTAssertNotNil(device.ownedObjectIDs)
         XCTAssertNotNil(device.controlList)
@@ -95,11 +95,11 @@ final class AudioDeviceTests: XCTestCase {
     func testInputOutputLayout() throws {
         let device = try GetDevice()
 
-        XCTAssertEqual(device.layoutChannels(direction: .playback), 2)
-        XCTAssertEqual(device.layoutChannels(direction: .recording), 2)
+        XCTAssertEqual(device.layoutChannels(scope: .output), 2)
+        XCTAssertEqual(device.layoutChannels(scope: .input), 2)
 
-        XCTAssertEqual(device.channels(direction: .playback), 2)
-        XCTAssertEqual(device.channels(direction: .recording), 2)
+        XCTAssertEqual(device.channels(scope: .output), 2)
+        XCTAssertEqual(device.channels(scope: .input), 2)
 
         XCTAssertFalse(device.isInputOnlyDevice)
         XCTAssertFalse(device.isOutputOnlyDevice)
@@ -109,9 +109,9 @@ final class AudioDeviceTests: XCTestCase {
         let device = try GetDevice()
         var volumeInfo: VolumeInfo!
 
-        XCTAssertTrue(device.setMute(false, channel: 0, direction: .playback))
+        XCTAssertTrue(device.setMute(false, channel: 0, scope: .output))
 
-        volumeInfo = try XCTUnwrap(device.volumeInfo(channel: 0, direction: .playback))
+        volumeInfo = try XCTUnwrap(device.volumeInfo(channel: 0, scope: .output))
         XCTAssertEqual(volumeInfo.hasVolume, true)
         XCTAssertEqual(volumeInfo.canSetVolume, true)
         XCTAssertEqual(volumeInfo.canMute, true)
@@ -119,160 +119,160 @@ final class AudioDeviceTests: XCTestCase {
         XCTAssertEqual(volumeInfo.canPlayThru, false)
         XCTAssertEqual(volumeInfo.isPlayThruSet, false)
 
-        XCTAssertTrue(device.setVolume(0, channel: 0, direction: .playback))
-        volumeInfo = try XCTUnwrap(device.volumeInfo(channel: 0, direction: .playback))
+        XCTAssertTrue(device.setVolume(0, channel: 0, scope: .output))
+        volumeInfo = try XCTUnwrap(device.volumeInfo(channel: 0, scope: .output))
         XCTAssertEqual(volumeInfo.volume, 0)
 
-        XCTAssertTrue(device.setVolume(0.5, channel: 0, direction: .playback))
-        volumeInfo = try XCTUnwrap(device.volumeInfo(channel: 0, direction: .playback))
+        XCTAssertTrue(device.setVolume(0.5, channel: 0, scope: .output))
+        volumeInfo = try XCTUnwrap(device.volumeInfo(channel: 0, scope: .output))
         XCTAssertEqual(volumeInfo.volume, 0.5)
 
-        XCTAssertNil(device.volumeInfo(channel: 1, direction: .playback))
-        XCTAssertNil(device.volumeInfo(channel: 2, direction: .playback))
-        XCTAssertNil(device.volumeInfo(channel: 3, direction: .playback))
-        XCTAssertNil(device.volumeInfo(channel: 4, direction: .playback))
+        XCTAssertNil(device.volumeInfo(channel: 1, scope: .output))
+        XCTAssertNil(device.volumeInfo(channel: 2, scope: .output))
+        XCTAssertNil(device.volumeInfo(channel: 3, scope: .output))
+        XCTAssertNil(device.volumeInfo(channel: 4, scope: .output))
 
-        XCTAssertNotNil(device.volumeInfo(channel: 0, direction: .recording))
+        XCTAssertNotNil(device.volumeInfo(channel: 0, scope: .input))
 
-        XCTAssertNil(device.volumeInfo(channel: 1, direction: .recording))
-        XCTAssertNil(device.volumeInfo(channel: 2, direction: .recording))
-        XCTAssertNil(device.volumeInfo(channel: 3, direction: .recording))
-        XCTAssertNil(device.volumeInfo(channel: 4, direction: .recording))
+        XCTAssertNil(device.volumeInfo(channel: 1, scope: .input))
+        XCTAssertNil(device.volumeInfo(channel: 2, scope: .input))
+        XCTAssertNil(device.volumeInfo(channel: 3, scope: .input))
+        XCTAssertNil(device.volumeInfo(channel: 4, scope: .input))
     }
 
     func testVolume() throws {
         let device = try GetDevice()
 
-        // Playback direction
-        XCTAssertTrue(device.setVolume(0, channel: 0, direction: .playback))
-        XCTAssertEqual(device.volume(channel: 0, direction: .playback), 0)
+        // Playback scope
+        XCTAssertTrue(device.setVolume(0, channel: 0, scope: .output))
+        XCTAssertEqual(device.volume(channel: 0, scope: .output), 0)
 
-        XCTAssertTrue(device.setVolume(0.5, channel: 0, direction: .playback))
-        XCTAssertEqual(device.volume(channel: 0, direction: .playback), 0.5)
+        XCTAssertTrue(device.setVolume(0.5, channel: 0, scope: .output))
+        XCTAssertEqual(device.volume(channel: 0, scope: .output), 0.5)
 
-        XCTAssertFalse(device.setVolume(0.5, channel: 1, direction: .playback))
-        XCTAssertNil(device.volume(channel: 1, direction: .playback))
+        XCTAssertFalse(device.setVolume(0.5, channel: 1, scope: .output))
+        XCTAssertNil(device.volume(channel: 1, scope: .output))
 
-        XCTAssertFalse(device.setVolume(0.5, channel: 2, direction: .playback))
-        XCTAssertNil(device.volume(channel: 2, direction: .playback))
+        XCTAssertFalse(device.setVolume(0.5, channel: 2, scope: .output))
+        XCTAssertNil(device.volume(channel: 2, scope: .output))
 
-        // Recording direction
-        XCTAssertTrue(device.setVolume(0, channel: 0, direction: .recording))
-        XCTAssertEqual(device.volume(channel: 0, direction: .recording), 0)
+        // Recording scope
+        XCTAssertTrue(device.setVolume(0, channel: 0, scope: .input))
+        XCTAssertEqual(device.volume(channel: 0, scope: .input), 0)
 
-        XCTAssertTrue(device.setVolume(0.5, channel: 0, direction: .recording))
-        XCTAssertEqual(device.volume(channel: 0, direction: .recording), 0.5)
+        XCTAssertTrue(device.setVolume(0.5, channel: 0, scope: .input))
+        XCTAssertEqual(device.volume(channel: 0, scope: .input), 0.5)
 
-        XCTAssertFalse(device.setVolume(0.5, channel: 1, direction: .recording))
-        XCTAssertNil(device.volume(channel: 1, direction: .recording))
+        XCTAssertFalse(device.setVolume(0.5, channel: 1, scope: .input))
+        XCTAssertNil(device.volume(channel: 1, scope: .input))
 
-        XCTAssertFalse(device.setVolume(0.5, channel: 2, direction: .recording))
-        XCTAssertNil(device.volume(channel: 2, direction: .recording))
+        XCTAssertFalse(device.setVolume(0.5, channel: 2, scope: .input))
+        XCTAssertNil(device.volume(channel: 2, scope: .input))
     }
 
     func testVolumeInDecibels() throws {
         let device = try GetDevice()
 
-        // Playback direction
-        XCTAssertTrue(device.canSetVolume(channel: 0, direction: .playback))
-        XCTAssertTrue(device.setVolume(0, channel: 0, direction: .playback))
-        XCTAssertEqual(device.volumeInDecibels(channel: 0, direction: .playback), -96)
-        XCTAssertTrue(device.setVolume(0.5, channel: 0, direction: .playback))
-        XCTAssertEqual(device.volumeInDecibels(channel: 0, direction: .playback), -70.5)
+        // Output scope
+        XCTAssertTrue(device.canSetVolume(channel: 0, scope: .output))
+        XCTAssertTrue(device.setVolume(0, channel: 0, scope: .output))
+        XCTAssertEqual(device.volumeInDecibels(channel: 0, scope: .output), -96)
+        XCTAssertTrue(device.setVolume(0.5, channel: 0, scope: .output))
+        XCTAssertEqual(device.volumeInDecibels(channel: 0, scope: .output), -70.5)
 
-        XCTAssertFalse(device.canSetVolume(channel: 1, direction: .playback))
-        XCTAssertFalse(device.setVolume(0.5, channel: 1, direction: .playback))
-        XCTAssertNil(device.volumeInDecibels(channel: 1, direction: .playback))
+        XCTAssertFalse(device.canSetVolume(channel: 1, scope: .output))
+        XCTAssertFalse(device.setVolume(0.5, channel: 1, scope: .output))
+        XCTAssertNil(device.volumeInDecibels(channel: 1, scope: .output))
 
-        XCTAssertFalse(device.canSetVolume(channel: 2, direction: .playback))
-        XCTAssertFalse(device.setVolume(0.5, channel: 2, direction: .playback))
-        XCTAssertNil(device.volumeInDecibels(channel: 2, direction: .playback))
+        XCTAssertFalse(device.canSetVolume(channel: 2, scope: .output))
+        XCTAssertFalse(device.setVolume(0.5, channel: 2, scope: .output))
+        XCTAssertNil(device.volumeInDecibels(channel: 2, scope: .output))
 
-        // Recording direction
-        XCTAssertTrue(device.canSetVolume(channel: 0, direction: .recording))
-        XCTAssertTrue(device.setVolume(0, channel: 0, direction: .recording))
-        XCTAssertEqual(device.volumeInDecibels(channel: 0, direction: .recording), -96)
-        XCTAssertTrue(device.setVolume(0.5, channel: 0, direction: .recording))
-        XCTAssertEqual(device.volumeInDecibels(channel: 0, direction: .recording), -70.5)
+        // Input scope
+        XCTAssertTrue(device.canSetVolume(channel: 0, scope: .input))
+        XCTAssertTrue(device.setVolume(0, channel: 0, scope: .input))
+        XCTAssertEqual(device.volumeInDecibels(channel: 0, scope: .input), -96)
+        XCTAssertTrue(device.setVolume(0.5, channel: 0, scope: .input))
+        XCTAssertEqual(device.volumeInDecibels(channel: 0, scope: .input), -70.5)
 
-        XCTAssertFalse(device.canSetVolume(channel: 1, direction: .recording))
-        XCTAssertFalse(device.setVolume(0.5, channel: 1, direction: .recording))
-        XCTAssertNil(device.volumeInDecibels(channel: 1, direction: .recording))
+        XCTAssertFalse(device.canSetVolume(channel: 1, scope: .input))
+        XCTAssertFalse(device.setVolume(0.5, channel: 1, scope: .input))
+        XCTAssertNil(device.volumeInDecibels(channel: 1, scope: .input))
 
-        XCTAssertFalse(device.canSetVolume(channel: 2, direction: .recording))
-        XCTAssertFalse(device.setVolume(0.5, channel: 2, direction: .recording))
-        XCTAssertNil(device.volumeInDecibels(channel: 2, direction: .recording))
+        XCTAssertFalse(device.canSetVolume(channel: 2, scope: .input))
+        XCTAssertFalse(device.setVolume(0.5, channel: 2, scope: .input))
+        XCTAssertNil(device.volumeInDecibels(channel: 2, scope: .input))
     }
 
     func testMute() throws {
         let device = try GetDevice()
 
-        // Playback direction
-        XCTAssertTrue(device.canMute(channel: 0, direction: .playback))
-        XCTAssertTrue(device.setMute(true, channel: 0, direction: .playback))
-        XCTAssertEqual(device.isMuted(channel: 0, direction: .playback), true)
-        XCTAssertTrue(device.setMute(false, channel: 0, direction: .playback))
-        XCTAssertEqual(device.isMuted(channel: 0, direction: .playback), false)
+        // Output scope
+        XCTAssertTrue(device.canMute(channel: 0, scope: .output))
+        XCTAssertTrue(device.setMute(true, channel: 0, scope: .output))
+        XCTAssertEqual(device.isMuted(channel: 0, scope: .output), true)
+        XCTAssertTrue(device.setMute(false, channel: 0, scope: .output))
+        XCTAssertEqual(device.isMuted(channel: 0, scope: .output), false)
 
-        XCTAssertFalse(device.canMute(channel: 1, direction: .playback))
-        XCTAssertFalse(device.setMute(true, channel: 1, direction: .playback))
-        XCTAssertNil(device.isMuted(channel: 1, direction: .playback))
+        XCTAssertFalse(device.canMute(channel: 1, scope: .output))
+        XCTAssertFalse(device.setMute(true, channel: 1, scope: .output))
+        XCTAssertNil(device.isMuted(channel: 1, scope: .output))
 
-        XCTAssertFalse(device.canMute(channel: 2, direction: .playback))
-        XCTAssertFalse(device.setMute(true, channel: 2, direction: .playback))
-        XCTAssertNil(device.isMuted(channel: 2, direction: .playback))
+        XCTAssertFalse(device.canMute(channel: 2, scope: .output))
+        XCTAssertFalse(device.setMute(true, channel: 2, scope: .output))
+        XCTAssertNil(device.isMuted(channel: 2, scope: .output))
 
-        // Recording direction
-        XCTAssertTrue(device.canMute(channel: 0, direction: .recording))
-        XCTAssertTrue(device.setMute(true, channel: 0, direction: .recording))
-        XCTAssertEqual(device.isMuted(channel: 0, direction: .recording), true)
-        XCTAssertTrue(device.setMute(false, channel: 0, direction: .recording))
-        XCTAssertEqual(device.isMuted(channel: 0, direction: .recording), false)
+        // Input scope
+        XCTAssertTrue(device.canMute(channel: 0, scope: .input))
+        XCTAssertTrue(device.setMute(true, channel: 0, scope: .input))
+        XCTAssertEqual(device.isMuted(channel: 0, scope: .input), true)
+        XCTAssertTrue(device.setMute(false, channel: 0, scope: .input))
+        XCTAssertEqual(device.isMuted(channel: 0, scope: .input), false)
 
-        XCTAssertFalse(device.canMute(channel: 1, direction: .recording))
-        XCTAssertFalse(device.setMute(true, channel: 1, direction: .recording))
-        XCTAssertNil(device.isMuted(channel: 1, direction: .recording))
+        XCTAssertFalse(device.canMute(channel: 1, scope: .input))
+        XCTAssertFalse(device.setMute(true, channel: 1, scope: .input))
+        XCTAssertNil(device.isMuted(channel: 1, scope: .input))
 
-        XCTAssertFalse(device.canMute(channel: 2, direction: .recording))
-        XCTAssertFalse(device.setMute(true, channel: 2, direction: .recording))
-        XCTAssertNil(device.isMuted(channel: 2, direction: .recording))
+        XCTAssertFalse(device.canMute(channel: 2, scope: .input))
+        XCTAssertFalse(device.setMute(true, channel: 2, scope: .input))
+        XCTAssertNil(device.isMuted(channel: 2, scope: .input))
     }
 
     func testMasterChannelMute() throws {
         let device = try GetDevice()
 
-        XCTAssertEqual(device.canMuteMasterChannel(direction: .playback), true)
-        XCTAssertTrue(device.setMute(false, channel: 0, direction: .playback))
-        XCTAssertEqual(device.isMasterChannelMuted(direction: .playback), false)
-        XCTAssertTrue(device.setMute(true, channel: 0, direction: .playback))
-        XCTAssertEqual(device.isMasterChannelMuted(direction: .playback), true)
+        XCTAssertEqual(device.canMuteMasterChannel(scope: .output), true)
+        XCTAssertTrue(device.setMute(false, channel: 0, scope: .output))
+        XCTAssertEqual(device.isMasterChannelMuted(scope: .output), false)
+        XCTAssertTrue(device.setMute(true, channel: 0, scope: .output))
+        XCTAssertEqual(device.isMasterChannelMuted(scope: .output), true)
 
-        XCTAssertEqual(device.canMuteMasterChannel(direction: .recording), true)
-        XCTAssertTrue(device.setMute(false, channel: 0, direction: .recording))
-        XCTAssertEqual(device.isMasterChannelMuted(direction: .recording), false)
-        XCTAssertTrue(device.setMute(true, channel: 0, direction: .recording))
-        XCTAssertEqual(device.isMasterChannelMuted(direction: .recording), true)
+        XCTAssertEqual(device.canMuteMasterChannel(scope: .input), true)
+        XCTAssertTrue(device.setMute(false, channel: 0, scope: .input))
+        XCTAssertEqual(device.isMasterChannelMuted(scope: .input), false)
+        XCTAssertTrue(device.setMute(true, channel: 0, scope: .input))
+        XCTAssertEqual(device.isMasterChannelMuted(scope: .input), true)
     }
 
     func testPreferredChannelsForStereo() throws {
         let device = try GetDevice()
-        var preferredChannels = try XCTUnwrap(device.preferredChannelsForStereo(direction: .playback))
+        var preferredChannels = try XCTUnwrap(device.preferredChannelsForStereo(scope: .output))
 
         XCTAssertEqual(preferredChannels.left, 1)
         XCTAssertEqual(preferredChannels.right, 2)
 
-        XCTAssertTrue(device.setPreferredChannelsForStereo(channels: StereoPair(left: 1, right: 1), direction: .playback))
-        preferredChannels = try XCTUnwrap(device.preferredChannelsForStereo(direction: .playback))
+        XCTAssertTrue(device.setPreferredChannelsForStereo(channels: StereoPair(left: 1, right: 1), scope: .output))
+        preferredChannels = try XCTUnwrap(device.preferredChannelsForStereo(scope: .output))
         XCTAssertEqual(preferredChannels.left, 1)
         XCTAssertEqual(preferredChannels.right, 1)
 
-        XCTAssertTrue(device.setPreferredChannelsForStereo(channels: StereoPair(left: 2, right: 2), direction: .playback))
-        preferredChannels = try XCTUnwrap(device.preferredChannelsForStereo(direction: .playback))
+        XCTAssertTrue(device.setPreferredChannelsForStereo(channels: StereoPair(left: 2, right: 2), scope: .output))
+        preferredChannels = try XCTUnwrap(device.preferredChannelsForStereo(scope: .output))
         XCTAssertEqual(preferredChannels.left, 2)
         XCTAssertEqual(preferredChannels.right, 2)
 
-        XCTAssertTrue(device.setPreferredChannelsForStereo(channels: StereoPair(left: 1, right: 2), direction: .playback))
-        preferredChannels = try XCTUnwrap(device.preferredChannelsForStereo(direction: .playback))
+        XCTAssertTrue(device.setPreferredChannelsForStereo(channels: StereoPair(left: 1, right: 2), scope: .output))
+        preferredChannels = try XCTUnwrap(device.preferredChannelsForStereo(scope: .output))
         XCTAssertEqual(preferredChannels.left, 1)
         XCTAssertEqual(preferredChannels.right, 2)
     }
@@ -280,32 +280,32 @@ final class AudioDeviceTests: XCTestCase {
     func testVirtualMasterChannels() throws {
         let device = try GetDevice()
 
-        XCTAssertTrue(device.canSetVirtualMasterVolume(direction: .playback))
-        XCTAssertTrue(device.canSetVirtualMasterVolume(direction: .recording))
+        XCTAssertTrue(device.canSetVirtualMasterVolume(scope: .output))
+        XCTAssertTrue(device.canSetVirtualMasterVolume(scope: .input))
 
-        XCTAssertTrue(device.setVirtualMasterVolume(0.0, direction: .playback))
-        XCTAssertEqual(device.virtualMasterVolume(direction: .playback), 0.0)
-        //XCTAssertEqual(device.virtualMasterVolumeInDecibels(direction: .playback), -96.0)
-        XCTAssertTrue(device.setVirtualMasterVolume(0.5, direction: .playback))
-        XCTAssertEqual(device.virtualMasterVolume(direction: .playback), 0.5)
-        //XCTAssertEqual(device.virtualMasterVolumeInDecibels(direction: .playback), -70.5)
+        XCTAssertTrue(device.setVirtualMasterVolume(0.0, scope: .output))
+        XCTAssertEqual(device.virtualMasterVolume(scope: .output), 0.0)
+        //XCTAssertEqual(device.virtualMasterVolumeInDecibels(scope: .output), -96.0)
+        XCTAssertTrue(device.setVirtualMasterVolume(0.5, scope: .output))
+        XCTAssertEqual(device.virtualMasterVolume(scope: .output), 0.5)
+        //XCTAssertEqual(device.virtualMasterVolumeInDecibels(scope: .output), -70.5)
 
-        XCTAssertTrue(device.setVirtualMasterVolume(0.0, direction: .recording))
-        XCTAssertEqual(device.virtualMasterVolume(direction: .recording), 0.0)
-        //XCTAssertEqual(device.virtualMasterVolumeInDecibels(direction: .recording), -96.0)
-        XCTAssertTrue(device.setVirtualMasterVolume(0.5, direction: .recording))
-        XCTAssertEqual(device.virtualMasterVolume(direction: .recording), 0.5)
-        //XCTAssertEqual(device.virtualMasterVolumeInDecibels(direction: .recording), -70.5)
+        XCTAssertTrue(device.setVirtualMasterVolume(0.0, scope: .input))
+        XCTAssertEqual(device.virtualMasterVolume(scope: .input), 0.0)
+        //XCTAssertEqual(device.virtualMasterVolumeInDecibels(scope: .input), -96.0)
+        XCTAssertTrue(device.setVirtualMasterVolume(0.5, scope: .input))
+        XCTAssertEqual(device.virtualMasterVolume(scope: .input), 0.5)
+        //XCTAssertEqual(device.virtualMasterVolumeInDecibels(scope: .input), -70.5)
     }
 
     func testVirtualMasterBalance() throws {
         let device = try GetDevice()
 
-        XCTAssertFalse(device.setVirtualMasterBalance(0.0, direction: .playback))
-        XCTAssertNil(device.virtualMasterBalance(direction: .playback))
+        XCTAssertFalse(device.setVirtualMasterBalance(0.0, scope: .output))
+        XCTAssertNil(device.virtualMasterBalance(scope: .output))
 
-        XCTAssertFalse(device.setVirtualMasterBalance(0.0, direction: .recording))
-        XCTAssertNil(device.virtualMasterBalance(direction: .recording))
+        XCTAssertFalse(device.setVirtualMasterBalance(0.0, scope: .input))
+        XCTAssertNil(device.virtualMasterBalance(scope: .input))
     }
 
     func testSampleRate() throws {
@@ -327,31 +327,31 @@ final class AudioDeviceTests: XCTestCase {
     func testDataSource() throws {
         let device = try GetDevice()
 
-        XCTAssertNotNil(device.dataSource(direction: .playback))
-        XCTAssertNotNil(device.dataSource(direction: .recording))
+        XCTAssertNotNil(device.dataSource(scope: .output))
+        XCTAssertNotNil(device.dataSource(scope: .input))
     }
 
     func testDataSources() throws {
         let device = try GetDevice()
 
-        XCTAssertNotNil(device.dataSources(direction: .playback))
-        XCTAssertNotNil(device.dataSources(direction: .recording))
+        XCTAssertNotNil(device.dataSources(scope: .output))
+        XCTAssertNotNil(device.dataSources(scope: .input))
     }
 
     func testDataSourceName() throws {
         let device = try GetDevice()
 
-        XCTAssertEqual(device.dataSourceName(dataSourceID: 0, direction: .playback), "Data Source Item 0")
-        XCTAssertEqual(device.dataSourceName(dataSourceID: 1, direction: .playback), "Data Source Item 1")
-        XCTAssertEqual(device.dataSourceName(dataSourceID: 2, direction: .playback), "Data Source Item 2")
-        XCTAssertEqual(device.dataSourceName(dataSourceID: 3, direction: .playback), "Data Source Item 3")
-        XCTAssertNil(device.dataSourceName(dataSourceID: 4, direction: .playback))
+        XCTAssertEqual(device.dataSourceName(dataSourceID: 0, scope: .output), "Data Source Item 0")
+        XCTAssertEqual(device.dataSourceName(dataSourceID: 1, scope: .output), "Data Source Item 1")
+        XCTAssertEqual(device.dataSourceName(dataSourceID: 2, scope: .output), "Data Source Item 2")
+        XCTAssertEqual(device.dataSourceName(dataSourceID: 3, scope: .output), "Data Source Item 3")
+        XCTAssertNil(device.dataSourceName(dataSourceID: 4, scope: .output))
 
-        XCTAssertEqual(device.dataSourceName(dataSourceID: 0, direction: .recording), "Data Source Item 0")
-        XCTAssertEqual(device.dataSourceName(dataSourceID: 1, direction: .recording), "Data Source Item 1")
-        XCTAssertEqual(device.dataSourceName(dataSourceID: 2, direction: .recording), "Data Source Item 2")
-        XCTAssertEqual(device.dataSourceName(dataSourceID: 3, direction: .recording), "Data Source Item 3")
-        XCTAssertNil(device.dataSourceName(dataSourceID: 4, direction: .recording))
+        XCTAssertEqual(device.dataSourceName(dataSourceID: 0, scope: .input), "Data Source Item 0")
+        XCTAssertEqual(device.dataSourceName(dataSourceID: 1, scope: .input), "Data Source Item 1")
+        XCTAssertEqual(device.dataSourceName(dataSourceID: 2, scope: .input), "Data Source Item 2")
+        XCTAssertEqual(device.dataSourceName(dataSourceID: 3, scope: .input), "Data Source Item 3")
+        XCTAssertNil(device.dataSourceName(dataSourceID: 4, scope: .input))
     }
 
     func testClockSource() throws {
@@ -368,15 +368,15 @@ final class AudioDeviceTests: XCTestCase {
     func testLatency() throws {
         let device = try GetDevice()
 
-        XCTAssertEqual(device.latency(direction: .playback), 0)
-        XCTAssertEqual(device.latency(direction: .recording), 0)
+        XCTAssertEqual(device.latency(scope: .output), 0)
+        XCTAssertEqual(device.latency(scope: .input), 0)
     }
 
     func testSafetyOffset() throws {
         let device = try GetDevice()
 
-        XCTAssertEqual(device.safetyOffset(direction: .playback), 0)
-        XCTAssertEqual(device.safetyOffset(direction: .recording), 0)
+        XCTAssertEqual(device.safetyOffset(scope: .output), 0)
+        XCTAssertEqual(device.safetyOffset(scope: .input), 0)
     }
 
     func testHogMode() throws {
@@ -392,27 +392,27 @@ final class AudioDeviceTests: XCTestCase {
 //    func testVolumeConversion() throws {
 //        let device = try GetDevice()
 //
-//        XCTAssertEqual(device.scalarToDecibels(volume: 0, channel: 0, direction: .playback), -96.0)
-//        XCTAssertEqual(device.scalarToDecibels(volume: 1, channel: 0, direction: .playback), 6.0)
+//        XCTAssertEqual(device.scalarToDecibels(volume: 0, channel: 0, scope: .output), -96.0)
+//        XCTAssertEqual(device.scalarToDecibels(volume: 1, channel: 0, scope: .output), 6.0)
 //
-//        XCTAssertEqual(device.decibelsToScalar(volume: -96.0, channel: 0, direction: .playback), 0)
-//        XCTAssertEqual(device.decibelsToScalar(volume: 6.0, channel: 0, direction: .playback), 1)
+//        XCTAssertEqual(device.decibelsToScalar(volume: -96.0, channel: 0, scope: .output), 0)
+//        XCTAssertEqual(device.decibelsToScalar(volume: 6.0, channel: 0, scope: .output), 1)
 //    }
 
     func testStreams() throws {
         let device = try GetDevice()
 
-        XCTAssertNotNil(device.streams(direction: .playback))
-        XCTAssertNotNil(device.streams(direction: .recording))
+        XCTAssertNotNil(device.streams(scope: .output))
+        XCTAssertNotNil(device.streams(scope: .input))
     }
 
     func testCreateAndDestroyAggregateDevice() {
         let inputs = simplyCoreAudio.allNonAggregateDevices.filter {
-            $0.channels(direction: .recording) > 0
+            $0.channels(scope: .input) > 0
         }
 
         let outputs = simplyCoreAudio.allNonAggregateDevices.filter {
-            $0.channels(direction: .playback) > 0
+            $0.channels(scope: .output) > 0
         }
 
         guard let input = inputs.first?.uid,
@@ -460,13 +460,13 @@ final class AudioDeviceTests: XCTestCase {
             sleep(1)
         }
 
-        device.setPreferredChannelsForStereo(channels: StereoPair(left: 1, right: 2), direction: .playback)
-        device.setMute(false, channel: 0, direction: .playback)
-        device.setMute(false, channel: 0, direction: .recording)
-        device.setVolume(0.5, channel: 0, direction: .playback)
-        device.setVolume(0.5, channel: 0, direction: .recording)
-        device.setVirtualMasterVolume(0.5, direction: .playback)
-        device.setVirtualMasterVolume(0.5, direction: .recording)
+        device.setPreferredChannelsForStereo(channels: StereoPair(left: 1, right: 2), scope: .output)
+        device.setMute(false, channel: 0, scope: .output)
+        device.setMute(false, channel: 0, scope: .input)
+        device.setVolume(0.5, channel: 0, scope: .output)
+        device.setVolume(0.5, channel: 0, scope: .input)
+        device.setVirtualMasterVolume(0.5, scope: .output)
+        device.setVirtualMasterVolume(0.5, scope: .input)
     }
 
     private func wait(for interval: TimeInterval) {

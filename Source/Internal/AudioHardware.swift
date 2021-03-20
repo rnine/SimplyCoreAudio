@@ -51,16 +51,16 @@ final class AudioHardware {
     }
 
     var allInputDevices: [AudioDevice] {
-        allDevices.filter { $0.channels(direction: .recording) > 0 }
+        allDevices.filter { $0.channels(scope: .input) > 0 }
     }
 
     var allOutputDevices: [AudioDevice] {
-        allDevices.filter { $0.channels(direction: .playback) > 0 }
+        allDevices.filter { $0.channels(scope: .input) > 0 }
     }
 
     var allIODevices: [AudioDevice] {
         allDevices.filter {
-            $0.channels(direction: .recording) > 0 && $0.channels(direction: .playback) > 0
+            $0.channels(scope: .input) > 0 && $0.channels(scope: .output) > 0
         }
     }
 

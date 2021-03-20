@@ -121,13 +121,13 @@ public final class AudioStream: AudioObject {
         return latency
     }
 
-    /// The audio stream's direction.
+    /// The audio stream's scope.
     ///
-    /// For output streams, and to continue using the same `Direction` concept used by `AudioDevice`,
-    /// this will be `Direction.Playback`, likewise, for input streams, `Direction.Recording` will be returned.
+    /// For output streams, and to continue using the same `Scope` concept used by `AudioDevice`,
+    /// this will be `Scope.output`, likewise, for input streams, `Scope.input` will be returned.
     ///
-    /// - Returns: *(optional)* A `Direction`.
-    public var direction: Direction? {
+    /// - Returns: *(optional)* A `Scope`.
+    public var scope: Scope? {
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioStreamPropertyDirection,
             mScope: kAudioObjectPropertyScopeGlobal,
@@ -135,14 +135,14 @@ public final class AudioStream: AudioObject {
         )
 
         guard AudioObjectHasProperty(id, &address) else { return nil }
-        var direction: UInt32 = 0
-        guard noErr == getPropertyData(address, andValue: &direction) else { return nil }
+        var propertyScope: UInt32 = 0
+        guard noErr == getPropertyData(address, andValue: &propertyScope) else { return nil }
 
-        switch direction {
+        switch propertyScope {
         case 0:
-            return .playback
+            return .output
         case 1:
-            return .recording
+            return .input
         default:
             return nil
         }
@@ -198,11 +198,11 @@ public final class AudioStream: AudioObject {
     ///
     /// - Returns: *(optional)* An array of `AudioStreamRangedDescription` structs.
     public lazy var availablePhysicalFormats: [AudioStreamRangedDescription]? = {
-        guard let direction = self.direction else { return nil }
+        guard let scope = scope else { return nil }
 
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioStreamPropertyAvailablePhysicalFormats,
-            mScope: scope(direction: direction),
+            mScope: propertyScope(from: scope),
             mElement: kAudioObjectPropertyElementMaster
         )
 
@@ -221,11 +221,11 @@ public final class AudioStream: AudioObject {
     ///
     /// - Returns: *(optional)* An array of `AudioStreamRangedDescription` structs.
     public lazy var availableVirtualFormats: [AudioStreamRangedDescription]? = {
-        guard let direction = self.direction else { return nil }
+        guard let scope = scope else { return nil }
 
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioStreamPropertyAvailableVirtualFormats,
-            mScope: scope(direction: direction),
+            mScope: propertyScope(from: scope),
             mElement: kAudioObjectPropertyElementMaster
         )
 
@@ -331,7 +331,7 @@ public extension AudioStream {
 
 private extension AudioStream {
     /// This is an specialized version of `getPropertyData` that only requires passing an `AudioObjectPropertySelector`
-    /// instead of an `AudioObjectPropertyAddress`. The scope is computed from the stream's `Direction`, and the element
+    /// instead of an `AudioObjectPropertyAddress`. The scope is computed from the stream's `Scope`, and the element
     /// is assumed to be `kAudioObjectPropertyElementMaster`.
     ///
     /// Additionally, the property address is validated before calling `getPropertyData`.
@@ -341,11 +341,11 @@ private extension AudioStream {
     ///
     /// - Returns: An `OSStatus` with `noErr` on success, or an error code other than `noErr` when it fails.
     func getStreamPropertyData<T>(_ selector: AudioObjectPropertySelector, andValue value: inout T) -> OSStatus? {
-        guard let direction = direction else { return nil }
+        guard let scope = scope else { return nil }
 
         var address = AudioObjectPropertyAddress(
             mSelector: selector,
-            mScope: scope(direction: direction),
+            mScope: propertyScope(from: scope),
             mElement: kAudioObjectPropertyElementMaster
         )
 
@@ -355,7 +355,7 @@ private extension AudioStream {
     }
 
     /// This is an specialized version of `setPropertyData` that only requires passing an `AudioObjectPropertySelector`
-    /// instead of an `AudioObjectPropertyAddress`. The scope is computed from the stream's `Direction`, and the element
+    /// instead of an `AudioObjectPropertyAddress`. The scope is computed from the stream's `Scope`, and the element
     /// is assumed to be `kAudioObjectPropertyElementMaster`.
     ///
     /// Additionally, the property address is validated before calling `setPropertyData`.
@@ -365,11 +365,11 @@ private extension AudioStream {
     ///
     /// - Returns: An `OSStatus` with `noErr` on success, or an error code other than `noErr` when it fails.
     func setStreamPropertyData<T>(_ selector: AudioObjectPropertySelector, andValue value: inout T) -> OSStatus? {
-        guard let direction = direction else { return nil }
+        guard let scope = scope else { return nil }
 
         var address = AudioObjectPropertyAddress(
             mSelector: selector,
-            mScope: scope(direction: direction),
+            mScope: propertyScope(from: scope),
             mElement: kAudioObjectPropertyElementMaster
         )
 
