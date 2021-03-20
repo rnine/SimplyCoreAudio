@@ -1,9 +1,7 @@
 //
 //  AudioDevice.swift
-//  SimplyCoreAudio
 //
 //  Created by Ruben on 7/7/15.
-//  Copyright © 2015 9Labs. All rights reserved.
 //
 
 import AudioToolbox.AudioServices
