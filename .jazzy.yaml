@@ -1,6 +1,6 @@
 module: SimplyCoreAudio
 author: Ruben Nine
-github_url: https://github.com/rnine/AMCoreAudio
+github_url: https://github.com/rnine/SimplyCoreAudio
 
 theme: fullwidth
 clean: true
