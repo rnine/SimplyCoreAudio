@@ -46,4 +46,4 @@ Please make sure to install `NullAudio.driver` before attempting to run tests:
 
 ### License
 
-`AMCoreAudio` was written by Ruben Nine ([@sonicbee9](https://twitter.com/sonicbee9)) in 2013-2014 (open-sourced in March 2014) and is licensed under the [MIT](https://opensource.org/licenses/MIT) license. See [LICENSE.md](LICENSE.md).
+`AMCoreAudio` was written by Ruben Nine ([@rnine](https://github.com/rnine)) in 2013-2014 (open-sourced in March 2014) and is licensed under the [MIT](https://opensource.org/licenses/MIT) license. See [LICENSE.md](LICENSE.md).
