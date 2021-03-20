@@ -1,5 +1,5 @@
 //
-//  Bool+Boolean.swift
+//  Bool+Extensions.swift
 //  AMCoreAudio
 //
 //  Created by Ruben on 7/9/15.

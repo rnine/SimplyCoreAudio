@@ -21,64 +21,9 @@ public final class AudioDevice: AudioObject {
     /// is pointing to a device that is no longer available, so we can still access its name.
     ///
     /// - Returns: The cached device name.
-    private(set) var cachedDeviceName: String!
+    private(set) var cachedDeviceName: String?
 
     private var isRegisteredForNotifications = false
-
-    private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { [weak self] (_, inAddresses) -> Void in
-        guard let strongSelf = self else { return }
-
-        let address = inAddresses.pointee
-        let notificationCenter = NotificationCenter.default
-
-        switch address.mSelector {
-        case kAudioDevicePropertyNominalSampleRate:
-            notificationCenter.post(name: Notifications.deviceNominalSampleRateDidChange.name, object: strongSelf)
-        case kAudioDevicePropertyAvailableNominalSampleRates:
-            notificationCenter.post(name: Notifications.deviceAvailableNominalSampleRatesDidChange.name, object: strongSelf)
-        case kAudioDevicePropertyClockSource:
-            notificationCenter.post(name: Notifications.deviceClockSourceDidChange.name, object: strongSelf)
-        case kAudioObjectPropertyName:
-            notificationCenter.post(name: Notifications.deviceNameDidChange.name, object: strongSelf)
-        case kAudioObjectPropertyOwnedObjects:
-            notificationCenter.post(name: Notifications.deviceOwnedObjectsDidChange.name, object: strongSelf)
-        case kAudioDevicePropertyVolumeScalar:
-            let userInfo: [AnyHashable: Any] = [
-                "channel": address.mElement,
-                "direction": direction
-            ]
-
-            notificationCenter.post(name: Notifications.deviceVolumeDidChange.name, object: strongSelf, userInfo: userInfo)
-        case kAudioDevicePropertyMute:
-            let userInfo: [AnyHashable: Any] = [
-                "channel": address.mElement,
-                "direction": direction
-            ]
-
-            notificationCenter.post(name: Notifications.deviceMuteDidChange.name, object: strongSelf, userInfo: userInfo)
-        case kAudioDevicePropertyDeviceIsAlive:
-            notificationCenter.post(name: Notifications.deviceIsAliveDidChange.name, object: strongSelf)
-        case kAudioDevicePropertyDeviceIsRunning:
-            notificationCenter.post(name: Notifications.deviceIsRunningDidChange.name, object: strongSelf)
-        case kAudioDevicePropertyDeviceIsRunningSomewhere:
-            notificationCenter.post(name: Notifications.deviceIsRunningSomewhereDidChange.name, object: strongSelf)
-        case kAudioDevicePropertyJackIsConnected:
-            notificationCenter.post(name: Notifications.deviceIsJackConnectedDidChange.name, object: strongSelf)
-        case kAudioDevicePropertyPreferredChannelsForStereo:
-            notificationCenter.post(name: Notifications.devicePreferredChannelsForStereoDidChange.name, object: strongSelf)
-        case kAudioDevicePropertyHogMode:
-            notificationCenter.post(name: Notifications.deviceHogModeDidChange.name, object: strongSelf)
-        // Unhandled cases beyond this point
-        case kAudioDevicePropertyBufferFrameSize:
-            fallthrough
-        case kAudioDevicePropertyPlayThru:
-            fallthrough
-        case kAudioDevicePropertyDataSource:
-            fallthrough
-        default:
-            break
-        }
-    }
 
     // MARK: - Lifecycle Functions
 
@@ -90,14 +35,14 @@ public final class AudioDevice: AudioObject {
 
         guard owningObject != nil else { return nil }
 
-        cachedDeviceName = getDeviceName()
+        cachedDeviceName = super.name
         registerForNotifications()
         AudioObjectPool.instancePool.setObject(self, forKey: NSNumber(value: UInt(objectID)))
     }
 
     deinit {
-        unregisterForNotifications()
         AudioObjectPool.instancePool.removeObject(forKey: NSNumber(value: UInt(objectID)))
+        unregisterForNotifications()
     }
 
     // MARK: - Class Functions
@@ -283,16 +228,12 @@ public final class AudioDevice: AudioObject {
     /// - SeeAlso: `uid`
     ///
     /// - Returns: An audio device identifier.
-    public var id: AudioObjectID {
-        return objectID
-    }
+    public var id: AudioObjectID { objectID }
 
     /// The audio device's name as reported by the system.
     ///
     /// - Returns: An audio device's name.
-    override public var name: String {
-        return getDeviceName()
-    }
+    override public var name: String { super.name ?? cachedDeviceName ?? "<Unknown Device Name>" }
 
     /// The audio device's unique identifier (UID).
     ///
@@ -1355,10 +1296,6 @@ public final class AudioDevice: AudioObject {
         return noErr == status
     }
 
-    private func getDeviceName() -> String {
-        return super.name ?? (cachedDeviceName ?? "<Unknown Device Name>")
-    }
-
     private class func defaultDevice(of type: AudioObjectPropertySelector) -> AudioDevice? {
         let address = self.address(selector: type)
         var deviceID = AudioDeviceID()
@@ -1380,17 +1317,17 @@ public final class AudioDevice: AudioObject {
             mElement: kAudioObjectPropertyElementWildcard
         )
 
-        let err = AudioObjectAddPropertyListenerBlock(id, &address, propertyListenerQueue, propertyListenerBlock)
+        let selfPtr = Unmanaged.passUnretained(self).toOpaque()
 
-        if noErr != err {
-            os_log("Error on AudioObjectAddPropertyListenerBlock: %@.", log: .default, type: .debug, err)
+        if noErr != AudioObjectAddPropertyListener(id, &address, propertyListener, selfPtr) {
+            os_log("Unable to add property listener for %@.", description)
+        } else {
+            isRegisteredForNotifications = true
         }
-
-        isRegisteredForNotifications = noErr == err
     }
 
     private func unregisterForNotifications() {
-        guard isAlive(), isRegisteredForNotifications else { return }
+        guard isRegisteredForNotifications, isAlive() else { return }
 
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioObjectPropertySelectorWildcard,
@@ -1398,21 +1335,84 @@ public final class AudioDevice: AudioObject {
             mElement: kAudioObjectPropertyElementWildcard
         )
 
-        let err = AudioObjectRemovePropertyListenerBlock(id, &address, propertyListenerQueue, propertyListenerBlock)
+        let selfPtr = Unmanaged.passUnretained(self).toOpaque()
 
-        if noErr != err {
-            os_log("Error on AudioObjectRemovePropertyListenerBlock: %@.", log: .default, type: .debug, err)
+        if noErr != AudioObjectRemovePropertyListener(id, &address, propertyListener, selfPtr) {
+            os_log("Unable to remove property listener for %@.", description)
+        } else {
+            isRegisteredForNotifications = false
         }
-
-        isRegisteredForNotifications = noErr != err
     }
 }
 
-extension AudioDevice: CustomStringConvertible {
-    // MARK: - CustomStringConvertible Protocol
+// MARK: - CustomStringConvertible Conformance
 
+extension AudioDevice: CustomStringConvertible {
     /// Returns a `String` representation of self.
     public var description: String {
         return "\(name) (\(id))"
     }
+}
+
+// MARK: - C Convention Functions
+
+private func propertyListener(objectID: UInt32,
+                              numInAddresses: UInt32,
+                              inAddresses : UnsafePointer<AudioObjectPropertyAddress>,
+                              clientData: Optional<UnsafeMutableRawPointer>) -> Int32 {
+    guard AudioObjectPool.instancePool.object(forKey: NSNumber(value: UInt(objectID))) != nil else { return -1 }
+
+    let _self: AudioDevice = Unmanaged<AudioDevice>.fromOpaque(clientData!).takeUnretainedValue()
+    let address = inAddresses.pointee
+    let notificationCenter = NotificationCenter.default
+
+    switch address.mSelector {
+    case kAudioDevicePropertyNominalSampleRate:
+        notificationCenter.post(name: Notifications.deviceNominalSampleRateDidChange.name, object: _self)
+    case kAudioDevicePropertyAvailableNominalSampleRates:
+        notificationCenter.post(name: Notifications.deviceAvailableNominalSampleRatesDidChange.name, object: _self)
+    case kAudioDevicePropertyClockSource:
+        notificationCenter.post(name: Notifications.deviceClockSourceDidChange.name, object: _self)
+    case kAudioObjectPropertyName:
+        notificationCenter.post(name: Notifications.deviceNameDidChange.name, object: _self)
+    case kAudioObjectPropertyOwnedObjects:
+        notificationCenter.post(name: Notifications.deviceOwnedObjectsDidChange.name, object: _self)
+    case kAudioDevicePropertyVolumeScalar:
+        let userInfo: [AnyHashable: Any] = [
+            "channel": address.mElement,
+            "direction": direction
+        ]
+
+        notificationCenter.post(name: Notifications.deviceVolumeDidChange.name, object: _self, userInfo: userInfo)
+    case kAudioDevicePropertyMute:
+        let userInfo: [AnyHashable: Any] = [
+            "channel": address.mElement,
+            "direction": direction
+        ]
+
+        notificationCenter.post(name: Notifications.deviceMuteDidChange.name, object: _self, userInfo: userInfo)
+    case kAudioDevicePropertyDeviceIsAlive:
+        notificationCenter.post(name: Notifications.deviceIsAliveDidChange.name, object: _self)
+    case kAudioDevicePropertyDeviceIsRunning:
+        notificationCenter.post(name: Notifications.deviceIsRunningDidChange.name, object: _self)
+    case kAudioDevicePropertyDeviceIsRunningSomewhere:
+        notificationCenter.post(name: Notifications.deviceIsRunningSomewhereDidChange.name, object: _self)
+    case kAudioDevicePropertyJackIsConnected:
+        notificationCenter.post(name: Notifications.deviceIsJackConnectedDidChange.name, object: _self)
+    case kAudioDevicePropertyPreferredChannelsForStereo:
+        notificationCenter.post(name: Notifications.devicePreferredChannelsForStereoDidChange.name, object: _self)
+    case kAudioDevicePropertyHogMode:
+        notificationCenter.post(name: Notifications.deviceHogModeDidChange.name, object: _self)
+    // Unhandled cases beyond this point
+    case kAudioDevicePropertyBufferFrameSize:
+        fallthrough
+    case kAudioDevicePropertyPlayThru:
+        fallthrough
+    case kAudioDevicePropertyDataSource:
+        fallthrough
+    default:
+        break
+    }
+
+    return noErr
 }

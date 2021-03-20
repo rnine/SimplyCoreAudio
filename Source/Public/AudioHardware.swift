@@ -14,57 +14,15 @@ import os.log
 ///
 /// For a comprehensive list of supported notifications, see `AudioHardwareEvent`.
 public final class AudioHardware {
+    // MARK: - Public Properties
+
     /// Returns a singleton `AudioHardware` instance.
     public static let sharedInstance = AudioHardware()
 
-    private var allKnownDevices = [AudioDevice]()
-    private var isRegisteredForNotifications = false
+    // MARK: - Fileprivate Properties
 
-    private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { [weak self] (_, inAddresses) -> Void in
-        guard let strongSelf = self else { return }
-
-        let address = inAddresses.pointee
-        let notificationCenter = NotificationCenter.default
-
-        switch address.mSelector {
-        case kAudioObjectPropertyOwnedObjects:
-            // Get the latest device list
-            let latestDeviceList = AudioDevice.allDevices()
-
-            let addedDevices = latestDeviceList.filter { (audioDevice) -> Bool in
-                !(self?.allKnownDevices.contains { $0 == audioDevice } ?? false)
-            }
-
-            let removedDevices = self?.allKnownDevices.filter { (audioDevice) -> Bool in
-                !(latestDeviceList.contains { $0 == audioDevice })
-            } ?? []
-
-            // Add new devices
-            for device in addedDevices {
-                self?.add(device: device)
-            }
-
-            // Remove old devices
-            for device in removedDevices {
-                self?.remove(device: device)
-            }
-
-            let userInfo: [AnyHashable: Any] = [
-                "addedDevices": addedDevices,
-                "removedDevices": removedDevices
-            ]
-
-            notificationCenter.post(name: Notifications.deviceListChanged.name, object: strongSelf, userInfo: userInfo)
-        case kAudioHardwarePropertyDefaultInputDevice:
-            notificationCenter.post(name: Notifications.defaultInputDeviceChanged.name, object: strongSelf)
-        case kAudioHardwarePropertyDefaultOutputDevice:
-            notificationCenter.post(name: Notifications.defaultOutputDeviceChanged.name, object: strongSelf)
-        case kAudioHardwarePropertyDefaultSystemOutputDevice:
-            notificationCenter.post(name: Notifications.defaultSystemOutputDeviceChanged.name, object: strongSelf)
-        default:
-            break
-        }
-    }
+    fileprivate var allKnownDevices = [AudioDevice]()
+    fileprivate var isRegisteredForNotifications = false
 
     // MARK: - Lifecycle Functions
 
@@ -100,20 +58,22 @@ public final class AudioHardware {
 
         unregisterForNotifications()
     }
+}
 
-    // MARK: - Private Functions
+// MARK: - Fileprivate Functions
 
-    private func add(device: AudioDevice) {
+fileprivate extension AudioHardware {
+    func add(device: AudioDevice) {
         allKnownDevices.append(device)
     }
 
-    private func remove(device: AudioDevice) {
+    func remove(device: AudioDevice) {
         allKnownDevices.removeAll { $0 == device }
     }
 
     // MARK: - Notification Book-keeping
 
-    private func registerForNotifications() {
+    func registerForNotifications() {
         if isRegisteredForNotifications {
             unregisterForNotifications()
         }
@@ -125,16 +85,17 @@ public final class AudioHardware {
         )
 
         let systemObjectID = AudioObjectID(kAudioObjectSystemObject)
-        let err = AudioObjectAddPropertyListenerBlock(systemObjectID, &address, propertyListenerQueue, propertyListenerBlock)
 
-        if noErr != err {
-            os_log("Error on AudioObjectAddPropertyListenerBlock: %@.", log: .default, type: .debug, err)
+        let selfPtr = Unmanaged.passUnretained(self).toOpaque()
+
+        if noErr != AudioObjectAddPropertyListener(systemObjectID, &address, propertyListener, selfPtr) {
+            os_log("Unable to add property listener for systemObjectID: %@.", systemObjectID)
+        } else {
+            isRegisteredForNotifications = true
         }
-
-        isRegisteredForNotifications = noErr == err
     }
 
-    private func unregisterForNotifications() {
+    func unregisterForNotifications() {
         guard isRegisteredForNotifications else { return }
 
         var address = AudioObjectPropertyAddress(
@@ -144,12 +105,64 @@ public final class AudioHardware {
         )
 
         let systemObjectID = AudioObjectID(kAudioObjectSystemObject)
-        let err = AudioObjectRemovePropertyListenerBlock(systemObjectID, &address, propertyListenerQueue, propertyListenerBlock)
+        let selfPtr = Unmanaged.passUnretained(self).toOpaque()
 
-        if noErr != err {
-            os_log("Error on AudioObjectRemovePropertyListenerBlock: %@.", log: .default, type: .debug, err)
+        if noErr != AudioObjectAddPropertyListener(systemObjectID, &address, propertyListener, selfPtr) {
+            os_log("Unable to remove property listener for systemObjectID: %@.", systemObjectID)
+        } else {
+            isRegisteredForNotifications = false
+        }
+    }
+}
+
+// MARK: - C Convention Functions
+
+private func propertyListener(objectID: UInt32,
+                              numInAddresses: UInt32,
+                              inAddresses : UnsafePointer<AudioObjectPropertyAddress>,
+                              clientData: Optional<UnsafeMutableRawPointer>) -> Int32 {
+    let _self = Unmanaged<AudioHardware>.fromOpaque(clientData!).takeUnretainedValue()
+    let address = inAddresses.pointee
+    let notificationCenter = NotificationCenter.default
+
+    switch address.mSelector {
+    case kAudioObjectPropertyOwnedObjects:
+        // Get the latest device list
+        let latestDeviceList = AudioDevice.allDevices()
+
+        let addedDevices = latestDeviceList.filter { (audioDevice) -> Bool in
+            !(_self.allKnownDevices.contains { $0 == audioDevice })
         }
 
-        isRegisteredForNotifications = noErr != err
+        let removedDevices = _self.allKnownDevices.filter { (audioDevice) -> Bool in
+            !(latestDeviceList.contains { $0 == audioDevice })
+        }
+
+        // Add new devices
+        for device in addedDevices {
+            _self.add(device: device)
+        }
+
+        // Remove old devices
+        for device in removedDevices {
+            _self.remove(device: device)
+        }
+
+        let userInfo: [AnyHashable: Any] = [
+            "added": addedDevices,
+            "removed": removedDevices
+        ]
+
+        notificationCenter.post(name: Notifications.deviceListChanged.name, object: _self, userInfo: userInfo)
+    case kAudioHardwarePropertyDefaultInputDevice:
+        notificationCenter.post(name: Notifications.defaultInputDeviceChanged.name, object: _self)
+    case kAudioHardwarePropertyDefaultOutputDevice:
+        notificationCenter.post(name: Notifications.defaultOutputDeviceChanged.name, object: _self)
+    case kAudioHardwarePropertyDefaultSystemOutputDevice:
+        notificationCenter.post(name: Notifications.defaultSystemOutputDeviceChanged.name, object: _self)
+    default:
+        break
     }
+
+    return noErr
 }

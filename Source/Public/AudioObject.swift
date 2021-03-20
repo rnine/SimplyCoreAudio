@@ -13,7 +13,7 @@ import Foundation
 /// audio objects are referenced by its `AudioObjectID` and belong to a specific `AudioClassID`.
 /// For more information, please refer to Core Audio's documentation or source code.
 public class AudioObject {
-    var objectID: AudioObjectID
+    let objectID: AudioObjectID
 
     init(objectID: AudioObjectID) {
         self.objectID = objectID
@@ -85,8 +85,9 @@ public class AudioObject {
         )
 
         let status = getPropertyData(address, andValue: &name)
+        let nameAsString = (name as String)
 
-        return noErr == status ? (name as String) : nil
+        return (noErr == status && !nameAsString.isEmpty) ? nameAsString : nil
     }
 }
 

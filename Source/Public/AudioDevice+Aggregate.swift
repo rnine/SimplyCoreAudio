@@ -80,9 +80,10 @@ public extension AudioDevice {
         let error = AudioHardwareCreateAggregateDevice(desc as CFDictionary, &deviceID)
 
         guard error == noErr else {
-            os_log("Failed creating aggregate device with error: %@.", log: .default, type: .debug, error)
+            os_log("Failed creating aggregate device with error: %d.", log: .default, type: .debug, error)
             return nil
         }
+
         return AudioDevice.lookup(by: deviceID)
     }
 

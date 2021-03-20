@@ -246,22 +246,6 @@ public final class AudioStream: AudioObject {
 
     private var isRegisteredForNotifications = false
 
-    private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { [weak self] (_, inAddresses) -> Void in
-        guard let strongSelf = self else { return }
-
-        let address = inAddresses.pointee
-        let notificationCenter = NotificationCenter.default
-
-        switch address.mSelector {
-        case kAudioStreamPropertyIsActive:
-            notificationCenter.post(name: Notifications.streamIsActiveDidChange.name, object: strongSelf)
-        case kAudioStreamPropertyPhysicalFormat:
-            notificationCenter.post(name: Notifications.streamPhysicalFormatDidChange.name, object: strongSelf)
-        default:
-            break
-        }
-    }
-
     // MARK: - Public Functions
 
     /// Returns an `AudioStream` by providing a valid audio stream identifier.
@@ -288,8 +272,8 @@ public final class AudioStream: AudioObject {
     }
 
     deinit {
-        unregisterForNotifications()
         AudioObjectPool.instancePool.removeObject(forKey: NSNumber(value: UInt(objectID)))
+        unregisterForNotifications()
     }
 
     /// All the available physical formats for this audio stream matching the current physical format's sample rate.
@@ -405,13 +389,13 @@ public final class AudioStream: AudioObject {
             mElement: kAudioObjectPropertyElementWildcard
         )
 
-        let err = AudioObjectAddPropertyListenerBlock(id, &address, propertyListenerQueue, propertyListenerBlock)
+        let selfPtr = Unmanaged.passUnretained(self).toOpaque()
 
-        if noErr != err {
-            os_log("Error on AudioObjectAddPropertyListenerBlock: %@.", log: .default, type: .debug, err)
+        if noErr != AudioObjectAddPropertyListener(id, &address, propertyListener, selfPtr) {
+            os_log("Unable to add property listener for %@.", description)
+        } else {
+            isRegisteredForNotifications = true
         }
-
-        isRegisteredForNotifications = noErr == err
     }
 
     private func unregisterForNotifications() {
@@ -423,21 +407,45 @@ public final class AudioStream: AudioObject {
             mElement: kAudioObjectPropertyElementWildcard
         )
 
-        let err = AudioObjectRemovePropertyListenerBlock(id, &address, propertyListenerQueue, propertyListenerBlock)
+        let selfPtr = Unmanaged.passUnretained(self).toOpaque()
 
-        if noErr != err {
-            os_log("Error on AudioObjectRemovePropertyListenerBlock: %@.", log: .default, type: .debug, err)
+        if noErr != AudioObjectRemovePropertyListener(id, &address, propertyListener, selfPtr) {
+            os_log("Unable to add property listener for %@.", description)
+        } else {
+            isRegisteredForNotifications = true
         }
-
-        isRegisteredForNotifications = noErr != err
     }
 }
 
-extension AudioStream: CustomStringConvertible {
-    // MARK: - CustomStringConvertible Protocol
+// MARK: - CustomStringConvertible Conformance
 
+extension AudioStream: CustomStringConvertible {
     /// Returns a `String` representation of self.
     public var description: String {
         return "\(name ?? "Stream \(id)") (\(id))"
     }
+}
+
+// MARK: - C Convention Functions
+
+private func propertyListener(objectID: UInt32,
+                              numInAddresses: UInt32,
+                              inAddresses : UnsafePointer<AudioObjectPropertyAddress>,
+                              clientData: Optional<UnsafeMutableRawPointer>) -> Int32 {
+    guard AudioObjectPool.instancePool.object(forKey: NSNumber(value: UInt(objectID))) != nil else { return -1 }
+
+    let _self = Unmanaged<AudioStream>.fromOpaque(clientData!).takeUnretainedValue()
+    let address = inAddresses.pointee
+    let notificationCenter = NotificationCenter.default
+
+    switch address.mSelector {
+    case kAudioStreamPropertyIsActive:
+        notificationCenter.post(name: Notifications.streamIsActiveDidChange.name, object: _self)
+    case kAudioStreamPropertyPhysicalFormat:
+        notificationCenter.post(name: Notifications.streamPhysicalFormatDidChange.name, object: _self)
+    default:
+        break
+    }
+
+    return noErr
 }
