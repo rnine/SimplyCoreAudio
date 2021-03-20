@@ -7,6 +7,9 @@
 import Foundation
 
 /// Indicates the scope used by an `AudioDevice` or `AudioStream`.
+///
+/// Please notice that `AudioStream` only supports `input` or `output` scopes,
+/// whether as `AudioDevice` may, additionally, support `global` or `playthrough`.
 public enum Scope {
     /// Global scope
     case global
@@ -16,6 +19,4 @@ public enum Scope {
     case output
     /// Playthrough scope
     case playthrough
-    /// Wildcard scope
-    case wildcard
 }

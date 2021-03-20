@@ -21,7 +21,6 @@ func propertyScope(from scope: Scope) -> AudioObjectPropertyScope {
     case .input: return kAudioObjectPropertyScopeInput
     case .output: return kAudioObjectPropertyScopeOutput
     case .playthrough: return kAudioObjectPropertyScopePlayThrough
-    case .wildcard: return kAudioObjectPropertyScopeWildcard
     }
 }
 
@@ -31,7 +30,6 @@ func scope(from propertyScope: AudioObjectPropertyScope) -> Scope? {
     case kAudioObjectPropertyScopeInput: return .input
     case kAudioObjectPropertyScopeOutput: return .output
     case kAudioObjectPropertyScopePlayThrough: return .playthrough
-    case kAudioObjectPropertyScopeWildcard: return .wildcard
     default: return nil
     }
 }
