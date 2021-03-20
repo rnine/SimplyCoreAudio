@@ -143,7 +143,7 @@ final class AudioDeviceTests: XCTestCase {
     func testVolume() throws {
         let device = try GetDevice()
 
-        // Playback scope
+        // Output scope
         XCTAssertTrue(device.setVolume(0, channel: 0, scope: .output))
         XCTAssertEqual(device.volume(channel: 0, scope: .output), 0)
 
@@ -156,7 +156,7 @@ final class AudioDeviceTests: XCTestCase {
         XCTAssertFalse(device.setVolume(0.5, channel: 2, scope: .output))
         XCTAssertNil(device.volume(channel: 2, scope: .output))
 
-        // Recording scope
+        // Input scope
         XCTAssertTrue(device.setVolume(0, channel: 0, scope: .input))
         XCTAssertEqual(device.volume(channel: 0, scope: .input), 0)
 
