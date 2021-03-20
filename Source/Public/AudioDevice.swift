@@ -12,12 +12,9 @@ import os.log
 ///
 /// Devices may be physical or virtual. For a comprehensive list of supported types, please refer to `TransportType`.
 public final class AudioDevice: AudioObject {
-    /// The cached device name. This may be useful in some situations where the class instance
-    /// is pointing to a device that is no longer available, so we can still access its name.
-    ///
-    /// - Returns: The cached device name.
-    private(set) var cachedDeviceName: String?
+    // MARK: - Private Properties
 
+    private var cachedDeviceName: String?
     private var isRegisteredForNotifications = false
 
     // MARK: - Lifecycle Functions

@@ -84,9 +84,8 @@ public class AudioObject {
         )
 
         let status = getPropertyData(address, andValue: &name)
-        let nameAsString = (name as String)
 
-        return (noErr == status && !nameAsString.isEmpty) ? nameAsString : nil
+        return noErr == status ? (name as String) : nil
     }
 }
 
