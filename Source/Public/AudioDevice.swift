@@ -208,13 +208,6 @@ private func propertyListener(objectID: UInt32,
         notificationCenter.post(name: Notifications.devicePreferredChannelsForStereoDidChange.name, object: _self)
     case kAudioDevicePropertyHogMode:
         notificationCenter.post(name: Notifications.deviceHogModeDidChange.name, object: _self)
-    // Unhandled cases beyond this point
-    case kAudioDevicePropertyBufferFrameSize:
-        fallthrough
-    case kAudioDevicePropertyPlayThru:
-        fallthrough
-    case kAudioDevicePropertyDataSource:
-        fallthrough
     default:
         break
     }
