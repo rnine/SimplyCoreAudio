@@ -246,16 +246,17 @@ public final class AudioStream: AudioObject {
 
     private var isRegisteredForNotifications = false
 
-    private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { (_, inAddresses) -> Void in
+    private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { [weak self] (_, inAddresses) -> Void in
+        guard let strongSelf = self else { return }
+
         let address = inAddresses.pointee
-        let direction = AMCoreAudio.direction(to: address.mScope)
-        let notificationCenter = NotificationCenter.defaultCenter
+        let notificationCenter = NotificationCenter.default
 
         switch address.mSelector {
         case kAudioStreamPropertyIsActive:
-            notificationCenter.publish(AudioStreamEvent.isActiveDidChange(audioStream: self))
+            notificationCenter.post(name: Notifications.streamIsActiveDidChange.name, object: strongSelf)
         case kAudioStreamPropertyPhysicalFormat:
-            notificationCenter.publish(AudioStreamEvent.physicalFormatDidChange(audioStream: self))
+            notificationCenter.post(name: Notifications.streamPhysicalFormatDidChange.name, object: strongSelf)
         default:
             break
         }
@@ -404,7 +405,7 @@ public final class AudioStream: AudioObject {
             mElement: kAudioObjectPropertyElementWildcard
         )
 
-        let err = AudioObjectAddPropertyListenerBlock(id, &address, NotificationCenter.notificationsQueue, propertyListenerBlock)
+        let err = AudioObjectAddPropertyListenerBlock(id, &address, propertyListenerQueue, propertyListenerBlock)
 
         if noErr != err {
             os_log("Error on AudioObjectAddPropertyListenerBlock: %@.", log: .default, type: .debug, err)
@@ -422,7 +423,7 @@ public final class AudioStream: AudioObject {
             mElement: kAudioObjectPropertyElementWildcard
         )
 
-        let err = AudioObjectRemovePropertyListenerBlock(id, &address, NotificationCenter.notificationsQueue, propertyListenerBlock)
+        let err = AudioObjectRemovePropertyListenerBlock(id, &address, propertyListenerQueue, propertyListenerBlock)
 
         if noErr != err {
             os_log("Error on AudioObjectRemovePropertyListenerBlock: %@.", log: .default, type: .debug, err)

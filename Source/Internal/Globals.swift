@@ -15,8 +15,11 @@ extension OSLog {
     static let `default` = OSLog(subsystem: "AMCoreAudio", category: "default")
 }
 
+let propertyListenerQueue = DispatchQueue(label: "io.9labs.AMCoreAudio.propertyListenerQueue",
+                                          target: DispatchQueue.global(qos: .userInitiated))
+
 func scope(direction: Direction) -> AudioObjectPropertyScope {
-    return direction == .playback ? kAudioObjectPropertyScopeOutput : kAudioObjectPropertyScopeInput
+    direction == .playback ? kAudioObjectPropertyScopeOutput : kAudioObjectPropertyScopeInput
 }
 
 func direction(to scope: AudioObjectPropertyScope) -> Direction? {

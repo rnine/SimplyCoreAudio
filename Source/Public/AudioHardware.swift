@@ -21,8 +21,10 @@ public final class AudioHardware {
     private var isRegisteredForNotifications = false
 
     private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { [weak self] (_, inAddresses) -> Void in
+        guard let strongSelf = self else { return }
+
         let address = inAddresses.pointee
-        let notificationCenter = NotificationCenter.defaultCenter
+        let notificationCenter = NotificationCenter.default
 
         switch address.mSelector {
         case kAudioObjectPropertyOwnedObjects:
@@ -47,22 +49,18 @@ public final class AudioHardware {
                 self?.remove(device: device)
             }
 
-            notificationCenter.publish(AudioHardwareEvent.deviceListChanged(
-                addedDevices: addedDevices,
-                removedDevices: removedDevices
-            ))
+            let userInfo: [AnyHashable: Any] = [
+                "addedDevices": addedDevices,
+                "removedDevices": removedDevices
+            ]
+
+            notificationCenter.post(name: Notifications.deviceListChanged.name, object: strongSelf, userInfo: userInfo)
         case kAudioHardwarePropertyDefaultInputDevice:
-            if let audioDevice = AudioDevice.defaultInputDevice() {
-                notificationCenter.publish(AudioHardwareEvent.defaultInputDeviceChanged(audioDevice: audioDevice))
-            }
+            notificationCenter.post(name: Notifications.defaultInputDeviceChanged.name, object: strongSelf)
         case kAudioHardwarePropertyDefaultOutputDevice:
-            if let audioDevice = AudioDevice.defaultOutputDevice() {
-                notificationCenter.publish(AudioHardwareEvent.defaultOutputDeviceChanged(audioDevice: audioDevice))
-            }
+            notificationCenter.post(name: Notifications.defaultOutputDeviceChanged.name, object: strongSelf)
         case kAudioHardwarePropertyDefaultSystemOutputDevice:
-            if let audioDevice = AudioDevice.defaultSystemOutputDevice() {
-                notificationCenter.publish(AudioHardwareEvent.defaultSystemOutputDeviceChanged(audioDevice: audioDevice))
-            }
+            notificationCenter.post(name: Notifications.defaultSystemOutputDeviceChanged.name, object: strongSelf)
         default:
             break
         }
@@ -127,7 +125,7 @@ public final class AudioHardware {
         )
 
         let systemObjectID = AudioObjectID(kAudioObjectSystemObject)
-        let err = AudioObjectAddPropertyListenerBlock(systemObjectID, &address, NotificationCenter.notificationsQueue, propertyListenerBlock)
+        let err = AudioObjectAddPropertyListenerBlock(systemObjectID, &address, propertyListenerQueue, propertyListenerBlock)
 
         if noErr != err {
             os_log("Error on AudioObjectAddPropertyListenerBlock: %@.", log: .default, type: .debug, err)
@@ -146,7 +144,7 @@ public final class AudioHardware {
         )
 
         let systemObjectID = AudioObjectID(kAudioObjectSystemObject)
-        let err = AudioObjectRemovePropertyListenerBlock(systemObjectID, &address, NotificationCenter.notificationsQueue, propertyListenerBlock)
+        let err = AudioObjectRemovePropertyListenerBlock(systemObjectID, &address, propertyListenerQueue, propertyListenerBlock)
 
         if noErr != err {
             os_log("Error on AudioObjectRemovePropertyListenerBlock: %@.", log: .default, type: .debug, err)

@@ -26,72 +26,48 @@ public final class AudioDevice: AudioObject {
     private var isRegisteredForNotifications = false
 
     private lazy var propertyListenerBlock: AudioObjectPropertyListenerBlock = { [weak self] (_, inAddresses) -> Void in
+        guard let strongSelf = self else { return }
+
         let address = inAddresses.pointee
-        let notificationCenter = NotificationCenter.defaultCenter
+        let notificationCenter = NotificationCenter.default
 
         switch address.mSelector {
         case kAudioDevicePropertyNominalSampleRate:
-            if let strongSelf = self {
-                notificationCenter.publish(AudioDeviceEvent.nominalSampleRateDidChange(audioDevice: strongSelf))
-            }
+            notificationCenter.post(name: Notifications.deviceNominalSampleRateDidChange.name, object: strongSelf)
         case kAudioDevicePropertyAvailableNominalSampleRates:
-            if let strongSelf = self {
-                notificationCenter.publish(AudioDeviceEvent.availableNominalSampleRatesDidChange(audioDevice: strongSelf))
-            }
+            notificationCenter.post(name: Notifications.deviceAvailableNominalSampleRatesDidChange.name, object: strongSelf)
         case kAudioDevicePropertyClockSource:
-            if let strongSelf = self {
-                notificationCenter.publish(AudioDeviceEvent.clockSourceDidChange(
-                    audioDevice: strongSelf
-                ))
-            }
+            notificationCenter.post(name: Notifications.deviceClockSourceDidChange.name, object: strongSelf)
         case kAudioObjectPropertyName:
-            if let strongSelf = self {
-                notificationCenter.publish(AudioDeviceEvent.nameDidChange(audioDevice: strongSelf))
-            }
+            notificationCenter.post(name: Notifications.deviceNameDidChange.name, object: strongSelf)
         case kAudioObjectPropertyOwnedObjects:
-            if let strongSelf = self {
-                notificationCenter.publish(AudioDeviceEvent.listDidChange(audioDevice: strongSelf))
-            }
+            notificationCenter.post(name: Notifications.deviceOwnedObjectsDidChange.name, object: strongSelf)
         case kAudioDevicePropertyVolumeScalar:
-            if let strongSelf = self, let direction = direction(to: address.mScope) {
-                notificationCenter.publish(AudioDeviceEvent.volumeDidChange(
-                    audioDevice: strongSelf,
-                    channel: address.mElement,
-                    direction: direction
-                ))
-            }
+            let userInfo: [AnyHashable: Any] = [
+                "channel": address.mElement,
+                "direction": direction
+            ]
+
+            notificationCenter.post(name: Notifications.deviceVolumeDidChange.name, object: strongSelf, userInfo: userInfo)
         case kAudioDevicePropertyMute:
-            if let strongSelf = self, let direction = direction(to: address.mScope) {
-                notificationCenter.publish(AudioDeviceEvent.muteDidChange(
-                    audioDevice: strongSelf,
-                    channel: address.mElement,
-                    direction: direction
-                ))
-            }
+            let userInfo: [AnyHashable: Any] = [
+                "channel": address.mElement,
+                "direction": direction
+            ]
+
+            notificationCenter.post(name: Notifications.deviceMuteDidChange.name, object: strongSelf, userInfo: userInfo)
         case kAudioDevicePropertyDeviceIsAlive:
-            if let strongSelf = self {
-                notificationCenter.publish(AudioDeviceEvent.isAliveDidChange(audioDevice: strongSelf))
-            }
+            notificationCenter.post(name: Notifications.deviceIsAliveDidChange.name, object: strongSelf)
         case kAudioDevicePropertyDeviceIsRunning:
-            if let strongSelf = self {
-                notificationCenter.publish(AudioDeviceEvent.isRunningDidChange(audioDevice: strongSelf))
-            }
+            notificationCenter.post(name: Notifications.deviceIsRunningDidChange.name, object: strongSelf)
         case kAudioDevicePropertyDeviceIsRunningSomewhere:
-            if let strongSelf = self {
-                notificationCenter.publish(AudioDeviceEvent.isRunningSomewhereDidChange(audioDevice: strongSelf))
-            }
+            notificationCenter.post(name: Notifications.deviceIsRunningSomewhereDidChange.name, object: strongSelf)
         case kAudioDevicePropertyJackIsConnected:
-            if let strongSelf = self {
-                notificationCenter.publish(AudioDeviceEvent.isJackConnectedDidChange(audioDevice: strongSelf))
-            }
+            notificationCenter.post(name: Notifications.deviceIsJackConnectedDidChange.name, object: strongSelf)
         case kAudioDevicePropertyPreferredChannelsForStereo:
-            if let strongSelf = self {
-                notificationCenter.publish(AudioDeviceEvent.preferredChannelsForStereoDidChange(audioDevice: strongSelf))
-            }
+            notificationCenter.post(name: Notifications.devicePreferredChannelsForStereoDidChange.name, object: strongSelf)
         case kAudioDevicePropertyHogMode:
-            if let strongSelf = self {
-                notificationCenter.publish(AudioDeviceEvent.hogModeDidChange(audioDevice: strongSelf))
-            }
+            notificationCenter.post(name: Notifications.deviceHogModeDidChange.name, object: strongSelf)
         // Unhandled cases beyond this point
         case kAudioDevicePropertyBufferFrameSize:
             fallthrough
@@ -1404,7 +1380,7 @@ public final class AudioDevice: AudioObject {
             mElement: kAudioObjectPropertyElementWildcard
         )
 
-        let err = AudioObjectAddPropertyListenerBlock(id, &address, NotificationCenter.notificationsQueue, propertyListenerBlock)
+        let err = AudioObjectAddPropertyListenerBlock(id, &address, propertyListenerQueue, propertyListenerBlock)
 
         if noErr != err {
             os_log("Error on AudioObjectAddPropertyListenerBlock: %@.", log: .default, type: .debug, err)
@@ -1422,7 +1398,7 @@ public final class AudioDevice: AudioObject {
             mElement: kAudioObjectPropertyElementWildcard
         )
 
-        let err = AudioObjectRemovePropertyListenerBlock(id, &address, NotificationCenter.notificationsQueue, propertyListenerBlock)
+        let err = AudioObjectRemovePropertyListenerBlock(id, &address, propertyListenerQueue, propertyListenerBlock)
 
         if noErr != err {
             os_log("Error on AudioObjectRemovePropertyListenerBlock: %@.", log: .default, type: .debug, err)
