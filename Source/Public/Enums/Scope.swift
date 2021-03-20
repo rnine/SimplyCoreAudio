@@ -7,7 +7,7 @@
 import Foundation
 
 /// Indicates the scope used by an `AudioDevice` or `AudioStream`.
-public enum Scope: String {
+public enum Scope {
     /// Global scope
     case global
     /// Input scope

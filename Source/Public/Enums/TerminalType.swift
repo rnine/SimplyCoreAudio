@@ -7,7 +7,7 @@
 import Foundation
 
 /// Indicates the terminal type used by an `AudioStream`.
-public enum TerminalType: String {
+public enum TerminalType {
     /// Unknown
     case unknown
 

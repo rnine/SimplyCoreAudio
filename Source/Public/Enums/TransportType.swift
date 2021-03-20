@@ -7,7 +7,7 @@
 import Foundation
 
 /// Indicates the transport type used by an `AudioDevice`.
-public enum TransportType: String {
+public enum TransportType {
     /// Unknown Transport Type
     case unknown
 
