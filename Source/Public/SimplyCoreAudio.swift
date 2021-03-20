@@ -7,6 +7,13 @@
 import AudioToolbox.AudioServices
 import os.log
 
+/// `SimplyCoreAudio` provides convenient audio hardware-related functions and allows audio hardware-related
+/// notifications to work.
+///
+/// Additionally, you may create and remove aggregate devices using this class.
+///
+/// Always remember to keep a strong reference to an object of this class to ensure audio hardware-related notifications
+/// are delivered.
 public final class SimplyCoreAudio {
     // MARK: - Public Properties
 
