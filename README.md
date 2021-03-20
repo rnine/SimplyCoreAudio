@@ -6,7 +6,7 @@
 [![GitHub tag](https://img.shields.io/github/tag/rnine/SimplyCoreAudio.svg)](https://github.com/rnine/SimplyCoreAudio)
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/rnine/SimplyCoreAudio/blob/develop/LICENSE.md)
 
-`SimplyCoreAudio` is a Swift framework that aims to make [Core Audio](https://developer.apple.com/library/mac/documentation/MusicAudio/Conceptual/CoreAudioOverview/) use less tedious in macOS.
+`SimplyCoreAudio` (formerly known as `AMCoreAudio`) is a Swift framework that aims to make [Core Audio](https://developer.apple.com/library/mac/documentation/MusicAudio/Conceptual/CoreAudioOverview/) use less tedious in macOS.
 
 Here's a few things it can do:
 
