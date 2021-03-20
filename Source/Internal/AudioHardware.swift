@@ -1,6 +1,6 @@
 //
 //  AudioHardware.swift
-//  AMCoreAudio
+//  SimplyCoreAudio
 //
 //  Created by Ruben on 7/9/15.
 //  Copyright © 2015 9Labs. All rights reserved.
@@ -13,24 +13,13 @@ import os.log
 /// This class allows subscribing to hardware-related audio notifications.
 ///
 /// For a comprehensive list of supported notifications, see `AudioHardwareEvent`.
-public final class AudioHardware {
-    // MARK: - Public Properties
-
-    /// Returns a singleton `AudioHardware` instance.
-    public static let sharedInstance = AudioHardware()
-
+final class AudioHardware {
     // MARK: - Fileprivate Properties
 
     fileprivate var allKnownDevices = [AudioDevice]()
     fileprivate var isRegisteredForNotifications = false
 
-    // MARK: - Lifecycle Functions
-
-    deinit {
-        disableDeviceMonitoring()
-    }
-
-    // MARK: - Public Functions
+    // MARK: - Internal Functions
 
     /// Enables device monitoring so events like the ones below are generated:
     ///
@@ -40,7 +29,7 @@ public final class AudioHardware {
     /// - new default system output device
     ///
     /// - SeeAlso: `disableDeviceMonitoring()`
-    public func enableDeviceMonitoring() {
+    func enableDeviceMonitoring() {
         registerForNotifications()
 
         for device in AudioDevice.allDevices() {
@@ -51,7 +40,7 @@ public final class AudioHardware {
     /// Disables device monitoring.
     ///
     /// - SeeAlso: `enableDeviceMonitoring()`
-    public func disableDeviceMonitoring() {
+    func disableDeviceMonitoring() {
         for device in allKnownDevices {
             remove(device: device)
         }
@@ -107,7 +96,7 @@ fileprivate extension AudioHardware {
         let systemObjectID = AudioObjectID(kAudioObjectSystemObject)
         let selfPtr = Unmanaged.passUnretained(self).toOpaque()
 
-        if noErr != AudioObjectAddPropertyListener(systemObjectID, &address, propertyListener, selfPtr) {
+        if noErr != AudioObjectRemovePropertyListener(systemObjectID, &address, propertyListener, selfPtr) {
             os_log("Unable to remove property listener for systemObjectID: %@.", systemObjectID)
         } else {
             isRegisteredForNotifications = false

@@ -1,5 +1,5 @@
 import XCTest
-@testable import AMCoreAudio
+@testable import SimplyCoreAudio
 
 class AudioStreamTests: XCTestCase {
     func testProperties() throws {

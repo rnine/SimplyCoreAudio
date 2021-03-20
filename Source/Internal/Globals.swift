@@ -1,6 +1,6 @@
 //
 //  Globals.swift
-//  AMCoreAudio
+//  SimplyCoreAudio
 //
 //  Created by Ruben Nine on 13/04/16.
 //  Copyright © 2016 9Labs. All rights reserved.
@@ -12,10 +12,10 @@ import os.log
 
 extension OSLog {
     /// Default logger.
-    static let `default` = OSLog(subsystem: "AMCoreAudio", category: "default")
+    static let `default` = OSLog(subsystem: "SimplyCoreAudio", category: "default")
 }
 
-let propertyListenerQueue = DispatchQueue(label: "io.9labs.AMCoreAudio.propertyListenerQueue",
+let propertyListenerQueue = DispatchQueue(label: "io.9labs.SimplyCoreAudio.propertyListenerQueue",
                                           target: DispatchQueue.global(qos: .userInitiated))
 
 func scope(direction: Direction) -> AudioObjectPropertyScope {

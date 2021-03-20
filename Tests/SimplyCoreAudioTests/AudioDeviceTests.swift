@@ -1,5 +1,5 @@
 import XCTest
-@testable import AMCoreAudio
+@testable import SimplyCoreAudio
 
 final class AudioDeviceTests: XCTestCase {
     let defaultOutputDevice = AudioDevice.defaultOutputDevice()

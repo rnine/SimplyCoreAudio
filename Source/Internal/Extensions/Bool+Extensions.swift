@@ -1,6 +1,6 @@
 //
 //  Bool+Extensions.swift
-//  AMCoreAudio
+//  SimplyCoreAudio
 //
 //  Created by Ruben on 7/9/15.
 //  Copyright © 2015 9Labs. All rights reserved.

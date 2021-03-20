@@ -1,6 +1,6 @@
 //
 //  AudioDevice.swift
-//  AMCoreAudio
+//  SimplyCoreAudio
 //
 //  Created by Ruben on 7/7/15.
 //  Copyright © 2015 9Labs. All rights reserved.
@@ -986,7 +986,7 @@ public final class AudioDevice: AudioObject {
                 {
                     sampleRates += possibleRates[startIndex..<endIndex + 1]
                 } else {
-                    os_log("Failed to obtain list of supported sample rates ranging from %f to %f. This is an error in AMCoreAudio and should be reported to the project maintainers.", log: .default, type: .debug, valueRange.mMinimum, valueRange.mMaximum)
+                    os_log("Failed to obtain list of supported sample rates ranging from %f to %f. This is an error in SimplyCoreAudio and should be reported to the project maintainers.", log: .default, type: .debug, valueRange.mMinimum, valueRange.mMaximum)
                 }
             } else {
                 // We did not get a range (this should be the most common case)

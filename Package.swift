@@ -4,15 +4,15 @@
 import PackageDescription
 
 let package = Package(
-    name: "AMCoreAudio",
+    name: "SimplyCoreAudio",
     platforms: [.macOS(.v10_12)],
     products: [
-        .library(name: "AMCoreAudio", targets: ["AMCoreAudio"])
+        .library(name: "SimplyCoreAudio", targets: ["SimplyCoreAudio"])
     ],
     dependencies: [],
     targets: [
-        .target(name: "AMCoreAudio", path: "Source"),
-        .testTarget(name: "AMCoreAudioTests", dependencies: ["AMCoreAudio"], path: "Tests")
+        .target(name: "SimplyCoreAudio", path: "Source"),
+        .testTarget(name: "SimplyCoreAudioTests", dependencies: ["SimplyCoreAudio"], path: "Tests")
     ],
     swiftLanguageVersions: [.v4, .v4_2, .v5]
 )

@@ -1,6 +1,6 @@
 //
 //  AudioObject.swift
-//  AMCoreAudio
+//  SimplyCoreAudio
 //
 //  Created by Ruben Nine on 13/04/16.
 //  Copyright © 2016 9Labs. All rights reserved.
