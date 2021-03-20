@@ -9,8 +9,10 @@ import Foundation
 import os.log
 
 extension OSLog {
+    private static let subsystem = Bundle.main.bundleIdentifier!
+
     /// Default logger.
-    static let `default` = OSLog(subsystem: "SimplyCoreAudio", category: "default")
+    static let `default` = OSLog(subsystem: subsystem, category: "default")
 }
 
 func scope(direction: Direction) -> AudioObjectPropertyScope {
