@@ -248,8 +248,8 @@ public final class AudioStream: AudioObject {
 
         guard owningObject != nil else { return nil }
 
-        registerForNotifications()
         AudioObjectPool.shared.set(self, for: objectID)
+        registerForNotifications()
     }
 
     deinit {

@@ -27,9 +27,10 @@ public final class AudioDevice: AudioObject {
 
         guard owningObject != nil else { return nil }
 
-        cachedDeviceName = super.name
-        registerForNotifications()
         AudioObjectPool.shared.set(self, for: objectID)
+        registerForNotifications()
+
+        cachedDeviceName = super.name
     }
 
     deinit {
