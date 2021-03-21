@@ -249,11 +249,11 @@ public final class AudioStream: AudioObject {
         guard owningObject != nil else { return nil }
 
         registerForNotifications()
-        AudioObjectPool.instancePool.setObject(self, forKey: NSNumber(value: UInt(objectID)))
+        AudioObjectPool.shared.set(self, for: objectID)
     }
 
     deinit {
-        AudioObjectPool.instancePool.removeObject(forKey: NSNumber(value: UInt(objectID)))
+        AudioObjectPool.shared.remove(objectID)
         unregisterForNotifications()
     }
 }
@@ -265,7 +265,7 @@ public extension AudioStream {
     ///
     /// - Note: If identifier is not valid, `nil` will be returned.
     static func lookup(by id: AudioObjectID) -> AudioStream? {
-        var instance = AudioObjectPool.instancePool.object(forKey: NSNumber(value: UInt(id))) as? AudioStream
+        var instance = AudioObjectPool.shared.get(id) as? AudioStream
 
         if instance == nil {
             instance = AudioStream(id: id)
@@ -432,9 +432,7 @@ private func propertyListener(objectID: UInt32,
                               numInAddresses: UInt32,
                               inAddresses : UnsafePointer<AudioObjectPropertyAddress>,
                               clientData: Optional<UnsafeMutableRawPointer>) -> Int32 {
-    guard AudioObjectPool.instancePool.object(forKey: NSNumber(value: UInt(objectID))) != nil else {
-        return kAudioHardwareBadObjectError
-    }
+    guard AudioObjectPool.shared.get(objectID) != nil else { return kAudioHardwareBadObjectError }
 
     let _self = Unmanaged<AudioStream>.fromOpaque(clientData!).takeUnretainedValue()
     let address = inAddresses.pointee

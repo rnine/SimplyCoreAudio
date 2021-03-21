@@ -29,11 +29,11 @@ public final class AudioDevice: AudioObject {
 
         cachedDeviceName = super.name
         registerForNotifications()
-        AudioObjectPool.instancePool.setObject(self, forKey: NSNumber(value: UInt(objectID)))
+        AudioObjectPool.shared.set(self, for: objectID)
     }
 
     deinit {
-        AudioObjectPool.instancePool.removeObject(forKey: NSNumber(value: UInt(objectID)))
+        AudioObjectPool.shared.remove(objectID)
         unregisterForNotifications()
     }
 
@@ -54,7 +54,7 @@ public extension AudioDevice {
     ///
     /// - Note: If identifier is not valid, `nil` will be returned.
     static func lookup(by id: AudioObjectID) -> AudioDevice? {
-        var instance = AudioObjectPool.instancePool.object(forKey: NSNumber(value: UInt(id))) as? AudioDevice
+        var instance = AudioObjectPool.shared.get(id) as? AudioDevice
 
         if instance == nil {
             instance = AudioDevice(id: id)
@@ -160,9 +160,7 @@ private func propertyListener(objectID: UInt32,
                               numInAddresses: UInt32,
                               inAddresses : UnsafePointer<AudioObjectPropertyAddress>,
                               clientData: Optional<UnsafeMutableRawPointer>) -> Int32 {
-    guard AudioObjectPool.instancePool.object(forKey: NSNumber(value: UInt(objectID))) != nil else {
-        return kAudioHardwareBadObjectError
-    }
+    guard AudioObjectPool.shared.get(objectID) != nil else { return kAudioHardwareBadObjectError }
 
     let _self: AudioDevice = Unmanaged<AudioDevice>.fromOpaque(clientData!).takeUnretainedValue()
     let address = inAddresses.pointee
