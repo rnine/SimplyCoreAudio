@@ -160,6 +160,7 @@ private func propertyListener(objectID: UInt32,
                               numInAddresses: UInt32,
                               inAddresses : UnsafePointer<AudioObjectPropertyAddress>,
                               clientData: Optional<UnsafeMutableRawPointer>) -> Int32 {
+    // Ensure audio object is still in the pool, otherwise it probably is (or is in the process of being) deallocated.
     guard AudioObjectPool.shared.get(objectID) != nil else { return kAudioHardwareBadObjectError }
 
     let _self: AudioDevice = Unmanaged<AudioDevice>.fromOpaque(clientData!).takeUnretainedValue()
