@@ -3,7 +3,7 @@ import XCTest
 
 class AudioStreamTests: SCATestCase {
     func testProperties() throws {
-        let device = try GetDevice()
+        let device = try getNullDevice()
         let outputStreams = try XCTUnwrap(device.streams(scope: .output))
         let inputStreams = try XCTUnwrap(device.streams(scope: .input))
 

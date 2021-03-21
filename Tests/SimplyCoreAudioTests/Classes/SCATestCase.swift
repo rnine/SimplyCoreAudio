@@ -22,7 +22,7 @@ class SCATestCase: XCTestCase {
         defaultOutputDevice = simplyCA.defaultOutputDevice
         defaultSystemOutputDevice = simplyCA.defaultSystemOutputDevice
 
-        try? ResetDeviceState()
+        try? resetNullDeviceState()
     }
 
     override func tearDown() {
@@ -30,15 +30,15 @@ class SCATestCase: XCTestCase {
 
         simplyCA = nil
         resetDefaultDevices()
-        try? ResetDeviceState()
+        try? resetNullDeviceState()
     }
 
-    func GetDevice(file: StaticString = #file, line: UInt = #line) throws -> AudioDevice {
+    func getNullDevice(file: StaticString = #file, line: UInt = #line) throws -> AudioDevice {
         try XCTUnwrap(AudioDevice.lookup(by: "NullAudioDevice_UID"), "NullAudio driver is missing.", file: file, line: line)
     }
 
-    func ResetDeviceState() throws {
-        let device = try GetDevice()
+    func resetNullDeviceState() throws {
+        let device = try getNullDevice()
 
         device.unsetHogMode()
 

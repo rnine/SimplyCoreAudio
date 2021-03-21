@@ -3,7 +3,7 @@ import XCTest
 
 final class AudioDeviceTests: SCATestCase {
     func testDeviceLookUp() throws {
-        let device = try GetDevice()
+        let device = try getNullDevice()
         let deviceUID = try XCTUnwrap(device.uid)
 
         XCTAssertEqual(AudioDevice.lookup(by: device.id), device)
@@ -11,7 +11,7 @@ final class AudioDeviceTests: SCATestCase {
     }
 
     func testSettingDefaultDevice() throws {
-        let device = try GetDevice()
+        let device = try getNullDevice()
 
         XCTAssertTrue(device.setAsDefaultSystemDevice())
         XCTAssertEqual(simplyCA.defaultSystemOutputDevice, device)
@@ -24,7 +24,7 @@ final class AudioDeviceTests: SCATestCase {
     }
 
     func testGeneralDeviceInformation() throws {
-        let device = try GetDevice()
+        let device = try getNullDevice()
 
         XCTAssertEqual(device.name, "Null Audio Device")
         XCTAssertEqual(device.manufacturer, "Apple Inc.")
@@ -57,7 +57,7 @@ final class AudioDeviceTests: SCATestCase {
     }
 
     func testLFE() throws {
-        let device = try GetDevice()
+        let device = try getNullDevice()
 
         XCTAssertNil(device.shouldOwniSub)
         device.shouldOwniSub = true
@@ -77,7 +77,7 @@ final class AudioDeviceTests: SCATestCase {
     }
 
     func testInputOutputLayout() throws {
-        let device = try GetDevice()
+        let device = try getNullDevice()
 
         XCTAssertEqual(device.layoutChannels(scope: .output), 2)
         XCTAssertEqual(device.layoutChannels(scope: .input), 2)
@@ -90,7 +90,7 @@ final class AudioDeviceTests: SCATestCase {
     }
 
     func testVolumeInfo() throws {
-        let device = try GetDevice()
+        let device = try getNullDevice()
         var volumeInfo: VolumeInfo!
 
         XCTAssertTrue(device.setMute(false, channel: 0, scope: .output))
@@ -125,7 +125,7 @@ final class AudioDeviceTests: SCATestCase {
     }
 
     func testVolume() throws {
-        let device = try GetDevice()
+        let device = try getNullDevice()
 
         // Output scope
         XCTAssertTrue(device.setVolume(0, channel: 0, scope: .output))
@@ -155,7 +155,7 @@ final class AudioDeviceTests: SCATestCase {
     }
 
     func testVolumeInDecibels() throws {
-        let device = try GetDevice()
+        let device = try getNullDevice()
 
         // Output scope
         XCTAssertTrue(device.canSetVolume(channel: 0, scope: .output))
@@ -189,7 +189,7 @@ final class AudioDeviceTests: SCATestCase {
     }
 
     func testMute() throws {
-        let device = try GetDevice()
+        let device = try getNullDevice()
 
         // Output scope
         XCTAssertTrue(device.canMute(channel: 0, scope: .output))
@@ -223,7 +223,7 @@ final class AudioDeviceTests: SCATestCase {
     }
 
     func testMasterChannelMute() throws {
-        let device = try GetDevice()
+        let device = try getNullDevice()
 
         XCTAssertEqual(device.canMuteMasterChannel(scope: .output), true)
         XCTAssertTrue(device.setMute(false, channel: 0, scope: .output))
@@ -239,7 +239,7 @@ final class AudioDeviceTests: SCATestCase {
     }
 
     func testPreferredChannelsForStereo() throws {
-        let device = try GetDevice()
+        let device = try getNullDevice()
         var preferredChannels = try XCTUnwrap(device.preferredChannelsForStereo(scope: .output))
 
         XCTAssertEqual(preferredChannels.left, 1)
@@ -262,7 +262,7 @@ final class AudioDeviceTests: SCATestCase {
     }
 
     func testVirtualMasterChannels() throws {
-        let device = try GetDevice()
+        let device = try getNullDevice()
 
         XCTAssertTrue(device.canSetVirtualMasterVolume(scope: .output))
         XCTAssertTrue(device.canSetVirtualMasterVolume(scope: .input))
@@ -283,7 +283,7 @@ final class AudioDeviceTests: SCATestCase {
     }
 
     func testVirtualMasterBalance() throws {
-        let device = try GetDevice()
+        let device = try getNullDevice()
 
         XCTAssertFalse(device.setVirtualMasterBalance(0.0, scope: .output))
         XCTAssertNil(device.virtualMasterBalance(scope: .output))
@@ -293,7 +293,7 @@ final class AudioDeviceTests: SCATestCase {
     }
 
     func testSampleRate() throws {
-        let device = try GetDevice()
+        let device = try getNullDevice()
 
         XCTAssertEqual(device.nominalSampleRates, [44100, 48000])
 
@@ -309,21 +309,21 @@ final class AudioDeviceTests: SCATestCase {
     }
 
     func testDataSource() throws {
-        let device = try GetDevice()
+        let device = try getNullDevice()
 
         XCTAssertNotNil(device.dataSource(scope: .output))
         XCTAssertNotNil(device.dataSource(scope: .input))
     }
 
     func testDataSources() throws {
-        let device = try GetDevice()
+        let device = try getNullDevice()
 
         XCTAssertNotNil(device.dataSources(scope: .output))
         XCTAssertNotNil(device.dataSources(scope: .input))
     }
 
     func testDataSourceName() throws {
-        let device = try GetDevice()
+        let device = try getNullDevice()
 
         XCTAssertEqual(device.dataSourceName(dataSourceID: 0, scope: .output), "Data Source Item 0")
         XCTAssertEqual(device.dataSourceName(dataSourceID: 1, scope: .output), "Data Source Item 1")
@@ -339,7 +339,7 @@ final class AudioDeviceTests: SCATestCase {
     }
 
     func testClockSource() throws {
-        let device = try GetDevice()
+        let device = try getNullDevice()
 
         XCTAssertNil(device.clockSourceID)
         XCTAssertNil(device.clockSourceIDs)
@@ -350,21 +350,21 @@ final class AudioDeviceTests: SCATestCase {
     }
 
     func testLatency() throws {
-        let device = try GetDevice()
+        let device = try getNullDevice()
 
         XCTAssertEqual(device.latency(scope: .output), 0)
         XCTAssertEqual(device.latency(scope: .input), 0)
     }
 
     func testSafetyOffset() throws {
-        let device = try GetDevice()
+        let device = try getNullDevice()
 
         XCTAssertEqual(device.safetyOffset(scope: .output), 0)
         XCTAssertEqual(device.safetyOffset(scope: .input), 0)
     }
 
     func testHogMode() throws {
-        let device = try GetDevice()
+        let device = try getNullDevice()
 
         XCTAssertEqual(device.hogModePID, -1)
         XCTAssertTrue(device.setHogMode())
@@ -384,7 +384,7 @@ final class AudioDeviceTests: SCATestCase {
 //    }
 
     func testStreams() throws {
-        let device = try GetDevice()
+        let device = try getNullDevice()
 
         XCTAssertNotNil(device.streams(scope: .output))
         XCTAssertNotNil(device.streams(scope: .input))

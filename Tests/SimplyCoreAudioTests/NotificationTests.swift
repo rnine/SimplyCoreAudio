@@ -10,7 +10,7 @@ import XCTest
 
 class NotificationTests: SCATestCase {
     func testHardwareNotifications() throws {
-        let nullDevice = try GetDevice()
+        let nullDevice = try getNullDevice()
         var aggregateDevice: AudioDevice?
 
         let expectation1 = self.expectation(description: "aggregate device should be added to device list")

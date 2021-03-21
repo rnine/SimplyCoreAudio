@@ -10,7 +10,7 @@ import XCTest
 class SimplyCoreAudioTests: SCATestCase {
     func testDeviceEnumeration() throws {
         let simplyCA = SimplyCoreAudio()
-        let device = try GetDevice()
+        let device = try getNullDevice()
 
         XCTAssertTrue(simplyCA.allDevices.contains(device))
         XCTAssertTrue(simplyCA.allDeviceIDs.contains(device.id))
