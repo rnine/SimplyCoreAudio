@@ -89,10 +89,6 @@ public class AudioObject {
     init(objectID: AudioObjectID) {
         self.objectID = objectID
     }
-
-    deinit {
-        // NO-OP
-    }
 }
 
 // MARK: - Hashable Conformance
