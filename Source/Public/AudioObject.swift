@@ -12,15 +12,11 @@ import Foundation
 ///
 /// For more information, please refer to Core Audio's documentation or source code.
 public class AudioObject {
+    // MARK: - Internal Properties
+
     let objectID: AudioObjectID
 
-    init(objectID: AudioObjectID) {
-        self.objectID = objectID
-    }
-
-    deinit {
-        // NO-OP
-    }
+    // MARK: - Public Properties
 
     /// The `AudioClassID` that identifies the class of this audio object.
     ///
@@ -87,7 +83,19 @@ public class AudioObject {
 
         return noErr == status ? (name as String) : nil
     }
+
+    // MARK: - Lifecycle
+
+    init(objectID: AudioObjectID) {
+        self.objectID = objectID
+    }
+
+    deinit {
+        // NO-OP
+    }
 }
+
+// MARK: - Hashable Conformance
 
 extension AudioObject: Hashable {
     /// The hash value.
@@ -95,6 +103,8 @@ extension AudioObject: Hashable {
         hasher.combine(objectID)
     }
 }
+
+// MARK: - Equatable Conformance
 
 /// :nodoc:
 public func == (lhs: AudioObject, rhs: AudioObject) -> Bool {
