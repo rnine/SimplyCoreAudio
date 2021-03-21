@@ -7,13 +7,22 @@
 import AudioToolbox.AudioServices
 import os.log
 
-/// `SimplyCoreAudio` provides convenient audio hardware-related functions and allows audio hardware-related
-/// notifications to work.
+/// `SimplyCoreAudio` provides convenient audio hardware-related functions (e.g. obtaining all devices managed by
+/// Core Audio) and allows audio hardware-related notifications to work. Additionally, you may create and remove
+/// aggregate devices using this class.
 ///
-/// Additionally, you may create and remove aggregate devices using this class.
+/// - Important: If you are interested in receiving hardware-related notifications, remember to keep a strong reference
+/// to an object of this class.
 ///
-/// Always remember to keep a strong reference to an object of this class to ensure audio hardware-related notifications
-/// are delivered.
+/// However, *do not* keep more than one instance of this class at the same time to avoid receiving duplicated
+/// notifications.
+///
+/// As soon as the last remaining instance of this class is deallocated, hardware-related notifications will no longer
+/// be delivered.
+///
+/// We could have designed this class to always return a shared instance, but ultimately decided to allow developers
+/// total control so they have the chance to cleanup any resources used by `SimplyCoreAudio` such as hardware-related
+/// Core Audio property listeners by simply deallocating any instances of this class.
 public final class SimplyCoreAudio {
     // MARK: - Public Properties
 
