@@ -1,23 +1,7 @@
 import XCTest
 @testable import SimplyCoreAudio
 
-final class AudioDeviceTests: XCTestCase {
-    let simplyCoreAudio = SimplyCoreAudio()
-
-    override func setUp() {
-        super.setUp()
-
-        ResetDefaultDevices()
-        try? ResetDeviceState()
-    }
-
-    override func tearDown() {
-        super.tearDown()
-
-        ResetDefaultDevices()
-        try? ResetDeviceState()
-    }
-
+final class AudioDeviceTests: SCATestCase {
     func testDeviceLookUp() throws {
         let device = try GetDevice()
         let deviceUID = try XCTUnwrap(device.uid)
@@ -30,13 +14,13 @@ final class AudioDeviceTests: XCTestCase {
         let device = try GetDevice()
 
         XCTAssertTrue(device.setAsDefaultSystemDevice())
-        XCTAssertEqual(simplyCoreAudio.defaultSystemOutputDevice, device)
+        XCTAssertEqual(simplyCA.defaultSystemOutputDevice, device)
 
         XCTAssertTrue(device.setAsDefaultOutputDevice())
-        XCTAssertEqual(simplyCoreAudio.defaultOutputDevice, device)
+        XCTAssertEqual(simplyCA.defaultOutputDevice, device)
 
         XCTAssertTrue(device.setAsDefaultInputDevice())
-        XCTAssertEqual(simplyCoreAudio.defaultInputDevice, device)
+        XCTAssertEqual(simplyCA.defaultInputDevice, device)
     }
 
     func testGeneralDeviceInformation() throws {
@@ -407,11 +391,11 @@ final class AudioDeviceTests: XCTestCase {
     }
 
     func testCreateAndDestroyAggregateDevice() {
-        let inputs = simplyCoreAudio.allNonAggregateDevices.filter {
+        let inputs = simplyCA.allNonAggregateDevices.filter {
             $0.channels(scope: .input) > 0
         }
 
-        let outputs = simplyCoreAudio.allNonAggregateDevices.filter {
+        let outputs = simplyCA.allNonAggregateDevices.filter {
             $0.channels(scope: .output) > 0
         }
 
@@ -422,7 +406,7 @@ final class AudioDeviceTests: XCTestCase {
             return
         }
 
-        guard let device = simplyCoreAudio.createAggregateDevice(masterDeviceUID: output,
+        guard let device = simplyCA.createAggregateDevice(masterDeviceUID: output,
                                                                  secondDeviceUID: input,
                                                                  named: "testCreateAggregateAudioDevice",
                                                                  uid: "testCreateAggregateAudioDevice-12345")
@@ -436,7 +420,7 @@ final class AudioDeviceTests: XCTestCase {
 
         wait(for: 2)
 
-        let error = simplyCoreAudio.removeAggregateDevice(id: device.id)
+        let error = simplyCA.removeAggregateDevice(id: device.id)
         XCTAssertTrue(error == noErr, "Failed removing device")
 
         wait(for: 2)
@@ -444,36 +428,9 @@ final class AudioDeviceTests: XCTestCase {
 
     // MARK: - Private Functions
 
-    private func ResetDefaultDevices() {
-        simplyCoreAudio.defaultOutputDevice?.setAsDefaultOutputDevice()
-        simplyCoreAudio.defaultInputDevice?.setAsDefaultInputDevice()
-        simplyCoreAudio.defaultSystemOutputDevice?.setAsDefaultSystemDevice()
-    }
-
-    private func ResetDeviceState() throws {
-        let device = try GetDevice()
-
-        device.unsetHogMode()
-
-        if device.nominalSampleRate != 44100 {
-            device.setNominalSampleRate(44100)
-            sleep(1)
-        }
-
-        device.setPreferredChannelsForStereo(channels: StereoPair(left: 1, right: 2), scope: .output)
-        device.setMute(false, channel: 0, scope: .output)
-        device.setMute(false, channel: 0, scope: .input)
-        device.setVolume(0.5, channel: 0, scope: .output)
-        device.setVolume(0.5, channel: 0, scope: .input)
-        device.setVirtualMasterVolume(0.5, scope: .output)
-        device.setVirtualMasterVolume(0.5, scope: .input)
-    }
-
-    private func wait(for interval: TimeInterval) {
-        let delayExpectation = XCTestExpectation(description: "delayExpectation")
-        DispatchQueue.main.asyncAfter(deadline: .now() + interval) {
-            delayExpectation.fulfill()
-        }
-        wait(for: [delayExpectation], timeout: interval + 1)
+    private func resetDefaultDevices() {
+        defaultInputDevice?.setAsDefaultInputDevice()
+        defaultOutputDevice?.setAsDefaultOutputDevice()
+        defaultSystemOutputDevice?.setAsDefaultSystemDevice()
     }
 }

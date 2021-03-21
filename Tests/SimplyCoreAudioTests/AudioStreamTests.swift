@@ -1,7 +1,7 @@
 import XCTest
 @testable import SimplyCoreAudio
 
-class AudioStreamTests: XCTestCase {
+class AudioStreamTests: SCATestCase {
     func testProperties() throws {
         let device = try GetDevice()
         let outputStreams = try XCTUnwrap(device.streams(scope: .output))
@@ -51,11 +51,5 @@ class AudioStreamTests: XCTestCase {
 
         inputStream.physicalFormat = nil
         XCTAssertNotNil(inputStream.physicalFormat)
-    }
-
-    // MARK: - Private Functions
-
-    private func GetDevice(file: StaticString = #file, line: UInt = #line) throws -> AudioDevice {
-        return try XCTUnwrap(AudioDevice.lookup(by: "NullAudioDevice_UID"), "NullAudio driver is missing.", file: file, line: line)
     }
 }

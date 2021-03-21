@@ -7,15 +7,14 @@
 import XCTest
 @testable import SimplyCoreAudio
 
-class SimplyCoreAudioTests: XCTestCase {
-    let simplyCoreAudio = SimplyCoreAudio()
-
+class SimplyCoreAudioTests: SCATestCase {
     func testDeviceEnumeration() throws {
+        let simplyCA = SimplyCoreAudio()
         let device = try GetDevice()
 
-        XCTAssertTrue(simplyCoreAudio.allDevices.contains(device))
-        XCTAssertTrue(simplyCoreAudio.allDeviceIDs.contains(device.id))
-        XCTAssertTrue(simplyCoreAudio.allInputDevices.contains(device))
-        XCTAssertTrue(simplyCoreAudio.allOutputDevices.contains(device))
+        XCTAssertTrue(simplyCA.allDevices.contains(device))
+        XCTAssertTrue(simplyCA.allDeviceIDs.contains(device.id))
+        XCTAssertTrue(simplyCA.allInputDevices.contains(device))
+        XCTAssertTrue(simplyCA.allOutputDevices.contains(device))
     }
 }
