@@ -12,18 +12,20 @@ import os.log
 ///
 /// Devices may be physical or virtual. For a comprehensive list of supported types, please refer to `TransportType`.
 public final class AudioDevice: AudioObject {
-    // MARK: - Private Properties
+    // MARK: - Static Private Properties
 
-    private var cachedDeviceName: String?
-    private var isRegisteredForNotifications = false
-
-    private let deviceClassIDs: Set<AudioClassID> = [
+    private static let deviceClassIDs: Set<AudioClassID> = [
         kAudioDeviceClassID,
         kAudioSubDeviceClassID,
         kAudioAggregateDeviceClassID,
         kAudioEndPointClassID,
         kAudioEndPointDeviceClassID
     ]
+
+    // MARK: - Private Properties
+
+    private var cachedDeviceName: String?
+    private var isRegisteredForNotifications = false
 
     // MARK: - Lifecycle Functions
 
@@ -33,7 +35,7 @@ public final class AudioDevice: AudioObject {
     private init?(id: AudioObjectID) {
         super.init(objectID: id)
 
-        guard let classID = classID, deviceClassIDs.contains(classID) else { return nil }
+        guard let classID = classID, Self.deviceClassIDs.contains(classID) else { return nil }
 
         AudioObjectPool.shared.set(self, for: objectID)
         registerForNotifications()
