@@ -21,12 +21,7 @@ public extension AudioDevice {
     /// - Returns: An array of `AudioDevice` objects.
     var ownedAggregateDevices: [AudioDevice]? {
         guard let ownedObjectIDs = ownedObjectIDs else { return nil }
-
-        let ownedDevices = ownedObjectIDs.compactMap { (id) -> AudioDevice? in
-            AudioDevice.lookup(by: id)
-        }
-        // only aggregates have non nil owned UIDs. I think?
-        return ownedDevices.filter { $0.uid != nil }
+        return ownedObjectIDs.compactMap { AudioDevice.lookup(by: $0) }
     }
 
     /// All the subdevices of this aggregate device that support input

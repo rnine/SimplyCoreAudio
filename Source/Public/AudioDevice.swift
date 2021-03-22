@@ -17,6 +17,14 @@ public final class AudioDevice: AudioObject {
     private var cachedDeviceName: String?
     private var isRegisteredForNotifications = false
 
+    private let deviceClassIDs: Set<AudioClassID> = [
+        kAudioDeviceClassID,
+        kAudioSubDeviceClassID,
+        kAudioAggregateDeviceClassID,
+        kAudioEndPointClassID,
+        kAudioEndPointDeviceClassID
+    ]
+
     // MARK: - Lifecycle Functions
 
     /// Initializes an `AudioDevice` by providing a valid audio device identifier.
@@ -25,7 +33,7 @@ public final class AudioDevice: AudioObject {
     private init?(id: AudioObjectID) {
         super.init(objectID: id)
 
-        guard owningObject != nil else { return nil }
+        guard let classID = classID, deviceClassIDs.contains(classID) else { return nil }
 
         AudioObjectPool.shared.set(self, for: objectID)
         registerForNotifications()

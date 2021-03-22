@@ -390,33 +390,20 @@ final class AudioDeviceTests: SCATestCase {
         XCTAssertNotNil(device.streams(scope: .input))
     }
 
-    func testCreateAndDestroyAggregateDevice() {
-        let inputs = simplyCA.allNonAggregateDevices.filter {
-            $0.channels(scope: .input) > 0
-        }
+    func testCreateAndDestroyAggregateDevice() throws {
+        let nullDevice = try getNullDevice()
 
-        let outputs = simplyCA.allNonAggregateDevices.filter {
-            $0.channels(scope: .output) > 0
-        }
-
-        guard let input = inputs.first?.uid,
-              let output = outputs.first?.uid
-        else {
-            XCTFail("Failed to find an input and output to use")
-            return
-        }
-
-        guard let device = simplyCA.createAggregateDevice(masterDeviceUID: output,
-                                                                 secondDeviceUID: input,
-                                                                 named: "testCreateAggregateAudioDevice",
-                                                                 uid: "testCreateAggregateAudioDevice-12345")
+        guard let device = simplyCA.createAggregateDevice(masterDevice: nullDevice,
+                                                          secondDevice: nil,
+                                                          named: "testCreateAggregateAudioDevice",
+                                                          uid: "testCreateAggregateAudioDevice-12345")
         else {
             XCTFail("Failed creating device")
             return
         }
 
         XCTAssertTrue(device.isAggregateDevice)
-        XCTAssertTrue(device.ownedAggregateDevices?.count == 2)
+        XCTAssertTrue(device.ownedAggregateDevices?.count == 1)
 
         wait(for: 2)
 

@@ -128,23 +128,23 @@ public extension SimplyCoreAudio {
 
     /// This routine creates a new Aggregate AudioDevice
     ///
-    /// - Parameter masterDeviceUID: An audio device unique identifier. This will also be the clock source.
-    /// - Parameter secondDeviceUID: An audio device unique identifier
+    /// - Parameter masterDeviceUID: An audio device. This will also be the clock source.
+    /// - Parameter secondDeviceUID: An audio device.
     ///
     /// - Returns *(optional)* An aggregate `AudioDevice` if one can be created.
-    func createAggregateDevice(masterDeviceUID: String,
-                               secondDeviceUID: String?,
+    func createAggregateDevice(masterDevice: AudioDevice,
+                               secondDevice: AudioDevice?,
                                named name: String,
                                uid: String) -> AudioDevice?
     {
+        guard let masterDeviceUID = masterDevice.uid else { return nil }
+
         var deviceList: [[String: Any]] = [
             [kAudioSubDeviceUIDKey: masterDeviceUID]
         ]
 
         // make sure same device isn't added twice
-        if let secondDeviceUID = secondDeviceUID,
-           secondDeviceUID != masterDeviceUID
-        {
+        if let secondDeviceUID = secondDevice?.uid, secondDeviceUID != masterDeviceUID {
             deviceList.append([kAudioSubDeviceUIDKey: secondDeviceUID])
         }
 

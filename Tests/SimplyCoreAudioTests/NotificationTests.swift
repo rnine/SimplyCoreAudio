@@ -51,8 +51,8 @@ class NotificationTests: SCATestCase {
             }
         ])
 
-        aggregateDevice = simplyCA.createAggregateDevice(masterDeviceUID: nullDevice.uid!,
-                                                         secondDeviceUID: nil,
+        aggregateDevice = simplyCA.createAggregateDevice(masterDevice: nullDevice,
+                                                         secondDevice: nil,
                                                          named: expectedName,
                                                          uid: expectedUID)
         XCTAssertNotNil(aggregateDevice)
