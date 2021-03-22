@@ -5,7 +5,6 @@
 //
 
 import AudioToolbox.AudioServices
-import os.log
 
 // MARK: - Aggregate Device Functions
 
