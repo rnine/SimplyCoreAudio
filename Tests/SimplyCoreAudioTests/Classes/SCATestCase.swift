@@ -18,10 +18,7 @@ class SCATestCase: XCTestCase {
         super.setUp()
 
         simplyCA = SimplyCoreAudio()
-        defaultInputDevice = simplyCA.defaultInputDevice
-        defaultOutputDevice = simplyCA.defaultOutputDevice
-        defaultSystemOutputDevice = simplyCA.defaultSystemOutputDevice
-
+        saveDefaultDevices()
         try? resetNullDeviceState()
     }
 
@@ -29,7 +26,7 @@ class SCATestCase: XCTestCase {
         super.tearDown()
 
         simplyCA = nil
-        resetDefaultDevices()
+        restoreDefaultDevices()
         try? resetNullDeviceState()
     }
 
@@ -60,7 +57,13 @@ class SCATestCase: XCTestCase {
 // MARK: - Private Functions
 
 private extension SCATestCase {
-    func resetDefaultDevices() {
+    func saveDefaultDevices() {
+        defaultInputDevice = simplyCA.defaultInputDevice
+        defaultOutputDevice = simplyCA.defaultOutputDevice
+        defaultSystemOutputDevice = simplyCA.defaultSystemOutputDevice
+    }
+
+    func restoreDefaultDevices() {
         defaultInputDevice?.setAsDefaultInputDevice()
         defaultOutputDevice?.setAsDefaultOutputDevice()
         defaultSystemOutputDevice?.setAsDefaultSystemDevice()

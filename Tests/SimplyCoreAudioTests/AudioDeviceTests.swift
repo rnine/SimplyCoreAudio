@@ -412,12 +412,4 @@ final class AudioDeviceTests: SCATestCase {
 
         wait(for: 2)
     }
-
-    // MARK: - Private Functions
-
-    private func resetDefaultDevices() {
-        defaultInputDevice?.setAsDefaultInputDevice()
-        defaultOutputDevice?.setAsDefaultOutputDevice()
-        defaultSystemOutputDevice?.setAsDefaultSystemDevice()
-    }
 }
