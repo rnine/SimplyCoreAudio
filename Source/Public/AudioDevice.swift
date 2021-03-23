@@ -180,41 +180,41 @@ private func propertyListener(objectID: UInt32,
 
     switch address.mSelector {
     case kAudioDevicePropertyNominalSampleRate:
-        notificationCenter.post(name: Notifications.deviceNominalSampleRateDidChange.name, object: _self)
+        notificationCenter.post(name: .deviceNominalSampleRateDidChange, object: _self)
     case kAudioDevicePropertyAvailableNominalSampleRates:
-        notificationCenter.post(name: Notifications.deviceAvailableNominalSampleRatesDidChange.name, object: _self)
+        notificationCenter.post(name: .deviceAvailableNominalSampleRatesDidChange, object: _self)
     case kAudioDevicePropertyClockSource:
-        notificationCenter.post(name: Notifications.deviceClockSourceDidChange.name, object: _self)
+        notificationCenter.post(name: .deviceClockSourceDidChange, object: _self)
     case kAudioObjectPropertyName:
-        notificationCenter.post(name: Notifications.deviceNameDidChange.name, object: _self)
+        notificationCenter.post(name: .deviceNameDidChange, object: _self)
     case kAudioObjectPropertyOwnedObjects:
-        notificationCenter.post(name: Notifications.deviceOwnedObjectsDidChange.name, object: _self)
+        notificationCenter.post(name: .deviceOwnedObjectsDidChange, object: _self)
     case kAudioDevicePropertyVolumeScalar:
         let userInfo: [AnyHashable: Any] = [
             "channel": address.mElement,
             "scope": scope(from: address.mScope)!
         ]
 
-        notificationCenter.post(name: Notifications.deviceVolumeDidChange.name, object: _self, userInfo: userInfo)
+        notificationCenter.post(name: .deviceVolumeDidChange, object: _self, userInfo: userInfo)
     case kAudioDevicePropertyMute:
         let userInfo: [AnyHashable: Any] = [
             "channel": address.mElement,
             "scope": scope(from: address.mScope)!
         ]
 
-        notificationCenter.post(name: Notifications.deviceMuteDidChange.name, object: _self, userInfo: userInfo)
+        notificationCenter.post(name: .deviceMuteDidChange, object: _self, userInfo: userInfo)
     case kAudioDevicePropertyDeviceIsAlive:
-        notificationCenter.post(name: Notifications.deviceIsAliveDidChange.name, object: _self)
+        notificationCenter.post(name: .deviceIsAliveDidChange, object: _self)
     case kAudioDevicePropertyDeviceIsRunning:
-        notificationCenter.post(name: Notifications.deviceIsRunningDidChange.name, object: _self)
+        notificationCenter.post(name: .deviceIsRunningDidChange, object: _self)
     case kAudioDevicePropertyDeviceIsRunningSomewhere:
-        notificationCenter.post(name: Notifications.deviceIsRunningSomewhereDidChange.name, object: _self)
+        notificationCenter.post(name: .deviceIsRunningSomewhereDidChange, object: _self)
     case kAudioDevicePropertyJackIsConnected:
-        notificationCenter.post(name: Notifications.deviceIsJackConnectedDidChange.name, object: _self)
+        notificationCenter.post(name: .deviceIsJackConnectedDidChange, object: _self)
     case kAudioDevicePropertyPreferredChannelsForStereo:
-        notificationCenter.post(name: Notifications.devicePreferredChannelsForStereoDidChange.name, object: _self)
+        notificationCenter.post(name: .devicePreferredChannelsForStereoDidChange, object: _self)
     case kAudioDevicePropertyHogMode:
-        notificationCenter.post(name: Notifications.deviceHogModeDidChange.name, object: _self)
+        notificationCenter.post(name: .deviceHogModeDidChange, object: _self)
     default:
         break
     }

@@ -24,7 +24,7 @@ class NotificationTests: SCATestCase {
         var observers = [NSObjectProtocol]()
 
         observers.append(contentsOf: [
-            NotificationCenter.default.addObserver(forName: Notifications.deviceListChanged.name,
+            NotificationCenter.default.addObserver(forName: .deviceListChanged,
                                                    object: nil,
                                                    queue: .main) { (notification) in
                 guard let addedDevices = notification.userInfo?["addedDevices"] as? [AudioDevice] else { return }
@@ -35,17 +35,17 @@ class NotificationTests: SCATestCase {
                 expectation1.fulfill()
             },
 
-            NotificationCenter.default.addObserver(forName: Notifications.defaultInputDeviceChanged.name,
+            NotificationCenter.default.addObserver(forName: .defaultInputDeviceChanged,
                                                    object: nil, queue: .main) { (notification) in
                 expectation2.fulfill()
             },
 
-            NotificationCenter.default.addObserver(forName: Notifications.defaultOutputDeviceChanged.name,
+            NotificationCenter.default.addObserver(forName: .defaultOutputDeviceChanged,
                                                    object: nil, queue: .main) { (notification) in
                 expectation3.fulfill()
             },
 
-            NotificationCenter.default.addObserver(forName: Notifications.defaultSystemOutputDeviceChanged.name,
+            NotificationCenter.default.addObserver(forName: .defaultSystemOutputDeviceChanged,
                                                    object: nil, queue: .main) { (notification) in
                 expectation4.fulfill()
             }
@@ -91,7 +91,7 @@ class NotificationTests: SCATestCase {
         var observers = [NSObjectProtocol]()
 
         observers.append(
-            NotificationCenter.default.addObserver(forName: Notifications.deviceNominalSampleRateDidChange.name,
+            NotificationCenter.default.addObserver(forName: .deviceNominalSampleRateDidChange,
                                                    object: nil,
                                                    queue: .main) { (notification) in
                 expectation.fulfill()
@@ -120,7 +120,7 @@ class NotificationTests: SCATestCase {
         var observers = [NSObjectProtocol]()
 
         observers.append(
-            NotificationCenter.default.addObserver(forName: Notifications.deviceVolumeDidChange.name,
+            NotificationCenter.default.addObserver(forName: .deviceVolumeDidChange,
                                                    object: nil,
                                                    queue: .main) { (notification) in
                 guard let channel = notification.userInfo?["channel"] as? UInt32 else { return }
@@ -160,7 +160,7 @@ class NotificationTests: SCATestCase {
         var observers = [NSObjectProtocol]()
 
         observers.append(
-            NotificationCenter.default.addObserver(forName: Notifications.deviceMuteDidChange.name,
+            NotificationCenter.default.addObserver(forName: .deviceMuteDidChange,
                                                    object: nil,
                                                    queue: .main) { (notification) in
                 guard let channel = notification.userInfo?["channel"] as? UInt32 else { return }

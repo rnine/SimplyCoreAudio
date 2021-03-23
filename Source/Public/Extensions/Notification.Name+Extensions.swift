@@ -1,79 +1,85 @@
 //
-//  Notifications.swift
+//  Notification.Name+Extensions.swift
 //
 //  Created by Ruben Nine on 20/3/21.
 //
 
 import Foundation
 
-enum Notifications: String, NotificationName {
+public extension Notification.Name {
     /// Called whenever the audio device's sample rate changes.
-    case deviceNominalSampleRateDidChange
+    static let deviceNominalSampleRateDidChange = Self("deviceNominalSampleRateDidChange")
 
     /// Called whenever the audio device's list of nominal sample rates changes.
     ///
     /// - Note: This will typically happen on *Aggregate* and *Multi-Output* devices when adding or removing other
     /// audio devices (either physical or virtual.)
-    case deviceAvailableNominalSampleRatesDidChange
+    static let deviceAvailableNominalSampleRatesDidChange = Self("deviceAvailableNominalSampleRatesDidChange")
 
     /// Called whenever the audio device's clock source changes.
-    case deviceClockSourceDidChange
+    static let deviceClockSourceDidChange = Self("deviceClockSourceDidChange")
 
     /// Called whenever the audio device's name changes.
-    case deviceNameDidChange
+    static let deviceNameDidChange = Self("deviceNameDidChange")
 
     /// Called whenever the list of owned audio devices on this audio device changes.
     ///
     /// - Note: This will typically happen on *Aggregate* and *Multi-Output* devices when adding or removing other
     /// audio devices (either physical or virtual.)
-    case deviceOwnedObjectsDidChange
+    static let deviceOwnedObjectsDidChange = Self("deviceOwnedObjectsDidChange")
 
     /// Called whenever the audio device's volume for a given channel and scope changes.
     ///
     /// Returned `userInfo` object will contain the keys `channel` and `scope`.
-    case deviceVolumeDidChange
+    static let deviceVolumeDidChange = Self("deviceVolumeDidChange")
 
     /// Called whenever the audio device's mute state for a given channel and scope changes.
     ///
     /// Returned `userInfo` object will contain the keys `channel` and `scope`.
-    case deviceMuteDidChange
+    static let deviceMuteDidChange = Self("deviceMuteDidChange")
 
     /// Called whenever the audio device's *is alive* property changes.
-    case deviceIsAliveDidChange
+    static let deviceIsAliveDidChange = Self("deviceIsAliveDidChange")
 
     /// Called whenever the audio device's *is running* property changes.
-    case deviceIsRunningDidChange
+    static let deviceIsRunningDidChange = Self("deviceIsRunningDidChange")
 
     /// Called whenever the audio device's *is running somewhere* property changes.
-    case deviceIsRunningSomewhereDidChange
+    static let deviceIsRunningSomewhereDidChange = Self("deviceIsRunningSomewhereDidChange")
 
     /// Called whenever the audio device's *is jack connected* property changes.
-    case deviceIsJackConnectedDidChange
+    static let deviceIsJackConnectedDidChange = Self("deviceIsJackConnectedDidChange")
 
     /// Called whenever the audio device's *preferred channels for stereo* property changes.
-    case devicePreferredChannelsForStereoDidChange
+    static let devicePreferredChannelsForStereoDidChange = Self("devicePreferredChannelsForStereoDidChange")
 
     /// Called whenever the audio device's *hog mode* property changes.
-    case deviceHogModeDidChange
+    static let deviceHogModeDidChange = Self("deviceHogModeDidChange")
 
     /// Called whenever the list of hardware devices and device subdevices changes.
     /// (i.e., devices that are part of *Aggregate* or *Multi-Output* devices.)
     ///
     /// Returned `userInfo` object will contain the keys `addedDevices` and `removedDevices`.
-    case deviceListChanged
+    static let deviceListChanged = Self("deviceListChanged")
 
     /// Called whenever the default input device changes.
-    case defaultInputDeviceChanged
+    static let defaultInputDeviceChanged = Self("defaultInputDeviceChanged")
 
     /// Called whenever the default output device changes.
-    case defaultOutputDeviceChanged
+    static let defaultOutputDeviceChanged = Self("defaultOutputDeviceChanged")
 
     /// Called whenever the default system output device changes.
-    case defaultSystemOutputDeviceChanged
+    static let defaultSystemOutputDeviceChanged = Self("defaultSystemOutputDeviceChanged")
 
     /// Called whenever the audio stream `isActive` flag changes state.
-    case streamIsActiveDidChange
+    static let streamIsActiveDidChange = Self("streamIsActiveDidChange")
 
     /// Called whenever the audio stream physical format changes.
-    case streamPhysicalFormatDidChange
+    static let streamPhysicalFormatDidChange = Self("streamPhysicalFormatDidChange")
+}
+
+private extension Notification.Name {
+    init(_ name: String) {
+        self.init(rawValue: "SimplyCoreAudio.\(name)")
+    }
 }

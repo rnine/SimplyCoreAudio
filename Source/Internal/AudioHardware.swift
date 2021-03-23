@@ -186,13 +186,13 @@ private func propertyListener(objectID: UInt32,
             "removedDevices": removedDevices
         ]
 
-        notificationCenter.post(name: Notifications.deviceListChanged.name, object: _self, userInfo: userInfo)
+        notificationCenter.post(name: .deviceListChanged, object: _self, userInfo: userInfo)
     case kAudioHardwarePropertyDefaultInputDevice:
-        notificationCenter.post(name: Notifications.defaultInputDeviceChanged.name, object: _self)
+        notificationCenter.post(name: .defaultInputDeviceChanged, object: _self)
     case kAudioHardwarePropertyDefaultOutputDevice:
-        notificationCenter.post(name: Notifications.defaultOutputDeviceChanged.name, object: _self)
+        notificationCenter.post(name: .defaultOutputDeviceChanged, object: _self)
     case kAudioHardwarePropertyDefaultSystemOutputDevice:
-        notificationCenter.post(name: Notifications.defaultSystemOutputDeviceChanged.name, object: _self)
+        notificationCenter.post(name: .defaultSystemOutputDeviceChanged, object: _self)
     default:
         break
     }
