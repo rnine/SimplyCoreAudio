@@ -9,10 +9,20 @@ let package = Package(
     products: [
         .library(name: "SimplyCoreAudio", targets: ["SimplyCoreAudio"])
     ],
-    dependencies: [],
+    dependencies: [
+        .package(url: "https://github.com/apple/swift-atomics.git", from: "0.0.1")
+    ],
     targets: [
-        .target(name: "SimplyCoreAudio", path: "Source"),
-        .testTarget(name: "SimplyCoreAudioTests", dependencies: ["SimplyCoreAudio"], path: "Tests")
+        .target(
+            name: "SimplyCoreAudio",
+            dependencies: [
+                .product(name: "Atomics", package: "swift-atomics")
+            ]
+        ),
+        .testTarget(
+            name: "SimplyCoreAudioTests",
+            dependencies: ["SimplyCoreAudio"]
+        )
     ],
     swiftLanguageVersions: [.v4, .v4_2, .v5]
 )

@@ -4,6 +4,7 @@
 //  Created by Ruben Nine on 20/3/21.
 //
 
+import Atomics
 import CoreAudio
 import Foundation
 import os.log
@@ -14,16 +15,6 @@ import os.log
 ///
 /// - Important: If you are interested in receiving hardware-related notifications, remember to keep a strong reference
 /// to an object of this class.
-///
-/// However, *do not* keep more than one instance of this class at the same time to avoid receiving duplicated
-/// notifications.
-///
-/// As soon as the last remaining instance of this class is deallocated, hardware-related notifications will no longer
-/// be delivered.
-///
-/// We could have designed this class to always return a shared instance, but ultimately decided to allow developers
-/// total control so they have the chance to cleanup any resources used by `SimplyCoreAudio` such as hardware-related
-/// Core Audio property listeners by simply deallocating any instances of this class.
 public final class SimplyCoreAudio {
     // MARK: - Public Properties
 
@@ -33,7 +24,7 @@ public final class SimplyCoreAudio {
     ///
     /// - Returns: An array of `AudioObjectID` values.
     public var allDeviceIDs: [AudioObjectID] {
-        hardware.allDeviceIDs
+        Self.hardware.allDeviceIDs
     }
 
     /// All the audio devices currently available.
@@ -42,7 +33,7 @@ public final class SimplyCoreAudio {
     ///
     /// - Returns: An array of `AudioDevice` objects.
     public var allDevices: [AudioDevice] {
-        hardware.allDevices
+        Self.hardware.allDevices
     }
 
     /// All the devices that have at least one input.
@@ -51,7 +42,7 @@ public final class SimplyCoreAudio {
     ///
     /// - Returns: An array of `AudioDevice` objects.
     public var allInputDevices: [AudioDevice] {
-        hardware.allInputDevices
+        Self.hardware.allInputDevices
     }
 
     /// All the devices that have at least one output.
@@ -60,7 +51,7 @@ public final class SimplyCoreAudio {
     ///
     /// - Returns: An array of `AudioDevice` objects.
     public var allOutputDevices: [AudioDevice] {
-        hardware.allOutputDevices
+        Self.hardware.allOutputDevices
     }
 
     /// All the devices that support input and output.
@@ -69,56 +60,67 @@ public final class SimplyCoreAudio {
     ///
     /// - Returns: An array of `AudioDevice` objects.
     public var allIODevices: [AudioDevice] {
-        hardware.allIODevices
+        Self.hardware.allIODevices
     }
 
     /// All the devices that are real devices — not aggregate ones.
     ///
     /// - Returns: An array of `AudioDevice` objects.
     public var allNonAggregateDevices: [AudioDevice] {
-        hardware.allNonAggregateDevices
+        Self.hardware.allNonAggregateDevices
     }
 
     /// All the devices that are aggregate devices.
     ///
     /// - Returns: An array of `AudioDevice` objects.
     public var allAggregateDevices: [AudioDevice] {
-        hardware.allAggregateDevices
+        Self.hardware.allAggregateDevices
     }
 
     /// The default input device.
     ///
     /// - Returns: *(optional)* An `AudioDevice`.
     public var defaultInputDevice: AudioDevice? {
-        hardware.defaultInputDevice
+        Self.hardware.defaultInputDevice
     }
 
     /// The default output device.
     ///
     /// - Returns: *(optional)* An `AudioDevice`.
     public var defaultOutputDevice: AudioDevice? {
-        hardware.defaultOutputDevice
+        Self.hardware.defaultOutputDevice
     }
 
     /// The default system output device.
     ///
     /// - Returns: *(optional)* An `AudioDevice`.
     public var defaultSystemOutputDevice: AudioDevice? {
-        hardware.defaultSystemOutputDevice
+        Self.hardware.defaultSystemOutputDevice
     }
 
     // MARK: - Private Properties
 
-    private let hardware = AudioHardware()
+    private static var hardware: AudioHardware!
+    private static var instances = ManagedAtomic<Int>(0)
 
     // MARK: - Lifecycle
 
     init() {
-        hardware.enableDeviceMonitoring()
+        if Self.instances.load(ordering: .acquiring) == 0 {
+            Self.hardware = AudioHardware()
+            Self.hardware.enableDeviceMonitoring()
+        }
+
+        Self.instances.wrappingIncrement(ordering: .acquiring)
     }
 
     deinit {
-        hardware.disableDeviceMonitoring()
+        Self.instances.wrappingDecrement(ordering: .acquiring)
+
+        if Self.instances.load(ordering: .acquiring) == 0 {
+            Self.hardware.disableDeviceMonitoring()
+            Self.hardware = nil
+        }
     }
 }
 

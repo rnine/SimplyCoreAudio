@@ -13,43 +13,26 @@ class NotificationTests: SCATestCase {
         let nullDevice = try getNullDevice()
         var aggregateDevice: AudioDevice?
 
-        let expectation1 = self.expectation(description: "aggregate device should be added to device list")
-        let expectation2 = self.expectation(description: "aggregate device should become default input device")
-        let expectation3 = self.expectation(description: "aggregate device should become default output device")
-        let expectation4 = self.expectation(description: "aggregate device should become default system output device")
-
         let expectedName = "NullDeviceAggregate"
         let expectedUID = "NullDeviceAggregate_UID"
 
-        var observers = [NSObjectProtocol]()
+        let expectation1 = expectation(forNotification: .deviceListChanged, object: nil) { (notification) -> Bool in
+            guard let addedDevices = notification.userInfo?["addedDevices"] as? [AudioDevice] else { return false }
+            guard let firstAddedDevice = addedDevices.first else { return false }
+            guard firstAddedDevice.uid == expectedUID else { return false }
+            guard firstAddedDevice.name == expectedName else { return false }
 
-        observers.append(contentsOf: [
-            NotificationCenter.default.addObserver(forName: .deviceListChanged,
-                                                   object: nil,
-                                                   queue: .main) { (notification) in
-                guard let addedDevices = notification.userInfo?["addedDevices"] as? [AudioDevice] else { return }
-                guard let firstAddedDevice = addedDevices.first else { return }
-                guard firstAddedDevice.uid == expectedUID else { return }
-                guard firstAddedDevice.name == expectedName else { return }
+            return true
+        }
 
-                expectation1.fulfill()
-            },
+        let expectation2 = expectation(forNotification: .defaultInputDeviceChanged, object: nil)
+        let expectation3 = expectation(forNotification: .defaultOutputDeviceChanged, object: nil)
+        let expectation4 = expectation(forNotification: .defaultSystemOutputDeviceChanged, object: nil)
 
-            NotificationCenter.default.addObserver(forName: .defaultInputDeviceChanged,
-                                                   object: nil, queue: .main) { (notification) in
-                expectation2.fulfill()
-            },
-
-            NotificationCenter.default.addObserver(forName: .defaultOutputDeviceChanged,
-                                                   object: nil, queue: .main) { (notification) in
-                expectation3.fulfill()
-            },
-
-            NotificationCenter.default.addObserver(forName: .defaultSystemOutputDeviceChanged,
-                                                   object: nil, queue: .main) { (notification) in
-                expectation4.fulfill()
-            }
-        ])
+        expectation1.expectationDescription = "aggregate device should be added to device list"
+        expectation2.expectationDescription = "aggregate device should become default input device"
+        expectation3.expectationDescription = "aggregate device should become default output device"
+        expectation4.expectationDescription = "aggregate device should become default system output device"
 
         aggregateDevice = simplyCA.createAggregateDevice(masterDevice: nullDevice,
                                                          secondDevice: nil,
@@ -67,11 +50,50 @@ class NotificationTests: SCATestCase {
         XCTAssertEqual(aggregateDevice, simplyCA.defaultOutputDevice)
         XCTAssertEqual(aggregateDevice, simplyCA.defaultSystemOutputDevice)
 
-        for observer in observers {
-            NotificationCenter.default.removeObserver(observer)
+        if let aggregateDevice = aggregateDevice {
+            XCTAssertEqual(noErr, simplyCA.removeAggregateDevice(id: aggregateDevice.id))
+        }
+    }
+
+    func testHardwareNotificationsAreNotDuplicated() throws {
+        let simplyCA2 = SimplyCoreAudio()
+        let simplyCA3 = SimplyCoreAudio()
+
+        XCTAssertNotNil(simplyCA2)
+        XCTAssertNotNil(simplyCA3)
+
+        let nullDevice = try getNullDevice()
+        var aggregateDevice: AudioDevice?
+
+        let expectedName = "NullDeviceAggregate"
+        let expectedUID = "NullDeviceAggregate_UID"
+
+        let expectation1 = expectation(forNotification: .deviceListChanged, object: nil) { (notification) -> Bool in
+            guard let addedDevices = notification.userInfo?["addedDevices"] as? [AudioDevice] else { return false }
+            guard let firstAddedDevice = addedDevices.first else { return false }
+            guard firstAddedDevice.uid == expectedUID else { return false }
+            guard firstAddedDevice.name == expectedName else { return false }
+
+            let expectation2 = self.expectation(forNotification: .deviceListChanged, object: nil)
+            let expectation3 = self.expectation(forNotification: .deviceListChanged, object: nil)
+
+            expectation2.expectationDescription = "aggregate device should not be added again (1)"
+            expectation2.isInverted = true
+            expectation3.expectationDescription = "aggregate device should not be added again (2)"
+            expectation3.isInverted = true
+
+            return true
         }
 
-        observers.removeAll()
+        expectation1.expectationDescription = "aggregate device should be added to device list"
+
+        aggregateDevice = simplyCA.createAggregateDevice(masterDevice: nullDevice,
+                                                         secondDevice: nil,
+                                                         named: expectedName,
+                                                         uid: expectedUID)
+        XCTAssertNotNil(aggregateDevice)
+
+        waitForExpectations(timeout: 5)
 
         if let aggregateDevice = aggregateDevice {
             XCTAssertEqual(noErr, simplyCA.removeAggregateDevice(id: aggregateDevice.id))
@@ -86,27 +108,12 @@ class NotificationTests: SCATestCase {
         XCTAssertEqual(nullDevice.nominalSampleRate, baseSamplerate)
         XCTAssertTrue(nullDevice.nominalSampleRates!.contains(targetSamplerate))
 
-        let expectation = self.expectation(description: "device samplerate should change")
-
-        var observers = [NSObjectProtocol]()
-
-        observers.append(
-            NotificationCenter.default.addObserver(forName: .deviceNominalSampleRateDidChange,
-                                                   object: nil,
-                                                   queue: .main) { (notification) in
-                expectation.fulfill()
-            }
-        )
+        let expectation1 = self.expectation(forNotification: .deviceNominalSampleRateDidChange, object: nil)
+        expectation1.expectationDescription = "device samplerate should change"
 
         nullDevice.setNominalSampleRate(targetSamplerate)
 
         waitForExpectations(timeout: 5)
-
-        for observer in observers {
-            NotificationCenter.default.removeObserver(observer)
-        }
-
-        observers.removeAll()
 
         XCTAssertEqual(nullDevice.nominalSampleRate, targetSamplerate)
     }
@@ -114,38 +121,33 @@ class NotificationTests: SCATestCase {
     func testDeviceVolumeDidChangeNotification() throws {
         let nullDevice = try getNullDevice()
 
-        let expectation1 = self.expectation(description: "device output volume should change")
-        let expectation2 = self.expectation(description: "device input volume should change")
+        let expectation1 = expectation(forNotification: .deviceVolumeDidChange, object: nil) { notification -> Bool in
+            guard let channel = notification.userInfo?["channel"] as? UInt32 else { return false }
+            guard let scope = notification.userInfo?["scope"] as? Scope else { return false }
+            guard scope == .output, channel == 0 else { return false }
 
-        var observers = [NSObjectProtocol]()
+            return true
+        }
 
-        observers.append(
-            NotificationCenter.default.addObserver(forName: .deviceVolumeDidChange,
-                                                   object: nil,
-                                                   queue: .main) { (notification) in
-                guard let channel = notification.userInfo?["channel"] as? UInt32 else { return }
-                guard let scope = notification.userInfo?["scope"] as? Scope else { return }
-
-                if scope == .output, channel == 0 {
-                    expectation1.fulfill()
-                }
-
-                if scope == .input, channel == 0 {
-                    expectation2.fulfill()
-                }
-            }
-        )
+        expectation1.expectationDescription = "device output volumes should change"
 
         nullDevice.setVirtualMasterVolume(1, scope: .output)
-        nullDevice.setVirtualMasterVolume(1, scope: .input)
 
         waitForExpectations(timeout: 5)
 
-        for observer in observers {
-            NotificationCenter.default.removeObserver(observer)
+        let expectation2 = expectation(forNotification: .deviceVolumeDidChange, object: nil) { notification -> Bool in
+            guard let channel = notification.userInfo?["channel"] as? UInt32 else { return false }
+            guard let scope = notification.userInfo?["scope"] as? Scope else { return false }
+            guard scope == .input, channel == 0 else { return false }
+
+            return true
         }
 
-        observers.removeAll()
+        expectation2.expectationDescription = "device input volumes should change"
+
+        nullDevice.setVirtualMasterVolume(1, scope: .input)
+
+        waitForExpectations(timeout: 5)
 
         XCTAssertEqual(nullDevice.virtualMasterVolume(scope: .output), 1)
         XCTAssertEqual(nullDevice.virtualMasterVolume(scope: .input), 1)
@@ -154,38 +156,33 @@ class NotificationTests: SCATestCase {
     func testDeviceMuteDidChangeNotification() throws {
         let nullDevice = try getNullDevice()
 
-        let expectation1 = self.expectation(description: "device output volume should mute")
-        let expectation2 = self.expectation(description: "device input volume should mute")
+        let expectation1 = expectation(forNotification: .deviceMuteDidChange, object: nil) { notification -> Bool in
+            guard let channel = notification.userInfo?["channel"] as? UInt32 else { return false }
+            guard let scope = notification.userInfo?["scope"] as? Scope else { return false }
+            guard scope == .output, channel == 0 else { return false }
 
-        var observers = [NSObjectProtocol]()
+            return true
+        }
 
-        observers.append(
-            NotificationCenter.default.addObserver(forName: .deviceMuteDidChange,
-                                                   object: nil,
-                                                   queue: .main) { (notification) in
-                guard let channel = notification.userInfo?["channel"] as? UInt32 else { return }
-                guard let scope = notification.userInfo?["scope"] as? Scope else { return }
-
-                if scope == .output, channel == 0 {
-                    expectation1.fulfill()
-                }
-
-                if scope == .input, channel == 0 {
-                    expectation2.fulfill()
-                }
-            }
-        )
+        expectation1.expectationDescription = "device output volumes should change"
 
         nullDevice.setMute(true, channel: 0, scope: .output)
-        nullDevice.setMute(true, channel: 0, scope: .input)
 
         waitForExpectations(timeout: 5)
 
-        for observer in observers {
-            NotificationCenter.default.removeObserver(observer)
+        let expectation2 = expectation(forNotification: .deviceMuteDidChange, object: nil) { notification -> Bool in
+            guard let channel = notification.userInfo?["channel"] as? UInt32 else { return false }
+            guard let scope = notification.userInfo?["scope"] as? Scope else { return false }
+            guard scope == .input, channel == 0 else { return false }
+
+            return true
         }
 
-        observers.removeAll()
+        expectation2.expectationDescription = "device input volumes should change"
+
+        nullDevice.setMute(true, channel: 0, scope: .input)
+
+        waitForExpectations(timeout: 5)
 
         XCTAssertTrue(nullDevice.isMuted(channel: 0, scope: .output) ?? false)
         XCTAssertTrue(nullDevice.isMuted(channel: 0, scope: .input) ?? false)
