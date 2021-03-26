@@ -6,6 +6,25 @@
 
 import Foundation
 
+/// Audio Hardware Notifications
+public extension Notification.Name {
+    /// Called whenever the default input device changes.
+    static let defaultInputDeviceChanged = Self("defaultInputDeviceChanged")
+
+    /// Called whenever the default output device changes.
+    static let defaultOutputDeviceChanged = Self("defaultOutputDeviceChanged")
+
+    /// Called whenever the default system output device changes.
+    static let defaultSystemOutputDeviceChanged = Self("defaultSystemOutputDeviceChanged")
+
+    /// Called whenever the list of hardware devices and device subdevices changes.
+    /// (i.e., devices that are part of *Aggregate* or *Multi-Output* devices.)
+    ///
+    /// Returned `userInfo` object will contain the keys `addedDevices` and `removedDevices`.
+    static let deviceListChanged = Self("deviceListChanged")
+}
+
+/// Audio Device Notifications
 public extension Notification.Name {
     /// Called whenever the audio device's sample rate changes.
     static let deviceNominalSampleRateDidChange = Self("deviceNominalSampleRateDidChange")
@@ -55,23 +74,11 @@ public extension Notification.Name {
 
     /// Called whenever the audio device's *hog mode* property changes.
     static let deviceHogModeDidChange = Self("deviceHogModeDidChange")
+}
 
-    /// Called whenever the list of hardware devices and device subdevices changes.
-    /// (i.e., devices that are part of *Aggregate* or *Multi-Output* devices.)
-    ///
-    /// Returned `userInfo` object will contain the keys `addedDevices` and `removedDevices`.
-    static let deviceListChanged = Self("deviceListChanged")
-
-    /// Called whenever the default input device changes.
-    static let defaultInputDeviceChanged = Self("defaultInputDeviceChanged")
-
-    /// Called whenever the default output device changes.
-    static let defaultOutputDeviceChanged = Self("defaultOutputDeviceChanged")
-
-    /// Called whenever the default system output device changes.
-    static let defaultSystemOutputDeviceChanged = Self("defaultSystemOutputDeviceChanged")
-
-    /// Called whenever the audio stream `isActive` flag changes state.
+/// Audio Stream Notifications
+public extension Notification.Name {
+    /// Called whenever the audio stream `isActive` flag changes.
     static let streamIsActiveDidChange = Self("streamIsActiveDidChange")
 
     /// Called whenever the audio stream physical format changes.

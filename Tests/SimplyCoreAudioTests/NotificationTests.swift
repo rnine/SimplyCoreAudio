@@ -108,7 +108,7 @@ class NotificationTests: SCATestCase {
         XCTAssertEqual(nullDevice.nominalSampleRate, baseSamplerate)
         XCTAssertTrue(nullDevice.nominalSampleRates!.contains(targetSamplerate))
 
-        let expectation1 = self.expectation(forNotification: .deviceNominalSampleRateDidChange, object: nil)
+        let expectation1 = self.expectation(forNotification: .deviceNominalSampleRateDidChange, object: nullDevice)
         expectation1.expectationDescription = "device samplerate should change"
 
         nullDevice.setNominalSampleRate(targetSamplerate)
@@ -121,7 +121,7 @@ class NotificationTests: SCATestCase {
     func testDeviceVolumeDidChangeNotification() throws {
         let nullDevice = try getNullDevice()
 
-        let expectation1 = expectation(forNotification: .deviceVolumeDidChange, object: nil) { notification -> Bool in
+        let expectation1 = expectation(forNotification: .deviceVolumeDidChange, object: nullDevice) { notification -> Bool in
             guard let channel = notification.userInfo?["channel"] as? UInt32 else { return false }
             guard let scope = notification.userInfo?["scope"] as? Scope else { return false }
             guard scope == .output, channel == 0 else { return false }
@@ -135,7 +135,7 @@ class NotificationTests: SCATestCase {
 
         waitForExpectations(timeout: 5)
 
-        let expectation2 = expectation(forNotification: .deviceVolumeDidChange, object: nil) { notification -> Bool in
+        let expectation2 = expectation(forNotification: .deviceVolumeDidChange, object: nullDevice) { notification -> Bool in
             guard let channel = notification.userInfo?["channel"] as? UInt32 else { return false }
             guard let scope = notification.userInfo?["scope"] as? Scope else { return false }
             guard scope == .input, channel == 0 else { return false }
@@ -156,7 +156,7 @@ class NotificationTests: SCATestCase {
     func testDeviceMuteDidChangeNotification() throws {
         let nullDevice = try getNullDevice()
 
-        let expectation1 = expectation(forNotification: .deviceMuteDidChange, object: nil) { notification -> Bool in
+        let expectation1 = expectation(forNotification: .deviceMuteDidChange, object: nullDevice) { notification -> Bool in
             guard let channel = notification.userInfo?["channel"] as? UInt32 else { return false }
             guard let scope = notification.userInfo?["scope"] as? Scope else { return false }
             guard scope == .output, channel == 0 else { return false }
@@ -170,7 +170,7 @@ class NotificationTests: SCATestCase {
 
         waitForExpectations(timeout: 5)
 
-        let expectation2 = expectation(forNotification: .deviceMuteDidChange, object: nil) { notification -> Bool in
+        let expectation2 = expectation(forNotification: .deviceMuteDidChange, object: nullDevice) { notification -> Bool in
             guard let channel = notification.userInfo?["channel"] as? UInt32 else { return false }
             guard let scope = notification.userInfo?["scope"] as? Scope else { return false }
             guard scope == .input, channel == 0 else { return false }
