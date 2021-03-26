@@ -143,7 +143,7 @@ public final class AudioStream: AudioObject {
 
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioStreamPropertyAvailablePhysicalFormats,
-            mScope: propertyScope(from: scope),
+            mScope: scope.asPropertyScope,
             mElement: kAudioObjectPropertyElementMaster
         )
 
@@ -166,7 +166,7 @@ public final class AudioStream: AudioObject {
 
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioStreamPropertyAvailableVirtualFormats,
-            mScope: propertyScope(from: scope),
+            mScope: scope.asPropertyScope,
             mElement: kAudioObjectPropertyElementMaster
         )
 
@@ -286,7 +286,7 @@ private extension AudioStream {
 
         var address = AudioObjectPropertyAddress(
             mSelector: selector,
-            mScope: propertyScope(from: scope),
+            mScope: scope.asPropertyScope,
             mElement: kAudioObjectPropertyElementMaster
         )
 
@@ -310,7 +310,7 @@ private extension AudioStream {
 
         var address = AudioObjectPropertyAddress(
             mSelector: selector,
-            mScope: propertyScope(from: scope),
+            mScope: scope.asPropertyScope,
             mElement: kAudioObjectPropertyElementMaster
         )
 

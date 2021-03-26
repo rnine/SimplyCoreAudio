@@ -16,7 +16,7 @@ public extension AudioDevice {
     /// - Returns: *(optional)* A `UInt32` array containing all the item IDs.
     func dataSource(scope: Scope) -> [UInt32]? {
         guard let address = validAddress(selector: kAudioDevicePropertyDataSource,
-                                         scope: propertyScope(from: scope)) else { return nil }
+                                         scope: scope.asPropertyScope) else { return nil }
 
         var dataSourceIDs = [UInt32]()
         let status = getPropertyDataArray(address, value: &dataSourceIDs, andDefaultValue: 0)
@@ -31,7 +31,7 @@ public extension AudioDevice {
     /// - Returns: *(optional)* A `UInt32` array containing all the item IDs.
     func dataSources(scope: Scope) -> [UInt32]? {
         guard let address = validAddress(selector: kAudioDevicePropertyDataSources,
-                                         scope: propertyScope(from: scope)) else { return nil }
+                                         scope: scope.asPropertyScope) else { return nil }
 
         var dataSourceIDs = [UInt32]()
         let status = getPropertyDataArray(address, value: &dataSourceIDs, andDefaultValue: 0)
@@ -61,7 +61,7 @@ public extension AudioDevice {
 
                 let address = AudioObjectPropertyAddress(
                     mSelector: kAudioDevicePropertyDataSourceNameForIDCFString,
-                    mScope: propertyScope(from: scope),
+                    mScope: scope.asPropertyScope,
                     mElement: kAudioObjectPropertyElementMaster
                 )
 

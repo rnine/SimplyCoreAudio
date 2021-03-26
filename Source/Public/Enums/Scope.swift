@@ -4,6 +4,7 @@
 //  Created by Ruben Nine on 20/09/2019.
 //
 
+import CoreAudio
 import Foundation
 
 /// Indicates the scope used by an `AudioDevice` or `AudioStream`.
@@ -19,4 +20,27 @@ public enum Scope {
     case output
     /// Playthrough scope
     case playthrough
+}
+
+// MARK: - Internal Functions
+
+extension Scope {
+    var asPropertyScope: AudioObjectPropertyScope {
+        switch self {
+        case .global: return kAudioObjectPropertyScopeGlobal
+        case .input: return kAudioObjectPropertyScopeInput
+        case .output: return kAudioObjectPropertyScopeOutput
+        case .playthrough: return kAudioObjectPropertyScopePlayThrough
+        }
+    }
+
+    static func from(_ scope: AudioObjectPropertyScope) -> Scope? {
+        switch scope {
+        case kAudioObjectPropertyScopeGlobal: return .global
+        case kAudioObjectPropertyScopeInput: return .input
+        case kAudioObjectPropertyScopeOutput: return .output
+        case kAudioObjectPropertyScopePlayThrough: return .playthrough
+        default: return nil
+        }
+    }
 }

@@ -27,7 +27,7 @@ public extension AudioDevice {
 
         address = AudioObjectPropertyAddress(
             mSelector: kAudioDevicePropertyVolumeScalar,
-            mScope: propertyScope(from: scope),
+            mScope: scope.asPropertyScope,
             mElement: channel
         )
 
@@ -102,7 +102,7 @@ public extension AudioDevice {
     /// - Returns: *(optional)* A `Float32` value with the scalar volume.
     func volume(channel: UInt32, scope: Scope) -> Float32? {
         guard let address = validAddress(selector: kAudioDevicePropertyVolumeScalar,
-                                         scope: propertyScope(from: scope),
+                                         scope: scope.asPropertyScope,
                                          element: channel) else { return nil }
 
         return getProperty(address: address)
@@ -116,7 +116,7 @@ public extension AudioDevice {
     /// - Returns: *(optional)* A `Float32` value with the volume in decibels.
     func volumeInDecibels(channel: UInt32, scope: Scope) -> Float32? {
         guard let address = validAddress(selector: kAudioDevicePropertyVolumeDecibels,
-                                         scope: propertyScope(from: scope),
+                                         scope: scope.asPropertyScope,
                                          element: channel) else { return nil }
 
         return getProperty(address: address)
@@ -131,7 +131,7 @@ public extension AudioDevice {
     /// - Returns: `true` on success, `false` otherwise.
     @discardableResult func setVolume(_ volume: Float32, channel: UInt32, scope: Scope) -> Bool {
         guard let address = validAddress(selector: kAudioDevicePropertyVolumeScalar,
-                                         scope: propertyScope(from: scope),
+                                         scope: scope.asPropertyScope,
                                          element: channel) else { return false }
 
         return setProperty(address: address, value: volume)
@@ -146,7 +146,7 @@ public extension AudioDevice {
     /// - Returns: `true` on success, `false` otherwise.
     @discardableResult func setMute(_ shouldMute: Bool, channel: UInt32, scope: Scope) -> Bool {
         guard let address = validAddress(selector: kAudioDevicePropertyMute,
-                                         scope: propertyScope(from: scope),
+                                         scope: scope.asPropertyScope,
                                          element: channel) else { return false }
 
         return setProperty(address: address, value: shouldMute)
@@ -160,7 +160,7 @@ public extension AudioDevice {
     /// - Returns: *(optional)* `true` if channel is muted, false otherwise.
     func isMuted(channel: UInt32, scope: Scope) -> Bool? {
         guard let address = validAddress(selector: kAudioDevicePropertyMute,
-                                         scope: propertyScope(from: scope),
+                                         scope: scope.asPropertyScope,
                                          element: channel) else { return nil }
 
         return getProperty(address: address)
@@ -220,7 +220,7 @@ public extension AudioDevice {
     /// - Returns: A `StereoPair` tuple containing the channel numbers.
     func preferredChannelsForStereo(scope: Scope) -> StereoPair? {
         guard let address = validAddress(selector: kAudioDevicePropertyPreferredChannelsForStereo,
-                                         scope: propertyScope(from: scope)) else { return nil }
+                                         scope: scope.asPropertyScope) else { return nil }
 
         var preferredChannels = [UInt32]()
         let status = getPropertyDataArray(address, value: &preferredChannels, andDefaultValue: 0)
@@ -238,7 +238,7 @@ public extension AudioDevice {
     /// - Returns: `true` on success, `false` otherwise.
     @discardableResult func setPreferredChannelsForStereo(channels: StereoPair, scope: Scope) -> Bool {
         guard let address = validAddress(selector: kAudioDevicePropertyPreferredChannelsForStereo,
-                                         scope: propertyScope(from: scope)) else { return false }
+                                         scope: scope.asPropertyScope) else { return false }
 
         var preferredChannels = [channels.left, channels.right]
         let status = setPropertyData(address, andValue: &preferredChannels)

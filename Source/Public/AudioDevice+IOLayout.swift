@@ -32,7 +32,7 @@ public extension AudioDevice {
     /// - Returns: *(optional)* A `UInt32` with the number of layout channels.
     func layoutChannels(scope: Scope) -> UInt32? {
         guard let address = validAddress(selector: kAudioDevicePropertyPreferredChannelLayout,
-                                         scope: propertyScope(from: scope)) else { return nil }
+                                         scope: scope.asPropertyScope) else { return nil }
 
         var result = AudioChannelLayout()
         let status = getPropertyData(address, andValue: &result)
@@ -59,7 +59,7 @@ public extension AudioDevice {
     /// - Returns: *(optional)* A `String` with the name of the channel.
     func name(channel: UInt32, scope: Scope) -> String? {
         guard let address = validAddress(selector: kAudioObjectPropertyElementName,
-                                         scope: propertyScope(from: scope),
+                                         scope: scope.asPropertyScope,
                                          element: channel) else { return nil }
 
         guard let name: String = getProperty(address: address) else { return nil }
@@ -74,7 +74,7 @@ public extension AudioDevice {
     /// - Returns: `true` when jack is connected, `false` otherwise.
     func isJackConnected(scope: Scope) -> Bool? {
         guard let address = validAddress(selector: kAudioDevicePropertyJackIsConnected,
-                                         scope: propertyScope(from: scope)) else { return nil }
+                                         scope: scope.asPropertyScope) else { return nil }
 
         return getProperty(address: address)
     }

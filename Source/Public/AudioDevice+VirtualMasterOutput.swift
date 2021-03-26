@@ -19,7 +19,7 @@ public extension AudioDevice {
     /// - Returns: `true` when the volume can be set, `false` otherwise.
     func canSetVirtualMasterVolume(scope: Scope) -> Bool {
         guard validAddress(selector: kAudioHardwareServiceDeviceProperty_VirtualMasterVolume,
-                           scope: propertyScope(from: scope)) != nil else { return false }
+                           scope: scope.asPropertyScope) != nil else { return false }
 
         return true
     }
@@ -32,7 +32,7 @@ public extension AudioDevice {
     /// - Returns: `true` on success, `false` otherwise.
     @discardableResult func setVirtualMasterVolume(_ volume: Float32, scope: Scope) -> Bool {
         guard let address = validAddress(selector: kAudioHardwareServiceDeviceProperty_VirtualMasterVolume,
-                                         scope: propertyScope(from: scope)) else { return false }
+                                         scope: scope.asPropertyScope) else { return false }
 
         return setProperty(address: address, value: volume)
     }
@@ -44,7 +44,7 @@ public extension AudioDevice {
     /// - Returns: *(optional)* A `Float32` value with the scalar volume.
     func virtualMasterVolume(scope: Scope) -> Float32? {
         guard let address = validAddress(selector: kAudioHardwareServiceDeviceProperty_VirtualMasterVolume,
-                                         scope: propertyScope(from: scope)) else { return nil }
+                                         scope: scope.asPropertyScope) else { return nil }
 
         return getProperty(address: address)
     }
@@ -79,7 +79,7 @@ public extension AudioDevice {
     /// - Returns: *(optional)* A `Float32` value with the stereo balance.
     func virtualMasterBalance(scope: Scope) -> Float32? {
         guard let address = validAddress(selector: kAudioHardwareServiceDeviceProperty_VirtualMasterBalance,
-                                         scope: propertyScope(from: scope)) else { return nil }
+                                         scope: scope.asPropertyScope) else { return nil }
 
         return getProperty(address: address)
     }
@@ -95,7 +95,7 @@ public extension AudioDevice {
     /// - Returns: `true` on success, `false` otherwise.
     @discardableResult func setVirtualMasterBalance(_ value: Float32, scope: Scope) -> Bool {
         guard let address = validAddress(selector: kAudioHardwareServiceDeviceProperty_VirtualMasterBalance,
-                                         scope: propertyScope(from: scope)) else { return false }
+                                         scope: scope.asPropertyScope) else { return false }
 
         return setProperty(address: address, value: value)
     }

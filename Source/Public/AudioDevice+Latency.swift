@@ -18,7 +18,7 @@ public extension AudioDevice {
     /// - Returns: *(optional)* A `UInt32` value with the latency in frames.
     func latency(scope: Scope) -> UInt32? {
         guard let address = validAddress(selector: kAudioDevicePropertyLatency,
-                                         scope: propertyScope(from: scope)) else { return nil }
+                                         scope: scope.asPropertyScope) else { return nil }
 
         return getProperty(address: address)
     }
@@ -30,7 +30,7 @@ public extension AudioDevice {
     /// - Returns: *(optional)* A `UInt32` value with the safety offset in frames.
     func safetyOffset(scope: Scope) -> UInt32? {
         guard let address = validAddress(selector: kAudioDevicePropertySafetyOffset,
-                                         scope: propertyScope(from: scope)) else { return nil }
+                                         scope: scope.asPropertyScope) else { return nil }
 
         return getProperty(address: address)
     }
