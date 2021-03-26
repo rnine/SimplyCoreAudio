@@ -8,7 +8,8 @@ import CoreAudio
 import Foundation
 import os.log
 
-/// This class represents an audio stream that belongs to an audio object.
+/// This class represents an audio stream that belongs to an audio object managed by
+/// [Core Audio](https://developer.apple.com/documentation/coreaudio).
 public final class AudioStream: AudioObject {
     // MARK: - Public Properties
 

@@ -7,10 +7,12 @@
 import CoreAudio
 import Foundation
 
-/// This class represents a Core Audio managed audio object. In Core Audio, audio objects are referenced by
-/// its `AudioObjectID` and belong to a specific `AudioClassID`.
+/// This class represents a [Core Audio](https://developer.apple.com/documentation/coreaudio) managed audio object.
+/// In [Core Audio](https://developer.apple.com/documentation/coreaudio), audio objects are referenced by its
+/// `AudioObjectID` and belong to a specific `AudioClassID`.
 ///
-/// For more information, please refer to Core Audio's documentation or source code.
+/// For more information, please refer to [Core Audio](https://developer.apple.com/documentation/coreaudio)'s
+/// documentation or source code.
 public class AudioObject {
     // MARK: - Internal Properties
 
