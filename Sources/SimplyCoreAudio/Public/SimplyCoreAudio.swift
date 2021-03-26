@@ -101,7 +101,7 @@ public final class SimplyCoreAudio {
     // MARK: - Private Static Properties
 
     private static var sharedHardware: AudioHardware!
-    private static var instances = ManagedAtomic<Int>(0)
+    private static let instances = ManagedAtomic<Int>(0)
 
     // MARK: - Private Properties
 
