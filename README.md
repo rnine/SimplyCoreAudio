@@ -88,7 +88,7 @@ To install our Swift Package, please follow the steps below:
 	NotificationCenter.default.removeObserver(observer)
 	observer = nil
 	```
-5. Subscribe to specific audio device notifications
+5. Subscribe to notifications from a specific audio device
 	```swift
 	// Get the default output device
 	let device = simplyCA.defaultOutputDevice
