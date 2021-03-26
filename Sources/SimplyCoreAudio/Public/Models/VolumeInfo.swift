@@ -8,24 +8,24 @@ import Foundation
 
 /// This struct holds volume, mute, and playthru information about a given channel and scope of an `AudioDevice`.
 public struct VolumeInfo {
-    /// Returns an scalar volume, or `nil` if unavailable.
+    /// Returns the device's volume for a given channel and scope.
     public var volume: Float32?
 
-    /// Returns whether volume is present.
+    /// Returns whether this device has volume for a given channel and scope.
     public var hasVolume: Bool = false
 
-    /// Returns whether volume can be set.
+    /// Returns whether this device can set volume for a given channel and scope.
     public var canSetVolume: Bool = false
 
-    /// Returns whether audio can be muted.
+    /// Returns whether this device can mute audio for a given channel and scope.
     public var canMute: Bool = false
 
-    /// Returns whether audio is muted.
+    /// Returns whether this device's audio is muted for a given channel and scope.
     public var isMuted: Bool = false
 
-    /// Returns whether play thru is supported.
+    /// Returns whether this device can play thru for a given channel and scope.
     public var canPlayThru: Bool = false
 
-    /// Returns whether play thru is enabled.
+    /// Returns whether this device's play thru is set for a given channel and scope.
     public var isPlayThruSet: Bool = false
 }

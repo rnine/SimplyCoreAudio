@@ -7,7 +7,7 @@
 import CoreAudio
 import Foundation
 
-/// `AudioObject` represents a Core Audio managed audio object. In Core Audio, audio objects are referenced by
+/// This class represents a Core Audio managed audio object. In Core Audio, audio objects are referenced by
 /// its `AudioObjectID` and belong to a specific `AudioClassID`.
 ///
 /// For more information, please refer to Core Audio's documentation or source code.

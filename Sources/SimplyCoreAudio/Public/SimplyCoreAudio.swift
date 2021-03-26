@@ -9,14 +9,16 @@ import CoreAudio
 import Foundation
 import os.log
 
-/// `SimplyCoreAudio` provides convenient audio hardware-related functions (e.g. obtaining all devices managed by
-/// Core Audio) and allows audio hardware-related notifications to work. Additionally, you may create and remove
+/// This class provides convenient audio hardware-related functions (e.g. obtaining all devices managed by
+/// [Core Audio](https://developer.apple.com/documentation/coreaudio)) and allows audio hardware-related notifications to work. Additionally, you may create and remove
 /// aggregate devices using this class.
 ///
 /// - Important: If you are interested in receiving hardware-related notifications, remember to keep a strong reference
 /// to an object of this class.
 public final class SimplyCoreAudio {
-    // MARK: - Public Properties
+    // MARK: Public Properties
+
+    // MARK: - Device Enumeration
 
     /// All the audio device identifiers currently available.
     ///
@@ -76,6 +78,8 @@ public final class SimplyCoreAudio {
     public var allAggregateDevices: [AudioDevice] {
         hardware.allAggregateDevices
     }
+
+    // MARK: - Default Devices
 
     /// The default input device.
     ///

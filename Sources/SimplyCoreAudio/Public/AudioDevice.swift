@@ -8,7 +8,7 @@ import CoreAudio
 import Foundation
 import os.log
 
-/// `AudioDevice` represents an audio device managed by Core Audio.
+/// This class represents an audio device managed by Core Audio.
 ///
 /// Devices may be physical or virtual. For a comprehensive list of supported types, please refer to `TransportType`.
 public final class AudioDevice: AudioObject {
