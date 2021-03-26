@@ -1,0 +1,23 @@
+name: Swift
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install NullAudio.driver
+      run: sudo unzip Tests/Extras/NullAudio.driver.zip -d /Library/Audio/Plug-Ins/HAL
+    - name: Restart CoreAudio
+      run: sudo killall coreaudiod
+    - name: Build
+      run: swift build -v
+    - name: Run tests
+      run: swift test -v
