@@ -6,7 +6,8 @@
 
 import Foundation
 
-/// Audio Hardware Notifications
+// MARK: - Audio Hardware Notifications
+
 public extension Notification.Name {
     /// Called whenever the default input device changes.
     static let defaultInputDeviceChanged = Self("defaultInputDeviceChanged")
@@ -24,7 +25,8 @@ public extension Notification.Name {
     static let deviceListChanged = Self("deviceListChanged")
 }
 
-/// Audio Device Notifications
+// MARK: - Audio Device Notifications
+
 public extension Notification.Name {
     /// Called whenever the audio device's sample rate changes.
     static let deviceNominalSampleRateDidChange = Self("deviceNominalSampleRateDidChange")
@@ -76,7 +78,8 @@ public extension Notification.Name {
     static let deviceHogModeDidChange = Self("deviceHogModeDidChange")
 }
 
-/// Audio Stream Notifications
+// MARK: - Audio Stream Notifications
+
 public extension Notification.Name {
     /// Called whenever the audio stream `isActive` flag changes.
     static let streamIsActiveDidChange = Self("streamIsActiveDidChange")
