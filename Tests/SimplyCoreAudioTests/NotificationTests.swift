@@ -64,8 +64,8 @@ class NotificationTests: SCATestCase {
         let nullDevice = try getNullDevice()
         var aggregateDevice: AudioDevice?
 
-        let expectedName = "NullDeviceAggregate"
-        let expectedUID = "NullDeviceAggregate_UID"
+        let expectedName = "NullDeviceAggregate2"
+        let expectedUID = "NullDeviceAggregate2_UID"
 
         let expectation1 = expectation(forNotification: .deviceListChanged, object: nil) { (notification) -> Bool in
             guard let addedDevices = notification.userInfo?["addedDevices"] as? [AudioDevice] else { return false }
