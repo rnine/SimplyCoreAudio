@@ -24,7 +24,7 @@ public final class SimplyCoreAudio {
     ///
     /// - Returns: An array of `AudioObjectID` values.
     public var allDeviceIDs: [AudioObjectID] {
-        Self.hardware.allDeviceIDs
+        hardware.allDeviceIDs
     }
 
     /// All the audio devices currently available.
@@ -33,7 +33,7 @@ public final class SimplyCoreAudio {
     ///
     /// - Returns: An array of `AudioDevice` objects.
     public var allDevices: [AudioDevice] {
-        Self.hardware.allDevices
+        hardware.allDevices
     }
 
     /// All the devices that have at least one input.
@@ -42,7 +42,7 @@ public final class SimplyCoreAudio {
     ///
     /// - Returns: An array of `AudioDevice` objects.
     public var allInputDevices: [AudioDevice] {
-        Self.hardware.allInputDevices
+        hardware.allInputDevices
     }
 
     /// All the devices that have at least one output.
@@ -51,7 +51,7 @@ public final class SimplyCoreAudio {
     ///
     /// - Returns: An array of `AudioDevice` objects.
     public var allOutputDevices: [AudioDevice] {
-        Self.hardware.allOutputDevices
+        hardware.allOutputDevices
     }
 
     /// All the devices that support input and output.
@@ -60,66 +60,72 @@ public final class SimplyCoreAudio {
     ///
     /// - Returns: An array of `AudioDevice` objects.
     public var allIODevices: [AudioDevice] {
-        Self.hardware.allIODevices
+        hardware.allIODevices
     }
 
     /// All the devices that are real devices — not aggregate ones.
     ///
     /// - Returns: An array of `AudioDevice` objects.
     public var allNonAggregateDevices: [AudioDevice] {
-        Self.hardware.allNonAggregateDevices
+        hardware.allNonAggregateDevices
     }
 
     /// All the devices that are aggregate devices.
     ///
     /// - Returns: An array of `AudioDevice` objects.
     public var allAggregateDevices: [AudioDevice] {
-        Self.hardware.allAggregateDevices
+        hardware.allAggregateDevices
     }
 
     /// The default input device.
     ///
     /// - Returns: *(optional)* An `AudioDevice`.
     public var defaultInputDevice: AudioDevice? {
-        Self.hardware.defaultInputDevice
+        hardware.defaultInputDevice
     }
 
     /// The default output device.
     ///
     /// - Returns: *(optional)* An `AudioDevice`.
     public var defaultOutputDevice: AudioDevice? {
-        Self.hardware.defaultOutputDevice
+        hardware.defaultOutputDevice
     }
 
     /// The default system output device.
     ///
     /// - Returns: *(optional)* An `AudioDevice`.
     public var defaultSystemOutputDevice: AudioDevice? {
-        Self.hardware.defaultSystemOutputDevice
+        hardware.defaultSystemOutputDevice
     }
+
+    // MARK: - Private Static Properties
+
+    private static var sharedHardware: AudioHardware!
+    private static var instances = ManagedAtomic<Int>(0)
 
     // MARK: - Private Properties
 
-    private static var hardware: AudioHardware!
-    private static var instances = ManagedAtomic<Int>(0)
+    private let hardware: AudioHardware
 
     // MARK: - Lifecycle
 
     init() {
         if Self.instances.load(ordering: .acquiring) == 0 {
-            Self.hardware = AudioHardware()
-            Self.hardware.enableDeviceMonitoring()
+            Self.sharedHardware = AudioHardware()
+            Self.sharedHardware.enableDeviceMonitoring()
         }
 
         Self.instances.wrappingIncrement(ordering: .acquiring)
+
+        hardware = Self.sharedHardware
     }
 
     deinit {
         Self.instances.wrappingDecrement(ordering: .acquiring)
 
         if Self.instances.load(ordering: .acquiring) == 0 {
-            Self.hardware.disableDeviceMonitoring()
-            Self.hardware = nil
+            Self.sharedHardware.disableDeviceMonitoring()
+            Self.sharedHardware = nil
         }
     }
 }
