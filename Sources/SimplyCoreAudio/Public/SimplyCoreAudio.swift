@@ -10,8 +10,8 @@ import Foundation
 import os.log
 
 /// This class provides convenient audio hardware-related functions (e.g. obtaining all devices managed by
-/// [Core Audio](https://developer.apple.com/documentation/coreaudio)) and allows audio hardware-related notifications to work. Additionally, you may create and remove
-/// aggregate devices using this class.
+/// [Core Audio](https://developer.apple.com/documentation/coreaudio)) and allows audio hardware-related notifications
+/// to work. Additionally, you may create and remove aggregate devices using this class.
 ///
 /// - Important: If you are interested in receiving hardware-related notifications, remember to keep a strong reference
 /// to an object of this class.
