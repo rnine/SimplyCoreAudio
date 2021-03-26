@@ -12,7 +12,7 @@
 
 - Enumerating audio devices (see [SimplyCoreAudio](https://rnine.github.io/SimplyCoreAudio/Classes/SimplyCoreAudio.html))
 - Getting/setting default input, output and system device (see [SimplyCoreAudio](https://rnine.github.io/SimplyCoreAudio/Classes/SimplyCoreAudio.html))
-- Creation and destroyal of aggregate devices (see [SimplyCoreAudio](https://rnine.github.io/SimplyCoreAudio/Classes/SimplyCoreAudio.html))
+- Creating and destroying aggregate devices (see [SimplyCoreAudio](https://rnine.github.io/SimplyCoreAudio/Classes/SimplyCoreAudio.html))
 - Querying audio device properties such as: name, manufacturer, UID, volume, mute, sample rate, clock source, etc. (see [AudioDevice](https://rnine.github.io/SimplyCoreAudio/Classes/AudioDevice.html))
 - Managing (physical and virtual) audio streams associated to an audio device (see [AudioStream](https://rnine.github.io/SimplyCoreAudio/Classes/AudioStream.html))
 - Subscribing to audio hardware, audio device, and audio stream notifications (see [Notification Extensions](https://rnine.github.io/SimplyCoreAudio/Extensions/Notification/Name.html))
