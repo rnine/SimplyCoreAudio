@@ -31,7 +31,7 @@ final class AudioDeviceTests: SCATestCase {
         XCTAssertEqual(device.uid, "NullAudioDevice_UID")
         XCTAssertEqual(device.modelUID, "NullAudioDevice_ModelUID")
         XCTAssertEqual(device.configurationApplication, "com.apple.audio.AudioMIDISetup")
-        XCTAssertEqual(device.transportType, TransportType.virtual)
+        XCTAssertEqual(device.transportType, .virtual)
 
         XCTAssertFalse(device.isInputOnlyDevice)
         XCTAssertFalse(device.isOutputOnlyDevice)

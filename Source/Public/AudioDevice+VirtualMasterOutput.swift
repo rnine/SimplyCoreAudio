@@ -5,7 +5,9 @@
 //  Created by Ruben Nine on 20/3/21.
 //
 
-import AudioToolbox.AudioServices
+import AudioToolbox
+import CoreAudio
+import Foundation
 
 // MARK: - 🔊 Virtual Master Output Volume / Balance Functions
 

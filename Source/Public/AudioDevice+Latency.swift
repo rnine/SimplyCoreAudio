@@ -5,7 +5,8 @@
 //  Created by Ruben Nine on 20/3/21.
 //
 
-import AudioToolbox.AudioServices
+import CoreAudio
+import Foundation
 
 // MARK: - ↹ Latency Functions
 

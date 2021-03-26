@@ -4,6 +4,7 @@
 //  Created by Ruben Nine on 20/09/2019.
 //
 
+import CoreAudio
 import Foundation
 
 /// Indicates the terminal type used by an `AudioStream`.
@@ -48,4 +49,42 @@ public enum TerminalType {
 
     /// A stream from/to an DisplayPort port
     case displayPort
+}
+
+// MARK: - Internal Functions
+
+extension TerminalType {
+    static func from(_ constant: UInt32) -> TerminalType {
+        switch constant {
+        case kAudioStreamTerminalTypeLine:
+            return .line
+        case kAudioStreamTerminalTypeDigitalAudioInterface:
+            return .digitalAudioInterface
+        case kAudioStreamTerminalTypeSpeaker:
+            return .speaker
+        case kAudioStreamTerminalTypeHeadphones:
+            return .headphones
+        case kAudioStreamTerminalTypeLFESpeaker:
+            return .lfeSpeaker
+        case kAudioStreamTerminalTypeReceiverSpeaker:
+            return .receiverSpeaker
+        case kAudioStreamTerminalTypeMicrophone:
+            return .microphone
+        case kAudioStreamTerminalTypeHeadsetMicrophone:
+            return .headsetMicrophone
+        case kAudioStreamTerminalTypeReceiverMicrophone:
+            return .receiverMicrophone
+        case kAudioStreamTerminalTypeTTY:
+            return .tty
+        case kAudioStreamTerminalTypeHDMI:
+            return .hdmi
+        case kAudioStreamTerminalTypeDisplayPort:
+            return .displayPort
+        case kAudioStreamTerminalTypeUnknown:
+            fallthrough
+        default:
+            return .unknown
+        }
+
+    }
 }

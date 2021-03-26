@@ -5,7 +5,8 @@
 //  Created by Ruben Nine on 20/3/21.
 //
 
-import AudioToolbox.AudioServices
+import CoreAudio
+import Foundation
 
 // MARK: - 𝍄 Clock Source Functions
 
@@ -14,9 +15,7 @@ public extension AudioDevice {
     ///
     /// - Returns: *(optional)* A `UInt32` containing the clock source identifier.
     var clockSourceID: UInt32? {
-        guard let address = validAddress(selector: kAudioDevicePropertyClockSource,
-                                         scope: kAudioObjectPropertyScopeGlobal) else { return nil }
-
+        guard let address = validAddress(selector: kAudioDevicePropertyClockSource) else { return nil }
         return getProperty(address: address)
     }
 
@@ -25,7 +24,6 @@ public extension AudioDevice {
     /// - Returns: *(optional)* A `String` containing the clock source name.
     var clockSourceName: String? {
         guard let sourceID = clockSourceID else { return nil }
-
         return clockSourceName(clockSourceID: sourceID)
     }
 
@@ -33,14 +31,11 @@ public extension AudioDevice {
     ///
     /// - Returns: *(optional)* A `UInt32` array containing all the clock source identifiers.
     var clockSourceIDs: [UInt32]? {
-        guard let address = validAddress(selector: kAudioDevicePropertyClockSources,
-                                         scope: kAudioObjectPropertyScopeGlobal,
-                                         element: kAudioObjectPropertyElementMaster) else { return nil }
+        guard let address = validAddress(selector: kAudioDevicePropertyClockSources) else { return nil }
 
         var clockSourceIDs = [UInt32]()
-        let status = getPropertyDataArray(address, value: &clockSourceIDs, andDefaultValue: 0)
 
-        guard noErr == status else { return nil }
+        guard noErr == getPropertyDataArray(address, value: &clockSourceIDs, andDefaultValue: 0) else { return nil }
 
         return clockSourceIDs
     }
@@ -95,9 +90,7 @@ public extension AudioDevice {
     ///
     /// - Returns: `true` on success, `false` otherwise.
     @discardableResult func setClockSourceID(_ clockSourceID: UInt32) -> Bool {
-        guard let address = validAddress(selector: kAudioDevicePropertyClockSource,
-                                         scope: kAudioObjectPropertyScopeGlobal) else { return false }
-
+        guard let address = validAddress(selector: kAudioDevicePropertyClockSource) else { return false }
         return setProperty(address: address, value: clockSourceID)
     }
 }

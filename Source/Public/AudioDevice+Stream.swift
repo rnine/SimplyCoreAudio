@@ -5,7 +5,8 @@
 //  Created by Ruben Nine on 20/3/21.
 //
 
-import AudioToolbox.AudioServices
+import CoreAudio
+import Foundation
 
 // MARK: - ♨︎ Stream Functions
 
@@ -20,11 +21,8 @@ public extension AudioDevice {
                                          scope: propertyScope(from: scope)) else { return nil }
 
         var streamIDs = [AudioStreamID]()
-        let status = getPropertyDataArray(address, value: &streamIDs, andDefaultValue: 0)
 
-        if noErr != status {
-            return nil
-        }
+        guard noErr == getPropertyDataArray(address, value: &streamIDs, andDefaultValue: 0) else { return nil }
 
         return streamIDs.compactMap { AudioStream.lookup(by: $0) }
     }

@@ -4,6 +4,7 @@
 //  Created by Ruben Nine on 20/09/2019.
 //
 
+import CoreAudio
 import Foundation
 
 /// Indicates the transport type used by an `AudioDevice`.
@@ -49,4 +50,43 @@ public enum TransportType {
 
     /// Thunderbolt Transport Type
     case thunderbolt
+}
+
+// MARK: - Internal Functions
+
+extension TransportType {
+    static func from(_ constant: UInt32) -> TransportType {
+        switch constant {
+        case kAudioDeviceTransportTypeBuiltIn:
+            return .builtIn
+        case kAudioDeviceTransportTypeAggregate:
+            return .aggregate
+        case kAudioDeviceTransportTypeVirtual:
+            return .virtual
+        case kAudioDeviceTransportTypePCI:
+            return .pci
+        case kAudioDeviceTransportTypeUSB:
+            return .usb
+        case kAudioDeviceTransportTypeFireWire:
+            return .fireWire
+        case kAudioDeviceTransportTypeBluetooth:
+            return .bluetooth
+        case kAudioDeviceTransportTypeBluetoothLE:
+            return .bluetoothLE
+        case kAudioDeviceTransportTypeHDMI:
+            return .hdmi
+        case kAudioDeviceTransportTypeDisplayPort:
+            return .displayPort
+        case kAudioDeviceTransportTypeAirPlay:
+            return .airPlay
+        case kAudioDeviceTransportTypeAVB:
+            return .avb
+        case kAudioDeviceTransportTypeThunderbolt:
+            return .thunderbolt
+        case kAudioDeviceTransportTypeUnknown:
+            fallthrough
+        default:
+            return .unknown
+        }
+    }
 }

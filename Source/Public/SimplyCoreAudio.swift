@@ -4,7 +4,8 @@
 //  Created by Ruben Nine on 20/3/21.
 //
 
-import AudioToolbox.AudioServices
+import CoreAudio
+import Foundation
 import os.log
 
 /// `SimplyCoreAudio` provides convenient audio hardware-related functions (e.g. obtaining all devices managed by

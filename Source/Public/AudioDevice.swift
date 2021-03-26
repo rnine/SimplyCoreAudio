@@ -4,7 +4,7 @@
 //  Created by Ruben Nine on 7/7/15.
 //
 
-import AudioToolbox.AudioServices
+import CoreAudio
 import Foundation
 import os.log
 

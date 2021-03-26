@@ -4,7 +4,8 @@
 //  Created by Ryan Francesconi on 2/24/21.
 //
 
-import AudioToolbox.AudioServices
+import CoreAudio
+import Foundation
 
 // MARK: - Aggregate Device Functions
 

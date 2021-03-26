@@ -5,7 +5,8 @@
 //  Created by Ruben Nine on 20/3/21.
 //
 
-import AudioToolbox.AudioServices
+import CoreAudio
+import Foundation
 import os.log
 
 // MARK: - 〰 Sample Rate Functions
@@ -16,7 +17,6 @@ public extension AudioDevice {
     /// - Returns: *(optional)* A `Float64` value with the actual sample rate.
     var actualSampleRate: Float64? {
         guard let address = validAddress(selector: kAudioDevicePropertyActualSampleRate) else { return nil }
-
         return getProperty(address: address)
     }
 
@@ -25,7 +25,6 @@ public extension AudioDevice {
     /// - Returns: *(optional)* A `Float64` value with the nominal sample rate.
     var nominalSampleRate: Float64? {
         guard let address = validAddress(selector: kAudioDevicePropertyNominalSampleRate) else { return nil }
-
         return getProperty(address: address)
     }
 
@@ -80,7 +79,6 @@ public extension AudioDevice {
     /// - Returns: `true` on success, `false` otherwise.
     @discardableResult func setNominalSampleRate(_ sampleRate: Float64) -> Bool {
         guard let address = validAddress(selector: kAudioDevicePropertyNominalSampleRate) else { return false }
-
         return setProperty(address: address, value: sampleRate)
     }
 }

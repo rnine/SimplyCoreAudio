@@ -4,7 +4,7 @@
 //  Created by Ruben Nine on 13/04/16.
 //
 
-import CoreAudio.AudioHardwareBase
+import CoreAudio
 import Foundation
 
 /// `AudioObject` represents a Core Audio managed audio object. In Core Audio, audio objects are referenced by
@@ -22,18 +22,11 @@ public class AudioObject {
     ///
     /// - Returns: *(optional)* An `AudioClassID`.
     public lazy var classID: AudioClassID? = {
-        var address = AudioObjectPropertyAddress(
-            mSelector: kAudioObjectPropertyClass,
-            mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMaster
-        )
-
-        guard AudioObjectHasProperty(self.objectID, &address) else { return nil }
+        guard let address = validAddress(selector: kAudioObjectPropertyClass) else { return nil }
 
         var klassID = AudioClassID()
-        let status = self.getPropertyData(address, andValue: &klassID)
 
-        guard noErr == status else { return nil }
+        guard noErr == getPropertyData(address, andValue: &klassID) else { return nil }
 
         return klassID
     }()
@@ -42,18 +35,11 @@ public class AudioObject {
     ///
     /// - Returns: *(optional)* An `AudioObject`.
     public lazy var owningObject: AudioObject? = {
-        var address = AudioObjectPropertyAddress(
-            mSelector: kAudioObjectPropertyOwner,
-            mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMaster
-        )
-
-        guard AudioObjectHasProperty(self.objectID, &address) else { return nil }
+        guard let address = validAddress(selector: kAudioObjectPropertyOwner) else { return nil }
 
         var objectID = AudioObjectID()
-        let status = self.getPropertyData(address, andValue: &objectID)
 
-        guard noErr == status else { return nil }
+        guard noErr == getPropertyData(address, andValue: &objectID) else { return nil }
 
         return AudioObject(objectID: objectID)
     }()
@@ -62,7 +48,7 @@ public class AudioObject {
     ///
     /// - Returns: *(optional)* An `AudioDevice`.
     public lazy var owningDevice: AudioDevice? = {
-        guard let object = self.owningObject, object.classID == kAudioDeviceClassID else { return nil }
+        guard let object = owningObject, object.classID == kAudioDeviceClassID else { return nil }
 
         return AudioDevice.lookup(by: object.objectID)
     }()
@@ -73,15 +59,10 @@ public class AudioObject {
     public var name: String? {
         var name: CFString = "" as CFString
 
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioObjectPropertyName,
-            mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMaster
-        )
+        guard let address = validAddress(selector: kAudioObjectPropertyName) else { return nil }
+        guard noErr == getPropertyData(address, andValue: &name) else { return nil }
 
-        let status = getPropertyData(address, andValue: &name)
-
-        return noErr == status ? (name as String) : nil
+        return name as String
     }
 
     // MARK: - Lifecycle

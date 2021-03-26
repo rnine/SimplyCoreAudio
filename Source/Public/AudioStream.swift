@@ -4,7 +4,7 @@
 //  Created by Ruben Nine on 13/04/16.
 //
 
-import CoreAudio.AudioHardwareBase
+import CoreAudio
 import Foundation
 import os.log
 
@@ -21,15 +21,10 @@ public final class AudioStream: AudioObject {
     ///
     /// - Returns: `true` when enabled, `false` otherwise.
     public var active: Bool {
-        var address = AudioObjectPropertyAddress(
-            mSelector: kAudioStreamPropertyIsActive,
-            mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMaster
-        )
+        guard let address = validAddress(selector: kAudioStreamPropertyIsActive) else { return false }
 
-        guard AudioObjectHasProperty(self.id, &address) else { return false }
         var active: UInt32 = 0
-        guard noErr == self.getPropertyData(address, andValue: &active) else { return false }
+        guard noErr == getPropertyData(address, andValue: &active) else { return false }
 
         return active == 1
     }
@@ -38,13 +33,8 @@ public final class AudioStream: AudioObject {
     ///
     /// - Returns: *(optional)* A `UInt32`.
     public var startingChannel: UInt32? {
-        var address = AudioObjectPropertyAddress(
-            mSelector: kAudioStreamPropertyStartingChannel,
-            mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMaster
-        )
+        guard let address = validAddress(selector: kAudioStreamPropertyStartingChannel) else { return nil }
 
-        guard AudioObjectHasProperty(self.id, &address) else { return nil }
         var startingChannel: UInt32 = 0
         guard noErr == self.getPropertyData(address, andValue: &startingChannel) else { return nil }
 
@@ -55,46 +45,12 @@ public final class AudioStream: AudioObject {
     ///
     /// - Return: A `TerminalType`.
     public var terminalType: TerminalType {
-        var address = AudioObjectPropertyAddress(
-            mSelector: kAudioStreamPropertyTerminalType,
-            mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMaster
-        )
+        guard let address = validAddress(selector: kAudioStreamPropertyTerminalType) else { return .unknown }
 
-        guard AudioObjectHasProperty(id, &address) else { return .unknown }
         var terminalType: UInt32 = 0
         guard noErr == getPropertyData(address, andValue: &terminalType) else { return .unknown }
 
-        switch terminalType {
-        case kAudioStreamTerminalTypeLine:
-            return .line
-        case kAudioStreamTerminalTypeDigitalAudioInterface:
-            return .digitalAudioInterface
-        case kAudioStreamTerminalTypeSpeaker:
-            return .speaker
-        case kAudioStreamTerminalTypeHeadphones:
-            return .headphones
-        case kAudioStreamTerminalTypeLFESpeaker:
-            return .lfeSpeaker
-        case kAudioStreamTerminalTypeReceiverSpeaker:
-            return .receiverSpeaker
-        case kAudioStreamTerminalTypeMicrophone:
-            return .microphone
-        case kAudioStreamTerminalTypeHeadsetMicrophone:
-            return .headsetMicrophone
-        case kAudioStreamTerminalTypeReceiverMicrophone:
-            return .receiverMicrophone
-        case kAudioStreamTerminalTypeTTY:
-            return .tty
-        case kAudioStreamTerminalTypeHDMI:
-            return .hdmi
-        case kAudioStreamTerminalTypeDisplayPort:
-            return .displayPort
-        case kAudioStreamTerminalTypeUnknown:
-            fallthrough
-        default:
-            return .unknown
-        }
+        return .from(terminalType)
     }
 
     /// The latency in frames for this stream.
@@ -106,13 +62,8 @@ public final class AudioStream: AudioObject {
     ///
     /// - Returns: *(optional)* A `UInt32` value with the latency in frames.
     public var latency: UInt32? {
-        var address = AudioObjectPropertyAddress(
-            mSelector: kAudioStreamPropertyLatency,
-            mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMaster
-        )
+        guard let address = validAddress(selector: kAudioStreamPropertyLatency) else { return nil }
 
-        guard AudioObjectHasProperty(id, &address) else { return nil }
         var latency: UInt32 = 0
         guard noErr == getPropertyData(address, andValue: &latency) else { return nil }
 
@@ -126,23 +77,15 @@ public final class AudioStream: AudioObject {
     ///
     /// - Returns: *(optional)* A `Scope`.
     public var scope: Scope? {
-        var address = AudioObjectPropertyAddress(
-            mSelector: kAudioStreamPropertyDirection,
-            mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMaster
-        )
+        guard let address = validAddress(selector: kAudioStreamPropertyDirection) else { return nil }
 
-        guard AudioObjectHasProperty(id, &address) else { return nil }
         var propertyScope: UInt32 = 0
         guard noErr == getPropertyData(address, andValue: &propertyScope) else { return nil }
 
         switch propertyScope {
-        case 0:
-            return .output
-        case 1:
-            return .input
-        default:
-            return nil
+        case 0: return .output
+        case 1: return .input
+        default: return nil
         }
     }
 

@@ -4,7 +4,7 @@
 //  Created by Ruben Nine on 7/9/15.
 //
 
-import CoreAudio.AudioHardwareBase
+import CoreAudio
 import Foundation
 import os.log
 

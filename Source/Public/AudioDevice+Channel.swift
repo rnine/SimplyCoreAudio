@@ -5,7 +5,8 @@
 //  Created by Ruben Nine on 20/3/21.
 //
 
-import AudioToolbox.AudioServices
+import CoreAudio
+import Foundation
 
 /// Represents a pair of stereo channel numbers.
 public typealias StereoPair = (left: UInt32, right: UInt32)
@@ -218,11 +219,8 @@ public extension AudioDevice {
     ///
     /// - Returns: A `StereoPair` tuple containing the channel numbers.
     func preferredChannelsForStereo(scope: Scope) -> StereoPair? {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyPreferredChannelsForStereo,
-            mScope: propertyScope(from: scope),
-            mElement: kAudioObjectPropertyElementMaster
-        )
+        guard let address = validAddress(selector: kAudioDevicePropertyPreferredChannelsForStereo,
+                                         scope: propertyScope(from: scope)) else { return nil }
 
         var preferredChannels = [UInt32]()
         let status = getPropertyDataArray(address, value: &preferredChannels, andDefaultValue: 0)
@@ -239,11 +237,8 @@ public extension AudioDevice {
     ///
     /// - Returns: `true` on success, `false` otherwise.
     @discardableResult func setPreferredChannelsForStereo(channels: StereoPair, scope: Scope) -> Bool {
-        let address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyPreferredChannelsForStereo,
-            mScope: propertyScope(from: scope),
-            mElement: kAudioObjectPropertyElementMaster
-        )
+        guard let address = validAddress(selector: kAudioDevicePropertyPreferredChannelsForStereo,
+                                         scope: propertyScope(from: scope)) else { return false }
 
         var preferredChannels = [channels.left, channels.right]
         let status = setPropertyData(address, andValue: &preferredChannels)

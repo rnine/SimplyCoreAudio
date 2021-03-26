@@ -5,7 +5,8 @@
 //  Created by Ruben Nine on 20/3/21.
 //
 
-import AudioToolbox.AudioServices
+import CoreAudio
+import Foundation
 
 // MARK: - ⇄ Input/Output Layout Functions
 
@@ -30,20 +31,13 @@ public extension AudioDevice {
     ///
     /// - Returns: *(optional)* A `UInt32` with the number of layout channels.
     func layoutChannels(scope: Scope) -> UInt32? {
-        var address = AudioObjectPropertyAddress(
-            mSelector: kAudioDevicePropertyPreferredChannelLayout,
-            mScope: propertyScope(from: scope),
-            mElement: kAudioObjectPropertyElementMaster
-        )
+        guard let address = validAddress(selector: kAudioDevicePropertyPreferredChannelLayout,
+                                         scope: propertyScope(from: scope)) else { return nil }
 
-        if AudioObjectHasProperty(id, &address) {
-            var result = AudioChannelLayout()
-            let status = getPropertyData(address, andValue: &result)
+        var result = AudioChannelLayout()
+        let status = getPropertyData(address, andValue: &result)
 
-            return noErr == status ? result.mNumberChannelDescriptions : nil
-        }
-
-        return nil
+        return noErr == status ? result.mNumberChannelDescriptions : nil
     }
 
     /// The number of channels for a given scope.
@@ -79,12 +73,9 @@ public extension AudioDevice {
     ///
     /// - Returns: `true` when jack is connected, `false` otherwise.
     func isJackConnected(scope: Scope) -> Bool? {
-        if let address = validAddress(selector: kAudioDevicePropertyJackIsConnected,
-                                      scope: propertyScope(from: scope))
-        {
-            return getProperty(address: address)
-        } else {
-            return nil
-        }
+        guard let address = validAddress(selector: kAudioDevicePropertyJackIsConnected,
+                                         scope: propertyScope(from: scope)) else { return nil }
+
+        return getProperty(address: address)
     }
 }
