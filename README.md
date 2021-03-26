@@ -1,4 +1,4 @@
-## SimplyCoreAudio
+## 🔊 SimplyCoreAudio
 
 [![Platform](https://img.shields.io/badge/Platforms-macOS%20-4E4E4E.svg?colorA=28a745)](https://github.com/rnine/SimplyCoreAudio)
 [![Swift support](https://img.shields.io/badge/Swift-4.0%20%7C%204.2%20%7C%205.0%20%7C%205.1%20-lightgrey.svg?colorA=28a745&colorB=4E4E4E)](https://github.com/rnine/SimplyCoreAudio)
