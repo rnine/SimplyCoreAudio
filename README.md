@@ -32,7 +32,7 @@
 
 To install our Swift Package, please follow the steps below:
 
-- Add https://github.com/rnine/SimplyCoreAudio.git as a [Swift Package Manager](https://swift.org/package-manager/) dependency to your project.
+- Add `https://github.com/rnine/SimplyCoreAudio.git` as a [Swift Package Manager](https://swift.org/package-manager/) dependency to your project.
 - When asked to **Choose Package Options**, use the default settings provided by Xcode.
 - When asked to **Add Package**, add `SimplyCoreAudio` to your desired target(s).
 
