@@ -23,7 +23,7 @@ jobs:
       run: sudo launchctl kill KILL system/com.apple.audio.coreaudiod      
     - name: List Audio Devices
       run: system_profiler SPAudioDataType
-#     - name: Build
-#       run: swift build -v
-#     - name: Run tests
-#       run: swift test -v
+    - name: Build
+      run: swift build
+    - name: Run tests
+      run: swift test
