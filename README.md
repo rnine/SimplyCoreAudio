@@ -109,7 +109,7 @@ To install our Swift Package, please follow the steps below:
 #### Audio Hardware Notifications
 
 | Name | Purpose | User Info |
-|---|----|----|
+|:---|:---|:---|
 | `defaultInputDeviceChanged` | Called whenever the default input device changes. | N/A |
 | `defaultOutputDeviceChanged` | Called whenever the default output device changes. | N/A |
 | `defaultSystemOutputDeviceChanged` | Called whenever the default system output device changes. | N/A |
@@ -118,7 +118,7 @@ To install our Swift Package, please follow the steps below:
 #### Audio Device Notifications
 
 | Name | Purpose | User Info |
-|---|----|----|
+|:---|:---|:---|
 | `deviceNominalSampleRateDidChange` | Called whenever the audio device's sample rate changes. | N/A |
 | `deviceAvailableNominalSampleRatesDidChange` | Called whenever the audio device's list of nominal sample rates changes. | N/A |
 | `deviceClockSourceDidChange` | Called whenever the audio device's clock source changes. | N/A |
@@ -136,7 +136,7 @@ To install our Swift Package, please follow the steps below:
 #### Audio Stream Notifications
 
 | Name | Purpose | User Info |
-|---|----|---|
+|:---|:---|:---|
 | `streamIsActiveDidChange` | Called whenever the audio stream `isActive` flag changes state. | N/A |
 | `streamPhysicalFormatDidChange` | Called whenever the audio stream physical format changes. | N/A |
 
