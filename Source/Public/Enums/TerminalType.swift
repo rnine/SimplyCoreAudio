@@ -85,6 +85,5 @@ extension TerminalType {
         default:
             return .unknown
         }
-
     }
 }
