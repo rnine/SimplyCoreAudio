@@ -13,13 +13,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Install NullAudio.driver
-      run: sudo unzip Tests/Extras/NullAudio.driver.zip -d /Library/Audio/Plug-Ins/HAL
-    - name: Restart CoreAudio
-      run: sudo killall coreaudiod
+    - name: System Software Overview
+      run: system_profiler SPSoftwareDataType
+#     - name: Install NullAudio.driver
+#       run: sudo unzip Tests/Extras/NullAudio.driver.zip -d /Library/Audio/Plug-Ins/HAL
+#     - name: Restart CoreAudio
+#       run: sudo killall coreaudiod
     - name: List Audio Devices
       run: system_profiler SPAudioDataType
-    - name: Build
-      run: swift build -v
-    - name: Run tests
-      run: swift test -v
+#     - name: Build
+#       run: swift build -v
+#     - name: Run tests
+#       run: swift test -v
