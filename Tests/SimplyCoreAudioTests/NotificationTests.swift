@@ -77,15 +77,15 @@ class NotificationTests: SCATestCase {
             let expectation2 = self.expectation(forNotification: .deviceListChanged, object: nil)
             let expectation3 = self.expectation(forNotification: .deviceListChanged, object: nil)
 
-            expectation2.expectationDescription = "aggregate device should not be added again (1)"
+            expectation2.expectationDescription = "deviceListChanged should not be called again (1)"
             expectation2.isInverted = true
-            expectation3.expectationDescription = "aggregate device should not be added again (2)"
+            expectation3.expectationDescription = "deviceListChanged should not be called again (2)"
             expectation3.isInverted = true
 
             return true
         }
 
-        expectation1.expectationDescription = "aggregate device should be added to device list"
+        expectation1.expectationDescription = "deviceListChanged should be called with added aggregate device"
 
         aggregateDevice = simplyCA.createAggregateDevice(masterDevice: nullDevice,
                                                          secondDevice: nil,
