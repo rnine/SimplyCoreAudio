@@ -134,10 +134,10 @@ To install our Swift Package, please follow the steps below:
 
 #### Audio Stream Notifications
 
-| Name | Purpose |
-|---|----|
-| `streamIsActiveDidChange` | Called whenever the audio stream `isActive` flag changes state. |
-| `streamPhysicalFormatDidChange` | Called whenever the audio stream physical format changes. |
+| Name | Purpose | User Info |
+|---|----|---|
+| `streamIsActiveDidChange` | Called whenever the audio stream `isActive` flag changes state. | N/A |
+| `streamPhysicalFormatDidChange` | Called whenever the audio stream physical format changes. | N/A |
 
 ### Further Development & Patches
 
