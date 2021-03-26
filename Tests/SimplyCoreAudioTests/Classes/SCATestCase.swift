@@ -1,6 +1,5 @@
 //
 //  SCATestCase.swift
-//  
 //
 //  Created by Ruben Nine on 21/3/21.
 //

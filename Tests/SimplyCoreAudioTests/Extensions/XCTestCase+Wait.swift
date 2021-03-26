@@ -1,6 +1,5 @@
 //
 //  XCTestCase+Wait.swift
-//  
 //
 //  Created by Ruben Nine on 20/3/21.
 //
