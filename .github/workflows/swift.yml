@@ -15,10 +15,12 @@ jobs:
     - uses: actions/checkout@v2
     - name: System Software Overview
       run: system_profiler SPSoftwareDataType
-#     - name: Install NullAudio.driver
-#       run: sudo unzip Tests/Extras/NullAudio.driver.zip -d /Library/Audio/Plug-Ins/HAL
-#     - name: Restart CoreAudio
-#       run: sudo killall coreaudiod
+    - name: Install NullAudio.driver
+      run: sudo unzip Tests/Extras/NullAudio.driver.zip -d /Library/Audio/Plug-Ins/HAL
+    - name: Restart CoreAudio
+      run: sudo launchctl kill SIGTERM system/com.apple.audio.coreaudiod      
+    - name: Restart CoreAudio (2)      
+      run: sudo killall coreaudiod
     - name: List Audio Devices
       run: system_profiler SPAudioDataType
 #     - name: Build
