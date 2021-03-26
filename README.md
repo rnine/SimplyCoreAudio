@@ -16,6 +16,11 @@ Here's some of the supported features:
 - Creates and destroyes aggregate devices
 - Allows subscribing to audio hardware, audio device, and audio stream notifications
 
+### Resources
+
+- [API Reference](https://rnine.github.io/SimplyCoreAudio)
+- [Core Audio](https://developer.apple.com/documentation/coreaudio)
+
 ### Requirements
 
 - Xcode 12+
@@ -98,10 +103,6 @@ To install our Swift Package, please follow the steps below:
 	NotificationCenter.default.removeObserver(observer)
 	observer = nil
 	```
-
-### Documentation
-
-- [API Documentation](https://rnine.github.io/SimplyCoreAudio)
 
 ### Supported Notifications
 

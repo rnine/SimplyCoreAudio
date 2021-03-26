@@ -6,13 +6,10 @@
 
 import Foundation
 
-// MARK: - SimplyCoreAudio Notifications
-
-public extension Notification.Name {}
-
-// MARK: - Audio Hardware Notifications
-
+/// List of supported `SimplyCoreAudio` notifications.
 public extension Notification.Name {
+    // MARK: - Audio Hardware Notifications
+
     /// Called whenever the default input device changes.
     static let defaultInputDeviceChanged = Self("defaultInputDeviceChanged")
 
@@ -27,11 +24,9 @@ public extension Notification.Name {
     ///
     /// Returned `userInfo` object will contain the keys `addedDevices` and `removedDevices`.
     static let deviceListChanged = Self("deviceListChanged")
-}
 
-// MARK: - Audio Device Notifications
+    // MARK: - Audio Device Notifications
 
-public extension Notification.Name {
     /// Called whenever the audio device's sample rate changes.
     static let deviceNominalSampleRateDidChange = Self("deviceNominalSampleRateDidChange")
 
@@ -80,11 +75,9 @@ public extension Notification.Name {
 
     /// Called whenever the audio device's *hog mode* property changes.
     static let deviceHogModeDidChange = Self("deviceHogModeDidChange")
-}
 
-// MARK: - Audio Stream Notifications
+    // MARK: - Audio Stream Notifications
 
-public extension Notification.Name {
     /// Called whenever the audio stream `isActive` flag changes.
     static let streamIsActiveDidChange = Self("streamIsActiveDidChange")
 
