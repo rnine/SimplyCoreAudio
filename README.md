@@ -8,13 +8,14 @@
 
 `SimplyCoreAudio` (formerly known as `AMCoreAudio`) is a Swift framework that aims to make [Core Audio](https://developer.apple.com/documentation/coreaudio) use less tedious in macOS.
 
-Here's some of the supported features:
+### Features
 
-- Simplifies audio device enumeration
-- Provides accessors for the most relevant audio device properties (i.e., device name, device manufacturer, device UID, volume, mute, sample rate, clock source, etc.)
-- Manages (physical and virtual) audio streams associated to an audio device
-- Creates and destroyes aggregate devices
-- Allows subscribing to audio hardware, audio device, and audio stream notifications
+- Enumerating audio devices (see [SimplyCoreAudio](https://rnine.github.io/SimplyCoreAudio/Classes/SimplyCoreAudio.html))
+- Getting/setting default input, output and system device (see [SimplyCoreAudio](https://rnine.github.io/SimplyCoreAudio/Classes/SimplyCoreAudio.html))
+- Creation and destroyal of aggregate devices (see [SimplyCoreAudio](https://rnine.github.io/SimplyCoreAudio/Classes/SimplyCoreAudio.html))
+- Querying audio device properties such as: name, manufacturer, UID, volume, mute, sample rate, clock source, etc. (see [AudioDevice](https://rnine.github.io/SimplyCoreAudio/Classes/AudioDevice.html))
+- Managing (physical and virtual) audio streams associated to an audio device (see [AudioStream](https://rnine.github.io/SimplyCoreAudio/Classes/AudioStream.html))
+- Subscribing to audio hardware, audio device, and audio stream notifications (see [Notification Extensions](https://rnine.github.io/SimplyCoreAudio/Extensions/Notification/Name.html]))
 
 ### Resources
 
