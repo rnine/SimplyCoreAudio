@@ -52,6 +52,8 @@ class NotificationTests: SCATestCase {
         if let aggregateDevice = aggregateDevice {
             XCTAssertEqual(noErr, simplyCA.removeAggregateDevice(id: aggregateDevice.id))
         }
+
+        wait(for: 2)
     }
 
     func testHardwareNotificationsAreNotDuplicated() throws {
@@ -97,6 +99,8 @@ class NotificationTests: SCATestCase {
         if let aggregateDevice = aggregateDevice {
             XCTAssertEqual(noErr, simplyCA.removeAggregateDevice(id: aggregateDevice.id))
         }
+
+        wait(for: 2)
     }
 
     func testDeviceSamplerateDidChangeNotification() throws {
