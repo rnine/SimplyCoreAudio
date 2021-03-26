@@ -8,6 +8,8 @@ import Foundation
 
 // MARK: - SimplyCoreAudio Notifications
 
+public extension Notification.Name {}
+
 // MARK: - Audio Hardware Notifications
 
 public extension Notification.Name {
