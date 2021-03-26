@@ -41,7 +41,8 @@ To install our Swift Package, please follow the steps below:
 1. Import `SimplyCoreAudio`
 	```swift
 	import SimplyCoreAudio
-	````
+	```
+
 2. Instantiate `SimplyCoreAudio`
 	```swift
 	let simplyCA = SimplyCoreAudio()
