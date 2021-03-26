@@ -179,6 +179,7 @@ Please make sure to install `NullAudio.driver` before attempting to run tests:
 	```shell
 	sudo unzip Tests/Extras/NullAudio.driver.zip -d /Library/Audio/Plug-Ins/HAL
 	```
+
 2. Reload `coreaudiod`
 	```shell
  	sudo launchctl kill KILL system/com.apple.audio.coreaudiod
