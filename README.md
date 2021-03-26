@@ -106,6 +106,29 @@ To install our Swift Package, please follow the steps below:
 	observer = nil
 	```
 
+6. Subscribe to notifications from a specific audio stream
+    ```swift
+    // Get the default output device
+    let device = simplyCA.defaultOutputDevice
+
+    // Get the first output stream
+    guard let streams = device.streams(scope: .output) else { return }
+    guard let stream0 = streams.first else { return }
+
+    // e.g., subscribing to `streamPhysicalFormatDidChange` notification.
+    var observer = NotificationCenter.default.addObserver(
+        forName: .streamPhysicalFormatDidChange,
+        object: stream0,
+        queue: .main) { (notification) in
+        // Handle notification.
+    }
+
+    // Once done observing, remove observer and nil it.
+    NotificationCenter.default.removeObserver(observer)
+    observer = nil
+    ```
+
+
 ### Supported Notifications
 
 #### Audio Hardware Notifications
