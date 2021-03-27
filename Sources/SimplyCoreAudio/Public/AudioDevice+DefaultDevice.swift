@@ -10,27 +10,24 @@ import Foundation
 // MARK: - Public Functions & Properties
 
 public extension AudioDevice {
-    // MARK: - Default Device Functions
+    // MARK: - Default Device Properties
 
-    /// Promotes this device to become the default input device.
-    ///
-    /// - Returns: `true` on success, `false` otherwise.
-    @discardableResult func setAsDefaultInputDevice() -> Bool {
-        setDefaultDevice(kAudioHardwarePropertyDefaultInputDevice)
+    /// Allows getting and setting this device as the default input device.
+    var isDefaultInputDevice: Bool {
+        get { hardware.defaultInputDevice == self }
+        set { _ = setDefaultDevice(kAudioHardwarePropertyDefaultInputDevice) }
     }
 
-    /// Promotes this device to become the default output device.
-    ///
-    /// - Returns: `true` on success, `false` otherwise.
-    @discardableResult func setAsDefaultOutputDevice() -> Bool {
-        setDefaultDevice(kAudioHardwarePropertyDefaultOutputDevice)
+    /// Allows getting and setting this device as the default output device.
+    var isDefaultOutputDevice: Bool {
+        get { hardware.defaultOutputDevice == self }
+        set { _ = setDefaultDevice(kAudioHardwarePropertyDefaultOutputDevice) }
     }
 
-    /// Promotes this device to become the default system output device.
-    ///
-    /// - Returns: `true` on success, `false` otherwise.
-    @discardableResult func setAsDefaultSystemDevice() -> Bool {
-        setDefaultDevice(kAudioHardwarePropertyDefaultSystemOutputDevice)
+    /// Allows getting and setting this device as the default system output device.
+    var isDefaultSystemOutputDevice: Bool {
+        get { hardware.defaultSystemOutputDevice == self }
+        set { _ = setDefaultDevice(kAudioHardwarePropertyDefaultSystemOutputDevice) }
     }
 }
 

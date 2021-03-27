@@ -39,9 +39,9 @@ class NotificationTests: SCATestCase {
                                                          uid: expectedUID)
         XCTAssertNotNil(aggregateDevice)
 
-        aggregateDevice?.setAsDefaultInputDevice()
-        aggregateDevice?.setAsDefaultOutputDevice()
-        aggregateDevice?.setAsDefaultSystemDevice()
+        aggregateDevice?.isDefaultInputDevice = true
+        aggregateDevice?.isDefaultOutputDevice = true
+        aggregateDevice?.isDefaultSystemOutputDevice = true
 
         waitForExpectations(timeout: 5)
 

@@ -22,6 +22,10 @@ public final class AudioDevice: AudioObject {
         kAudioEndPointDeviceClassID
     ]
 
+    // MARK: - Internal Properties
+
+    let hardware = AudioHardware()
+
     // MARK: - Private Properties
 
     private var cachedDeviceName: String?

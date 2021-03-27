@@ -13,14 +13,20 @@ final class AudioDeviceTests: SCATestCase {
     func testSettingDefaultDevice() throws {
         let device = try getNullDevice()
 
-        XCTAssertTrue(device.setAsDefaultSystemDevice())
-        XCTAssertEqual(simplyCA.defaultSystemOutputDevice, device)
+        device.isDefaultInputDevice = true
 
-        XCTAssertTrue(device.setAsDefaultOutputDevice())
+        XCTAssertTrue(device.isDefaultInputDevice)
+        XCTAssertEqual(simplyCA.defaultInputDevice, device)
+
+        device.isDefaultOutputDevice = true
+
+        XCTAssertTrue(device.isDefaultOutputDevice)
         XCTAssertEqual(simplyCA.defaultOutputDevice, device)
 
-        XCTAssertTrue(device.setAsDefaultInputDevice())
-        XCTAssertEqual(simplyCA.defaultInputDevice, device)
+        device.isDefaultSystemOutputDevice = true
+
+        XCTAssertTrue(device.isDefaultSystemOutputDevice)
+        XCTAssertEqual(simplyCA.defaultSystemOutputDevice, device)
     }
 
     func testGeneralDeviceInformation() throws {

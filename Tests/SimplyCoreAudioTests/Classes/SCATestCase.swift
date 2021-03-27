@@ -63,8 +63,8 @@ private extension SCATestCase {
     }
 
     func restoreDefaultDevices() {
-        defaultInputDevice?.setAsDefaultInputDevice()
-        defaultOutputDevice?.setAsDefaultOutputDevice()
-        defaultSystemOutputDevice?.setAsDefaultSystemDevice()
+        defaultInputDevice?.isDefaultInputDevice = true
+        defaultOutputDevice?.isDefaultOutputDevice = true
+        defaultSystemOutputDevice?.isDefaultSystemOutputDevice = true
     }
 }
