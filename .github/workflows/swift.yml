@@ -13,8 +13,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Install xcbeautify
-      run: brew install xcbeautify
     - name: Install NullAudio.driver
       run: sudo unzip Tests/Extras/NullAudio.driver.zip -d /Library/Audio/Plug-Ins/HAL
     - name: Restart Core Audio
@@ -22,10 +20,6 @@ jobs:
     - name: Check Null Audio Device is present
       run: system_profiler SPAudioDataType | grep -c "Null Audio Device"
     - name: Build
-      run: |
-        set -o pipefail
-        swift build 2>&1 | xcbeautify
+      run: swift build
     - name: Run tests
-      run: |
-        set -o pipefail
-        swift test --enable-code-coverage 2>&1 | xcbeautify
+      run: swift test
