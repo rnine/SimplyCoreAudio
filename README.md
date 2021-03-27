@@ -21,6 +21,7 @@
 
 - [API Reference](https://rnine.github.io/SimplyCoreAudio)
 - [Core Audio](https://developer.apple.com/documentation/coreaudio)
+- [HALLab (distributed as part of the Additional Tools for Xcode package)](https://developer.apple.com/download/more/)
 
 ### Requirements
 
@@ -175,7 +176,7 @@ Please make sure to install `NullAudio.driver` before attempting to run tests:
 
 ###  Installing `NullAudio.driver`
 
-1. Unzip `NullAudio.driver.zip` included in `Tests/Extras`
+1. Unzip `NullAudio.driver.zip` and install driver into the system HAL Plug-Ins folder
 	```shell
 	sudo unzip Tests/Extras/NullAudio.driver.zip -d /Library/Audio/Plug-Ins/HAL
 	```
