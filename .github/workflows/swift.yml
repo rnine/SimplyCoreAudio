@@ -22,6 +22,10 @@ jobs:
     - name: Check Null Audio Device is present
       run: system_profiler SPAudioDataType | grep -c "Null Audio Device"
     - name: Build
-      run: NSUnbufferedIO=YES swift build 2>&1 | xcbeautify
+      run: |
+        set -o pipefail
+        swift build 2>&1 | xcbeautify
     - name: Run tests
-      run: NSUnbufferedIO=YES swift test 2>&1 | xcbeautify
+      run: |
+        set -o pipefail
+        swift test --enable-code-coverage 2>&1 | xcbeautify
