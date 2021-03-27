@@ -8,48 +8,48 @@ import CoreAudio
 import Foundation
 
 /// Indicates the transport type used by an `AudioDevice`.
-public enum TransportType {
+public enum TransportType: String {
     /// Unknown Transport Type
-    case unknown
+    case unknown = "Unknown"
 
     /// Built-In Transport Type
-    case builtIn
+    case builtIn = "Built-In"
 
     /// Aggregate Transport Type
-    case aggregate
+    case aggregate = "Aggregate"
 
     /// Virtual Transport Type
-    case virtual
+    case virtual = "Virtual"
 
     /// PCI Transport Type
-    case pci
+    case pci = "PCI"
 
     /// USB Transport Type
-    case usb
+    case usb = "USB"
 
     /// FireWire Transport Type
-    case fireWire
+    case fireWire = "FireWire"
 
     /// Bluetooth Transport Type
-    case bluetooth
+    case bluetooth = "Bluetooth"
 
     /// Bluetooth LE Transport Type
-    case bluetoothLE
+    case bluetoothLE = "Bluetooth LE"
 
     /// HDMI Transport Type
-    case hdmi
+    case hdmi = "HDMI"
 
     /// DisplayPort Transport Type
-    case displayPort
+    case displayPort = "DisplayPort"
 
     /// AirPlay Transport Type
-    case airPlay
+    case airPlay = "AirPlay"
 
     /// Audio Video Bridging (AVB) Transport Type
-    case avb
+    case avb = "AVB"
 
     /// Thunderbolt Transport Type
-    case thunderbolt
+    case thunderbolt = "Thunderbolt"
 }
 
 // MARK: - Internal Functions
