@@ -174,7 +174,7 @@ Do you want to contribute to the project? Please fork, patch, and then submit a 
 
 Please make sure to install `NullAudio.driver` before attempting to run tests:
 
-###  Installing `NullAudio.driver`
+### Installing `NullAudio.driver`
 
 1. Unzip `NullAudio.driver.zip` and install driver into the system HAL Plug-Ins folder
 	```shell
@@ -185,6 +185,10 @@ Please make sure to install `NullAudio.driver` before attempting to run tests:
 	```shell
  	sudo launchctl kill KILL system/com.apple.audio.coreaudiod
 	```
+
+### Demo Project
+
+- [SimplyCoreAudioDemo](https://github.com/rnine/SimplyCoreAudioDemo) — a basic SwiftUI-based demo showcasing device enumeration and notifications.
 
 ### License
 
