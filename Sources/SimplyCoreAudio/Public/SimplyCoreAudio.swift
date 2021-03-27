@@ -113,7 +113,7 @@ public final class SimplyCoreAudio {
 
     // MARK: - Lifecycle
 
-    init() {
+    public init() {
         if Self.instances.load(ordering: .acquiring) == 0 {
             Self.sharedHardware = AudioHardware()
             Self.sharedHardware.enableDeviceMonitoring()
