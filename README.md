@@ -40,74 +40,72 @@ To install the Swift Package, please follow the steps below:
 ### Usage
 
 1. Import `SimplyCoreAudio`
-	```swift
-	import SimplyCoreAudio
-	```
+    ```swift
+    import SimplyCoreAudio
+    ```
 
 2. Instantiate `SimplyCoreAudio`
-	```swift
-	let simplyCA = SimplyCoreAudio()
-	```
+    ```swift
+    let simplyCA = SimplyCoreAudio()
+    ```
 
 3. Interact with `SimplyCoreAudio`
-	```swift
-	// Get the default output device
-	let device = simplyCA.defaultOutputDevice
+    ```swift
+    // Get the default output device
+    let device = simplyCA.defaultOutputDevice
 
-	// Get preferred output channels
-	if let stereoPair = device.preferredChannelsForStereo(scope: .output) {
-		let leftChannel = stereoPair.left
-		let rightChannel = stereoPair.right
-		// Use channels...
-	}
+    // Get preferred output channels
+    if let stereoPair = device.preferredChannelsForStereo(scope: .output) {
+        let leftChannel = stereoPair.left
+        let rightChannel = stereoPair.right
+        // Use channels...
+    }
 
-	// Get device samplerate
-	if let sampleRate = device.nominalSampleRate {
-		// Use samplerate...
-	}
+    // Get device samplerate
+    if let sampleRate = device.nominalSampleRate {
+        // Use samplerate...
+    }
 
-	// Get device virtual master volume
-	if let outVolume = device.virtualMasterVolume(scope: .output) {
-		// Use output volume...
-	}
-	```
+    // Get device virtual master volume
+    if let outVolume = device.virtualMasterVolume(scope: .output) {
+        // Use output volume...
+    }
+    ```
 
 4. Subscribe to hardware-related notifications
-	```swift
-	// e.g., subscribing to `deviceListChanged` notification.
-	var observer = NotificationCenter.default.addObserver(
-		forName: .deviceListChanged,
-		object: nil,
-		queue: .main) { (notification) in
-		// Get added devices.
-		guard let addedDevices = notification.userInfo?["addedDevices"] as? [AudioDevice] else { return }
+    ```swift
+    // e.g., subscribing to `deviceListChanged` notification.
+    var observer = NotificationCenter.default.addObserver(forName: .deviceListChanged,
+                                                           object: nil,
+                                                            queue: .main) { (notification) in
+        // Get added devices.
+        guard let addedDevices = notification.userInfo?["addedDevices"] as? [AudioDevice] else { return }
 
-		// Get removed devices.
-		guard let removedDevices = notification.userInfo?["removedDevices"] as? [AudioDevice] else { return }
-	}
+        // Get removed devices.
+        guard let removedDevices = notification.userInfo?["removedDevices"] as? [AudioDevice] else { return }
+    }
 
-	// Once done observing, remove observer and nil it.
-	NotificationCenter.default.removeObserver(observer)
-	observer = nil
-	```
+    // Once done observing, remove observer and nil it.
+    NotificationCenter.default.removeObserver(observer)
+    observer = nil
+    ```
 
 5. Subscribe to notifications from a specific audio device
-	```swift
-	// Get the default output device
-	let device = simplyCA.defaultOutputDevice
+    ```swift
+    // Get the default output device
+    let device = simplyCA.defaultOutputDevice
 
-	// e.g., subscribing to `deviceNominalSampleRateDidChange` notification.
-	var observer = NotificationCenter.default.addObserver(
-		forName: .deviceNominalSampleRateDidChange,
-		object: device,
-		queue: .main) { (notification) in
-		// Handle notification.
-	}
+    // e.g., subscribing to `deviceNominalSampleRateDidChange` notification.
+    var observer = NotificationCenter.default.addObserver(forName: .deviceNominalSampleRateDidChange,
+                                                           object: device,
+                                                            queue: .main) { (notification) in
+        // Handle notification.
+    }
 
-	// Once done observing, remove observer and nil it.
-	NotificationCenter.default.removeObserver(observer)
-	observer = nil
-	```
+    // Once done observing, remove observer and nil it.
+    NotificationCenter.default.removeObserver(observer)
+    observer = nil
+    ```
 
 6. Subscribe to notifications from a specific audio stream
     ```swift
@@ -119,10 +117,9 @@ To install the Swift Package, please follow the steps below:
     guard let stream0 = streams.first else { return }
 
     // e.g., subscribing to `streamPhysicalFormatDidChange` notification.
-    var observer = NotificationCenter.default.addObserver(
-        forName: .streamPhysicalFormatDidChange,
-        object: stream0,
-        queue: .main) { (notification) in
+    var observer = NotificationCenter.default.addObserver(forName: .streamPhysicalFormatDidChange,
+                                                           object: stream0,
+                                                            queue: .main) { (notification) in
         // Handle notification.
     }
 
@@ -178,14 +175,14 @@ Please make sure to install `NullAudio.driver` before attempting to run tests:
 ### Installing `NullAudio.driver`
 
 1. Unzip `NullAudio.driver.zip` and install driver into the system HAL Plug-Ins folder
-	```shell
-	sudo unzip Tests/Extras/NullAudio.driver.zip -d /Library/Audio/Plug-Ins/HAL
-	```
+    ```shell
+    sudo unzip Tests/Extras/NullAudio.driver.zip -d /Library/Audio/Plug-Ins/HAL
+    ```
 
 2. Reload `coreaudiod`
-	```shell
- 	sudo launchctl kill KILL system/com.apple.audio.coreaudiod
-	```
+    ```shell
+    sudo launchctl kill KILL system/com.apple.audio.coreaudiod
+    ```
 
 ### Demo Project
 
