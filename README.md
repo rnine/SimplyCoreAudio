@@ -71,6 +71,7 @@ To install the Swift Package, please follow the steps below:
 		// Use output volume...
 	}
 	```
+
 4. Subscribe to hardware-related notifications
 	```swift
 	// e.g., subscribing to `deviceListChanged` notification.
@@ -89,6 +90,7 @@ To install the Swift Package, please follow the steps below:
 	NotificationCenter.default.removeObserver(observer)
 	observer = nil
 	```
+
 5. Subscribe to notifications from a specific audio device
 	```swift
 	// Get the default output device
@@ -128,7 +130,6 @@ To install the Swift Package, please follow the steps below:
     NotificationCenter.default.removeObserver(observer)
     observer = nil
     ```
-
 
 ### Supported Notifications
 
