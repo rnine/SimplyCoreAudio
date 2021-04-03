@@ -55,7 +55,7 @@ final class AudioHardware {
     }
 
     var allOutputDevices: [AudioDevice] {
-        allDevices.filter { $0.channels(scope: .input) > 0 }
+        allDevices.filter { $0.channels(scope: .output) > 0 }
     }
 
     var allIODevices: [AudioDevice] {
