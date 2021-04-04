@@ -7,7 +7,6 @@
 import Atomics
 import CoreAudio
 import Foundation
-import os.log
 
 /// This class provides convenient audio hardware-related functions (e.g. obtaining all devices managed by
 /// [Core Audio](https://developer.apple.com/documentation/coreaudio)) and allows audio hardware-related notifications
@@ -131,61 +130,5 @@ public final class SimplyCoreAudio {
             Self.sharedHardware.disableDeviceMonitoring()
             Self.sharedHardware = nil
         }
-    }
-}
-
-// MARK: - Public Functions
-
-public extension SimplyCoreAudio {
-    // MARK: - Create and Destroy Aggregate Devices
-
-    /// This routine creates a new Aggregate AudioDevice
-    ///
-    /// - Parameter masterDeviceUID: An audio device. This will also be the clock source.
-    /// - Parameter secondDeviceUID: An audio device.
-    ///
-    /// - Returns *(optional)* An aggregate `AudioDevice` if one can be created.
-    func createAggregateDevice(masterDevice: AudioDevice,
-                               secondDevice: AudioDevice?,
-                               named name: String,
-                               uid: String) -> AudioDevice?
-    {
-        guard let masterDeviceUID = masterDevice.uid else { return nil }
-
-        var deviceList: [[String: Any]] = [
-            [kAudioSubDeviceUIDKey: masterDeviceUID]
-        ]
-
-        // make sure same device isn't added twice
-        if let secondDeviceUID = secondDevice?.uid, secondDeviceUID != masterDeviceUID {
-            deviceList.append([kAudioSubDeviceUIDKey: secondDeviceUID])
-        }
-
-        let desc: [String: Any] = [
-            kAudioAggregateDeviceNameKey: name,
-            kAudioAggregateDeviceUIDKey: uid,
-            kAudioAggregateDeviceSubDeviceListKey: deviceList,
-            kAudioAggregateDeviceMasterSubDeviceKey: masterDeviceUID
-        ]
-
-        var deviceID: AudioDeviceID = 0
-        let error = AudioHardwareCreateAggregateDevice(desc as CFDictionary, &deviceID)
-
-        guard error == noErr else {
-            os_log("Failed creating aggregate device with error: %d.", log: .default, type: .debug, error)
-            return nil
-        }
-
-        return AudioDevice.lookup(by: deviceID)
-    }
-
-    /// Destroy the given AudioAggregateDevice.
-    ///
-    /// The actual destruction of the device is asynchronous and may take place after
-    /// the call to this routine has returned.
-    /// - Parameter id: The AudioObjectID of the AudioAggregateDevice to destroy.
-    /// - Returns An OSStatus indicating success or failure.
-    func removeAggregateDevice(id deviceID: AudioObjectID) -> OSStatus {
-        AudioHardwareDestroyAggregateDevice(deviceID)
     }
 }
