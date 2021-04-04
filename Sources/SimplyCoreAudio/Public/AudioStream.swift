@@ -209,7 +209,7 @@ public extension AudioStream {
     ///
     /// - Note: If identifier is not valid, `nil` will be returned.
     static func lookup(by id: AudioObjectID) -> AudioStream? {
-        var instance = AudioObjectPool.shared.get(id) as? AudioStream
+        var instance: AudioStream? = AudioObjectPool.shared.get(id)
 
         if instance == nil {
             instance = AudioStream(id: id)
@@ -333,9 +333,7 @@ private extension AudioStream {
             mElement: kAudioObjectPropertyElementWildcard
         )
 
-        let selfPtr = Unmanaged.passUnretained(self).toOpaque()
-
-        if noErr != AudioObjectAddPropertyListener(id, &address, propertyListener, selfPtr) {
+        if noErr != AudioObjectAddPropertyListener(id, &address, propertyListener, nil) {
             os_log("Unable to add property listener for %@.", description)
         } else {
             isRegisteredForNotifications = true
@@ -351,9 +349,7 @@ private extension AudioStream {
             mElement: kAudioObjectPropertyElementWildcard
         )
 
-        let selfPtr = Unmanaged.passUnretained(self).toOpaque()
-
-        if noErr != AudioObjectRemovePropertyListener(id, &address, propertyListener, selfPtr) {
+        if noErr != AudioObjectRemovePropertyListener(id, &address, propertyListener, nil) {
             os_log("Unable to add property listener for %@.", description)
         } else {
             isRegisteredForNotifications = true
@@ -376,18 +372,17 @@ private func propertyListener(objectID: UInt32,
                               numInAddresses: UInt32,
                               inAddresses : UnsafePointer<AudioObjectPropertyAddress>,
                               clientData: Optional<UnsafeMutableRawPointer>) -> Int32 {
-    // Ensure audio object is still in the pool, otherwise it probably is (or is in the process of being) deallocated.
-    guard AudioObjectPool.shared.get(objectID) != nil else { return kAudioHardwareBadObjectError }
+    // Try to get audio object from the pool.
+    guard let obj: AudioStream = AudioObjectPool.shared.get(objectID) else { return kAudioHardwareBadObjectError }
 
-    let _self = Unmanaged<AudioStream>.fromOpaque(clientData!).takeUnretainedValue()
     let address = inAddresses.pointee
     let notificationCenter = NotificationCenter.default
 
     switch address.mSelector {
     case kAudioStreamPropertyIsActive:
-        notificationCenter.post(name: .streamIsActiveDidChange, object: _self)
+        notificationCenter.post(name: .streamIsActiveDidChange, object: obj)
     case kAudioStreamPropertyPhysicalFormat:
-        notificationCenter.post(name: .streamPhysicalFormatDidChange, object: _self)
+        notificationCenter.post(name: .streamPhysicalFormatDidChange, object: obj)
     default:
         break
     }

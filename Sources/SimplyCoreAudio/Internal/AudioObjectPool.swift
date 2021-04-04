@@ -25,13 +25,13 @@ class AudioObjectPool {
 // MARK: - Internal Functions
 
 extension AudioObjectPool {
-    func get(_ id: UInt32) -> AudioObject? {
+    func get<O: AudioObject>(_ id: UInt32) -> O? {
         queue.sync {
-            pool.object(forKey: NSNumber(value: id))
+            pool.object(forKey: NSNumber(value: id)) as? O
         }
     }
 
-    func set(_ audioObject: AudioObject, for id: UInt32) {
+    func set<O: AudioObject>(_ audioObject: O, for id: UInt32) {
         queue.sync(flags: .barrier) {
             pool.setObject(audioObject, forKey: NSNumber(value: id))
         }

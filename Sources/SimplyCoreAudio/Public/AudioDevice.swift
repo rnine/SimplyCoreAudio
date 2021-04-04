@@ -69,7 +69,7 @@ public extension AudioDevice {
     ///
     /// - Note: If identifier is not valid, `nil` will be returned.
     static func lookup(by id: AudioObjectID) -> AudioDevice? {
-        var instance = AudioObjectPool.shared.get(id) as? AudioDevice
+        var instance: AudioDevice? = AudioObjectPool.shared.get(id)
 
         if instance == nil {
             instance = AudioDevice(id: id)
@@ -132,9 +132,7 @@ private extension AudioDevice {
             mElement: kAudioObjectPropertyElementWildcard
         )
 
-        let selfPtr = Unmanaged.passUnretained(self).toOpaque()
-
-        if noErr != AudioObjectAddPropertyListener(id, &address, propertyListener, selfPtr) {
+        if noErr != AudioObjectAddPropertyListener(id, &address, propertyListener, nil) {
             os_log("Unable to add property listener for %@.", description)
         } else {
             isRegisteredForNotifications = true
@@ -150,9 +148,7 @@ private extension AudioDevice {
             mElement: kAudioObjectPropertyElementWildcard
         )
 
-        let selfPtr = Unmanaged.passUnretained(self).toOpaque()
-
-        if noErr != AudioObjectRemovePropertyListener(id, &address, propertyListener, selfPtr) {
+        if noErr != AudioObjectRemovePropertyListener(id, &address, propertyListener, nil) {
             os_log("Unable to remove property listener for %@.", description)
         } else {
             isRegisteredForNotifications = false
@@ -175,50 +171,49 @@ private func propertyListener(objectID: UInt32,
                               numInAddresses: UInt32,
                               inAddresses : UnsafePointer<AudioObjectPropertyAddress>,
                               clientData: Optional<UnsafeMutableRawPointer>) -> Int32 {
-    // Ensure audio object is still in the pool, otherwise it probably is (or is in the process of being) deallocated.
-    guard AudioObjectPool.shared.get(objectID) != nil else { return kAudioHardwareBadObjectError }
+    // Try to get audio object from the pool.
+    guard let obj: AudioDevice = AudioObjectPool.shared.get(objectID) else { return kAudioHardwareBadObjectError }
 
-    let _self: AudioDevice = Unmanaged<AudioDevice>.fromOpaque(clientData!).takeUnretainedValue()
     let address = inAddresses.pointee
     let notificationCenter = NotificationCenter.default
 
     switch address.mSelector {
     case kAudioDevicePropertyNominalSampleRate:
-        notificationCenter.post(name: .deviceNominalSampleRateDidChange, object: _self)
+        notificationCenter.post(name: .deviceNominalSampleRateDidChange, object: obj)
     case kAudioDevicePropertyAvailableNominalSampleRates:
-        notificationCenter.post(name: .deviceAvailableNominalSampleRatesDidChange, object: _self)
+        notificationCenter.post(name: .deviceAvailableNominalSampleRatesDidChange, object: obj)
     case kAudioDevicePropertyClockSource:
-        notificationCenter.post(name: .deviceClockSourceDidChange, object: _self)
+        notificationCenter.post(name: .deviceClockSourceDidChange, object: obj)
     case kAudioObjectPropertyName:
-        notificationCenter.post(name: .deviceNameDidChange, object: _self)
+        notificationCenter.post(name: .deviceNameDidChange, object: obj)
     case kAudioObjectPropertyOwnedObjects:
-        notificationCenter.post(name: .deviceOwnedObjectsDidChange, object: _self)
+        notificationCenter.post(name: .deviceOwnedObjectsDidChange, object: obj)
     case kAudioDevicePropertyVolumeScalar:
         let userInfo: [AnyHashable: Any] = [
             "channel": address.mElement,
             "scope": Scope.from(address.mScope)!
         ]
 
-        notificationCenter.post(name: .deviceVolumeDidChange, object: _self, userInfo: userInfo)
+        notificationCenter.post(name: .deviceVolumeDidChange, object: obj, userInfo: userInfo)
     case kAudioDevicePropertyMute:
         let userInfo: [AnyHashable: Any] = [
             "channel": address.mElement,
             "scope": Scope.from(address.mScope)!
         ]
 
-        notificationCenter.post(name: .deviceMuteDidChange, object: _self, userInfo: userInfo)
+        notificationCenter.post(name: .deviceMuteDidChange, object: obj, userInfo: userInfo)
     case kAudioDevicePropertyDeviceIsAlive:
-        notificationCenter.post(name: .deviceIsAliveDidChange, object: _self)
+        notificationCenter.post(name: .deviceIsAliveDidChange, object: obj)
     case kAudioDevicePropertyDeviceIsRunning:
-        notificationCenter.post(name: .deviceIsRunningDidChange, object: _self)
+        notificationCenter.post(name: .deviceIsRunningDidChange, object: obj)
     case kAudioDevicePropertyDeviceIsRunningSomewhere:
-        notificationCenter.post(name: .deviceIsRunningSomewhereDidChange, object: _self)
+        notificationCenter.post(name: .deviceIsRunningSomewhereDidChange, object: obj)
     case kAudioDevicePropertyJackIsConnected:
-        notificationCenter.post(name: .deviceIsJackConnectedDidChange, object: _self)
+        notificationCenter.post(name: .deviceIsJackConnectedDidChange, object: obj)
     case kAudioDevicePropertyPreferredChannelsForStereo:
-        notificationCenter.post(name: .devicePreferredChannelsForStereoDidChange, object: _self)
+        notificationCenter.post(name: .devicePreferredChannelsForStereoDidChange, object: obj)
     case kAudioDevicePropertyHogMode:
-        notificationCenter.post(name: .deviceHogModeDidChange, object: _self)
+        notificationCenter.post(name: .deviceHogModeDidChange, object: obj)
     default:
         break
     }
