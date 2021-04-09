@@ -191,14 +191,14 @@ private func propertyListener(objectID: UInt32,
     case kAudioDevicePropertyVolumeScalar:
         let userInfo: [AnyHashable: Any] = [
             "channel": address.mElement,
-            "scope": Scope.from(address.mScope)!,
+            "scope": Scope.from(address.mScope) ?? .global,
         ]
 
         notificationCenter.post(name: .deviceVolumeDidChange, object: obj, userInfo: userInfo)
     case kAudioDevicePropertyMute:
         let userInfo: [AnyHashable: Any] = [
             "channel": address.mElement,
-            "scope": Scope.from(address.mScope)!,
+            "scope": Scope.from(address.mScope) ?? .global,
         ]
 
         notificationCenter.post(name: .deviceMuteDidChange, object: obj, userInfo: userInfo)
@@ -214,13 +214,12 @@ private func propertyListener(objectID: UInt32,
         notificationCenter.post(name: .devicePreferredChannelsForStereoDidChange, object: obj)
     case kAudioDevicePropertyHogMode:
         notificationCenter.post(name: .deviceHogModeDidChange, object: obj)
-
     case kAudioDeviceProcessorOverload:
         notificationCenter.post(name: .deviceProcessorOverload, object: obj)
     case kAudioDevicePropertyIOCycleUsage:
-        notificationCenter.post(name: .devicePropertyIOCycleUsage, object: obj)
+        notificationCenter.post(name: .deviceIOCycleUsage, object: obj)
     case kAudioDevicePropertyIOStoppedAbnormally:
-        notificationCenter.post(name: .devicePropertyIOStoppedAbnormally, object: obj)
+        notificationCenter.post(name: .deviceIOStoppedAbnormally, object: obj)
 
     default:
         break

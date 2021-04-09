@@ -76,6 +76,23 @@ public extension Notification.Name {
     /// Called whenever the audio device's *hog mode* property changes.
     static let deviceHogModeDidChange = Self("deviceHogModeDidChange")
 
+    /// Called when the AudioDevice detects that an IO cycle has
+    /// run past its deadline. Note that the notification for this property is
+    /// usually sent from the AudioDevice's IO thread.
+    static let deviceProcessorOverload = Self("deviceProcessorOverload")
+
+    /// A Float32 whose range is from 0 to 1. This value indicates how much of the
+    /// client portion of the IO cycle the process will use. The client portion of
+    /// the IO cycle is the portion of the cycle in which the device calls the
+    /// IOProcs so this property does not the apply to the duration of the entire cycle.
+    static let deviceIOCycleUsage = Self("deviceIOCycleUsage")
+
+    /// Called when IO on the device has stopped outside of the
+    /// normal mechanisms. This typically comes up when IO is stopped after
+    /// AudioDeviceStart has returned successfully but prior to the notification for
+    /// kAudioDevicePropertyIsRunning being sent.
+    static let deviceIOStoppedAbnormally = Self("deviceIOStoppedAbnormally")
+
     // MARK: - Audio Stream Notifications
 
     /// Called whenever the audio stream `isActive` flag changes.
@@ -83,10 +100,6 @@ public extension Notification.Name {
 
     /// Called whenever the audio stream physical format changes.
     static let streamPhysicalFormatDidChange = Self("streamPhysicalFormatDidChange")
-
-    static let deviceProcessorOverload = Self("deviceProcessorOverload")
-    static let devicePropertyIOCycleUsage = Self("devicePropertyIOCycleUsage")
-    static let devicePropertyIOStoppedAbnormally = Self("devicePropertyIOStoppedAbnormally")
 }
 
 private extension Notification.Name {
