@@ -2,6 +2,8 @@
 
 | Version       | Description   | Date     |
 | -------------:|:------------- |:--------:|
+| 4.0.1         | Fixed typo in `AudioHardware.allOutputDevices` (@mattgreen) | April 9th, 2021 |
+|                  | Minor optimizations in `AudioObject` property listeners. ||
 | 4.0.0         | `AMCoreAudio` is now called 🔊 `SimplyCoreAudio` | March 27th, 2021 |
 |               | Notifications are now delivered using Apple's `NotificationCenter`. ||
 |               | Redesigned `AudioObjectPool` with thread-safety in mind. ||
