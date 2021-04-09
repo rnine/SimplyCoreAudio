@@ -81,12 +81,6 @@ public extension Notification.Name {
     /// usually sent from the AudioDevice's IO thread.
     static let deviceProcessorOverload = Self("deviceProcessorOverload")
 
-    /// A Float32 whose range is from 0 to 1. This value indicates how much of the
-    /// client portion of the IO cycle the process will use. The client portion of
-    /// the IO cycle is the portion of the cycle in which the device calls the
-    /// IOProcs so this property does not the apply to the duration of the entire cycle.
-    static let deviceIOCycleUsage = Self("deviceIOCycleUsage")
-
     /// Called when IO on the device has stopped outside of the
     /// normal mechanisms. This typically comes up when IO is stopped after
     /// AudioDeviceStart has returned successfully but prior to the notification for

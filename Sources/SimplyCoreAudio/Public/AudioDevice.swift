@@ -216,8 +216,6 @@ private func propertyListener(objectID: UInt32,
         notificationCenter.post(name: .deviceHogModeDidChange, object: obj)
     case kAudioDeviceProcessorOverload:
         notificationCenter.post(name: .deviceProcessorOverload, object: obj)
-    case kAudioDevicePropertyIOCycleUsage:
-        notificationCenter.post(name: .deviceIOCycleUsage, object: obj)
     case kAudioDevicePropertyIOStoppedAbnormally:
         notificationCenter.post(name: .deviceIOStoppedAbnormally, object: obj)
 
