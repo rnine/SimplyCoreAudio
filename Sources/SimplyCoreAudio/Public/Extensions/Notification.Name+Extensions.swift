@@ -83,6 +83,10 @@ public extension Notification.Name {
 
     /// Called whenever the audio stream physical format changes.
     static let streamPhysicalFormatDidChange = Self("streamPhysicalFormatDidChange")
+
+    static let deviceProcessorOverload = Self("deviceProcessorOverload")
+    static let devicePropertyIOCycleUsage = Self("devicePropertyIOCycleUsage")
+    static let devicePropertyIOStoppedAbnormally = Self("devicePropertyIOStoppedAbnormally")
 }
 
 private extension Notification.Name {

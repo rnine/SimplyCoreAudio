@@ -194,6 +194,7 @@ private func propertyListener(objectID: UInt32,
     case kAudioHardwarePropertyDefaultSystemOutputDevice:
         notificationCenter.post(name: .defaultSystemOutputDeviceChanged, object: _self)
     default:
+        os_log("Unhandled mSelector %@.", address.mSelector)
         break
     }
 
