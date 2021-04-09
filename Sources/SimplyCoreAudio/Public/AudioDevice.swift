@@ -223,8 +223,6 @@ private func propertyListener(objectID: UInt32,
         notificationCenter.post(name: .devicePropertyIOStoppedAbnormally, object: obj)
 
     default:
-        os_log("Unhandled mSelector %@.", address.mSelector)
-
         break
     }
 
