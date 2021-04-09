@@ -152,7 +152,7 @@ fileprivate extension AudioHardware {
 
 private func propertyListener(objectID: UInt32,
                               numInAddresses: UInt32,
-                              inAddresses : UnsafePointer<AudioObjectPropertyAddress>,
+                              inAddresses: UnsafePointer<AudioObjectPropertyAddress>,
                               clientData: Optional<UnsafeMutableRawPointer>) -> Int32 {
     let _self = Unmanaged<AudioHardware>.fromOpaque(clientData!).takeUnretainedValue()
     let address = inAddresses.pointee
@@ -183,7 +183,7 @@ private func propertyListener(objectID: UInt32,
 
         let userInfo: [AnyHashable: Any] = [
             "addedDevices": addedDevices,
-            "removedDevices": removedDevices
+            "removedDevices": removedDevices,
         ]
 
         notificationCenter.post(name: .deviceListChanged, object: _self, userInfo: userInfo)
@@ -194,7 +194,6 @@ private func propertyListener(objectID: UInt32,
     case kAudioHardwarePropertyDefaultSystemOutputDevice:
         notificationCenter.post(name: .defaultSystemOutputDeviceChanged, object: _self)
     default:
-        os_log("Unhandled mSelector %@.", address.mSelector)
         break
     }
 
