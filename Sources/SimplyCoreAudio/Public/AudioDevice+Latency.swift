@@ -70,13 +70,13 @@ public extension AudioDevice {
      kAudioDevicePropertyLatency
      kAudioDevicePropertyBufferFrameSize
      */
-    public struct FixedLatency {
-        var streamFrames: UInt32 = 0
-        var deviceFrames: UInt32 = 0
-        var safeteyOffsetFrames: UInt32 = 0
-        var bufferFrameSizeFrames: UInt32 = 0
+    struct FixedLatency {
+        public var streamFrames: UInt32 = 0
+        public var deviceFrames: UInt32 = 0
+        public var safeteyOffsetFrames: UInt32 = 0
+        public var bufferFrameSizeFrames: UInt32 = 0
 
-        var totalFrames: UInt32 {
+        public var totalFrames: UInt32 {
             streamFrames + deviceFrames + safeteyOffsetFrames + bufferFrameSizeFrames
         }
     }
