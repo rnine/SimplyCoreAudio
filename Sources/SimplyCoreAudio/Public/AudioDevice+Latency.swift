@@ -33,7 +33,7 @@ public extension AudioDevice {
 
         return getProperty(address: address)
     }
-   
+
     /// The current size of the IO Buffer
     ///
     /// - Parameter scope: A scope.
@@ -44,5 +44,12 @@ public extension AudioDevice {
                                          scope: scope.asPropertyScope) else { return nil }
 
         return getProperty(address: address)
+    }
+
+    @discardableResult func setBufferFrameSize(_ frameSize: UInt32, scope: Scope) -> Bool {
+        guard let address = validAddress(selector: kAudioDevicePropertyBufferFrameSize,
+                                         scope: scope.asPropertyScope) else { return false }
+
+        return setProperty(address: address, value: frameSize)
     }
 }

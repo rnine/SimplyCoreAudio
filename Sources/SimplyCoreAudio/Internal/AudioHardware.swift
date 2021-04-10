@@ -122,7 +122,8 @@ fileprivate extension AudioHardware {
         let selfPtr = Unmanaged.passUnretained(self).toOpaque()
 
         if noErr != AudioObjectAddPropertyListener(systemObjectID, &address, propertyListener, selfPtr) {
-            os_log("Unable to add property listener for systemObjectID: %@.", systemObjectID)
+            OSLog.error("Unable to add property listener for systemObjectID:", systemObjectID)
+            
         } else {
             isRegisteredForNotifications = true
         }
@@ -141,7 +142,7 @@ fileprivate extension AudioHardware {
         let selfPtr = Unmanaged.passUnretained(self).toOpaque()
 
         if noErr != AudioObjectRemovePropertyListener(systemObjectID, &address, propertyListener, selfPtr) {
-            os_log("Unable to remove property listener for systemObjectID: %@.", systemObjectID)
+            OSLog.error("Unable to remove property listener for systemObjectID:", systemObjectID)
         } else {
             isRegisteredForNotifications = false
         }

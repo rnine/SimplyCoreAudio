@@ -133,7 +133,7 @@ private extension AudioDevice {
         )
 
         if noErr != AudioObjectAddPropertyListener(id, &address, propertyListener, nil) {
-            os_log("Unable to add property listener for %@.", description)
+            OSLog.error("Unable to add property listener for", description)
         } else {
             isRegisteredForNotifications = true
         }
@@ -149,7 +149,7 @@ private extension AudioDevice {
         )
 
         if noErr != AudioObjectRemovePropertyListener(id, &address, propertyListener, nil) {
-            os_log("Unable to remove property listener for %@.", description)
+            OSLog.error("Unable to remove property listener for", description)
         } else {
             isRegisteredForNotifications = false
         }
@@ -191,14 +191,14 @@ private func propertyListener(objectID: UInt32,
     case kAudioDevicePropertyVolumeScalar:
         let userInfo: [AnyHashable: Any] = [
             "channel": address.mElement,
-            "scope": Scope.from(address.mScope) ?? .global,
+            "scope": Scope.from(address.mScope),
         ]
 
         notificationCenter.post(name: .deviceVolumeDidChange, object: obj, userInfo: userInfo)
     case kAudioDevicePropertyMute:
         let userInfo: [AnyHashable: Any] = [
             "channel": address.mElement,
-            "scope": Scope.from(address.mScope) ?? .global,
+            "scope": Scope.from(address.mScope),
         ]
 
         notificationCenter.post(name: .deviceMuteDidChange, object: obj, userInfo: userInfo)

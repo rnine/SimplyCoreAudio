@@ -1,6 +1,6 @@
 //
 //  SimplyCoreAudio+Aggregate.swift
-//  
+//
 //
 //  Created by Ruben Nine on 4/4/21.
 //
@@ -26,7 +26,7 @@ public extension SimplyCoreAudio {
         guard let masterDeviceUID = masterDevice.uid else { return nil }
 
         var deviceList: [[String: Any]] = [
-            [kAudioSubDeviceUIDKey: masterDeviceUID]
+            [kAudioSubDeviceUIDKey: masterDeviceUID],
         ]
 
         // make sure same device isn't added twice
@@ -38,14 +38,14 @@ public extension SimplyCoreAudio {
             kAudioAggregateDeviceNameKey: name,
             kAudioAggregateDeviceUIDKey: uid,
             kAudioAggregateDeviceSubDeviceListKey: deviceList,
-            kAudioAggregateDeviceMasterSubDeviceKey: masterDeviceUID
+            kAudioAggregateDeviceMasterSubDeviceKey: masterDeviceUID,
         ]
 
         var deviceID: AudioDeviceID = 0
         let error = AudioHardwareCreateAggregateDevice(desc as CFDictionary, &deviceID)
 
         guard error == noErr else {
-            os_log("Failed creating aggregate device with error: %d.", log: .default, type: .debug, error)
+            OSLog.error("Failed creating aggregate device with error:", error)
             return nil
         }
 

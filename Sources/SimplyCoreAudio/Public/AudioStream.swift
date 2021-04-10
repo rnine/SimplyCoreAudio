@@ -37,7 +37,7 @@ public final class AudioStream: AudioObject {
         guard let address = validAddress(selector: kAudioStreamPropertyStartingChannel) else { return nil }
 
         var startingChannel: UInt32 = 0
-        guard noErr == self.getPropertyData(address, andValue: &startingChannel) else { return nil }
+        guard noErr == getPropertyData(address, andValue: &startingChannel) else { return nil }
 
         return startingChannel
     }
@@ -107,7 +107,7 @@ public final class AudioStream: AudioObject {
             var asbd = newValue
 
             if noErr == setStreamPropertyData(kAudioStreamPropertyPhysicalFormat, andValue: &asbd) {
-                os_log("Error setting physicalFormat to %@.", log: .default, type: .debug, String(describing: newValue))
+                OSLog.error("Error setting physicalFormat to", newValue)
             }
         }
     }
@@ -129,7 +129,7 @@ public final class AudioStream: AudioObject {
             var asbd = newValue
 
             if noErr == setStreamPropertyData(kAudioStreamPropertyVirtualFormat, andValue: &asbd) {
-                os_log("Error setting virtualFormat to %@.", log: .default, type: .debug, String(describing: newValue))
+                OSLog.error("Error setting virtualFormat to", newValue)
             }
         }
     }
@@ -334,7 +334,7 @@ private extension AudioStream {
         )
 
         if noErr != AudioObjectAddPropertyListener(id, &address, propertyListener, nil) {
-            os_log("Unable to add property listener for %@.", description)
+            OSLog.error("Unable to add property listener for", description)
         } else {
             isRegisteredForNotifications = true
         }
@@ -350,7 +350,7 @@ private extension AudioStream {
         )
 
         if noErr != AudioObjectRemovePropertyListener(id, &address, propertyListener, nil) {
-            os_log("Unable to add property listener for %@.", description)
+            OSLog.error("Unable to remove property listener for", description)
         } else {
             isRegisteredForNotifications = true
         }
@@ -370,7 +370,7 @@ extension AudioStream: CustomStringConvertible {
 
 private func propertyListener(objectID: UInt32,
                               numInAddresses: UInt32,
-                              inAddresses : UnsafePointer<AudioObjectPropertyAddress>,
+                              inAddresses: UnsafePointer<AudioObjectPropertyAddress>,
                               clientData: Optional<UnsafeMutableRawPointer>) -> Int32 {
     // Try to get audio object from the pool.
     guard let obj: AudioStream = AudioObjectPool.shared.get(objectID) else { return kAudioHardwareBadObjectError }

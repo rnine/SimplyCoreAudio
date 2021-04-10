@@ -292,7 +292,7 @@ extension AudioObject {
 
     func validAddress(selector: AudioObjectPropertySelector,
                       scope: AudioObjectPropertyScope = kAudioObjectPropertyScopeGlobal,
-                      element: AudioObjectPropertyElement = kAudioObjectPropertyElementMaster)-> AudioObjectPropertyAddress? {
+                      element: AudioObjectPropertyElement = kAudioObjectPropertyElementMaster) -> AudioObjectPropertyAddress? {
         var address = self.address(selector: selector, scope: scope, element: element)
 
         guard AudioObjectHasProperty(objectID, &address) else { return nil }
@@ -309,10 +309,7 @@ extension AudioObject {
         case noErr:
             return value
         default:
-            os_log("Unable to get property with address (%@). Status: %@",
-                   log: .default,
-                   type: .debug,
-                   String(describing: address), status)
+            OSLog.error("Unable to get property with address (\(address)).", "Status:", status)
             return nil
         }
     }
@@ -362,10 +359,7 @@ extension AudioObject {
         case noErr:
             return true
         default:
-            os_log("Unable to set property with address (%@). Status: %@",
-                   log: .default,
-                   type: .debug,
-                   String(describing: address), status)
+            OSLog.error("Unable to get property with address (\(address)).", "Status:", status)
             return false
         }
     }
