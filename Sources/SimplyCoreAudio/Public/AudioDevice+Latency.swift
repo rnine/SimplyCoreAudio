@@ -56,32 +56,27 @@ public extension AudioDevice {
 }
 
 public extension AudioDevice {
-    /// Calculate the fixed latency from the system and the device.
-    /// Sum of kAudioStreamPropertyLatency +
-    ///        kAudioDevicePropertySafetyOffset +
-    ///        kAudioDevicePropertyLatency
-
     /**
      Calculate the fixed latency from the system and the device.
 
-     In the general case the latency for a stream on a device is determined by the sum of the following properties:
-     kAudioDevicePropertySafetyOffset
-     kAudioStreamPropertyLatency
-     kAudioDevicePropertyLatency
-     kAudioDevicePropertyBufferFrameSize
+     The latency for a stream on a device is determined by the sum of the following properties:
+         kAudioDevicePropertySafetyOffset
+         kAudioStreamPropertyLatency
+         kAudioDevicePropertyLatency
+         kAudioDevicePropertyBufferFrameSize
      */
     struct FixedLatency {
-        public var streamFrames: UInt32 = 0
-        public var deviceFrames: UInt32 = 0
-        public var safeteyOffsetFrames: UInt32 = 0
-        public var bufferFrameSizeFrames: UInt32 = 0
+        public internal(set) var streamFrames: UInt32 = 0
+        public internal(set) var deviceFrames: UInt32 = 0
+        public internal(set) var safeteyOffsetFrames: UInt32 = 0
+        public internal(set) var bufferFrameSize: UInt32 = 0
 
         public var totalFrames: UInt32 {
-            streamFrames + deviceFrames + safeteyOffsetFrames + bufferFrameSizeFrames
+            streamFrames + deviceFrames + safeteyOffsetFrames + bufferFrameSize
         }
     }
 
-    func presentationLatency(scope: Scope) -> FixedLatency {
+    func fixedLatency(scope: Scope) -> FixedLatency {
         var object = FixedLatency()
 
         if let allStreams = streams(scope: scope) {
@@ -102,9 +97,16 @@ public extension AudioDevice {
         // kAudioDevicePropertyBufferFrameSizeRange
 
         if let frames = bufferFrameSize(scope: scope) {
-            object.bufferFrameSizeFrames = frames // * 2
+            object.bufferFrameSize = frames // * 2
         }
 
         return object
+    }
+
+    func presentationLatency(scope: Scope) -> TimeInterval? {
+        guard let sampleRate = actualSampleRate else { return nil }
+
+        let object = fixedLatency(scope: scope)
+        return TimeInterval(object.totalFrames) / sampleRate
     }
 }
