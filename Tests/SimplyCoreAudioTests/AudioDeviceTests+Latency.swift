@@ -108,10 +108,10 @@ extension AudioDeviceTests {
         }
 
         items += [indent, "Input", inputLatency, "Total Frames", inputLatency.totalFrames, "\n",
-                  indent, "Resulting Latency is \(inputPresentationLatency * 1000)ms",
+                  indent, "Resulting Input Latency is \(inputPresentationLatency * 1000)ms",
                   "\n",
                   indent, "Output", outputLatency, "Total Frames", outputLatency.totalFrames, "\n",
-                  indent, "Resulting Latency is \(outputPresentationLatency * 1000)ms",
+                  indent, "Resulting Output Latency is \(outputPresentationLatency * 1000)ms",
                   "\n"]
 
         let content = (items.map {

@@ -97,7 +97,7 @@ public extension AudioDevice {
         // kAudioDevicePropertyBufferFrameSizeRange
 
         if let frames = bufferFrameSize(scope: scope) {
-            object.bufferFrameSize = frames // * 2
+            object.bufferFrameSize = frames
         }
 
         return object
