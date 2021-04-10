@@ -19,7 +19,7 @@ public final class AudioDevice: AudioObject {
         kAudioSubDeviceClassID,
         kAudioAggregateDeviceClassID,
         kAudioEndPointClassID,
-        kAudioEndPointDeviceClassID
+        kAudioEndPointDeviceClassID,
     ]
 
     // MARK: - Internal Properties
@@ -57,7 +57,7 @@ public final class AudioDevice: AudioObject {
     /// The audio device's name as reported by Core Audio.
     ///
     /// - Returns: An audio device's name.
-    public override var name: String { super.name ?? cachedDeviceName ?? "<Unknown Device Name>" }
+    override public var name: String { super.name ?? cachedDeviceName ?? "<Unknown Device Name>" }
 }
 
 // MARK: - Class Functions
@@ -169,7 +169,7 @@ extension AudioDevice: CustomStringConvertible {
 
 private func propertyListener(objectID: UInt32,
                               numInAddresses: UInt32,
-                              inAddresses : UnsafePointer<AudioObjectPropertyAddress>,
+                              inAddresses: UnsafePointer<AudioObjectPropertyAddress>,
                               clientData: Optional<UnsafeMutableRawPointer>) -> Int32 {
     // Try to get audio object from the pool.
     guard let obj: AudioDevice = AudioObjectPool.shared.get(objectID) else { return kAudioHardwareBadObjectError }
@@ -191,14 +191,14 @@ private func propertyListener(objectID: UInt32,
     case kAudioDevicePropertyVolumeScalar:
         let userInfo: [AnyHashable: Any] = [
             "channel": address.mElement,
-            "scope": Scope.from(address.mScope)!
+            "scope": Scope.from(address.mScope) ?? .global,
         ]
 
         notificationCenter.post(name: .deviceVolumeDidChange, object: obj, userInfo: userInfo)
     case kAudioDevicePropertyMute:
         let userInfo: [AnyHashable: Any] = [
             "channel": address.mElement,
-            "scope": Scope.from(address.mScope)!
+            "scope": Scope.from(address.mScope) ?? .global,
         ]
 
         notificationCenter.post(name: .deviceMuteDidChange, object: obj, userInfo: userInfo)
@@ -214,6 +214,11 @@ private func propertyListener(objectID: UInt32,
         notificationCenter.post(name: .devicePreferredChannelsForStereoDidChange, object: obj)
     case kAudioDevicePropertyHogMode:
         notificationCenter.post(name: .deviceHogModeDidChange, object: obj)
+    case kAudioDeviceProcessorOverload:
+        notificationCenter.post(name: .deviceProcessorOverload, object: obj)
+    case kAudioDevicePropertyIOStoppedAbnormally:
+        notificationCenter.post(name: .deviceIOStoppedAbnormally, object: obj)
+
     default:
         break
     }
