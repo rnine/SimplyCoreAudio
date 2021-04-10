@@ -12,14 +12,28 @@ import Foundation
 /// Please notice that `AudioStream` only supports `input` and `output` scopes,
 /// whether as `AudioDevice` may, additionally, support `global` and `playthrough`.
 public enum Scope {
-    /// Global scope
+    /// The AudioObjectPropertyScope for properties that apply to the object as a
+    /// whole. All objects have a global scope and for most it is their only scope.
     case global
-    /// Input scope
+
+    /// The AudioObjectPropertyScope for properties that apply to the input side of
+    /// an object
     case input
-    /// Output scope
+
+    /// The AudioObjectPropertyScope for properties that apply to the output side of
+    /// an object.
     case output
-    /// Playthrough scope
+
+    /// The AudioObjectPropertyScope for properties that apply to the play through
+    /// side of an object.
     case playthrough
+
+    /// The AudioObjectPropertyElement value for properties that apply to the master
+    /// element or to the entire scope.
+    case master
+
+    /// The wildcard value for AudioObjectPropertySelectors
+    case wildcard
 }
 
 // MARK: - Internal Functions
@@ -31,16 +45,26 @@ extension Scope {
         case .input: return kAudioObjectPropertyScopeInput
         case .output: return kAudioObjectPropertyScopeOutput
         case .playthrough: return kAudioObjectPropertyScopePlayThrough
+        case .master: return kAudioObjectPropertyElementMaster
+        case .wildcard: return kAudioObjectPropertyScopeWildcard
         }
     }
 
-    static func from(_ scope: AudioObjectPropertyScope) -> Scope? {
+    static func from(_ scope: AudioObjectPropertyScope) -> Scope {
         switch scope {
         case kAudioObjectPropertyScopeGlobal: return .global
         case kAudioObjectPropertyScopeInput: return .input
         case kAudioObjectPropertyScopeOutput: return .output
         case kAudioObjectPropertyScopePlayThrough: return .playthrough
-        default: return nil
+        case kAudioObjectPropertyElementMaster: return .master
+        case kAudioObjectPropertyScopeWildcard: return .wildcard
+        default:
+            // Note, the default is only here to satisfy the switch to be exhaustive.
+            // It already defines the complete set of AudioObjectPropertyScope from
+            // AudioHardware.h, so it's pretty unlikely this would be returned. The
+            // only case should be if Apple adds a new scope type - which seems fairly
+            // unlikely
+            return .wildcard
         }
     }
 }
