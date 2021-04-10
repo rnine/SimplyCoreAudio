@@ -33,4 +33,11 @@ public extension AudioDevice {
 
         return getProperty(address: address)
     }
+    
+    func bufferFrameSize(scope: Scope) -> UInt32? {
+        guard let address = validAddress(selector: kAudioDevicePropertyBufferFrameSize,
+                                         scope: scope.asPropertyScope) else { return nil }
+
+        return getProperty(address: address)
+    }
 }
