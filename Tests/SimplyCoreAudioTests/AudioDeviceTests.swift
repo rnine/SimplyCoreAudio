@@ -356,20 +356,6 @@ final class AudioDeviceTests: SCATestCase {
         XCTAssertFalse(device.setClockSourceID(0))
     }
 
-    func testLatency() throws {
-        let device = try getNullDevice()
-
-        XCTAssertEqual(device.latency(scope: .output), 0)
-        XCTAssertEqual(device.latency(scope: .input), 0)
-    }
-
-    func testSafetyOffset() throws {
-        let device = try getNullDevice()
-
-        XCTAssertEqual(device.safetyOffset(scope: .output), 0)
-        XCTAssertEqual(device.safetyOffset(scope: .input), 0)
-    }
-
     func testHogMode() throws {
         let device = try getNullDevice()
 
@@ -436,7 +422,7 @@ final class AudioDeviceTests: SCATestCase {
         let result3: Float64? = device.getProperty(address: address)
         let result4: String? = device.getProperty(address: address)
         let result5: Bool? = device.getProperty(address: address)
-        
+
         // all should be nil
         XCTAssertNil(result1)
         XCTAssertNil(result2)
