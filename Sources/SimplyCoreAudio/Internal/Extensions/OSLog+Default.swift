@@ -11,10 +11,10 @@ extension OSLog {
     private static let subsystem = Bundle.main.bundleIdentifier ?? "io.9labs.SimplyCoreAudio"
 
     /// Default logger.
-    static let `default` = OSLog(subsystem: subsystem, category: "Debug")
+    private static let `default` = OSLog(subsystem: subsystem, category: "Debug")
 
     /// Error logger.
-    static let error = OSLog(subsystem: subsystem, category: "Errors")
+    private static let error = OSLog(subsystem: subsystem, category: "Errors")
 
     /// Convenience for error messages with reference to what file the error came from
     public static func error(fullname: String = #function,
