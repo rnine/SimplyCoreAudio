@@ -8,18 +8,20 @@ import Foundation
 import os.log
 
 extension OSLog {
-    private static let subsystem = Bundle.main.bundleIdentifier ?? "io.9labs.SimplyCoreAudio"
+    fileprivate static let subsystem = Bundle.main.bundleIdentifier ?? "io.9labs.SimplyCoreAudio"
 
     /// Default logger.
-    private static let `default` = OSLog(subsystem: subsystem, category: "Debug")
+    fileprivate static let `default` = OSLog(subsystem: subsystem, category: "Debug")
 
     /// Error logger.
-    private static let error = OSLog(subsystem: subsystem, category: "Errors")
+    fileprivate static let error = OSLog(subsystem: subsystem, category: "Errors")
+}
 
+extension OSLog {
     /// Convenience for error messages with reference to what file the error came from
-    public static func error(fullname: String = #function,
-                             file: String = #file,
-                             line: Int = #line, _ items: Any?...) {
+    static func error(fullname: String = #function,
+                      file: String = #file,
+                      line: Int = #line, _ items: Any?...) {
         let fileName = (file as NSString).lastPathComponent
 
         let content = (items.map {
@@ -31,10 +33,10 @@ extension OSLog {
     }
 
     /// Convenience for debug messages with reference to what file the error came from
-    public static func debug(fullname: String = #function,
-                             file: String = #file,
-                             line: Int = #line,
-                             _ items: Any?...) {
+    static func debug(fullname: String = #function,
+                      file: String = #file,
+                      line: Int = #line,
+                      _ items: Any?...) {
         let fileName = (file as NSString).lastPathComponent
 
         let content = (items.map {
