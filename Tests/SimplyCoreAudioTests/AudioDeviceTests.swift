@@ -1,5 +1,6 @@
-import XCTest
+import CoreAudio
 @testable import SimplyCoreAudio
+import XCTest
 
 final class AudioDeviceTests: SCATestCase {
     func testDeviceLookUp() throws {
@@ -275,17 +276,17 @@ final class AudioDeviceTests: SCATestCase {
 
         XCTAssertTrue(device.setVirtualMasterVolume(0.0, scope: .output))
         XCTAssertEqual(device.virtualMasterVolume(scope: .output), 0.0)
-        //XCTAssertEqual(device.virtualMasterVolumeInDecibels(scope: .output), -96.0)
+        // XCTAssertEqual(device.virtualMasterVolumeInDecibels(scope: .output), -96.0)
         XCTAssertTrue(device.setVirtualMasterVolume(0.5, scope: .output))
         XCTAssertEqual(device.virtualMasterVolume(scope: .output), 0.5)
-        //XCTAssertEqual(device.virtualMasterVolumeInDecibels(scope: .output), -70.5)
+        // XCTAssertEqual(device.virtualMasterVolumeInDecibels(scope: .output), -70.5)
 
         XCTAssertTrue(device.setVirtualMasterVolume(0.0, scope: .input))
         XCTAssertEqual(device.virtualMasterVolume(scope: .input), 0.0)
-        //XCTAssertEqual(device.virtualMasterVolumeInDecibels(scope: .input), -96.0)
+        // XCTAssertEqual(device.virtualMasterVolumeInDecibels(scope: .input), -96.0)
         XCTAssertTrue(device.setVirtualMasterVolume(0.5, scope: .input))
         XCTAssertEqual(device.virtualMasterVolume(scope: .input), 0.5)
-        //XCTAssertEqual(device.virtualMasterVolumeInDecibels(scope: .input), -70.5)
+        // XCTAssertEqual(device.virtualMasterVolumeInDecibels(scope: .input), -70.5)
     }
 
     func testVirtualMasterBalance() throws {
@@ -417,5 +418,30 @@ final class AudioDeviceTests: SCATestCase {
         XCTAssertTrue(error == noErr, "Failed removing device")
 
         wait(for: 2)
+    }
+
+    func testInvalidDeviceProperties() throws {
+        let device = try getNullDevice()
+
+        // 0 seems like a safe bet for an invalid property
+        let address = AudioObjectPropertyAddress(
+            mSelector: AudioObjectPropertySelector(0),
+            mScope: AudioObjectPropertyScope(0),
+            mElement: AudioObjectPropertyScope(0)
+        )
+
+        // Just testing these fail gracefully and spit out a friendly error message
+        let result1: UInt32? = device.getProperty(address: address)
+        let result2: Float32? = device.getProperty(address: address)
+        let result3: Float64? = device.getProperty(address: address)
+        let result4: String? = device.getProperty(address: address)
+        let result5: Bool? = device.getProperty(address: address)
+        
+        // all should be nil
+        XCTAssertNil(result1)
+        XCTAssertNil(result2)
+        XCTAssertNil(result3)
+        XCTAssertNil(result4)
+        XCTAssertNil(result5)
     }
 }
