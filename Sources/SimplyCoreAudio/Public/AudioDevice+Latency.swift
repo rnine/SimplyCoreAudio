@@ -61,7 +61,7 @@ public extension AudioDevice {
         return setProperty(address: address, value: frameSize)
     }
 
-    /// A common array of UIInt32 values representing the available
+    /// A common array of UInt32 values representing the available
     /// IO buffer size options for the AudioStream containing the given element.
     ///
     /// - Parameter scope: A scope.
