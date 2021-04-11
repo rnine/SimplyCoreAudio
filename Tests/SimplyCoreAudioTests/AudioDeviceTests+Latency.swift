@@ -41,17 +41,6 @@ extension AudioDeviceTests {
             guard let string = info(for: device) else { continue }
             Swift.print("\(i + 1)", string)
         }
-
-        Swift.print("\nChanged to bufferSize of 32:\n")
-
-        for i in 0 ..< devices.count {
-            let device = devices[i]
-            device.setBufferFrameSize(32, scope: .input)
-            device.setBufferFrameSize(32, scope: .output)
-
-            guard let string = info(for: device) else { continue }
-            Swift.print("\(i + 1)", string)
-        }
     }
 
     func info(for device: AudioDevice) -> String? {
@@ -113,6 +102,8 @@ extension AudioDeviceTests {
                   indent, "Output", outputLatency, "Total Frames", outputLatency.totalFrames, "\n",
                   indent, "Resulting Output Latency is \(outputPresentationLatency * 1000)ms",
                   "\n"]
+        
+        items += [indent, "Buffer Sizes Range", device.bufferFrameSizeRange(scope: .input)]
 
         let content = (items.map {
             String(describing: $0 ?? "nil")
