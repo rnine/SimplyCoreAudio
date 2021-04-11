@@ -78,13 +78,16 @@ public extension AudioDevice {
         guard noErr == status,
               let firstRange = ranges.first else { return nil }
 
-        let possibleBufferSizes: [UInt32] = [32, 64, 128, 256, 512, 1024, 2048, 4096]
+        // limit it to these
+        let possibleBufferSizes: [UInt32] = [16, 32, 64, 128, 256, 512, 1024, 2048, 4096]
 
         guard let lowerBound = possibleBufferSizes.first,
               let upperBound = possibleBufferSizes.last else { return nil }
 
         let startValue = UInt32(firstRange.mMinimum + 15) & ~15
-        bufferSizes.append(startValue)
+        if !bufferSizes.contains(startValue) {
+            bufferSizes.append(startValue)
+        }
 
         var size: UInt32 = startValue <= lowerBound ? startValue : lowerBound
 
