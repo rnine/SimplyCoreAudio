@@ -121,11 +121,11 @@ public extension AudioDevice {
     struct FixedLatency {
         public internal(set) var stream: UInt32 = 0
         public internal(set) var device: UInt32 = 0
-        public internal(set) var safeteyOffset: UInt32 = 0
+        public internal(set) var safetyOffset: UInt32 = 0
         public internal(set) var bufferFrameSize: UInt32 = 0
 
         public var totalFrames: UInt32 {
-            stream + device + safeteyOffset + bufferFrameSize
+            stream + device + safetyOffset + bufferFrameSize
         }
     }
 
@@ -149,11 +149,8 @@ public extension AudioDevice {
         }
 
         if let frames = safetyOffset(scope: scope) {
-            object.safeteyOffset = frames
+            object.safetyOffset = frames
         }
-
-        // kAudioDevicePropertyBufferFrameSize
-        // kAudioDevicePropertyBufferFrameSizeRange
 
         if let frames = bufferFrameSize(scope: scope) {
             object.bufferFrameSize = frames
