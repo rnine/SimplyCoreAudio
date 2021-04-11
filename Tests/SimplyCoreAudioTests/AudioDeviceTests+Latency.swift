@@ -35,7 +35,7 @@ extension AudioDeviceTests {
             lhs.name < rhs.name
         }
 
-        Swift.print("\nAll Devices on the system with default settings:\n")
+        Swift.print("\nAll Devices:\n")
         for i in 0 ..< devices.count {
             let device = devices[i]
             guard let string = info(for: device) else { continue }
@@ -97,12 +97,12 @@ extension AudioDeviceTests {
         }
 
         items += [indent, "Input", inputLatency, "Total Frames", inputLatency.totalFrames, "\n",
-                  indent, "Resulting Input Latency is \(inputPresentationLatency * 1000)ms",
+                  indent, "Resulting Input Latency is \(inputPresentationLatency * 1000) ms",
                   "\n",
                   indent, "Output", outputLatency, "Total Frames", outputLatency.totalFrames, "\n",
-                  indent, "Resulting Output Latency is \(outputPresentationLatency * 1000)ms",
+                  indent, "Resulting Output Latency is \(outputPresentationLatency * 1000) ms",
                   "\n"]
-        
+
         items += [indent, "Buffer Sizes Range", device.bufferFrameSizeRange(scope: .input)]
 
         let content = (items.map {
