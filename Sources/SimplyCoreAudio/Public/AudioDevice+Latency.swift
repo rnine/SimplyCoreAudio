@@ -66,7 +66,7 @@ public extension AudioDevice {
     ///
     /// - Parameter scope: A scope.
     ///
-    /// - Returns: An array of common buffer sizes within the defined range
+    /// - Returns: An array of common buffer sizes within the defined range such as 32 ... 1024
     func bufferFrameSizeRange(scope: Scope) -> [UInt32]? {
         guard let address = validAddress(selector: kAudioDevicePropertyBufferFrameSizeRange,
                                          scope: kAudioObjectPropertyScopeWildcard) else { return nil }
