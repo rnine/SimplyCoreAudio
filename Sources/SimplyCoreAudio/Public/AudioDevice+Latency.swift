@@ -77,7 +77,7 @@ public extension AudioDevice {
         guard noErr == status,
               let firstRange = ranges.first else { return nil }
 
-        // limit it to these
+        // limit it to these common sizes
         let possibleBufferSizes: [UInt32] = [16, 32, 64, 128, 256, 512, 1024, 2048, 4096]
 
         guard let lowerBound = possibleBufferSizes.first,
@@ -91,8 +91,6 @@ public extension AudioDevice {
         var size: UInt32 = startValue <= lowerBound ? startValue : lowerBound
 
         while size <= upperBound {
-            // OSLog.debug(size)
-
             for range in ranges {
                 let min = UInt32(range.mMinimum)
                 let max = UInt32(range.mMaximum)
