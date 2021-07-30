@@ -48,8 +48,8 @@ class SCATestCase: XCTestCase {
         device.setMute(false, channel: 0, scope: .input)
         device.setVolume(0.5, channel: 0, scope: .output)
         device.setVolume(0.5, channel: 0, scope: .input)
-        device.setVirtualMasterVolume(0.5, scope: .output)
-        device.setVirtualMasterVolume(0.5, scope: .input)
+        device.setVirtualMainVolume(0.5, scope: .output)
+        device.setVirtualMainVolume(0.5, scope: .input)
     }
 }
 

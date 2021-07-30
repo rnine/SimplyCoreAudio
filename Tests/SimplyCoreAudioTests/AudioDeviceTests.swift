@@ -228,20 +228,20 @@ final class AudioDeviceTests: SCATestCase {
         XCTAssertNil(device.isMuted(channel: 2, scope: .input))
     }
 
-    func testMasterChannelMute() throws {
+    func testMainChannelMute() throws {
         let device = try getNullDevice()
 
-        XCTAssertEqual(device.canMuteMasterChannel(scope: .output), true)
+        XCTAssertEqual(device.canMuteMainChannel(scope: .output), true)
         XCTAssertTrue(device.setMute(false, channel: 0, scope: .output))
-        XCTAssertEqual(device.isMasterChannelMuted(scope: .output), false)
+        XCTAssertEqual(device.isMainChannelMuted(scope: .output), false)
         XCTAssertTrue(device.setMute(true, channel: 0, scope: .output))
-        XCTAssertEqual(device.isMasterChannelMuted(scope: .output), true)
+        XCTAssertEqual(device.isMainChannelMuted(scope: .output), true)
 
-        XCTAssertEqual(device.canMuteMasterChannel(scope: .input), true)
+        XCTAssertEqual(device.canMuteMainChannel(scope: .input), true)
         XCTAssertTrue(device.setMute(false, channel: 0, scope: .input))
-        XCTAssertEqual(device.isMasterChannelMuted(scope: .input), false)
+        XCTAssertEqual(device.isMainChannelMuted(scope: .input), false)
         XCTAssertTrue(device.setMute(true, channel: 0, scope: .input))
-        XCTAssertEqual(device.isMasterChannelMuted(scope: .input), true)
+        XCTAssertEqual(device.isMainChannelMuted(scope: .input), true)
     }
 
     func testPreferredChannelsForStereo() throws {
@@ -267,35 +267,35 @@ final class AudioDeviceTests: SCATestCase {
         XCTAssertEqual(preferredChannels.right, 2)
     }
 
-    func testVirtualMasterChannels() throws {
+    func testVirtualMainChannels() throws {
         let device = try getNullDevice()
 
-        XCTAssertTrue(device.canSetVirtualMasterVolume(scope: .output))
-        XCTAssertTrue(device.canSetVirtualMasterVolume(scope: .input))
+        XCTAssertTrue(device.canSetVirtualMainVolume(scope: .output))
+        XCTAssertTrue(device.canSetVirtualMainVolume(scope: .input))
 
-        XCTAssertTrue(device.setVirtualMasterVolume(0.0, scope: .output))
-        XCTAssertEqual(device.virtualMasterVolume(scope: .output), 0.0)
-        //XCTAssertEqual(device.virtualMasterVolumeInDecibels(scope: .output), -96.0)
-        XCTAssertTrue(device.setVirtualMasterVolume(0.5, scope: .output))
-        XCTAssertEqual(device.virtualMasterVolume(scope: .output), 0.5)
-        //XCTAssertEqual(device.virtualMasterVolumeInDecibels(scope: .output), -70.5)
+        XCTAssertTrue(device.setVirtualMainVolume(0.0, scope: .output))
+        XCTAssertEqual(device.virtualMainVolume(scope: .output), 0.0)
+        //XCTAssertEqual(device.virtualMainVolumeInDecibels(scope: .output), -96.0)
+        XCTAssertTrue(device.setVirtualMainVolume(0.5, scope: .output))
+        XCTAssertEqual(device.virtualMainVolume(scope: .output), 0.5)
+        //XCTAssertEqual(device.virtualMainVolumeInDecibels(scope: .output), -70.5)
 
-        XCTAssertTrue(device.setVirtualMasterVolume(0.0, scope: .input))
-        XCTAssertEqual(device.virtualMasterVolume(scope: .input), 0.0)
-        //XCTAssertEqual(device.virtualMasterVolumeInDecibels(scope: .input), -96.0)
-        XCTAssertTrue(device.setVirtualMasterVolume(0.5, scope: .input))
-        XCTAssertEqual(device.virtualMasterVolume(scope: .input), 0.5)
-        //XCTAssertEqual(device.virtualMasterVolumeInDecibels(scope: .input), -70.5)
+        XCTAssertTrue(device.setVirtualMainVolume(0.0, scope: .input))
+        XCTAssertEqual(device.virtualMainVolume(scope: .input), 0.0)
+        //XCTAssertEqual(device.virtualMainVolumeInDecibels(scope: .input), -96.0)
+        XCTAssertTrue(device.setVirtualMainVolume(0.5, scope: .input))
+        XCTAssertEqual(device.virtualMainVolume(scope: .input), 0.5)
+        //XCTAssertEqual(device.virtualMainVolumeInDecibels(scope: .input), -70.5)
     }
 
-    func testVirtualMasterBalance() throws {
+    func testVirtualMainBalance() throws {
         let device = try getNullDevice()
 
-        XCTAssertFalse(device.setVirtualMasterBalance(0.0, scope: .output))
-        XCTAssertNil(device.virtualMasterBalance(scope: .output))
+        XCTAssertFalse(device.setVirtualMainBalance(0.0, scope: .output))
+        XCTAssertNil(device.virtualMainBalance(scope: .output))
 
-        XCTAssertFalse(device.setVirtualMasterBalance(0.0, scope: .input))
-        XCTAssertNil(device.virtualMasterBalance(scope: .input))
+        XCTAssertFalse(device.setVirtualMainBalance(0.0, scope: .input))
+        XCTAssertNil(device.virtualMainBalance(scope: .input))
     }
 
     func testSampleRate() throws {
@@ -399,7 +399,7 @@ final class AudioDeviceTests: SCATestCase {
     func testCreateAndDestroyAggregateDevice() throws {
         let nullDevice = try getNullDevice()
 
-        guard let device = simplyCA.createAggregateDevice(masterDevice: nullDevice,
+        guard let device = simplyCA.createAggregateDevice(mainDevice: nullDevice,
                                                           secondDevice: nil,
                                                           named: "testCreateAggregateAudioDevice",
                                                           uid: "testCreateAggregateAudioDevice-12345")

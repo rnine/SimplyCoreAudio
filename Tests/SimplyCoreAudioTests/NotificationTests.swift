@@ -33,7 +33,7 @@ class NotificationTests: SCATestCase {
         expectation3.expectationDescription = "aggregate device should become default output device"
         expectation4.expectationDescription = "aggregate device should become default system output device"
 
-        aggregateDevice = simplyCA.createAggregateDevice(masterDevice: nullDevice,
+        aggregateDevice = simplyCA.createAggregateDevice(mainDevice: nullDevice,
                                                          secondDevice: nil,
                                                          named: expectedName,
                                                          uid: expectedUID)
@@ -88,7 +88,7 @@ class NotificationTests: SCATestCase {
 
         expectation1.expectationDescription = "deviceListChanged should be called with added aggregate device"
 
-        aggregateDevice = simplyCA.createAggregateDevice(masterDevice: nullDevice,
+        aggregateDevice = simplyCA.createAggregateDevice(mainDevice: nullDevice,
                                                          secondDevice: nil,
                                                          named: expectedName,
                                                          uid: expectedUID)
@@ -134,7 +134,7 @@ class NotificationTests: SCATestCase {
 
         expectation1.expectationDescription = "device output volumes should change"
 
-        nullDevice.setVirtualMasterVolume(1, scope: .output)
+        nullDevice.setVirtualMainVolume(1, scope: .output)
 
         waitForExpectations(timeout: 5)
 
@@ -148,12 +148,12 @@ class NotificationTests: SCATestCase {
 
         expectation2.expectationDescription = "device input volumes should change"
 
-        nullDevice.setVirtualMasterVolume(1, scope: .input)
+        nullDevice.setVirtualMainVolume(1, scope: .input)
 
         waitForExpectations(timeout: 5)
 
-        XCTAssertEqual(nullDevice.virtualMasterVolume(scope: .output), 1)
-        XCTAssertEqual(nullDevice.virtualMasterVolume(scope: .input), 1)
+        XCTAssertEqual(nullDevice.virtualMainVolume(scope: .output), 1)
+        XCTAssertEqual(nullDevice.virtualMainVolume(scope: .input), 1)
     }
 
     func testDeviceMuteDidChangeNotification() throws {

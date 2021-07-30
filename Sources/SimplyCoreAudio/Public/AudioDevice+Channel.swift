@@ -165,14 +165,20 @@ public extension AudioDevice {
         return getProperty(address: address)
     }
 
-    /// Whether the master channel is muted for a given scope.
+    /// Whether the main channel is muted for a given scope.
     ///
     /// - Parameter scope: A scope.
     ///
     /// - Returns: `true` when muted, `false` otherwise.
-    func isMasterChannelMuted(scope: Scope) -> Bool? {
-        isMuted(channel: kAudioObjectPropertyElementMaster, scope: scope)
+    func isMainChannelMuted(scope: Scope) -> Bool? {
+        isMuted(channel: kAudioObjectPropertyElementMain, scope: scope)
     }
+    
+    @available(*, deprecated, renamed: "isMainChannelMuted")
+    func isMasterChannelMuted(scope: Scope) -> Bool? {
+        return isMainChannelMuted(scope: scope)
+    }
+    
 
     /// Whether a channel can be muted for a given scope.
     ///
@@ -184,13 +190,13 @@ public extension AudioDevice {
         volumeInfo(channel: channel, scope: scope)?.canMute ?? false
     }
 
-    /// Whether the master volume can be muted for a given scope.
+    /// Whether the main volume can be muted for a given scope.
     ///
     /// - Parameter scope: A scope.
     ///
     /// - Returns: `true` when the volume can be muted, `false` otherwise.
-    func canMuteMasterChannel(scope: Scope) -> Bool {
-        if canMute(channel: kAudioObjectPropertyElementMaster, scope: scope) == true {
+    func canMuteMainChannel(scope: Scope) -> Bool {
+        if canMute(channel: kAudioObjectPropertyElementMain, scope: scope) == true {
             return true
         }
 
@@ -199,6 +205,11 @@ public extension AudioDevice {
         guard canMute(channel: preferredChannelsForStereo.1, scope: scope) else { return false }
 
         return true
+    }
+    
+    @available(*, deprecated, renamed: "canMuteMainChannel")
+    func canMuteMasterChannel(scope: Scope) -> Bool? {
+        return canMuteMainChannel(scope: scope)
     }
 
     /// Whether a channel's volume can be set for a given scope.

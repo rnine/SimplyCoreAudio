@@ -145,7 +145,7 @@ public final class AudioStream: AudioObject {
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioStreamPropertyAvailablePhysicalFormats,
             mScope: scope.asPropertyScope,
-            mElement: kAudioObjectPropertyElementMaster
+            mElement: kAudioObjectPropertyElementMain
         )
 
         guard AudioObjectHasProperty(id, &address) else { return nil }
@@ -168,7 +168,7 @@ public final class AudioStream: AudioObject {
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioStreamPropertyAvailableVirtualFormats,
             mScope: scope.asPropertyScope,
-            mElement: kAudioObjectPropertyElementMaster
+            mElement: kAudioObjectPropertyElementMain
         )
 
         guard AudioObjectHasProperty(id, &address) else { return nil }
@@ -274,7 +274,7 @@ public extension AudioStream {
 private extension AudioStream {
     /// This is an specialized version of `getPropertyData` that only requires passing an `AudioObjectPropertySelector`
     /// instead of an `AudioObjectPropertyAddress`. The scope is computed from the stream's `Scope`, and the element
-    /// is assumed to be `kAudioObjectPropertyElementMaster`.
+    /// is assumed to be `kAudioObjectPropertyElementMain`.
     ///
     /// Additionally, the property address is validated before calling `getPropertyData`.
     ///
@@ -288,7 +288,7 @@ private extension AudioStream {
         var address = AudioObjectPropertyAddress(
             mSelector: selector,
             mScope: scope.asPropertyScope,
-            mElement: kAudioObjectPropertyElementMaster
+            mElement: kAudioObjectPropertyElementMain
         )
 
         guard AudioObjectHasProperty(id, &address) else { return nil }
@@ -298,7 +298,7 @@ private extension AudioStream {
 
     /// This is an specialized version of `setPropertyData` that only requires passing an `AudioObjectPropertySelector`
     /// instead of an `AudioObjectPropertyAddress`. The scope is computed from the stream's `Scope`, and the element
-    /// is assumed to be `kAudioObjectPropertyElementMaster`.
+    /// is assumed to be `kAudioObjectPropertyElementMain`.
     ///
     /// Additionally, the property address is validated before calling `setPropertyData`.
     ///
@@ -312,7 +312,7 @@ private extension AudioStream {
         var address = AudioObjectPropertyAddress(
             mSelector: selector,
             mScope: scope.asPropertyScope,
-            mElement: kAudioObjectPropertyElementMaster
+            mElement: kAudioObjectPropertyElementMain
         )
 
         guard AudioObjectHasProperty(id, &address) else { return nil }
