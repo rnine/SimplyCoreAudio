@@ -14,23 +14,23 @@ import os.log
 public extension SimplyCoreAudio {
     /// This routine creates a new aggregate audio device.
     ///
-    /// - Parameter masterDeviceUID: An audio device. This will also be the clock source.
-    /// - Parameter secondDeviceUID: An audio device.
+    /// - Parameter mainDevice: An audio device. This will also be the clock source.
+    /// - Parameter secondDevice: An audio device.
     ///
     /// - Returns *(optional)* An aggregate `AudioDevice` if one can be created.
-    func createAggregateDevice(masterDevice: AudioDevice,
+    func createAggregateDevice(mainDevice: AudioDevice,
                                secondDevice: AudioDevice?,
                                named name: String,
                                uid: String) -> AudioDevice?
     {
-        guard let masterDeviceUID = masterDevice.uid else { return nil }
+        guard let mainDeviceUID = mainDevice.uid else { return nil }
 
         var deviceList: [[String: Any]] = [
-            [kAudioSubDeviceUIDKey: masterDeviceUID]
+            [kAudioSubDeviceUIDKey: mainDeviceUID]
         ]
 
         // make sure same device isn't added twice
-        if let secondDeviceUID = secondDevice?.uid, secondDeviceUID != masterDeviceUID {
+        if let secondDeviceUID = secondDevice?.uid, secondDeviceUID != mainDeviceUID {
             deviceList.append([kAudioSubDeviceUIDKey: secondDeviceUID])
         }
 
@@ -38,7 +38,7 @@ public extension SimplyCoreAudio {
             kAudioAggregateDeviceNameKey: name,
             kAudioAggregateDeviceUIDKey: uid,
             kAudioAggregateDeviceSubDeviceListKey: deviceList,
-            kAudioAggregateDeviceMasterSubDeviceKey: masterDeviceUID
+            kAudioAggregateDeviceMainSubDeviceKey: mainDeviceUID
         ]
 
         var deviceID: AudioDeviceID = 0
@@ -50,6 +50,15 @@ public extension SimplyCoreAudio {
         }
 
         return AudioDevice.lookup(by: deviceID)
+    }
+    
+    @available(*, deprecated, message: "mainDevice: is preferred spelling for first argument")
+    func createAggregateDevice(masterDevice: AudioDevice,
+                               secondDevice: AudioDevice?,
+                               named name: String,
+                               uid: String) -> AudioDevice?
+    {
+        return createAggregateDevice(mainDevice: masterDevice, secondDevice: secondDevice, named: name, uid: uid)
     }
 
     /// Destroy the given audio aggregate device.

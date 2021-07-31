@@ -66,8 +66,8 @@ To install the Swift Package, please follow the steps below:
         // Use samplerate...
     }
 
-    // Get device virtual master volume
-    if let outVolume = device.virtualMasterVolume(scope: .output) {
+    // Get device virtual main volume
+    if let outVolume = device.virtualMainVolume(scope: .output) {
         // Use output volume...
     }
     ```
