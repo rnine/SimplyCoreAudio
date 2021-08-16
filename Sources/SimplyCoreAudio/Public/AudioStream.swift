@@ -106,7 +106,7 @@ public final class AudioStream: AudioObject {
         set {
             var asbd = newValue
 
-            if noErr == setStreamPropertyData(kAudioStreamPropertyPhysicalFormat, andValue: &asbd) {
+            if noErr != setStreamPropertyData(kAudioStreamPropertyPhysicalFormat, andValue: &asbd) {
                 os_log("Error setting physicalFormat to %@.", log: .default, type: .debug, String(describing: newValue))
             }
         }
@@ -128,7 +128,7 @@ public final class AudioStream: AudioObject {
         set {
             var asbd = newValue
 
-            if noErr == setStreamPropertyData(kAudioStreamPropertyVirtualFormat, andValue: &asbd) {
+            if noErr != setStreamPropertyData(kAudioStreamPropertyVirtualFormat, andValue: &asbd) {
                 os_log("Error setting virtualFormat to %@.", log: .default, type: .debug, String(describing: newValue))
             }
         }
