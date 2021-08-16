@@ -171,7 +171,7 @@ public extension AudioDevice {
     ///
     /// - Returns: `true` when muted, `false` otherwise.
     func isMainChannelMuted(scope: Scope) -> Bool? {
-        isMuted(channel: kAudioObjectPropertyElementMain, scope: scope)
+        isMuted(channel: Element.main.asPropertyElement, scope: scope)
     }
     
     @available(*, deprecated, renamed: "isMainChannelMuted")
@@ -196,7 +196,7 @@ public extension AudioDevice {
     ///
     /// - Returns: `true` when the volume can be muted, `false` otherwise.
     func canMuteMainChannel(scope: Scope) -> Bool {
-        if canMute(channel: kAudioObjectPropertyElementMain, scope: scope) == true {
+        if canMute(channel: Element.main.asPropertyElement, scope: scope) == true {
             return true
         }
 

@@ -36,7 +36,7 @@ final class AudioHardware {
         let address = AudioObjectPropertyAddress(
             mSelector: kAudioHardwarePropertyDevices,
             mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMain
+            mElement: Element.main.asPropertyElement
         )
 
         let systemObjectID = AudioObjectID(kAudioObjectSystemObject)

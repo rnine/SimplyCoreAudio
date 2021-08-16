@@ -13,7 +13,7 @@ import os.log
 extension AudioObject {
     class func address(selector: AudioObjectPropertySelector,
                        scope: AudioObjectPropertyScope = kAudioObjectPropertyScopeGlobal,
-                       element: AudioObjectPropertyElement = kAudioObjectPropertyElementMain) -> AudioObjectPropertyAddress {
+                       element: AudioObjectPropertyElement = Element.main.asPropertyElement) -> AudioObjectPropertyAddress {
         AudioObjectPropertyAddress(mSelector: selector, mScope: scope, mElement: element)
     }
 
@@ -286,13 +286,13 @@ extension AudioObject {
 
     func address(selector: AudioObjectPropertySelector,
                  scope: AudioObjectPropertyScope = kAudioObjectPropertyScopeGlobal,
-                 element: AudioObjectPropertyElement = kAudioObjectPropertyElementMain) -> AudioObjectPropertyAddress {
+                 element: AudioObjectPropertyElement = Element.main.asPropertyElement) -> AudioObjectPropertyAddress {
         AudioObject.address(selector: selector, scope: scope, element: element)
     }
 
     func validAddress(selector: AudioObjectPropertySelector,
                       scope: AudioObjectPropertyScope = kAudioObjectPropertyScopeGlobal,
-                      element: AudioObjectPropertyElement = kAudioObjectPropertyElementMain)-> AudioObjectPropertyAddress? {
+                      element: AudioObjectPropertyElement = Element.main.asPropertyElement)-> AudioObjectPropertyAddress? {
         var address = self.address(selector: selector, scope: scope, element: element)
 
         guard AudioObjectHasProperty(objectID, &address) else { return nil }

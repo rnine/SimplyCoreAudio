@@ -145,7 +145,7 @@ public final class AudioStream: AudioObject {
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioStreamPropertyAvailablePhysicalFormats,
             mScope: scope.asPropertyScope,
-            mElement: kAudioObjectPropertyElementMain
+            mElement: Element.main.asPropertyElement
         )
 
         guard AudioObjectHasProperty(id, &address) else { return nil }
@@ -168,7 +168,7 @@ public final class AudioStream: AudioObject {
         var address = AudioObjectPropertyAddress(
             mSelector: kAudioStreamPropertyAvailableVirtualFormats,
             mScope: scope.asPropertyScope,
-            mElement: kAudioObjectPropertyElementMain
+            mElement: Element.main.asPropertyElement
         )
 
         guard AudioObjectHasProperty(id, &address) else { return nil }
@@ -288,7 +288,7 @@ private extension AudioStream {
         var address = AudioObjectPropertyAddress(
             mSelector: selector,
             mScope: scope.asPropertyScope,
-            mElement: kAudioObjectPropertyElementMain
+            mElement: Element.main.asPropertyElement
         )
 
         guard AudioObjectHasProperty(id, &address) else { return nil }
@@ -312,7 +312,7 @@ private extension AudioStream {
         var address = AudioObjectPropertyAddress(
             mSelector: selector,
             mScope: scope.asPropertyScope,
-            mElement: kAudioObjectPropertyElementMain
+            mElement: Element.main.asPropertyElement
         )
 
         guard AudioObjectHasProperty(id, &address) else { return nil }

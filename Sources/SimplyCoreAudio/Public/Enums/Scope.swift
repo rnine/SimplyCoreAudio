@@ -49,7 +49,7 @@ extension Scope {
         case .input: return kAudioObjectPropertyScopeInput
         case .output: return kAudioObjectPropertyScopeOutput
         case .playthrough: return kAudioObjectPropertyScopePlayThrough
-        case .main, .master: return kAudioObjectPropertyElementMain
+        case .main, .master: return Element.main.asPropertyElement
         case .wildcard: return kAudioObjectPropertyScopeWildcard
         }
     }
@@ -61,7 +61,7 @@ extension Scope {
         case kAudioObjectPropertyScopeOutput: return .output
         case kAudioObjectPropertyScopePlayThrough: return .playthrough
         case kAudioObjectPropertyElementMaster: return .master
-        case kAudioObjectPropertyElementMain: return .main
+        case Element.main.asPropertyElement: return .main
         case kAudioObjectPropertyScopeWildcard: return .wildcard
         default:
             // Note, the default is only here to satisfy the switch to be exhaustive.

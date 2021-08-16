@@ -71,8 +71,8 @@ public extension AudioDevice {
     func virtualMainVolumeInDecibels(scope: Scope) -> Float32? {
         var referenceChannel: UInt32
 
-        if canSetVolume(channel: kAudioObjectPropertyElementMain, scope: scope) {
-            referenceChannel = kAudioObjectPropertyElementMain
+        if canSetVolume(channel: Element.main.asPropertyElement, scope: scope) {
+            referenceChannel = Element.main.asPropertyElement
         } else {
             guard let channels = preferredChannelsForStereo(scope: scope) else { return nil }
             referenceChannel = channels.0

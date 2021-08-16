@@ -87,7 +87,7 @@ public extension AudioDevice {
         let address = AudioObjectPropertyAddress(
             mSelector: kAudioHardwarePropertyDeviceForUID,
             mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMain
+            mElement: Element.main.asPropertyElement
         )
 
         var deviceID = kAudioObjectUnknown
