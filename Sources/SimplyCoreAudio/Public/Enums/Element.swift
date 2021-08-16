@@ -21,19 +21,14 @@ public enum Element {
 extension Element {
     var asPropertyElement: AudioObjectPropertyElement {
         switch self {
+        case .master:
+            fallthrough
         case .main:
             if #available(macOS 12, *) {
                 return kAudioObjectPropertyElementMain
             } else {
                 return kAudioObjectPropertyElementMaster
             }
-        case .master:
-            if #available(macOS 12, *) {
-                return kAudioObjectPropertyElementMain
-            } else {
-                return kAudioObjectPropertyElementMaster
-            }
-
         case .custom(let value): return value
         }
     }
