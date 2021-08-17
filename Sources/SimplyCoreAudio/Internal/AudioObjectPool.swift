@@ -10,7 +10,7 @@ class AudioObjectPool {
     // MARK: - Private Properties
 
     private let pool: NSMapTable<NSNumber, AudioObject> = NSMapTable.weakToWeakObjects()
-    private lazy var queueLabel = Bundle.main.bundleIdentifier!.appending(".audioObjectPool")
+    private lazy var queueLabel = (Bundle.main.bundleIdentifier ?? "SimplyCoreAudio").appending(".audioObjectPool")
     private lazy var queue = DispatchQueue(label: queueLabel, qos: .default, attributes: .concurrent)
 
     // MARK: - Static Properties
