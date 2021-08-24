@@ -1,0 +1,12 @@
+#import <AudioToolbox/AudioToolbox.h>
+
+#ifndef kAudioHardwareServiceDeviceProperty_VirtualMainVolume
+AudioObjectPropertySelector kAudioHardwareServiceDeviceProperty_VirtualMainVolume = kAudioHardwareServiceDeviceProperty_VirtualMasterVolume;
+#endif
+
+
+//#ifdef kAudioHardwareServiceDeviceProperty_VirtualMainVolume
+//
+//#else
+//#define kAudioHardwareServiceDeviceProperty_VirtualMainVolume kAudioHardwareServiceDeviceProperty_VirtualMasterVolume
+//#endif
