@@ -17,7 +17,7 @@ AudioObjectPropertyElement kAudioObjectPropertyElementMain = kAudioObjectPropert
 #endif
 
 #ifndef kAudioAggregateDeviceMainSubDeviceKey
-#define kAudioAggregateDeviceMainSubDeviceKey "master"
+#define kAudioAggregateDeviceMainSubDeviceKey kAudioAggregateDeviceMasterSubDeviceKey
 #endif
 
 #endif /* SimplyCoreAudio_h */
