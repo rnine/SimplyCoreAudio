@@ -1,0 +1,22 @@
+#ifndef SimplyCoreAudio_h
+#define SimplyCoreAudio_h
+
+#import <AudioToolbox/AudioToolbox.h>
+
+#ifndef kAudioHardwareServiceDeviceProperty_VirtualMainVolume
+AudioObjectPropertySelector kAudioHardwareServiceDeviceProperty_VirtualMainVolume = kAudioHardwareServiceDeviceProperty_VirtualMasterVolume;
+#endif
+
+#ifndef kAudioHardwareServiceDeviceProperty_VirtualMainBalance
+AudioObjectPropertySelector kAudioHardwareServiceDeviceProperty_VirtualMainBalance = kAudioHardwareServiceDeviceProperty_VirtualMasterBalance;
+#endif
+
+#ifndef kAudioObjectPropertyElementMain
+AudioObjectPropertyElement kAudioObjectPropertyElementMain = kAudioObjectPropertyElementMaster;
+#endif
+
+#ifndef kAudioAggregateDeviceMainSubDeviceKey
+#define kAudioAggregateDeviceMainSubDeviceKey "master"
+#endif
+
+#endif /* SimplyCoreAudio_h */

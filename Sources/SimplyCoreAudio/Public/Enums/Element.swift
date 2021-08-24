@@ -6,6 +6,7 @@
 
 import CoreAudio
 import Foundation
+@_implementationOnly import SimplyCoreAudioC
 
 public enum Element {
     case main
@@ -24,12 +25,17 @@ extension Element {
         case .master:
             fallthrough
         case .main:
-            if #available(macOS 12, *) {
-                return kAudioObjectPropertyElementMain
-            } else {
-                return kAudioObjectPropertyElementMaster
-            }
+//            if #available(macOS 12.0, *) {
+//                return kAudioObjectPropertyElementMain
+//            } else {
+//                return kAudioObjectPropertyElementMaster
+//            }
+  
+            return kAudioObjectPropertyElementMain
+            
         case .custom(let value): return value
         }
     }
+    
+    
 }
