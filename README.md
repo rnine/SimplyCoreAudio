@@ -53,6 +53,22 @@ To install the Swift Package, please follow the steps below:
     ```swift
     // Get the default output device
     let device = simplyCA.defaultOutputDevice
+    
+    // Get all output devices
+    simplyCA.allOutputDevices
+    
+    // You can also filter devices by the scope needed
+    simplyCA.allDevices.filter { $0.channels(scope: .output) > 0 }
+
+    // For example, list all devices that aren't aggregate ones that support input 
+    simplyCA.allNonAggregateDevices.filter { $0.channels(scope: .input) > 0 }
+
+    // After you've chosen a device you can set it as the default.
+    // This will switch the selected device in the system
+    device.isDefaultOutputDevice = true
+
+    // Set the default input device to a new device
+    device.isDefaultInputDevice = true
 
     // Get preferred output channels
     if let stereoPair = device.preferredChannelsForStereo(scope: .output) {
