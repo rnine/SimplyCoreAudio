@@ -25,17 +25,9 @@ extension Element {
         case .master:
             fallthrough
         case .main:
-//            if #available(macOS 12.0, *) {
-//                return kAudioObjectPropertyElementMain
-//            } else {
-//                return kAudioObjectPropertyElementMaster
-//            }
-  
+            // defined in SimpleCoreAudioC for pre os 12
             return kAudioObjectPropertyElementMain
-            
-        case .custom(let value): return value
+        case let .custom(value): return value
         }
     }
-    
-    
 }
