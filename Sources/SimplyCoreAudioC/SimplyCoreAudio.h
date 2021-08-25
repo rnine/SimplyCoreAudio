@@ -11,15 +11,15 @@
 
         CF_ENUM(AudioObjectPropertySelector)
         {
-            kAudioHardwareServiceDeviceProperty_VirtualMainVolume = 'vmvc',
-            kAudioHardwareServiceDeviceProperty_VirtualMainBalance    = 'vmbc'
+            kAudioHardwareServiceDeviceProperty_VirtualMainVolume = kAudioHardwareServiceDeviceProperty_VirtualMasterVolume,
+            kAudioHardwareServiceDeviceProperty_VirtualMainBalance = kAudioHardwareServiceDeviceProperty_VirtualMasterBalance
         };
 
         AudioObjectPropertyScope kAudioObjectPropertyElementMain = kAudioObjectPropertyElementMaster;
 
         #define kAudioAggregateDeviceMainSubDeviceKey "master"
 
-    #endif /* __MAC_OS_X_VERSION_MAX_ALLOWED */
+    #endif
 #endif
 
 #endif
