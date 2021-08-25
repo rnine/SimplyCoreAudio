@@ -50,12 +50,13 @@ final class AudioDeviceTests: SCATestCase {
         XCTAssertFalse(device.isRunning)
         XCTAssertFalse(device.isRunningSomewhere)
 
-        XCTAssertNil(device.name(channel: 0, scope: .output))
-        XCTAssertNil(device.name(channel: 1, scope: .output))
-        XCTAssertNil(device.name(channel: 2, scope: .output))
-        XCTAssertNil(device.name(channel: 0, scope: .input))
-        XCTAssertNil(device.name(channel: 1, scope: .input))
-        XCTAssertNil(device.name(channel: 2, scope: .input))
+        XCTAssertEqual(device.name(channel: 0, scope: .output), "Master")
+        XCTAssertEqual(device.name(channel: 1, scope: .output), "Left")
+        XCTAssertEqual(device.name(channel: 2, scope: .output), "Right")
+        
+        XCTAssertEqual(device.name(channel: 0, scope: .input), "Master")
+        XCTAssertEqual(device.name(channel: 1, scope: .input), "Left")
+        XCTAssertEqual(device.name(channel: 2, scope: .input), "Right")
 
         XCTAssertNotNil(device.ownedObjectIDs)
         XCTAssertNotNil(device.controlList)
