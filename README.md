@@ -190,11 +190,13 @@ Please make sure to install `NullAudio.driver` before attempting to run tests:
 
 ### Installing `NullAudio.driver`
 
-1. Unzip `NullAudio.driver.zip` and install driver into the system HAL Plug-Ins folder
-    ```shell
-    sudo unzip Tests/Extras/NullAudio.driver.zip -d /Library/Audio/Plug-Ins/HAL
-    ```
+1. Download and build `NullAudio.driver` located at:
+- [Creating an Audio Server Driver Plug-in](https://developer.apple.com/documentation/coreaudio/creating_an_audio_server_driver_plug-in)
 
+2. Install into the system HAL Plug-Ins folder
+    ```shell
+    /Library/Audio/Plug-Ins/HAL
+    ```
 2. Reload `coreaudiod`
     ```shell
     sudo launchctl kill KILL system/com.apple.audio.coreaudiod
