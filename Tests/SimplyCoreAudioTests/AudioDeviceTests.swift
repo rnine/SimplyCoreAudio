@@ -49,6 +49,9 @@ final class AudioDeviceTests: SCATestCase {
         XCTAssertTrue(device.isAlive)
         XCTAssertFalse(device.isRunning)
         XCTAssertFalse(device.isRunningSomewhere)
+        
+        XCTAssertEqual(device.channels(scope: .output), 2)
+        XCTAssertEqual(device.channels(scope: .input), 2)
 
         XCTAssertEqual(device.name(channel: 0, scope: .output), "Master")
         XCTAssertEqual(device.name(channel: 1, scope: .output), "Left")
