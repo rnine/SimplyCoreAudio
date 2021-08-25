@@ -8,6 +8,7 @@
 import CoreAudio
 import Foundation
 import os.log
+@_implementationOnly import SimplyCoreAudioC
 
 // MARK: - Create and Destroy Aggregate Devices
 

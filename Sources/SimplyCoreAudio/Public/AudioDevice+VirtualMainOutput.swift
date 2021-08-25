@@ -8,10 +8,12 @@
 import AudioToolbox
 import CoreAudio
 import Foundation
+@_implementationOnly import SimplyCoreAudioC
 
 // MARK: - 🔊 Virtual Main Output Volume / Balance Functions
 
 public extension AudioDevice {
+    
     /// Whether the main volume can be set for a given scope.
     ///
     /// - Parameter scope: A scope.
