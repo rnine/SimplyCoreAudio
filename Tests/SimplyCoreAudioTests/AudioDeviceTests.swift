@@ -1,5 +1,5 @@
-import XCTest
 @testable import SimplyCoreAudio
+import XCTest
 
 final class AudioDeviceTests: SCATestCase {
     func testDeviceLookUp() throws {
@@ -49,14 +49,14 @@ final class AudioDeviceTests: SCATestCase {
         XCTAssertTrue(device.isAlive)
         XCTAssertFalse(device.isRunning)
         XCTAssertFalse(device.isRunningSomewhere)
-        
+
         XCTAssertEqual(device.channels(scope: .output), 2)
         XCTAssertEqual(device.channels(scope: .input), 2)
 
         XCTAssertEqual(device.name(channel: 0, scope: .output), "Master")
         XCTAssertEqual(device.name(channel: 1, scope: .output), "Left")
         XCTAssertEqual(device.name(channel: 2, scope: .output), "Right")
-        
+
         XCTAssertEqual(device.name(channel: 0, scope: .input), "Master")
         XCTAssertEqual(device.name(channel: 1, scope: .input), "Left")
         XCTAssertEqual(device.name(channel: 2, scope: .input), "Right")
@@ -279,17 +279,17 @@ final class AudioDeviceTests: SCATestCase {
 
         XCTAssertTrue(device.setVirtualMainVolume(0.0, scope: .output))
         XCTAssertEqual(device.virtualMainVolume(scope: .output), 0.0)
-        //XCTAssertEqual(device.virtualMainVolumeInDecibels(scope: .output), -96.0)
+        // XCTAssertEqual(device.virtualMainVolumeInDecibels(scope: .output), -96.0)
         XCTAssertTrue(device.setVirtualMainVolume(0.5, scope: .output))
         XCTAssertEqual(device.virtualMainVolume(scope: .output), 0.5)
-        //XCTAssertEqual(device.virtualMainVolumeInDecibels(scope: .output), -70.5)
+        // XCTAssertEqual(device.virtualMainVolumeInDecibels(scope: .output), -70.5)
 
         XCTAssertTrue(device.setVirtualMainVolume(0.0, scope: .input))
         XCTAssertEqual(device.virtualMainVolume(scope: .input), 0.0)
-        //XCTAssertEqual(device.virtualMainVolumeInDecibels(scope: .input), -96.0)
+        // XCTAssertEqual(device.virtualMainVolumeInDecibels(scope: .input), -96.0)
         XCTAssertTrue(device.setVirtualMainVolume(0.5, scope: .input))
         XCTAssertEqual(device.virtualMainVolume(scope: .input), 0.5)
-        //XCTAssertEqual(device.virtualMainVolumeInDecibels(scope: .input), -70.5)
+        // XCTAssertEqual(device.virtualMainVolumeInDecibels(scope: .input), -70.5)
     }
 
     func testVirtualMainBalance() throws {
@@ -359,11 +359,11 @@ final class AudioDeviceTests: SCATestCase {
         XCTAssertFalse(device.setClockSourceID(0))
     }
 
-    func testLatency() throws {
+    func testTotalLatency() throws {
         let device = try getNullDevice()
 
-        XCTAssertEqual(device.latency(scope: .output), 0)
-        XCTAssertEqual(device.latency(scope: .input), 0)
+        XCTAssertEqual(device.latency(scope: .output), 512)
+        XCTAssertEqual(device.latency(scope: .input), 512)
     }
 
     func testSafetyOffset() throws {
@@ -371,6 +371,15 @@ final class AudioDeviceTests: SCATestCase {
 
         XCTAssertEqual(device.safetyOffset(scope: .output), 0)
         XCTAssertEqual(device.safetyOffset(scope: .input), 0)
+    }
+    
+    func testBufferFrameSize() throws {
+        let device = try getNullDevice()
+
+        // The IO buffer is generally 512 by default. Also the case
+        // for the NullAudio.driver
+        XCTAssertEqual(device.bufferFrameSize(scope: .output), 512)
+        XCTAssertEqual(device.bufferFrameSize(scope: .input), 512)
     }
 
     func testHogMode() throws {
