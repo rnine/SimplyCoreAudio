@@ -1,3 +1,9 @@
+/**
+ These properties in AudioToolbox.h were renamed in macOS 12. In order to provide backwards compatibility for
+ Xcode versions that are before v13, this creates duplicate properties of the future name. This file does
+ nothing if you're working in Xcode 13+.
+ */
+
 #pragma once
 
 #ifndef SimplyCoreAudio_h
