@@ -12,11 +12,8 @@
 #include <Availability.h>
 #import <AudioToolbox/AudioToolbox.h>
 
-#if __MAC_OS_X_VERSION_MIN_REQUIRED >= 120000
-#define HAVE_AUDIO_OBJECT_PROPERTY_ELEMENT_MAIN 1
-#endif
-
-#ifndef HAVE_AUDIO_OBJECT_PROPERTY_ELEMENT_MAIN
+#ifdef __MAC_OS_X_VERSION_MAX_ALLOWED
+#if __MAC_OS_X_VERSION_MAX_ALLOWED < 120000
 
 CF_ENUM(AudioObjectPropertySelector)
 {
@@ -26,7 +23,8 @@ CF_ENUM(AudioObjectPropertySelector)
 
 static AudioObjectPropertyScope kAudioObjectPropertyElementMain = kAudioObjectPropertyElementMaster;
 
-#endif /* HAVE_AUDIO_OBJECT_PROPERTY_ELEMENT_MAIN */
+#endif
+#endif /* __MAC_OS_X_VERSION_MAX_ALLOWED */
 
 #ifndef kAudioAggregateDeviceMainSubDeviceKey
 #define kAudioAggregateDeviceMainSubDeviceKey "master"
