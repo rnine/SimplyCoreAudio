@@ -9,6 +9,7 @@ let package = Package(
     
     products: [
         .library(name: "SimplyCoreAudio",
+                 type: .static,
                  targets: ["SimplyCoreAudio"])
     ],
     
