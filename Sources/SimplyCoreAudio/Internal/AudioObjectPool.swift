@@ -5,11 +5,12 @@
 //
 
 import Foundation
+import CoreAudio
 
 class AudioObjectPool {
     // MARK: - Private Properties
 
-    private var pool = [UInt32: AudioObject]()
+    private var pool = [AudioObjectID: AudioObject]()
     private lazy var queueLabel = (Bundle.main.bundleIdentifier ?? "SimplyCoreAudio").appending(".audioObjectPool")
     private lazy var queue = DispatchQueue(label: queueLabel, qos: .default, attributes: .concurrent)
 
@@ -25,20 +26,20 @@ class AudioObjectPool {
 // MARK: - Internal Functions
 
 extension AudioObjectPool {
-    func get<O: AudioObject>(_ id: UInt32) -> O? {
+    func get<O: AudioObject>(_ id: AudioObjectID) -> O? {
         queue.sync {
             pool[id] as? O
         }
     }
 
-    func set<O: AudioObject>(_ audioObject: O, for id: UInt32) {
+    func set<O: AudioObject>(_ audioObject: O, for id: AudioObjectID) {
         queue.sync(flags: .barrier) {
             pool[id] = audioObject
         }
     }
 
     @discardableResult
-    func remove(_ id: UInt32) -> Bool {
+    func remove(_ id: AudioObjectID) -> Bool {
         queue.sync(flags: .barrier) {
             pool.removeValue(forKey: id) != nil
         }
