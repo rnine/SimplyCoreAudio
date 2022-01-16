@@ -9,7 +9,7 @@ import Foundation
 class AudioObjectPool {
     // MARK: - Private Properties
 
-    private let pool: NSMapTable<NSNumber, AudioObject> = NSMapTable.weakToWeakObjects()
+    private var pool = [UInt32: AudioObject]()
     private lazy var queueLabel = (Bundle.main.bundleIdentifier ?? "SimplyCoreAudio").appending(".audioObjectPool")
     private lazy var queue = DispatchQueue(label: queueLabel, qos: .default, attributes: .concurrent)
 
@@ -27,26 +27,20 @@ class AudioObjectPool {
 extension AudioObjectPool {
     func get<O: AudioObject>(_ id: UInt32) -> O? {
         queue.sync {
-            pool.object(forKey: NSNumber(value: id)) as? O
+            pool[id] as? O
         }
     }
 
     func set<O: AudioObject>(_ audioObject: O, for id: UInt32) {
         queue.sync(flags: .barrier) {
-            pool.setObject(audioObject, forKey: NSNumber(value: id))
+            pool[id] = audioObject
         }
     }
 
     @discardableResult
     func remove(_ id: UInt32) -> Bool {
         queue.sync(flags: .barrier) {
-            let key = NSNumber(value: id)
-
-            guard pool.doesContain(key) else { return false }
-
-            pool.removeObject(forKey: key)
-
-            return true
+            pool.removeValue(forKey: id) != nil
         }
     }
 }
