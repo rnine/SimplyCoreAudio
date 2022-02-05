@@ -90,6 +90,18 @@ public extension AudioDevice {
         return virtualMainVolumeInDecibels(scope: scope)
     }
 
+    /// Whether the main balance can be set for a given scope.
+    ///
+    /// - Parameter scope: A scope.
+    ///
+    /// - Returns: `true` when the balance can be set, `false` otherwise.
+    func canSetVirtualMainBalance(scope: Scope) -> Bool {
+        guard validAddress(selector: kAudioHardwareServiceDeviceProperty_VirtualMainBalance,
+                           scope: scope.asPropertyScope) != nil else { return false }
+
+        return true
+    }
+
     /// The virtual main balance for a given scope.
     ///
     /// The range is from 0 (all power to the left) to 1 (all power to the right) with the value of 0.5 signifying
