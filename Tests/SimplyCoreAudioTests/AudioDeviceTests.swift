@@ -295,6 +295,9 @@ final class AudioDeviceTests: SCATestCase {
     func testVirtualMainBalance() throws {
         let device = try getNullDevice()
 
+        XCTAssertTrue(device.canSetVirtualMainBalance(scope: .output))
+        XCTAssertTrue(device.canSetVirtualMainBalance(scope: .input))
+
         XCTAssertFalse(device.setVirtualMainBalance(0.0, scope: .output))
         XCTAssertNil(device.virtualMainBalance(scope: .output))
 
