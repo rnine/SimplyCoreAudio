@@ -179,45 +179,45 @@ private func propertyListener(objectID: UInt32,
 
     switch address.mSelector {
     case kAudioDevicePropertyNominalSampleRate:
-        notificationCenter.post(name: .deviceNominalSampleRateDidChange, object: obj)
+        DispatchQueue.main.async { notificationCenter.post(name: .deviceNominalSampleRateDidChange, object: obj) }
     case kAudioDevicePropertyAvailableNominalSampleRates:
-        notificationCenter.post(name: .deviceAvailableNominalSampleRatesDidChange, object: obj)
+        DispatchQueue.main.async { notificationCenter.post(name: .deviceAvailableNominalSampleRatesDidChange, object: obj) }
     case kAudioDevicePropertyClockSource:
-        notificationCenter.post(name: .deviceClockSourceDidChange, object: obj)
+        DispatchQueue.main.async { notificationCenter.post(name: .deviceClockSourceDidChange, object: obj) }
     case kAudioObjectPropertyName:
-        notificationCenter.post(name: .deviceNameDidChange, object: obj)
+        DispatchQueue.main.async { notificationCenter.post(name: .deviceNameDidChange, object: obj) }
     case kAudioObjectPropertyOwnedObjects:
-        notificationCenter.post(name: .deviceOwnedObjectsDidChange, object: obj)
+        DispatchQueue.main.async { notificationCenter.post(name: .deviceOwnedObjectsDidChange, object: obj) }
     case kAudioDevicePropertyVolumeScalar:
         let userInfo: [AnyHashable: Any] = [
             "channel": address.mElement,
             "scope": Scope.from(address.mScope),
         ]
 
-        notificationCenter.post(name: .deviceVolumeDidChange, object: obj, userInfo: userInfo)
+        DispatchQueue.main.async { notificationCenter.post(name: .deviceVolumeDidChange, object: obj, userInfo: userInfo) }
     case kAudioDevicePropertyMute:
         let userInfo: [AnyHashable: Any] = [
             "channel": address.mElement,
             "scope": Scope.from(address.mScope),
         ]
 
-        notificationCenter.post(name: .deviceMuteDidChange, object: obj, userInfo: userInfo)
+        DispatchQueue.main.async { notificationCenter.post(name: .deviceMuteDidChange, object: obj, userInfo: userInfo) }
     case kAudioDevicePropertyDeviceIsAlive:
-        notificationCenter.post(name: .deviceIsAliveDidChange, object: obj)
+        DispatchQueue.main.async { notificationCenter.post(name: .deviceIsAliveDidChange, object: obj) }
     case kAudioDevicePropertyDeviceIsRunning:
-        notificationCenter.post(name: .deviceIsRunningDidChange, object: obj)
+        DispatchQueue.main.async { notificationCenter.post(name: .deviceIsRunningDidChange, object: obj) }
     case kAudioDevicePropertyDeviceIsRunningSomewhere:
-        notificationCenter.post(name: .deviceIsRunningSomewhereDidChange, object: obj)
+        DispatchQueue.main.async { notificationCenter.post(name: .deviceIsRunningSomewhereDidChange, object: obj) }
     case kAudioDevicePropertyJackIsConnected:
-        notificationCenter.post(name: .deviceIsJackConnectedDidChange, object: obj)
+        DispatchQueue.main.async { notificationCenter.post(name: .deviceIsJackConnectedDidChange, object: obj) }
     case kAudioDevicePropertyPreferredChannelsForStereo:
-        notificationCenter.post(name: .devicePreferredChannelsForStereoDidChange, object: obj)
+        DispatchQueue.main.async { notificationCenter.post(name: .devicePreferredChannelsForStereoDidChange, object: obj) }
     case kAudioDevicePropertyHogMode:
-        notificationCenter.post(name: .deviceHogModeDidChange, object: obj)
+        DispatchQueue.main.async { notificationCenter.post(name: .deviceHogModeDidChange, object: obj) }
     case kAudioDeviceProcessorOverload:
-        notificationCenter.post(name: .deviceProcessorOverload, object: obj)
+        DispatchQueue.main.async { notificationCenter.post(name: .deviceProcessorOverload, object: obj) }
     case kAudioDevicePropertyIOStoppedAbnormally:
-        notificationCenter.post(name: .deviceIOStoppedAbnormally, object: obj)
+        DispatchQueue.main.async { notificationCenter.post(name: .deviceIOStoppedAbnormally, object: obj) }
 
     default:
         break

@@ -380,9 +380,9 @@ private func propertyListener(objectID: UInt32,
 
     switch address.mSelector {
     case kAudioStreamPropertyIsActive:
-        notificationCenter.post(name: .streamIsActiveDidChange, object: obj)
+        DispatchQueue.main.async { notificationCenter.post(name: .streamIsActiveDidChange, object: obj) }
     case kAudioStreamPropertyPhysicalFormat:
-        notificationCenter.post(name: .streamPhysicalFormatDidChange, object: obj)
+        DispatchQueue.main.async { notificationCenter.post(name: .streamPhysicalFormatDidChange, object: obj) }
     default:
         break
     }
