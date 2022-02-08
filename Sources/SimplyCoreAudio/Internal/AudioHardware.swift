@@ -186,13 +186,13 @@ private func propertyListener(objectID: UInt32,
             "removedDevices": removedDevices,
         ]
 
-        notificationCenter.post(name: .deviceListChanged, object: _self, userInfo: userInfo)
+        DispatchQueue.main.async { notificationCenter.post(name: .deviceListChanged, object: _self, userInfo: userInfo) }
     case kAudioHardwarePropertyDefaultInputDevice:
-        notificationCenter.post(name: .defaultInputDeviceChanged, object: _self)
+        DispatchQueue.main.async { notificationCenter.post(name: .defaultInputDeviceChanged, object: _self) }
     case kAudioHardwarePropertyDefaultOutputDevice:
-        notificationCenter.post(name: .defaultOutputDeviceChanged, object: _self)
+        DispatchQueue.main.async { notificationCenter.post(name: .defaultOutputDeviceChanged, object: _self) }
     case kAudioHardwarePropertyDefaultSystemOutputDevice:
-        notificationCenter.post(name: .defaultSystemOutputDeviceChanged, object: _self)
+        DispatchQueue.main.async { notificationCenter.post(name: .defaultSystemOutputDeviceChanged, object: _self) }
     default:
         break
     }
