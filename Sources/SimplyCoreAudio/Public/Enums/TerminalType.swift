@@ -41,7 +41,7 @@ public enum TerminalType: String {
     /// A microphone on a telephone handset receiver
     case receiverMicrophone = "Receiver Microphone"
 
-    /// A device providing a TTY signl
+    /// A device providing a TTY signal
     case tty = "TTY"
 
     /// A stream from/to an HDMI port
