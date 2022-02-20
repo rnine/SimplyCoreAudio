@@ -22,7 +22,7 @@ public extension AudioDevice {
 
     /// The audio device's unique identifier (UID).
     ///
-    /// - Note: This identifier is guaranted to uniquely identify a device in Core Audio
+    /// - Note: This identifier is guaranteed to uniquely identify a device in Core Audio
     /// and will not change even after restarts. Two (or more) identical audio devices
     /// are also guaranteed to have unique identifiers.
     ///
