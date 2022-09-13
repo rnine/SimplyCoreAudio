@@ -308,17 +308,25 @@ final class AudioDeviceTests: SCATestCase {
     func testSampleRate() throws {
         let device = try getNullDevice()
 
-        XCTAssertEqual(device.nominalSampleRates, [44100, 48000])
+        XCTAssertEqual(device.nominalSampleRates, [44_100, 48_000])
 
-        XCTAssertTrue(device.setNominalSampleRate(44100))
+        XCTAssertTrue(device.setNominalSampleRate(44_100))
         sleep(1)
-        XCTAssertEqual(device.nominalSampleRate, 44100)
-        XCTAssertEqual(device.actualSampleRate, 44100)
+        XCTAssertEqual(device.nominalSampleRate, 44_100)
+        XCTAssertEqual(device.actualSampleRate, 44_100)
 
-        XCTAssertTrue(device.setNominalSampleRate(48000))
+        XCTAssertTrue(device.setNominalSampleRate(48_000))
         sleep(1)
-        XCTAssertEqual(device.nominalSampleRate, 48000)
-        XCTAssertEqual(device.actualSampleRate, 48000)
+        XCTAssertEqual(device.nominalSampleRate, 48_000)
+        XCTAssertEqual(device.actualSampleRate, 48_000)
+    }
+
+    func testInvalidSampleRate() throws {
+        let device = try getNullDevice()
+
+        XCTAssertEqual(device.nominalSampleRates, [44_100, 48_000])
+
+        XCTAssertFalse(device.setNominalSampleRate(24_000))
     }
 
     func testDataSource() throws {
@@ -375,7 +383,7 @@ final class AudioDeviceTests: SCATestCase {
         XCTAssertEqual(device.safetyOffset(scope: .output), 0)
         XCTAssertEqual(device.safetyOffset(scope: .input), 0)
     }
-    
+
     func testBufferFrameSize() throws {
         let device = try getNullDevice()
 
