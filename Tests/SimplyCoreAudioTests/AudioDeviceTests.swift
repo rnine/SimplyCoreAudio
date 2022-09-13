@@ -325,8 +325,8 @@ final class AudioDeviceTests: SCATestCase {
         let device = try getNullDevice()
 
         XCTAssertEqual(device.nominalSampleRates, [44_100, 48_000])
-
         XCTAssertFalse(device.setNominalSampleRate(24_000))
+        XCTAssertFalse(device.setNominalSampleRate(96_000))
     }
 
     func testDataSource() throws {
