@@ -292,7 +292,7 @@ extension AudioObject {
 
     func validAddress(selector: AudioObjectPropertySelector,
                       scope: AudioObjectPropertyScope = kAudioObjectPropertyScopeGlobal,
-                      element: AudioObjectPropertyElement = Element.main.asPropertyElement)-> AudioObjectPropertyAddress? {
+                      element: AudioObjectPropertyElement = Element.main.asPropertyElement) -> AudioObjectPropertyAddress? {
         var address = self.address(selector: selector, scope: scope, element: element)
 
         guard AudioObjectHasProperty(objectID, &address) else { return nil }
@@ -350,9 +350,11 @@ extension AudioObject {
         if let unwrappedValue = value as? Bool {
             var newValue: UInt32 = unwrappedValue == true ? 1 : 0
             status = setPropertyData(address, andValue: &newValue)
+
         } else if let unwrappedValue = value as? String {
             var newValue: CFString = unwrappedValue as CFString
             status = setPropertyData(address, andValue: &newValue)
+
         } else {
             var newValue = value
             status = setPropertyData(address, andValue: &newValue)
@@ -362,10 +364,10 @@ extension AudioObject {
         case noErr:
             return true
         default:
-//            os_log("Unable to set property with address (%@). Status: %@",
-//                   log: .default,
-//                   type: .debug,
-//                   String(describing: address), status)
+            os_log("Unable to set property. Status: %@",
+                   log: .default,
+                   type: .debug,
+                   status)
             return false
         }
     }
