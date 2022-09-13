@@ -364,10 +364,6 @@ extension AudioObject {
         case noErr:
             return true
         default:
-            os_log("Unable to set property. Status: %@",
-                   log: .default,
-                   type: .debug,
-                   status)
             return false
         }
     }
