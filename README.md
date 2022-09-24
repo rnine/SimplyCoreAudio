@@ -19,7 +19,6 @@
 
 ### Resources
 
-- [API Reference](https://rnine.github.io/SimplyCoreAudio)
 - [Core Audio](https://developer.apple.com/documentation/coreaudio)
 - [HALLab (distributed as part of the Additional Tools for Xcode package)](https://developer.apple.com/download/more/)
 
