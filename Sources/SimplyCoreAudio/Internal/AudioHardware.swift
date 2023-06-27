@@ -78,17 +78,11 @@ final class AudioHardware {
 extension AudioHardware {
     func enableDeviceMonitoring() {
         registerForNotifications()
-
-        for device in allDevices {
-            add(device: device)
-        }
+        add(devices: allDevices)
     }
 
     func disableDeviceMonitoring() {
-        for device in allKnownDevices {
-            remove(device: device)
-        }
-
+        remove(devices: allKnownDevices)
         unregisterForNotifications()
     }
 }
@@ -104,15 +98,15 @@ private extension AudioHardware {
         return noErr == status ? AudioDevice.lookup(by: deviceID) : nil
     }
 
-    func add(device: AudioDevice) {
+    func add(devices: [AudioDevice]) {
         queue.async(flags: .barrier) { [weak self] in
-            self?.allKnownDevices.append(device)
+            self?.allKnownDevices.append(contentsOf: devices)
         }
     }
 
-    func remove(device: AudioDevice) {
+    func remove(devices: [AudioDevice]) {
         queue.async(flags: .barrier) { [weak self] in
-            self?.allKnownDevices.removeAll { $0 == device }
+            self?.allKnownDevices.removeAll { devices.contains($0) }
         }
     }
 
@@ -173,27 +167,16 @@ private func propertyListener(objectID: UInt32,
     switch address.mSelector {
     case kAudioObjectPropertyOwnedObjects:
         DispatchQueue.main.async {
-            // Get the latest device list
+            // Obtain added and removed devices.
             let latestDeviceList = _self.allDevices
+            let addedDevices = latestDeviceList.filter { !_self.allKnownDevices.contains($0) }
+            let removedDevices = _self.allKnownDevices.filter { !latestDeviceList.contains($0) }
 
-            let addedDevices = latestDeviceList.filter { (audioDevice) -> Bool in
-                !(_self.allKnownDevices.contains { $0 == audioDevice })
-            }
+            // Add new devices & remove old ones.
+            _self.add(devices: addedDevices)
+            _self.remove(devices: removedDevices)
 
-            let removedDevices = _self.allKnownDevices.filter { (audioDevice) -> Bool in
-                !(latestDeviceList.contains { $0 == audioDevice })
-            }
-
-            // Add new devices
-            for device in addedDevices {
-                _self.add(device: device)
-            }
-
-            // Remove old devices
-            for device in removedDevices {
-                _self.remove(device: device)
-            }
-
+            // Generate notification containing added & removed devices as `userInfo`.
             let userInfo: [AnyHashable: Any] = [
                 "addedDevices": addedDevices,
                 "removedDevices": removedDevices,
