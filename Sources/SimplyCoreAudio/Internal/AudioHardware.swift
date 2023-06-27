@@ -78,11 +78,11 @@ final class AudioHardware {
 extension AudioHardware {
     func enableDeviceMonitoring() {
         registerForNotifications()
-        add(devices: allDevices)
+        updateKnownDevices(adding: allDevices, andRemoving: [])
     }
 
     func disableDeviceMonitoring() {
-        remove(devices: allKnownDevices)
+        updateKnownDevices(adding: [], andRemoving: allKnownDevices)
         unregisterForNotifications()
     }
 }
@@ -98,15 +98,10 @@ private extension AudioHardware {
         return noErr == status ? AudioDevice.lookup(by: deviceID) : nil
     }
 
-    func add(devices: [AudioDevice]) {
+    func updateKnownDevices(adding addedDevices: [AudioDevice], andRemoving removedDevices: [AudioDevice]) {
         queue.async(flags: .barrier) { [weak self] in
-            self?.allKnownDevices.append(contentsOf: devices)
-        }
-    }
-
-    func remove(devices: [AudioDevice]) {
-        queue.async(flags: .barrier) { [weak self] in
-            self?.allKnownDevices.removeAll { devices.contains($0) }
+            self?.allKnownDevices.append(contentsOf: addedDevices)
+            self?.allKnownDevices.removeAll { removedDevices.contains($0) }
         }
     }
 
@@ -173,8 +168,7 @@ private func propertyListener(objectID: UInt32,
             let removedDevices = _self.allKnownDevices.filter { !latestDeviceList.contains($0) }
 
             // Add new devices & remove old ones.
-            _self.add(devices: addedDevices)
-            _self.remove(devices: removedDevices)
+            _self.updateKnownDevices(adding: addedDevices, andRemoving: removedDevices)
 
             // Generate notification containing added & removed devices as `userInfo`.
             let userInfo: [AnyHashable: Any] = [
