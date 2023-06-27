@@ -12,25 +12,15 @@ final class AudioHardware {
     // MARK: - Fileprivate Properties
 
     fileprivate var allKnownDevices = [AudioDevice]()
-    fileprivate var isRegisteredForNotifications = false
 
-    // MARK: - Internal Functions
+    // MARK: - Private Properties
 
-    func enableDeviceMonitoring() {
-        registerForNotifications()
+    private var isRegisteredForNotifications = false
 
-        for device in allDevices {
-            add(device: device)
-        }
-    }
+    private lazy var queueLabel = (Bundle.main.bundleIdentifier ?? "SimplyCoreAudio").appending(".audioHardware")
+    private lazy var queue = DispatchQueue(label: queueLabel, qos: .default, attributes: .concurrent)
 
-    func disableDeviceMonitoring() {
-        for device in allKnownDevices {
-            remove(device: device)
-        }
-
-        unregisterForNotifications()
-    }
+    // MARK: - Internal Properties
 
     var allDeviceIDs: [AudioObjectID] {
         let address = AudioObjectPropertyAddress(
@@ -46,32 +36,6 @@ final class AudioHardware {
         return noErr == status ? allIDs : []
     }
 
-    var allDevices: [AudioDevice] {
-        allDeviceIDs.compactMap { AudioDevice.lookup(by: $0) }
-    }
-
-    var allInputDevices: [AudioDevice] {
-        allDevices.filter { $0.channels(scope: .input) > 0 }
-    }
-
-    var allOutputDevices: [AudioDevice] {
-        allDevices.filter { $0.channels(scope: .output) > 0 }
-    }
-
-    var allIODevices: [AudioDevice] {
-        allDevices.filter {
-            $0.channels(scope: .input) > 0 && $0.channels(scope: .output) > 0
-        }
-    }
-
-    var allNonAggregateDevices: [AudioDevice] {
-        allDevices.filter { !$0.isAggregateDevice }
-    }
-
-    var allAggregateDevices: [AudioDevice] {
-        allDevices.filter { $0.isAggregateDevice }
-    }
-
     var defaultInputDevice: AudioDevice? {
         defaultDevice(of: kAudioHardwarePropertyDefaultInputDevice)
     }
@@ -83,11 +47,55 @@ final class AudioHardware {
     var defaultSystemOutputDevice: AudioDevice? {
         defaultDevice(of: kAudioHardwarePropertyDefaultSystemOutputDevice)
     }
+
+    var allDevices: [AudioDevice] {
+        queue.sync { allDeviceIDs.compactMap { AudioDevice.lookup(by: $0) } }
+    }
+
+    var allInputDevices: [AudioDevice] {
+        queue.sync { allDevices.filter { $0.channels(scope: .input) > 0 } }
+    }
+
+    var allOutputDevices: [AudioDevice] {
+        queue.sync { allDevices.filter { $0.channels(scope: .output) > 0 } }
+    }
+
+    var allIODevices: [AudioDevice] {
+        queue.sync { allDevices.filter { $0.channels(scope: .input) > 0 && $0.channels(scope: .output) > 0 } }
+    }
+
+    var allNonAggregateDevices: [AudioDevice] {
+        queue.sync { allDevices.filter { !$0.isAggregateDevice } }
+    }
+
+    var allAggregateDevices: [AudioDevice] {
+        queue.sync { allDevices.filter { $0.isAggregateDevice } }
+    }
 }
 
-// MARK: - Fileprivate Functions
+// MARK: - Internal Functions
 
-fileprivate extension AudioHardware {
+extension AudioHardware {
+    func enableDeviceMonitoring() {
+        registerForNotifications()
+
+        for device in allDevices {
+            add(device: device)
+        }
+    }
+
+    func disableDeviceMonitoring() {
+        for device in allKnownDevices {
+            remove(device: device)
+        }
+
+        unregisterForNotifications()
+    }
+}
+
+// MARK: - Private Functions
+
+private extension AudioHardware {
     func defaultDevice(of type: AudioObjectPropertySelector) -> AudioDevice? {
         let address = AudioDevice.address(selector: type)
         var deviceID = AudioDeviceID()
@@ -97,11 +105,15 @@ fileprivate extension AudioHardware {
     }
 
     func add(device: AudioDevice) {
-        allKnownDevices.append(device)
+        queue.async(flags: .barrier) { [weak self] in
+            self?.allKnownDevices.append(device)
+        }
     }
 
     func remove(device: AudioDevice) {
-        allKnownDevices.removeAll { $0 == device }
+        queue.async(flags: .barrier) { [weak self] in
+            self?.allKnownDevices.removeAll { $0 == device }
+        }
     }
 
     // MARK: - Notification Book-keeping
@@ -160,33 +172,35 @@ private func propertyListener(objectID: UInt32,
 
     switch address.mSelector {
     case kAudioObjectPropertyOwnedObjects:
-        // Get the latest device list
-        let latestDeviceList = _self.allDevices
+        DispatchQueue.main.async {
+            // Get the latest device list
+            let latestDeviceList = _self.allDevices
 
-        let addedDevices = latestDeviceList.filter { (audioDevice) -> Bool in
-            !(_self.allKnownDevices.contains { $0 == audioDevice })
+            let addedDevices = latestDeviceList.filter { (audioDevice) -> Bool in
+                !(_self.allKnownDevices.contains { $0 == audioDevice })
+            }
+
+            let removedDevices = _self.allKnownDevices.filter { (audioDevice) -> Bool in
+                !(latestDeviceList.contains { $0 == audioDevice })
+            }
+
+            // Add new devices
+            for device in addedDevices {
+                _self.add(device: device)
+            }
+
+            // Remove old devices
+            for device in removedDevices {
+                _self.remove(device: device)
+            }
+
+            let userInfo: [AnyHashable: Any] = [
+                "addedDevices": addedDevices,
+                "removedDevices": removedDevices,
+            ]
+
+            notificationCenter.post(name: .deviceListChanged, object: _self, userInfo: userInfo)
         }
-
-        let removedDevices = _self.allKnownDevices.filter { (audioDevice) -> Bool in
-            !(latestDeviceList.contains { $0 == audioDevice })
-        }
-
-        // Add new devices
-        for device in addedDevices {
-            _self.add(device: device)
-        }
-
-        // Remove old devices
-        for device in removedDevices {
-            _self.remove(device: device)
-        }
-
-        let userInfo: [AnyHashable: Any] = [
-            "addedDevices": addedDevices,
-            "removedDevices": removedDevices,
-        ]
-
-        DispatchQueue.main.async { notificationCenter.post(name: .deviceListChanged, object: _self, userInfo: userInfo) }
     case kAudioHardwarePropertyDefaultInputDevice:
         DispatchQueue.main.async { notificationCenter.post(name: .defaultInputDeviceChanged, object: _self) }
     case kAudioHardwarePropertyDefaultOutputDevice:
