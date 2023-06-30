@@ -5,7 +5,7 @@
 //
 
 import CoreAudio
-import Foundation
+import IOKit.audio
 
 /// Indicates the transport type used by an `AudioDevice`.
 public enum TransportType: String {
@@ -50,6 +50,12 @@ public enum TransportType: String {
 
     /// Thunderbolt Transport Type
     case thunderbolt = "Thunderbolt"
+    
+    /// Network Transport Type
+    case network = "Network"
+    
+    /// Other Transport Type
+    case other = "Other"
 }
 
 // MARK: - Internal Functions
@@ -83,6 +89,10 @@ extension TransportType {
             return .avb
         case kAudioDeviceTransportTypeThunderbolt:
             return .thunderbolt
+        case UInt32(kIOAudioDeviceTransportTypeNetwork):
+            return .network
+        case UInt32(kIOAudioDeviceTransportTypeOther):
+            return .other
         case kAudioDeviceTransportTypeUnknown:
             fallthrough
         default:
