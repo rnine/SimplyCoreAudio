@@ -161,8 +161,8 @@ private func propertyListener(objectID: UInt32,
     switch address.mSelector {
     case kAudioObjectPropertyOwnedObjects:
         // Obtain added and removed devices.
-        var addedDevices = [AudioDevice]()
-        var removedDevices = [AudioDevice]()
+        var addedDevices: [AudioDevice]!
+        var removedDevices: [AudioDevice]!
         
         _self.queue.sync {
             let latestDeviceList = _self.allDevices
@@ -175,7 +175,7 @@ private func propertyListener(objectID: UInt32,
         _self.updateKnownDevices(adding: addedDevices, andRemoving: removedDevices)
 
         // Generate notification containing added & removed devices as `userInfo`.
-        let userInfo: [AnyHashable: Any] = [
+        let userInfo: [AnyHashable: AnyHashable] = [
             "addedDevices": addedDevices,
             "removedDevices": removedDevices,
         ]
