@@ -2,8 +2,9 @@
 
 | Version       | Description   | Date     |
 | -------------:|:------------- |:--------:|
-| 4.1.0 | Following upstream changes in AudioToolbox and deprecations (as of macOS 12.0) in CoreAudio, switched all (swift) instances of `master` and `Master` to respective `main` & `Main`; <br />added deprecated versions of call-sites for backwards compatibility (with warnings) until 5.0 (@donaldguy) | July 30, 2021 |
-| ----- | ----------------------------- **UNRELEASED** ------------------------------------ | -------- |
+| 4.1.1         | Added synchronized access to `allKnownDevices` in `AudioHardware`. | June 30, 2023 |
+|               | Added support for `.network` and `.other` transport types. ||
+| 4.1.0         | Following upstream changes in AudioToolbox and deprecations (as of macOS 12.0) in CoreAudio, switched all (swift) instances of `master` and `Master` to respective `main` & `Main`; <br />added deprecated versions of call-sites for backwards compatibility (with warnings) until 5.0 (@donaldguy) | July 30, 2021 |
 | 4.0.1         | Fixed typo in `AudioHardware.allOutputDevices` (@mattgreen) | April 9th, 2021 |
 |                  | Minor optimizations in `AudioObject` property listeners. ||
 | 4.0.0         | `AMCoreAudio` is now called 🔊 `SimplyCoreAudio` | March 27th, 2021 |
