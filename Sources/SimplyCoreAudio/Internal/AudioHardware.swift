@@ -12,25 +12,14 @@ final class AudioHardware {
     // MARK: - Fileprivate Properties
 
     fileprivate var allKnownDevices = [AudioDevice]()
-    fileprivate var isRegisteredForNotifications = false
+    fileprivate lazy var queueLabel = (Bundle.main.bundleIdentifier ?? "SimplyCoreAudio").appending(".audioHardware")
+    fileprivate lazy var queue = DispatchQueue(label: queueLabel, qos: .default, attributes: .concurrent)
 
-    // MARK: - Internal Functions
+    // MARK: - Private Properties
 
-    func enableDeviceMonitoring() {
-        registerForNotifications()
+    private var isRegisteredForNotifications = false
 
-        for device in allDevices {
-            add(device: device)
-        }
-    }
-
-    func disableDeviceMonitoring() {
-        for device in allKnownDevices {
-            remove(device: device)
-        }
-
-        unregisterForNotifications()
-    }
+    // MARK: - Internal Properties
 
     var allDeviceIDs: [AudioObjectID] {
         let address = AudioObjectPropertyAddress(
@@ -46,6 +35,18 @@ final class AudioHardware {
         return noErr == status ? allIDs : []
     }
 
+    var defaultInputDevice: AudioDevice? {
+        defaultDevice(of: kAudioHardwarePropertyDefaultInputDevice)
+    }
+
+    var defaultOutputDevice: AudioDevice? {
+        defaultDevice(of: kAudioHardwarePropertyDefaultOutputDevice)
+    }
+
+    var defaultSystemOutputDevice: AudioDevice? {
+        defaultDevice(of: kAudioHardwarePropertyDefaultSystemOutputDevice)
+    }
+
     var allDevices: [AudioDevice] {
         allDeviceIDs.compactMap { AudioDevice.lookup(by: $0) }
     }
@@ -59,9 +60,7 @@ final class AudioHardware {
     }
 
     var allIODevices: [AudioDevice] {
-        allDevices.filter {
-            $0.channels(scope: .input) > 0 && $0.channels(scope: .output) > 0
-        }
+        allDevices.filter { $0.channels(scope: .input) > 0 && $0.channels(scope: .output) > 0 }
     }
 
     var allNonAggregateDevices: [AudioDevice] {
@@ -71,23 +70,25 @@ final class AudioHardware {
     var allAggregateDevices: [AudioDevice] {
         allDevices.filter { $0.isAggregateDevice }
     }
+}
 
-    var defaultInputDevice: AudioDevice? {
-        defaultDevice(of: kAudioHardwarePropertyDefaultInputDevice)
+// MARK: - Internal Functions
+
+extension AudioHardware {
+    func enableDeviceMonitoring() {
+        registerForNotifications()
+        updateKnownDevices(adding: allDevices, andRemoving: [])
     }
 
-    var defaultOutputDevice: AudioDevice? {
-        defaultDevice(of: kAudioHardwarePropertyDefaultOutputDevice)
-    }
-
-    var defaultSystemOutputDevice: AudioDevice? {
-        defaultDevice(of: kAudioHardwarePropertyDefaultSystemOutputDevice)
+    func disableDeviceMonitoring() {
+        updateKnownDevices(adding: [], andRemoving: allKnownDevices)
+        unregisterForNotifications()
     }
 }
 
-// MARK: - Fileprivate Functions
+// MARK: - Private Functions
 
-fileprivate extension AudioHardware {
+private extension AudioHardware {
     func defaultDevice(of type: AudioObjectPropertySelector) -> AudioDevice? {
         let address = AudioDevice.address(selector: type)
         var deviceID = AudioDeviceID()
@@ -96,12 +97,11 @@ fileprivate extension AudioHardware {
         return noErr == status ? AudioDevice.lookup(by: deviceID) : nil
     }
 
-    func add(device: AudioDevice) {
-        allKnownDevices.append(device)
-    }
-
-    func remove(device: AudioDevice) {
-        allKnownDevices.removeAll { $0 == device }
+    func updateKnownDevices(adding addedDevices: [AudioDevice], andRemoving removedDevices: [AudioDevice]) {
+        queue.async(flags: .barrier) { [weak self] in
+            self?.allKnownDevices.append(contentsOf: addedDevices)
+            self?.allKnownDevices.removeAll { removedDevices.contains($0) }
+        }
     }
 
     // MARK: - Notification Book-keeping
@@ -160,28 +160,22 @@ private func propertyListener(objectID: UInt32,
 
     switch address.mSelector {
     case kAudioObjectPropertyOwnedObjects:
-        // Get the latest device list
-        let latestDeviceList = _self.allDevices
-
-        let addedDevices = latestDeviceList.filter { (audioDevice) -> Bool in
-            !(_self.allKnownDevices.contains { $0 == audioDevice })
+        // Obtain added and removed devices.
+        var addedDevices: [AudioDevice]!
+        var removedDevices: [AudioDevice]!
+        
+        _self.queue.sync {
+            let latestDeviceList = _self.allDevices
+            
+            addedDevices = latestDeviceList.filter { !_self.allKnownDevices.contains($0) }
+            removedDevices = _self.allKnownDevices.filter { !latestDeviceList.contains($0) }
         }
 
-        let removedDevices = _self.allKnownDevices.filter { (audioDevice) -> Bool in
-            !(latestDeviceList.contains { $0 == audioDevice })
-        }
+        // Add new devices & remove old ones.
+        _self.updateKnownDevices(adding: addedDevices, andRemoving: removedDevices)
 
-        // Add new devices
-        for device in addedDevices {
-            _self.add(device: device)
-        }
-
-        // Remove old devices
-        for device in removedDevices {
-            _self.remove(device: device)
-        }
-
-        let userInfo: [AnyHashable: Any] = [
+        // Generate notification containing added & removed devices as `userInfo`.
+        let userInfo: [AnyHashable: AnyHashable] = [
             "addedDevices": addedDevices,
             "removedDevices": removedDevices,
         ]
