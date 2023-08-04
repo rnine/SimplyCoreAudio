@@ -8,6 +8,8 @@
 
 `SimplyCoreAudio` (formerly known as `AMCoreAudio`) is a Swift framework that aims to make [Core Audio](https://developer.apple.com/documentation/coreaudio) use less tedious in macOS.
 
+<a href="https://www.buymeacoffee.com/rnine" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
+
 ### Features
 
 - Enumerating audio devices (see [SimplyCoreAudio](https://rnine.github.io/SimplyCoreAudio/Classes/SimplyCoreAudio.html))
